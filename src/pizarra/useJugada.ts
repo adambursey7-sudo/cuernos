@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { pasoDe } from './animar';
 
-const SEGUNDOS_POR_PASO = 1.6;
+export const SEGUNDOS_POR_PASO = 1.6;
 export const VELOCIDADES = [0.5, 1, 2] as const;
 
 export function useJugada(total: number) {

@@ -41,6 +41,23 @@ export function Sistema({ s, volver, editar }: { s: SistemaDatos; volver: () => 
     guardarDefensa(!conDefensa);
   };
   const lectura = s.lecturas[nivel];
+  // GIF de la jugada: null = nada; número = creándose (0 a 1); Blob = listo para enviar.
+  const [gif, setGif] = useState<number | { blob: Blob; url: string } | null>(null);
+  const hacerGif = async () => {
+    setGif(0);
+    try {
+      const { crearGif } = await import('../pizarra/gif');
+      const blob = await crearGif(s, conDefensa, setGif);
+      setGif({ blob, url: URL.createObjectURL(blob) });
+    } catch {
+      setGif(null);
+      alert('No se ha podido crear el GIF.');
+    }
+  };
+  const cerrarGif = () => {
+    if (gif && typeof gif === 'object') URL.revokeObjectURL(gif.url);
+    setGif(null);
+  };
 
   if (presentando)
     return <Presentacion sistema={s} jugada={jugada} conDefensa={conDefensa} cambiarDefensa={cambiarDefensa} cerrar={() => setPresentando(false)} />;
@@ -71,6 +88,7 @@ export function Sistema({ s, volver, editar }: { s: SistemaDatos; volver: () => 
           <button className={conDefensa ? 'chip defensa on' : 'chip defensa'} aria-pressed={conDefensa} onClick={cambiarDefensa} aria-label="Enseñar u ocultar la defensa">
             ✕
           </button>
+          <button className="chip" onClick={hacerGif} disabled={gif !== null}>GIF</button>
           <button className="chip" onClick={() => setPresentando(true)}>⛶ Presentar</button>
         </div>
       </div>
@@ -87,6 +105,24 @@ export function Sistema({ s, volver, editar }: { s: SistemaDatos; volver: () => 
       >
         <Pista sistema={s} t={t} conDefensa={conDefensa} />
       </div>
+      {gif !== null && (
+        <div className="vista-gif" role="status">
+          {typeof gif === 'number' ? (
+            <>
+              <span>Creando el GIF…</span>
+              <progress value={gif} max={1} />
+            </>
+          ) : (
+            <>
+              <img src={gif.url} alt={`GIF de ${s.nombre}`} />
+              <div className="fila-chips">
+                <button className="chip on" onClick={async () => (await import('../pizarra/gif')).compartirGif(gif.blob, s.nombre)}>Enviar o guardar</button>
+                <button className="chip" onClick={cerrarGif}>Cerrar</button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
       <p className="explica">
         {s.pasos[paso].texto}
         {s.pasos[paso].revisar && <span className="aviso"> Por revisar</span>}
