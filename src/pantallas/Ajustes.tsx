@@ -23,7 +23,8 @@ export function Ajustes() {
     enlace.href = URL.createObjectURL(archivo);
     enlace.download = `cuernos-copia-${new Date().toISOString().slice(0, 10)}.json`;
     enlace.click();
-    URL.revokeObjectURL(enlace.href);
+    // Safari empieza la descarga más tarde: si se suelta el archivo enseguida, la copia sale vacía.
+    setTimeout(() => URL.revokeObjectURL(enlace.href), 60_000);
     setAviso(`Copia descargada: ${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'} y tus colores.`);
   };
 

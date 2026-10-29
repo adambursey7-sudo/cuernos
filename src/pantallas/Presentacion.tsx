@@ -29,10 +29,11 @@ export function Presentacion({ sistema, jugada, conDefensa, cambiarDefensa, cerr
     // Pantalla completa y horizontal donde el navegador lo permita (en el iPhone, Safari no deja: se queda en la app).
     document.documentElement.requestFullscreen?.().catch(() => {});
     (screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> })?.lock?.('landscape').catch(() => {});
+    // Las teclas leen siempre la jugada del último dibujo (la del primero tendría el paso viejo).
     const teclas = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') jugada.siguiente();
-      if (e.key === 'ArrowLeft') jugada.anterior();
-      if (e.key === 'Escape') salir();
+      if (e.key === 'ArrowRight' || e.key === ' ') ultima.current.jugada.siguiente();
+      if (e.key === 'ArrowLeft') ultima.current.jugada.anterior();
+      if (e.key === 'Escape') ultima.current.salir();
     };
     window.addEventListener('keydown', teclas);
     return () => {
@@ -45,6 +46,8 @@ export function Presentacion({ sistema, jugada, conDefensa, cambiarDefensa, cerr
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     cerrar();
   };
+  const ultima = useRef({ jugada, salir });
+  ultima.current = { jugada, salir };
 
   return (
     <div className={mandos ? 'presentacion' : 'presentacion sin-mandos'} onPointerDown={despertar}>

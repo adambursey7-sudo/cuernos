@@ -31,7 +31,7 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - [x] 1.3 Animación viva: balón que bota en los botes y viaja con arco en los pases, flechas de bote en zigzag, velocidad 0,5× / 1× / 2×, deslizar el dedo para cambiar de paso, pantalla completa.
 - [x] 1.4 Editor: crear sistema, colocar jugadores arrastrando, añadir pasos dibujando cortes, botes, bloqueos y pases con el dedo, deshacer, duplicar como variante.
 - [x] 1.5 Guardar en el móvil + copia de seguridad (descargar y cargar archivo).
-- [ ] 1.6 Cierre del tramo.
+- [x] 1.6 Cierre del tramo (revisión de código: 3 fallos arreglados). Esperando visto bueno de Adam para unir a main y publicar.
 
 ## Tramo 2: ejercicios y sesiones
 - [ ] 2.1 Diseño: biblioteca de ejercicios y planificador de sesiones (2 o 3 formas) → preguntar.
@@ -57,3 +57,4 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - 29/10: 1.3 animación viva hecha (balón que vuela y bota con sombra, botes en zigzag, Siguiente anima, velocidad, deslizar, modo presentación A con mandos que se esconden y columna lateral en horizontal); arreglado un choque de estilos que descolocaba las líneas de la pista; 9 pruebas pasan.
 - 29/10: 1.4 editor hecho (arrastra y elige, pase, texto automático, deshacer, + paso, guardar en el móvil, editar, borrar, duplicar como variante); probado con un guion que arrastra como un dedo; 15 pruebas pasan. Pendiente para 1.5: curvar flechas.
 - 29/10: 1.5 copia de seguridad (descargar y cargar archivo, probado borrando todo y recuperando) y flechas que se curvan al tocarlas; pestaña «Colores» pasa a «Ajustes»; 20 pruebas pasan.
+- 29/10: 1.6 tramo 1 cerrado; revisión de código con 3 fallos arreglados (teclas de la presentación, copia vacía en Safari, Deshacer y textos); loop parado hasta que Adam apruebe.

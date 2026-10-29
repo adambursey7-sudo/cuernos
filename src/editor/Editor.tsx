@@ -41,6 +41,8 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
     setB(n);
     setError('');
   };
+  // Al empezar a escribir (nombre, texto, nivel) se guarda cómo estaba, para que Deshacer no pise lo escrito.
+  const recordar = () => setHistorial((h) => [...h.slice(-30), b]);
   const cambiarPaso = (f: (p: Sistema['pasos'][number]) => Sistema['pasos'][number]) =>
     cambiar({ ...b, pasos: b.pasos.map((p, i) => (i === actual ? f(p) : p)) });
 
@@ -103,7 +105,7 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
     <section className="pantalla editor">
       <div className="cabecera">
         <button className="atras" onClick={cerrar} aria-label="Salir sin guardar">‹</button>
-        <input id="nombre-jugada" className="nombre-editable" value={b.nombre} onChange={(e) => setB({ ...b, nombre: e.target.value })} aria-label="Nombre de la jugada" />
+        <input id="nombre-jugada" className="nombre-editable" value={b.nombre} onFocus={recordar} onChange={(e) => setB({ ...b, nombre: e.target.value })} aria-label="Nombre de la jugada" />
       </div>
 
       <div className="fase">
@@ -202,6 +204,7 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
           className="texto-paso-editor"
           value={b.pasos[actual]?.texto ?? ''}
           placeholder="Qué pasa en este paso"
+          onFocus={recordar}
           onChange={(e) => setB({ ...b, pasos: b.pasos.map((p, i) => (i === actual ? { ...p, texto: e.target.value } : p)) })}
           aria-label="Explicación del paso"
         />
@@ -228,7 +231,7 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
       <div className="ajustes-jugada">
         <label>
           Desde
-          <select id="nivel-jugada" value={b.nivelMinimo} onChange={(e) => setB({ ...b, nivelMinimo: e.target.value as Nivel })}>
+          <select id="nivel-jugada" value={b.nivelMinimo} onFocus={recordar} onChange={(e) => setB({ ...b, nivelMinimo: e.target.value as Nivel })}>
             {NIVELES.map((n) => <option key={n.id} value={n.id}>{nombreNivel(n.id)}</option>)}
           </select>
         </label>
