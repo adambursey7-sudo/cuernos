@@ -64,3 +64,4 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - 29/10: Adam eligió tipografía D · Graduate; el logo sigue sin convencerle, le gusta la U de cuernos. Bocetos v9: 8 variantes de la U con Graduate (clásica, gruesa con balón, universitaria, con contorno, afilada, encima, en arco, parche).
 - 29/10: idea de Adam: segundos cuernos boca abajo arriba con un solo balón para cerrar la O (se leía HURNS). Bocetos v10: las 8 variantes con la O de cuernos.
 - 29/10: Adam pide la O de cuernos más pequeña o dentro de la letra. Bocetos v11: variantes 1-5 en A (O de cuernos a la altura de las letras) y B (dentro de la O de Graduate).
+- 29/10: Adam eligió el logo 5 (cuernos afilados), puesto en forma A (O a la altura de las letras). Hecho: letra Graduate en toda la app con tamaños ajustados, logo HORNS en icono (PNG y SVG), cabecera de Sistemas, pestaña del navegador y GIF. Revisión de código baja: sin fallos.
