@@ -15,6 +15,7 @@ PWA (React + Vite, como English Lab) para el móvil. Plan y público en `PLAN.md
 
 ## Comandos
 - `npm run dev` (abierto a la wifi para probar en el iPhone), `npm run build`, `npm test`.
+- Publicar: `sh scripts/publicar.sh` → https://adambursey7-sudo.github.io/cuernos/ (repo público adambursey7-sudo/cuernos; rama gh-pages).
 - Capturas: `PLAYWRIGHT_CORE=<ruta a playwright-core> node scripts/capturas.mjs http://localhost:5310 <carpeta>` (playwright-core está en el scratchpad viejo de English Lab, ver su CLAUDE.md).
 
 ## Reglas

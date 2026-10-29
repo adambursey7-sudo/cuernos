@@ -3,7 +3,9 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // Cuernos: estilo Marcador con la paleta Parqué de inicio (elegido por Adam el 29/10).
-export default defineConfig({
+// `npm run build:pages` (modo `pages`) compila para GitHub Pages, que sirve la app en /cuernos/.
+export default defineConfig(({ mode }) => ({
+  base: mode === 'pages' ? '/cuernos/' : '/',
   plugins: [
     react(),
     VitePWA({
@@ -26,4 +28,4 @@ export default defineConfig({
     }),
   ],
   test: { include: ['src/**/*.test.ts'] },
-});
+}));
