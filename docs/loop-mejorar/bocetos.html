@@ -1,0 +1,128 @@
+<title>Bocetos de Cuernos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Diario del loop: entradas de más nueva a más vieja; cada entrada = una vuelta, con sus opciones o capturas. Estética de la app (Marcador, Parqué). */
+:root{
+  --fondo:#1e2a44; --sup:#2a3754; --texto:#fff8ee; --tenue:#a9b2c3; --naranja:#f26b1d; --madera:#d9a066; --zona:#b98a5a; --verde:#4cc38a; --ambar:#ffb020;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif; --body:"Atkinson Hyperlegible",system-ui,sans-serif;
+  color-scheme:dark;
+}
+body{background:var(--fondo);color:var(--texto);font:16px/1.55 var(--body)}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px;display:grid;gap:40px}
+h1,h2,h3{font-family:var(--display);line-height:.95;margin:0;text-wrap:balance;text-transform:uppercase}
+h1{font-size:clamp(2.6rem,8vw,4.2rem);font-weight:900}
+h2{font-size:2rem;font-weight:900}
+h3{font-size:1.4rem;font-weight:800;color:var(--naranja)}
+p{margin:0;max-width:68ch}
+.tenue{color:var(--tenue)}
+.entrada{display:grid;gap:18px;border-top:2px solid var(--sup);padding-top:22px}
+.fecha{color:var(--tenue);font-size:.9rem}
+.pregunta{background:var(--sup);border-left:4px solid var(--ambar);border-radius:10px;padding:14px 16px;display:grid;gap:6px}
+.opciones{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.op{background:var(--sup);border-radius:14px;padding:14px;display:grid;gap:10px;align-content:start;min-width:0}
+.op svg{width:100%;height:auto;display:block}
+.op b.letra{font-family:var(--display);font-size:1.5rem;font-weight:900}
+.pc{display:grid;gap:3px;font-size:.92rem}
+.pc .v::before{content:"+ ";color:var(--verde);font-weight:700}
+.pc .i::before{content:"– ";color:#ff7a6b;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--tenue);border-radius:999px;padding:2px 10px;font-size:.82rem}
+.lista{margin:0;padding-left:1.1em;display:grid;gap:4px}
+</style>
+
+<div class="wrap">
+<header style="display:grid;gap:10px">
+  <h1>Cuernos: bocetos del loop</h1>
+  <p class="tenue">Cada vuelta del loop añade una entrada arriba: lo hecho con capturas, lo que se puede mejorar y, cuando toca diseñar, las opciones para elegir.</p>
+</header>
+
+<section class="entrada" id="v1">
+  <span class="fecha">29/10 · Tramo 1 · Paso 1: diseño</span>
+  <h2>Pizarra viva y editor: elige cómo</h2>
+  <div class="pregunta" style="border-left-color:var(--verde)">
+    <strong>Elegido por Adam</strong>
+    <p>Presentación <b>A · Solo pista</b> y editor <b>B · Arrastra y elige</b>.</p>
+  </div>
+
+  <h3>Modo presentación (móvil en horizontal)</h3>
+  <div class="opciones">
+    <div class="op"><b class="letra">A · Solo pista</b>
+      <svg viewBox="0 0 320 170" id="pA"></svg>
+      <div class="pc"><span class="v">La pista ocupa todo: perfecta para enseñarla en un tiempo muerto.</span><span class="v">Tocar a la derecha avanza y a la izquierda retrocede, sin buscar botones.</span><span class="i">Los mandos se esconden a los 2 segundos; la explicación del paso solo sale en una línea.</span></div>
+    </div>
+    <div class="op"><b class="letra">B · Pista y barra de tiempo</b>
+      <svg viewBox="0 0 320 170" id="pB"></svg>
+      <div class="pc"><span class="v">Barra como la de un vídeo: arrastras y la jugada va hacia delante o atrás a tu ritmo.</span><span class="v">Velocidad y defensa a mano, como en FastDraw.</span><span class="i">La barra quita un poco de pista.</span></div>
+    </div>
+    <div class="op"><b class="letra">C · Marcador al lado</b>
+      <svg viewBox="0 0 320 170" id="pC"></svg>
+      <div class="pc"><span class="v">Sigue el estilo Marcador: número enorme y explicación siempre a la vista.</span><span class="v">Botones grandes, fáciles de tocar con prisa.</span><span class="i">La pista se ve más pequeña.</span></div>
+    </div>
+  </div>
+
+  <h3>Editor de jugadas</h3>
+  <div class="opciones">
+    <div class="op"><b class="letra">A · Herramientas abajo</b>
+      <svg viewBox="0 0 200 340" id="eA"></svg>
+      <div class="pc"><span class="v">Eliges corte, bote, bloqueo o pase, tocas al jugador y dibujas con el dedo (como Coach's Clipboard).</span><span class="v">Control total de las curvas.</span><span class="i">Dos toques por movimiento.</span></div>
+    </div>
+    <div class="op"><b class="letra">B · Arrastra y elige</b>
+      <svg viewBox="0 0 200 340" id="eB"></svg>
+      <div class="pc"><span class="v">La más rápida: arrastras al jugador a su sitio y luego eliges qué movimiento ha sido.</span><span class="v">Si tiene el balón, ofrece bote o pase primero.</span><span class="i">Las curvas se hacen solas; para afinarlas hay que tocar la flecha.</span></div>
+    </div>
+    <div class="op"><b class="letra">C · Paso a paso guiado</b>
+      <svg viewBox="0 0 200 340" id="eC"></svg>
+      <div class="pc"><span class="v">Te va preguntando: quién se mueve, qué hace, adónde va. Nadie se pierde.</span><span class="v">Bueno para entrenadores que empiezan.</span><span class="i">La más lenta cuando ya sabes usarla.</span></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+// Media pista FIBA a escala (1 m = 10 u), con cuernos en el paso 2 y defensa en X.
+const C={floor:"#d9a066",zona:"#b98a5a",line:"#3a2a1a",of:"#1e2a44",ring:"#f26b1d",def:"#c0392b",arrow:"#141a26"};
+function pista(x,y,w){ // w = ancho en px; alto = w*140/150
+  const s=w/150;
+  const P=[["1",75,98],["4",55,60],["5",87,87],["2",12,10],["3",138,10]];
+  const D=[[75,84],[58,46],[86,74],[20,18],[130,18]];
+  return `<g transform="translate(${x} ${y}) scale(${s})">
+  <rect width="150" height="140" rx="6" fill="${C.floor}"/><rect x="50.5" width="49" height="58" fill="${C.zona}"/>
+  <path d="M0 .6H150M50.5 0V58H99.5V0M57 58a18 18 0 0 0 36 0M9 0V26A67.5 67.5 0 0 0 141 26V0" fill="none" stroke="${C.line}" stroke-width="1.2"/>
+  <circle cx="75" cy="12" r="2.3" fill="none" stroke="${C.line}" stroke-width="1.2"/>
+  <path d="M95 62L88 80M83 83l9 4" fill="none" stroke="${C.arrow}" stroke-width="2"/>
+  ${D.map(([a,b])=>`<path d="M${a-4} ${b-4}l8 8m0-8l-8 8" stroke="${C.def}" stroke-width="2.2" stroke-linecap="round"/>`).join("")}
+  ${P.map(([t,a,b])=>`<circle cx="${a}" cy="${b}" r="7" fill="${C.of}" stroke="${C.ring}" stroke-width="1.3"/><text x="${a}" y="${b+2.5}" font-size="7" font-weight="700" fill="#fff8ee" text-anchor="middle" font-family="sans-serif">${t}</text>`).join("")}
+  <circle cx="80" cy="93" r="3.2" fill="#f26b1d" stroke="#3a1a05" stroke-width=".8"/></g>`;
+}
+const T=(x,y,t,o={})=>`<text x="${x}" y="${y}" fill="${o.c||"#fff8ee"}" font-size="${o.s||10}" font-weight="${o.w||700}" font-family="${o.f||"Atkinson Hyperlegible,sans-serif"}" text-anchor="${o.a||"start"}">${t}</text>`;
+const R=(x,y,w,h,f,r=6)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${f}"/>`;
+const tel=(w,h)=>`<rect x="1" y="1" width="${w-2}" height="${h-2}" rx="16" fill="#141a26" stroke="#000" stroke-width="2"/>`;
+const pill=(x,y,t,on)=>R(x,y,t.length*5.6+14,16,on?"#f26b1d":"#2a3754",8)+T(x+7,y+11.5,t,{s:9});
+
+document.getElementById("pA").innerHTML=tel(320,170)+pista(64,6,192)+
+  `<circle cx="300" cy="85" r="10" fill="#fff8ee22"/>${T(300,89,"›",{a:"middle",s:14})}<circle cx="20" cy="85" r="10" fill="#fff8ee22"/>${T(20,89,"‹",{a:"middle",s:14})}`+
+  R(78,150,164,14,"#141a26cc",7)+T(160,160,"2/5 · 5 sube a bloquear",{a:"middle",s:8});
+document.getElementById("pB").innerHTML=tel(320,170)+pista(84,6,152)+
+  R(10,146,300,18,"#2a3754",9)+`<circle cx="22" cy="155" r="7" fill="#f26b1d"/>${T(22,158.5,"▶",{a:"middle",s:7})}`+
+  `<rect x="36" y="153" width="200" height="4" rx="2" fill="#a9b2c3"/><rect x="36" y="153" width="86" height="4" rx="2" fill="#f26b1d"/>`+
+  [0,1,2,3,4,5].map(i=>`<rect x="${36+i*40-1}" y="150" width="2" height="10" fill="#fff8ee"/>`).join("")+`<circle cx="122" cy="155" r="5" fill="#fff8ee"/>`+
+  pill(244,147,"1×",false)+pill(272,147,"X",true)+T(300,24,"2/5",{a:"end",s:12,f:"Big Shoulders Display"});
+document.getElementById("pC").innerHTML=tel(320,170)+pista(8,8,150)+
+  T(170,58,"2",{s:54,c:"#f26b1d",f:"Big Shoulders Display",w:900})+T(198,58,"/ 5",{s:18,c:"#a9b2c3",f:"Big Shoulders Display"})+
+  T(170,80,"5 sube a bloquear.",{s:9.5,w:400})+T(170,93,"1 sale por el bloqueo.",{s:9.5,w:400})+
+  R(170,124,64,30,"#2a3754",7)+T(202,143,"ATRÁS",{a:"middle",s:10,f:"Big Shoulders Display"})+R(240,124,70,30,"#f26b1d",7)+T(275,143,"SIGUIENTE",{a:"middle",s:10,f:"Big Shoulders Display",c:"#141a26"});
+
+const herram=(y)=>["Corte","Bote","Bloqueo","Pase"].map((t,i)=>R(10+i*46,y,42,34,i===2?"#f26b1d":"#2a3754",8)+T(31+i*46,y+21,t,{a:"middle",s:8.5})).join("");
+document.getElementById("eA").innerHTML=tel(200,340)+T(14,30,"MI JUGADA · PASO 2",{s:11,f:"Big Shoulders Display"})+pista(10,40,180)+
+  `<path d="M156 124q-8 18-28 34" fill="none" stroke="#f26b1d" stroke-width="2.4" stroke-dasharray="4 3"/>`+T(100,232,"Toca un jugador y dibuja su bloqueo",{a:"middle",s:8.5,w:400,c:"#a9b2c3"})+
+  herram(246)+R(10,290,86,32,"#2a3754",8)+T(53,310,"↶ Deshacer",{a:"middle",s:9})+R(104,290,86,32,"#2a3754",8)+T(147,310,"+ Paso",{a:"middle",s:9});
+document.getElementById("eB").innerHTML=tel(200,340)+T(14,30,"MI JUGADA · PASO 2",{s:11,f:"Big Shoulders Display"})+pista(10,40,180)+
+  `<circle cx="150" cy="140" r="8.5" fill="none" stroke="#fff8ee" stroke-width="1.5" stroke-dasharray="3 2"/>`+
+  R(96,156,96,66,"#2a3754",9)+T(104,172,"¿Qué ha hecho el 5?",{s:8.5})+pill(104,180,"Bloqueo",true)+pill(150,180,"Corte",false)+pill(104,200,"Bote",false)+pill(140,200,"Pase",false)+
+  T(100,250,"Arrastra a cualquier jugador",{a:"middle",s:8.5,w:400,c:"#a9b2c3"})+R(10,290,86,32,"#2a3754",8)+T(53,310,"↶ Deshacer",{a:"middle",s:9})+R(104,290,86,32,"#2a3754",8)+T(147,310,"+ Paso",{a:"middle",s:9});
+document.getElementById("eC").innerHTML=tel(200,340)+T(14,30,"PASO 2 · 2 DE 3",{s:11,f:"Big Shoulders Display"})+
+  T(14,56,"¿Qué hace el 5?",{s:16,f:"Big Shoulders Display"})+
+  ["Corta a canasta","Bota","Pone un bloqueo","Pasa el balón"].map((t,i)=>R(14,70+i*40,172,32,i===2?"#f26b1d":"#2a3754",8)+T(26,90+i*40,t,{s:10})).join("")+
+  pista(50,236,100)+T(100,336,"",{});
+</script>

@@ -26,7 +26,7 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 6. Nada de nombres de menores ni datos de jugadores reales en el código (es público).
 
 ## Tramo 1: pizarra viva y editor
-- [ ] 1.1 Diseño: modo presentación (vertical y horizontal) y editor, en 2 o 3 formas con boceto → preguntar.
+- [x] 1.1 Diseño → Adam eligió (29/10): presentación **A · Solo pista** (pista entera, tocar derecha/izquierda para avanzar/retroceder, mandos que se esconden, explicación en una línea) y editor **B · Arrastra y elige** (arrastrar al jugador y elegir qué movimiento ha sido; si tiene balón, bote o pase primero; curva automática que se afina tocando la flecha).
 - [ ] 1.2 Defensa: X que siguen a su atacante entre él y la canasta, y reaccionan a los bloqueos (pasar por detrás o por delante); botón para ocultarla.
 - [ ] 1.3 Animación viva: balón que bota en los botes y viaja con arco en los pases, flechas de bote en zigzag, velocidad 0,5× / 1× / 2×, deslizar el dedo para cambiar de paso, pantalla completa.
 - [ ] 1.4 Editor: crear sistema, colocar jugadores arrastrando, añadir pasos dibujando cortes, botes, bloqueos y pases con el dedo, deshacer, duplicar como variante.
@@ -52,3 +52,4 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 
 ## Registro
 - 29/10: plan escrito y decisiones de Adam apuntadas.
+- 29/10: 1.1 bocetos de diseño publicados (https://claude.ai/artifact/5ixBoL1CLZttL7gJMf97FJ); Adam eligió presentación A y editor B.
