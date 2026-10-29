@@ -35,6 +35,18 @@ if (modo === 'iconos') {
   await pagina.getByText('Pizarra verde').click();
   await pagina.waitForTimeout(300);
   await pagina.screenshot({ path: `${salida}/3-colores.png`, fullPage: true });
+
+  // Modo presentación en horizontal: a mitad del pase 1 → 4 (balón en el aire) y con los mandos ya escondidos.
+  const tumbado = await navegador.newPage({ viewport: { width: 844, height: 390 }, deviceScaleFactor: 2 });
+  await tumbado.goto(modo);
+  await tumbado.getByText('Cuernos Flex').click();
+  await tumbado.getByText('Presentar').click();
+  await tumbado.getByRole('button', { name: 'Paso anterior' }).click();
+  await tumbado.getByRole('button', { name: 'Ver la jugada' }).or(tumbado.getByText('▶ Todo')).first().click();
+  await tumbado.waitForTimeout(1200);
+  await tumbado.screenshot({ path: `${salida}/4-presentacion-pase.png` });
+  await tumbado.waitForTimeout(3500);
+  await tumbado.screenshot({ path: `${salida}/5-presentacion-limpia.png` });
   console.log('capturas en', salida);
 }
 await navegador.close();

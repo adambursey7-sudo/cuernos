@@ -1,6 +1,6 @@
 // Media pista con los cinco atacantes y el balón. Se pinta con los colores del tema (variables CSS).
 import type { Punto, Sistema } from '../sistemas/tipos';
-import { defensa, foto, inicios, JUGADORES, pasoDe } from './animar';
+import { defensa, enCamino, foto, inicios, JUGADORES, pasoDe } from './animar';
 
 /** El jugador acaba encima del final de su flecha: se recorta para que la punta quede a la vista. */
 const HUECO = 9;
@@ -12,6 +12,22 @@ function recorta(desde: Punto, a: Punto): Punto {
 
 const camino = (de: Punto, a: Punto, por?: Punto) =>
   por ? `M${de[0]} ${de[1]}Q${por[0]} ${por[1]} ${a[0]} ${a[1]}` : `M${de[0]} ${de[1]}L${a[0]} ${a[1]}`;
+
+/** Línea en zigzag para los botes, siguiendo la misma curva que el jugador. */
+function onda(de: Punto, a: Punto, por?: Punto): string {
+  const n = 28;
+  const puntos: string[] = [];
+  for (let i = 0; i <= n; i++) {
+    const k = i / n;
+    const [x, y] = enCamino(de, a, k, por);
+    const [x2, y2] = enCamino(de, a, Math.min(1, k + 0.01), por);
+    const largo = Math.hypot(x2 - x, y2 - y) || 1;
+    // Se apaga al final para que la punta de la flecha quede limpia.
+    const amp = i === 0 || i >= n - 2 ? 0 : 1.7 * (i % 2 ? 1 : -1);
+    puntos.push(`${(x - ((y2 - y) / largo) * amp).toFixed(1)} ${(y + ((x2 - x) / largo) * amp).toFixed(1)}`);
+  }
+  return 'M' + puntos.join('L');
+}
 
 /** Remate de la flecha: punta para cortes, botes y pases; barra en T para los bloqueos. */
 function remate(desde: Punto, a: Punto, bloqueo: boolean) {
@@ -57,7 +73,7 @@ export function Pista({ sistema, t, alto = 140, conDefensa = false }: { sistema:
           const a = recorta(m.por ?? de, m.a);
           return (
             <g key={n} className={`flecha ${m.tipo}`}>
-              <path d={camino(de, a, m.por)} />
+              <path d={m.tipo === 'bote' ? onda(de, a, m.por) : camino(de, a, m.por)} />
               <path d={remate(m.por ?? de, a, m.tipo === 'bloqueo')} />
             </g>
           );
@@ -75,7 +91,9 @@ export function Pista({ sistema, t, alto = 140, conDefensa = false }: { sistema:
             </g>
           );
         })}
-        <circle className="balon" cx={f.balon[0] + 5} cy={f.balon[1] - 5} r="3.2" />
+        {/* Vista desde arriba: al subir, el balón se separa de su sombra y se ve un poco más grande. */}
+        <ellipse className="sombra" cx={f.balon[0] + 5} cy={f.balon[1] - 4} rx={3 - f.altura} ry={1.6 - f.altura * 0.5} />
+        <circle className="balon" cx={f.balon[0] + 5} cy={f.balon[1] - 5 - f.altura * 7} r={3.2 * (1 + f.altura * 0.35)} />
       </g>
     </svg>
   );

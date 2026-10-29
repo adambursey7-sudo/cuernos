@@ -42,6 +42,14 @@ describe('pizarra', () => {
       }
   });
 
+  it('el balón vuela en el pase y bota en el bote', () => {
+    expect(foto(cflex, 0.75).altura).toBeGreaterThan(0.5); // mitad del pase 1 → 4
+    expect(foto(cflex, 1).altura).toBe(0); // pase acabado: en las manos
+    const botes = [0.1, 0.2, 0.3, 0.4, 0.5].map((t) => foto(cuernos, t).altura);
+    expect(Math.max(...botes)).toBeGreaterThan(0.2);
+    expect(Math.max(...botes)).toBeLessThanOrEqual(0.45);
+  });
+
   it('todos los puntos quedan dentro de la media pista', () => {
     for (const s of SISTEMAS)
       for (const m of inicios(s))

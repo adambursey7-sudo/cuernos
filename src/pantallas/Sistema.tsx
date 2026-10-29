@@ -1,12 +1,14 @@
 // Un sistema en la pizarra: número de paso enorme, pista, explicación y botones grandes para usarlo en la banda.
-import { useEffect, useRef, useState } from 'react';
-import { pasoDe } from '../pizarra/animar';
+import { useRef, useState } from 'react';
 import { Pista } from '../pizarra/Pista';
+import { useJugada } from '../pizarra/useJugada';
 import { SISTEMAS } from '../sistemas/datos';
 import { NIVELES, type Nivel } from '../sistemas/tipos';
+import { Presentacion } from './Presentacion';
 
-const SEGUNDOS_POR_PASO = 1.6;
 const CLAVE_DEFENSA = 'cuernos.defensa';
+/** Lo que hay que mover el dedo en horizontal (px) para que cuente como deslizar y no como toque. */
+const DESLIZAR = 40;
 
 function leerDefensa(): boolean {
   try {
@@ -29,44 +31,19 @@ export function Sistema({ id, volver }: { id: string; volver: () => void }) {
   const total = s.pasos.length;
   const niveles = NIVELES.slice(NIVELES.findIndex((n) => n.id === s.nivelMinimo));
   const [nivel, setNivel] = useState<Nivel>(niveles.some((n) => n.id === 'cadete') ? 'cadete' : niveles[0].id);
-  // t = 1 deja el primer paso dibujado y acabado; «Ver jugada» la anima desde el principio.
-  const [t, setT] = useState(1);
-  const [jugando, setJugando] = useState(false);
+  const jugada = useJugada(total);
+  const { paso, t } = jugada;
   const [conDefensa, setConDefensa] = useState(leerDefensa);
-  const ultimo = useRef(0);
+  const [presentando, setPresentando] = useState(false);
+  const inicioDedo = useRef<number | null>(null);
   const cambiarDefensa = () => {
     setConDefensa(!conDefensa);
     guardarDefensa(!conDefensa);
   };
-  const paso = pasoDe(t, total);
-
-  useEffect(() => {
-    if (!jugando) return;
-    let raf = 0;
-    ultimo.current = performance.now();
-    const tick = (ahora: number) => {
-      const dt = (ahora - ultimo.current) / 1000 / SEGUNDOS_POR_PASO;
-      ultimo.current = ahora;
-      setT((v) => Math.min(v + dt, total));
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [jugando, total]);
-
-  useEffect(() => {
-    if (jugando && t >= total) setJugando(false);
-  }, [jugando, t, total]);
-
-  const irA = (n: number) => {
-    setJugando(false);
-    setT(Math.max(1, Math.min(total, n + 1)));
-  };
-  const verJugada = () => {
-    setT(0);
-    setJugando(true);
-  };
   const lectura = s.lecturas[nivel];
+
+  if (presentando)
+    return <Presentacion sistema={s} jugada={jugada} conDefensa={conDefensa} cambiarDefensa={cambiarDefensa} cerrar={() => setPresentando(false)} />;
 
   return (
     <section className="pantalla sistema">
@@ -85,21 +62,39 @@ export function Sistema({ id, volver }: { id: string; volver: () => void }) {
         </button>
       </div>
 
-      <div className="marcador" aria-live="polite">
-        <span className="numero">{paso + 1}</span>
-        <span className="de">/ {total}</span>
+      <div className="marcador-fila">
+        <div className="marcador" aria-live="polite">
+          <span className="numero">{paso + 1}</span>
+          <span className="de">/ {total}</span>
+        </div>
+        <div className="extras">
+          <button className="chip" onClick={() => jugada.cambiarVelocidad()} aria-label="Cambiar la velocidad">
+            {String(jugada.velocidad).replace('.', ',')}×
+          </button>
+          <button className="chip" onClick={() => setPresentando(true)}>⛶ Presentar</button>
+        </div>
       </div>
-      <button className="pizarra" onClick={verJugada} aria-label="Ver la jugada entera">
+      <div
+        className="pizarra"
+        onPointerDown={(e) => (inicioDedo.current = e.clientX)}
+        onPointerUp={(e) => {
+          if (inicioDedo.current === null) return;
+          const dx = e.clientX - inicioDedo.current;
+          inicioDedo.current = null;
+          if (dx < -DESLIZAR) jugada.siguiente();
+          else if (dx > DESLIZAR) jugada.anterior();
+        }}
+      >
         <Pista sistema={s} t={t} conDefensa={conDefensa} />
-      </button>
+      </div>
       <p className="explica">
         {s.pasos[paso].texto}
         {s.pasos[paso].revisar && <span className="aviso"> Por revisar</span>}
       </p>
       <div className="mandos">
-        <button onClick={() => irA(paso - 1)} disabled={paso === 0 && !jugando}>Atrás</button>
-        <button onClick={verJugada}>▶ Jugada</button>
-        <button className="principal" onClick={() => irA(paso + 1)} disabled={paso === total - 1 && t >= total}>Siguiente</button>
+        <button onClick={() => jugada.anterior()} disabled={t <= 1}>Atrás</button>
+        <button onClick={() => jugada.todo()}>▶ Jugada</button>
+        <button className="principal" onClick={() => jugada.siguiente()} disabled={t >= total}>Siguiente</button>
       </div>
 
       <div className="ficha">

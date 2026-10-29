@@ -5,6 +5,8 @@ import type { Jugador, Movimiento, Punto, Sistema } from '../sistemas/tipos';
 export interface Foto {
   jugadores: Record<Jugador, Punto>;
   balon: Punto;
+  /** Altura del balón de 0 (suelo) a 1 (lo más alto de un pase); en los botes sube y baja. */
+  altura: number;
   /** Quién tiene el balón al acabar el paso en curso. */
   conBalon: Jugador;
 }
@@ -58,11 +60,21 @@ export function foto(s: Sistema, t: number): Foto {
   // para que primero se vean los desplazamientos.
   const pase = paso?.movimientos.find((m): m is Extract<Movimiento, { tipo: 'pase' }> => m.tipo === 'pase');
   let balon = jugadores[antes.balon];
+  let altura = 0;
   if (pase) {
     const kp = Math.max(0, (k - 0.5) * 2);
     balon = enCamino(jugadores[pase.de], jugadores[pase.a], kp);
+    altura = kp > 0 && kp < 1 ? Math.sin(kp * Math.PI) : 0;
+  } else {
+    const bote = paso?.movimientos.find((m) => m.tipo === 'bote' && m.jugador === antes.balon);
+    if (bote && bote.tipo === 'bote' && k > 0 && k < 1) {
+      // Un bote cada 1,2 m más o menos; el balón no pasa de la cintura (0,45).
+      const largo = Math.hypot(bote.a[0] - antes.pos[bote.jugador][0], bote.a[1] - antes.pos[bote.jugador][1]);
+      const botes = Math.max(2, Math.round(largo / 12));
+      altura = Math.abs(Math.sin(k * Math.PI * botes)) * 0.45;
+    }
   }
-  return { jugadores, balon, conBalon: marcas[i + 1].balon };
+  return { jugadores, balon, altura, conBalon: marcas[i + 1].balon };
 }
 
 const CANASTA: Punto = [75, 12];
