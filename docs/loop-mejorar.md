@@ -19,7 +19,7 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 
 ## Reglas del loop
 1. **Diseño antes de programar:** cada pantalla nueva tiene 2 o 3 formas, con boceto, ventajas e inconvenientes, en la página de bocetos. Se pregunta a Adam y esa parte no se programa hasta que conteste (lo que no dependa de ella sí avanza).
-2. **Página de bocetos** (`docs/loop-mejorar/bocetos.html`, artifact): cada vuelta añade arriba una entrada con capturas reales en tamaño iPhone, «Hecho» y «Mejorable». Lo mejorable lo arregla el loop por su cuenta si no es una decisión de diseño.
+2. **Página de bocetos** (`docs/loop-mejorar/bocetos.html`, artifact https://claude.ai/artifact/5ixBoL1CLZttL7gJMf97FJ; para publicar, copiar la página y `capturas/` a la carpeta temporal de la sesión y publicar desde allí con `url`): cada vuelta añade arriba una entrada con capturas reales en tamaño iPhone, «Hecho» y «Mejorable». Lo mejorable lo arregla el loop por su cuenta si no es una decisión de diseño.
 3. **Cada vuelta:** `npm test` y `npm run build` sin errores, y capturas con `scripts/capturas.mjs`. La IA no inventa jugadas: los ejercicios y sistemas salen de las fichas de `sistemas/` o se marcan como borrador para que Adam los revise.
 4. **Al cerrar un tramo:** `/code-review low`, entrada de cierre en los bocetos, aviso a Adam y parar. Se une a `main` y se publica (`sh scripts/publicar.sh`) solo cuando Adam lo aprueba.
 5. Ligero para el portátil: nada de librerías pesadas; la pizarra sigue siendo SVG.
