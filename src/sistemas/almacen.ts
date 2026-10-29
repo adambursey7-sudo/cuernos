@@ -42,6 +42,11 @@ export function guardarMio(s: Sistema) {
   escribir([...lista, { ...s, propio: true }]);
 }
 
+/** Sustituye todas las jugadas propias (al cargar una copia). */
+export function guardarTodosMios(lista: Sistema[]) {
+  escribir(lista.filter(esSistemaValido));
+}
+
 export function borrarMio(id: string) {
   escribir(leerMios().filter((x) => x.id !== id));
 }

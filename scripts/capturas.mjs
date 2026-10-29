@@ -31,7 +31,7 @@ if (modo === 'iconos') {
   await pagina.getByText('Siguiente').click();
   await pagina.waitForTimeout(300);
   await pagina.screenshot({ path: `${salida}/2-sistema.png` });
-  await pagina.getByRole('button', { name: 'Colores' }).click();
+  await pagina.getByRole('button', { name: 'Ajustes' }).click();
   await pagina.getByText('Pizarra verde').click();
   await pagina.waitForTimeout(300);
   await pagina.screenshot({ path: `${salida}/3-colores.png`, fullPage: true });

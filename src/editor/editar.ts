@@ -63,6 +63,27 @@ export function mover(paso: Paso, jugador: Jugador, tipo: TipoMovimiento, a: Pun
   return conMovimientos(paso, [...resto, { tipo, jugador, a: [Math.round(a[0]), Math.round(a[1])] }]);
 }
 
+/**
+ * Tocar una flecha la curva: recta → curva a un lado → curva al otro → recta.
+ * `desde` es dónde estaba el jugador al empezar el paso.
+ */
+export function curvar(paso: Paso, jugador: Jugador, desde: Punto): Paso {
+  return {
+    ...paso,
+    movimientos: paso.movimientos.map((m) => {
+      if (m.tipo === 'pase' || m.jugador !== jugador) return m;
+      const medio: Punto = [(desde[0] + m.a[0]) / 2, (desde[1] + m.a[1]) / 2];
+      const [dx, dy] = [m.a[0] - desde[0], m.a[1] - desde[1]];
+      // Perpendicular a la línea, con una cuarta parte de su largo: se nota la curva sin parecer un globo.
+      const normal: Punto = [-dy * 0.25, dx * 0.25];
+      const lado = !m.por ? 0 : Math.sign((m.por[0] - medio[0]) * normal[0] + (m.por[1] - medio[1]) * normal[1]);
+      if (lado < 0) return { tipo: m.tipo, jugador: m.jugador, a: m.a };
+      const k = lado === 0 ? 1 : -1;
+      return { ...m, por: [Math.round(medio[0] + normal[0] * k), Math.round(medio[1] + normal[1] * k)] as Punto };
+    }),
+  };
+}
+
 /** Un pase por paso como mucho. */
 export function pasar(paso: Paso, de: Jugador, a: Jugador): Paso {
   const resto = paso.movimientos.filter((m) => m.tipo !== 'pase');

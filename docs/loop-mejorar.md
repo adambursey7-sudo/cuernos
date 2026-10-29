@@ -30,7 +30,7 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - [x] 1.2 Defensa: X que siguen a su atacante entre él y la canasta, y reaccionan a los bloqueos (pasar por detrás o por delante); botón para ocultarla.
 - [x] 1.3 Animación viva: balón que bota en los botes y viaja con arco en los pases, flechas de bote en zigzag, velocidad 0,5× / 1× / 2×, deslizar el dedo para cambiar de paso, pantalla completa.
 - [x] 1.4 Editor: crear sistema, colocar jugadores arrastrando, añadir pasos dibujando cortes, botes, bloqueos y pases con el dedo, deshacer, duplicar como variante.
-- [ ] 1.5 Guardar en el móvil + copia de seguridad (descargar y cargar archivo).
+- [x] 1.5 Guardar en el móvil + copia de seguridad (descargar y cargar archivo).
 - [ ] 1.6 Cierre del tramo.
 
 ## Tramo 2: ejercicios y sesiones
@@ -56,3 +56,4 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - 29/10: 1.2 defensa hecha (X entre atacante y canasta, ayuda hacia el balón, retraso que las deja atrás en cortes y bloqueos, botón para ocultarla); 8 pruebas pasan.
 - 29/10: 1.3 animación viva hecha (balón que vuela y bota con sombra, botes en zigzag, Siguiente anima, velocidad, deslizar, modo presentación A con mandos que se esconden y columna lateral en horizontal); arreglado un choque de estilos que descolocaba las líneas de la pista; 9 pruebas pasan.
 - 29/10: 1.4 editor hecho (arrastra y elige, pase, texto automático, deshacer, + paso, guardar en el móvil, editar, borrar, duplicar como variante); probado con un guion que arrastra como un dedo; 15 pruebas pasan. Pendiente para 1.5: curvar flechas.
+- 29/10: 1.5 copia de seguridad (descargar y cargar archivo, probado borrando todo y recuperando) y flechas que se curvan al tocarlas; pestaña «Colores» pasa a «Ajustes»; 20 pruebas pasan.

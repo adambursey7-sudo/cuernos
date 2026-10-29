@@ -1,11 +1,11 @@
 // Editor «arrastra y elige»: primero se coloca a los cinco; luego, en cada paso, se arrastra a un jugador y se elige
 // qué movimiento ha sido. El pase va con su propio botón. Todo se guarda en el móvil.
 import { useRef, useState } from 'react';
-import { inicios } from '../pizarra/animar';
+import { enCamino, inicios } from '../pizarra/animar';
 import { Pista } from '../pizarra/Pista';
 import { guardarMio } from '../sistemas/almacen';
 import { NIVELES, type Jugador, type Nivel, type Punto, type Sistema } from '../sistemas/tipos';
-import { dentro, limpiar, mover, nuevoBorrador, pasar, type TipoMovimiento } from './editar';
+import { curvar, dentro, limpiar, mover, nuevoBorrador, pasar, type TipoMovimiento } from './editar';
 
 const JUGADORES: Jugador[] = ['1', '2', '3', '4', '5'];
 /** Distancia (en dm de pista) para agarrar a un jugador con el dedo y para que el arrastre cuente. */
@@ -111,7 +111,7 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
           <span>Colocación: arrastra a cada jugador a su sitio y toca quién lleva el balón.</span>
         ) : (
           <span>
-            <b>Paso {actual + 1}</b> · arrastra a un jugador y elige qué ha hecho.
+            <b>Paso {actual + 1}</b> · arrastra a un jugador y elige qué ha hecho. Toca una flecha para curvarla.
           </span>
         )}
       </div>
@@ -127,6 +127,25 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
           onPointerUp={soltar}
           onPointerCancel={() => setArrastre(null)}
         >
+          {/* Zonas para tocar las flechas del paso y curvarlas (solo el tramo central, para no tapar al jugador). */}
+          {!colocando &&
+            !arrastre &&
+            b.pasos[actual]?.movimientos.map((m) => {
+              if (m.tipo === 'pase') return null;
+              const de = alEmpezar.pos[m.jugador];
+              const puntos = [0.15, 0.3, 0.45, 0.6, 0.75].map((k) => enCamino(de, m.a, k, m.por).map((n) => n.toFixed(1)).join(' '));
+              return (
+                <path
+                  key={'curva' + m.jugador}
+                  className="tocar-flecha"
+                  d={'M' + puntos.join('L')}
+                  onPointerDown={(e) => {
+                    e.stopPropagation();
+                    cambiarPaso((p) => curvar(p, m.jugador, de));
+                  }}
+                />
+              );
+            })}
           {arrastre && (
             <>
               <path className="guia" d={`M${arrastre.desde[0]} ${arrastre.desde[1]}L${arrastre.hasta[0]} ${arrastre.hasta[1]}`} />

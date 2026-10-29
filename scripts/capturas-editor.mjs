@@ -34,6 +34,11 @@ await p.screenshot({ path: `${salida}/e2-eleccion.png` });
 await p.getByRole('button', { name: 'Bloqueo' }).click();
 await arrastrar([75, 100], [108, 80]); // 1 sale botando por el bloqueo
 await p.getByRole('button', { name: 'Bote' }).click();
+{
+  // Tocar la flecha del bloqueo del 5 (en su tramo central) para curvarla.
+  const caja = await capa.boundingBox();
+  await p.mouse.click(caja.x + (91 / 150) * caja.width, caja.y + (72.6 / 140) * caja.height);
+}
 await p.screenshot({ path: `${salida}/e3-paso1.png` });
 await p.getByText('+ Paso').click();
 await p.getByRole('button', { name: 'Pase' }).click();
@@ -47,5 +52,18 @@ await p.screenshot({ path: `${salida}/e5-guardada.png` });
 await p.getByText('Sistemas', { exact: true }).last().click();
 await p.screenshot({ path: `${salida}/e6-lista.png` });
 const guardadas = await p.evaluate(() => JSON.parse(localStorage.getItem('cuernos.mios') ?? '[]'));
+// Copia de seguridad: descargar, borrar todo, volver a cargar.
+await p.getByRole('button', { name: 'Ajustes' }).click();
+const [descarga] = await Promise.all([p.waitForEvent('download'), p.getByText('Descargar copia').click()]);
+const archivo = `${salida}/copia.json`;
+await descarga.saveAs(archivo);
+await p.evaluate(() => localStorage.removeItem('cuernos.mios'));
+await p.reload();
+await p.getByRole('button', { name: 'Ajustes' }).click();
+await p.locator('#cargar-copia').setInputFiles(archivo);
+await p.waitForTimeout(300);
+await p.screenshot({ path: `${salida}/e7-copia.png`, fullPage: true });
+console.log('aviso:', await p.locator('.aviso-copia').textContent());
+console.log('curva del 5:', JSON.stringify(guardadas[0]?.pasos[0].movimientos.find((m) => m.jugador === '5')));
 console.log('guardadas:', guardadas.length, guardadas[0]?.nombre, guardadas[0]?.pasos.map((x) => x.texto).join(' | '));
 await navegador.close();

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { SISTEMAS } from '../sistemas/datos';
 import { esSistemaValido } from '../sistemas/almacen';
 import type { Paso } from '../sistemas/tipos';
-import { describir, limpiar, mover, nuevoBorrador, pasar } from './editar';
+import { curvar, describir, limpiar, mover, nuevoBorrador, pasar } from './editar';
 
 describe('editor', () => {
   it('una jugada nueva empieza con cinco abiertos y el balón en el 1', () => {
@@ -33,6 +33,18 @@ describe('editor', () => {
   it('un texto escrito a mano no se pisa', () => {
     const p = mover({ texto: 'Mi explicación', movimientos: [] }, '1', 'bote', [70, 90]);
     expect(p.texto).toBe('Mi explicación');
+  });
+
+  it('tocar la flecha la curva a un lado, luego al otro y luego la deja recta', () => {
+    const p0 = mover({ texto: '', movimientos: [] }, '1', 'corte', [75, 60]);
+    const desde: [number, number] = [75, 100];
+    const p1 = curvar(p0, '1', desde);
+    const p2 = curvar(p1, '1', desde);
+    const p3 = curvar(p2, '1', desde);
+    const por = (p: Paso) => (p.movimientos[0] as { por?: [number, number] }).por;
+    expect(por(p1)).toEqual([85, 80]);
+    expect(por(p2)).toEqual([65, 80]);
+    expect(por(p3)).toBeUndefined();
   });
 
   it('solo un pase por paso', () => {

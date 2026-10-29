@@ -12,7 +12,7 @@ const PESTANAS: { id: Pestana; nombre: string }[] = [
   { id: 'sistemas', nombre: 'Sistemas' },
   { id: 'ejercicios', nombre: 'Ejercicios' },
   { id: 'sesiones', nombre: 'Sesiones' },
-  { id: 'ajustes', nombre: 'Colores' },
+  { id: 'ajustes', nombre: 'Ajustes' },
 ];
 
 const EN_CAMINO: Record<'ejercicios' | 'sesiones', string> = {
