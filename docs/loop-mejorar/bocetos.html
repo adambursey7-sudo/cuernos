@@ -56,11 +56,40 @@ p{margin:0;max-width:68ch}
   <p class="tenue">Cada vuelta del loop añade una entrada arriba: lo hecho con capturas, lo que se puede mejorar y, cuando toca diseñar, las opciones para elegir.</p>
 </header>
 
+<section class="entrada" id="v13">
+  <span class="fecha">29/10 · Tramo 3 · 3.1 hecho</span>
+  <h2>Compartir: hecho con la C</h2>
+  <div class="pregunta" style="border-left-color:var(--verde)">
+    <strong>Elegido por Adam: C · Hoja «Compartir» con todo</strong>
+    <p>Está en una copia aparte, sin unir. Para verlo de verdad en el iPhone hay que publicarla, porque el enlace apunta a la dirección desde la que se envía.</p>
+  </div>
+  <div class="opciones" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+    <figure style="margin:0;display:grid;gap:6px"><img src="capturas/v13-hoja.png" alt="Hoja Compartir con enlace animado, GIF, imagen del paso y QR" style="width:100%;border-radius:12px"><figcaption class="tenue">1. «↗ Compartir» abre la hoja</figcaption></figure>
+    <figure style="margin:0;display:grid;gap:6px"><img src="capturas/v13-qr.png" alt="Código QR de la jugada Cuernos" style="width:100%;border-radius:12px"><figcaption class="tenue">2. QR para el equipo</figcaption></figure>
+    <figure style="margin:0;display:grid;gap:6px"><img src="capturas/v13-visor.png" alt="Visor de una jugada propia con los colores de quien la manda" style="width:100%;border-radius:12px"><figcaption class="tenue">3. Lo que abre el jugador (con tus colores)</figcaption></figure>
+    <figure style="margin:0;display:grid;gap:6px"><img src="capturas/v13-imagen.png" alt="Imagen fija del paso 2 de Cuernos" style="width:100%;border-radius:12px"><figcaption class="tenue">4. Imagen del paso</figcaption></figure>
+  </div>
+  <div class="opciones">
+    <div><h3>Hecho</h3><ul class="lista">
+      <li><b>Enlace animado:</b> la jugada va dentro del enlace; abre WhatsApp o Mensajes, y si no se puede, se copia.</li>
+      <li><b>Visor del jugador:</b> se mueve sola y se repite; parar, paso a paso, velocidad y defensa. Tus colores no cambian los suyos.</li>
+      <li><b>Guardar en mi Horns</b> para jugadas tuyas (las de la app solo llevan «Abrir Horns»).</li>
+      <li><b>GIF</b> como antes, ahora desde la hoja; <b>imagen del paso</b> que estás viendo, al doble de tamaño; <b>QR</b> negro sobre blanco para que lo lea cualquier cámara.</li>
+      <li>Un enlace cortado o raro avisa en vez de romperse. 28 pruebas automáticas y prueba completa en tamaño iPhone; revisión de código sin fallos.</li>
+    </ul></div>
+    <div><h3>Mejorable</h3><ul class="lista">
+      <li>Con «Compartir» los botones de arriba ocupan dos filas en un iPhone normal.</li>
+      <li>En WhatsApp la vista previa del enlace es la general de Horns, no la jugada (sin servidor no se puede hacer una por jugada).</li>
+      <li>Un enlace de una jugada de la app depende de que esa jugada siga en la app; las tuyas viajan enteras.</li>
+    </ul></div>
+  </div>
+</section>
+
 <section class="entrada" id="v12">
   <span class="fecha">29/10 · Tramo 3 · 3.1 Compartir una jugada</span>
   <h2>Mandar una jugada al móvil del jugador</h2>
   <div class="pregunta">
-    <strong>Elige una letra (A, B o C)</strong>
+    <strong>Elegido por Adam: C</strong>
     <p>En las tres la jugada viaja <b>dentro del propio enlace</b>: no hace falta cuenta ni servidor, y no pasa por ningún sitio nuestro. Lo que cambia es qué pulsas tú y qué le llega al jugador en WhatsApp. Se pueden mezclar (por ejemplo, «B con el QR de la C»). No programo nada hasta que elijas.</p>
   </div>
 

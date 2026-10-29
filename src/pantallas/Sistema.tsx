@@ -1,5 +1,6 @@
 // Un sistema en la pizarra: número de paso enorme, pista, explicación y botones grandes para usarlo en la banda.
 import { useEffect, useRef, useState } from 'react';
+import { HojaCompartir } from '../compartir/HojaCompartir';
 import { Pista } from '../pizarra/Pista';
 import { useJugada } from '../pizarra/useJugada';
 import { borrarMio } from '../sistemas/almacen';
@@ -45,6 +46,7 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
   const lectura = s.lecturas[nivel];
   // GIF de la jugada: null = nada; número = creándose (0 a 1); Blob = listo para enviar.
   const [gif, setGif] = useState<number | { blob: Blob; url: string } | null>(null);
+  const [compartiendo, setCompartiendo] = useState(false);
   const hacerGif = async () => {
     setGif(0);
     try {
@@ -90,7 +92,7 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
           <button className={conDefensa ? 'chip defensa on' : 'chip defensa'} aria-pressed={conDefensa} onClick={cambiarDefensa} aria-label="Enseñar u ocultar la defensa">
             ✕
           </button>
-          <button className="chip" onClick={hacerGif} disabled={gif !== null}>GIF</button>
+          <button className="chip" onClick={() => setCompartiendo(true)} disabled={gif !== null}>↗ Compartir</button>
           <button className="chip" onClick={() => setPresentando(true)}>⛶ Presentar</button>
         </div>
       </div>
@@ -107,6 +109,9 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
       >
         <Pista sistema={s} t={t} conDefensa={conDefensa} />
       </div>
+      {compartiendo && (
+        <HojaCompartir s={s} conDefensa={conDefensa} paso={paso} cerrar={() => setCompartiendo(false)} hacerGif={() => { setCompartiendo(false); hacerGif(); }} />
+      )}
       {gif !== null && (
         <div className="vista-gif" role="status">
           {typeof gif === 'number' ? (

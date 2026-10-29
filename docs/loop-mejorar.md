@@ -41,7 +41,7 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - [ ] 2.5 Cierre del tramo.
 
 ## Tramo 3: compartir e imprimir
-- [ ] 3.1 Enviar una jugada por enlace (que se abra animada en el móvil del jugador) o como imagen.
+- [x] 3.1 Enviar una jugada por enlace (que se abra animada en el móvil del jugador) o como imagen.
 - [ ] 3.2 Ficha para imprimir de un sistema y de una sesión.
 - [ ] 3.3 Cierre del tramo.
 
@@ -67,3 +67,4 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - 29/10: Adam eligió el logo 5 (cuernos afilados), puesto en forma A (O a la altura de las letras). Hecho: letra Graduate en toda la app con tamaños ajustados, logo HORNS en icono (PNG y SVG), cabecera de Sistemas, pestaña del navegador y GIF. Revisión de código baja: sin fallos.
 - 29/10: Adam: la app se llama **Horns** y mover jugadores con la **A · Arrastra y dibuja**. Hecho: nombre Horns (icono, pestaña, copia de seguridad; las copias viejas siguen valiendo); el camino del dedo es la flecha con su curva, el movimiento se adivina (con balón bote, a un cuerpo de un compañero bloqueo, si no corte) y se cambia tocando su etiqueta; pase arrastrando el balón a un compañero. Arreglado: el editor se salía por la derecha con Graduate. Probado con el guion del dedo; 22 pruebas; revisión baja sin fallos. Falta: interfaz C (inicio de club).
 - 29/10: 3.1 compartir (copia aparte `C:\dev\baloncesto-t-compartir`, rama loop/compartir, sacada de loop/mejorar porque main no tiene el editor): bocetos v12 con el visor común y tres formas de enviar (A solo enlace, B enlace y GIF a la vez, C hoja con enlace, GIF, imagen y QR); la jugada va dentro del enlace (unas 500 letras las propias, enlace corto las del libro). Esperando que Adam elija.
+- 29/10: Adam eligió la C (hoja Compartir con todo). Hecho en loop/compartir: enlace animado con la jugada dentro (las de la app solo con su id), visor del jugador que se repite solo con los colores de quien la manda (sin pisar los suyos) y «Guardar en mi Horns», GIF desde la hoja, imagen del paso al doble de tamaño y QR. Enlaces rotos avisan. Pantallas comunes tocadas lo mínimo (Sistema: un botón; main, temas y useJugada: unas líneas); lo nuevo va en `src/compartir/`. 28 pruebas, prueba completa en tamaño iPhone, revisión baja sin fallos. Sin unir a main.

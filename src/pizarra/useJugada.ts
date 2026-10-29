@@ -58,6 +58,10 @@ export function useJugada(total: number, pasoInicial = 0) {
     cambiarVelocidad() {
       setVelocidad((v) => VELOCIDADES[(VELOCIDADES.indexOf(v as (typeof VELOCIDADES)[number]) + 1) % VELOCIDADES.length]);
     },
+    /** Deja la jugada quieta donde esté. */
+    parar() {
+      setHasta(null);
+    },
     reiniciar() {
       setHasta(null);
       setT(1);
