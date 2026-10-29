@@ -5,6 +5,8 @@ import { Pista } from '../pizarra/Pista';
 import { useJugada } from '../pizarra/useJugada';
 import { borrarMio } from '../sistemas/almacen';
 import { NIVELES, type Nivel, type Sistema as SistemaDatos } from '../sistemas/tipos';
+import { Ficha } from '../imprimir/Ficha';
+import { Tarjetas } from '../imprimir/Tarjetas';
 import { guardarUltima } from '../ultima';
 import { Presentacion } from './Presentacion';
 
@@ -38,6 +40,8 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
   useEffect(() => guardarUltima({ id: s.id, paso }), [s.id, paso]);
   const [conDefensa, setConDefensa] = useState(leerDefensa);
   const [presentando, setPresentando] = useState(false);
+  const [imprimiendo, setImprimiendo] = useState(false);
+  const [tarjetas, setTarjetas] = useState(false);
   const inicioDedo = useRef<number | null>(null);
   const cambiarDefensa = () => {
     setConDefensa(!conDefensa);
@@ -63,6 +67,8 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
     setGif(null);
   };
 
+  if (imprimiendo) return <Ficha s={s} nivel={nivel} volver={() => setImprimiendo(false)} />;
+  if (tarjetas) return <Tarjetas inicial={s} volver={() => setTarjetas(false)} />;
   if (presentando)
     return <Presentacion sistema={s} jugada={jugada} conDefensa={conDefensa} cambiarDefensa={cambiarDefensa} cerrar={() => setPresentando(false)} />;
 
@@ -93,7 +99,7 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
             ✕
           </button>
           <button className="chip" onClick={() => setCompartiendo(true)} disabled={gif !== null}>↗ Compartir</button>
-          <button className="chip" onClick={() => setPresentando(true)}>⛶ Presentar</button>
+          <button className="chip" onClick={() => setPresentando(true)} aria-label="Presentar en pantalla completa">⛶</button>
         </div>
       </div>
       <div
@@ -153,6 +159,8 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
       </div>
 
       <div className="acciones-jugada">
+        <button onClick={() => setImprimiendo(true)}>⎙ Imprimir ficha</button>
+        <button onClick={() => setTarjetas(true)}>✂ Tarjetas de bolsillo</button>
         {s.propio ? (
           <>
             <button onClick={() => editar(s)}>✎ Editar</button>

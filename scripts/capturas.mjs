@@ -40,7 +40,7 @@ if (modo === 'iconos') {
   const tumbado = await navegador.newPage({ viewport: { width: 844, height: 390 }, deviceScaleFactor: 2 });
   await tumbado.goto(modo);
   await tumbado.getByText('Cuernos Flex').click();
-  await tumbado.getByText('Presentar').click();
+  await tumbado.getByRole('button', { name: 'Presentar en pantalla completa' }).click();
   await tumbado.getByRole('button', { name: 'Paso anterior' }).click();
   await tumbado.getByRole('button', { name: 'Ver la jugada' }).or(tumbado.getByText('▶ Todo')).first().click();
   await tumbado.waitForTimeout(1200);

@@ -1,0 +1,45 @@
+/* Folio blanco con tinta negra siempre: se imprime igual con cualquier colorido de la app y se lee en fotocopia. */
+.ficha-barra { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.papel {
+  --pista: #fff; --zona: #eee; --lineas: #555; --flechas: #111; --jugadores: #fff; --texto-jugadores: #111; --principal: #111; --defensa: #111;
+  background: #fff; color: #111; font: 14px/1.4 var(--body); padding: 16px; border-radius: 4px; display: grid; gap: 6px;
+}
+.papel h1 { font: 900 1.7rem/1 var(--display); text-transform: uppercase; margin: 0; }
+.papel header p { margin: 2px 0 0; color: #444; }
+.papel .papel-aviso { font-weight: 700; color: #111; }
+.papel h2 { font: 800 0.85rem/1 var(--display); text-transform: uppercase; letter-spacing: 0.06em; color: #444; margin: 10px 0 2px; }
+.papel p, .papel ul { margin: 0; }
+.papel ul { padding-left: 1.1em; }
+.papel-pasos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 10px; margin-top: 8px; }
+.papel-pasos figure { margin: 0; break-inside: avoid; }
+.papel-pasos .pista { border: 1px solid #999; }
+.papel-pasos figcaption { font-size: 0.82rem; margin-top: 2px; }
+.papel-pasos figcaption b { display: block; font: 900 0.85rem var(--display); text-transform: uppercase; }
+.papel-columnas { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; break-inside: avoid; }
+.papel footer { margin-top: 10px; font-size: 0.7rem; color: #777; }
+
+@page { size: A4; margin: 12mm; }
+@media print {
+  html, body { height: auto; background: #fff; }
+  .no-imprimir { display: none !important; }
+  .ficha-imprimir { padding: 0; }
+  .papel { padding: 0; font-size: 9.5pt; gap: 3px; }
+  .papel-pasos { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .papel-pasos figcaption { font-size: 8.5pt; }
+  .pestanas { display: none; }
+}
+
+/* Tarjetas de bolsillo: rejilla 2×4 con borde discontinuo para recortar. */
+.elegir-tarjetas { display: grid; gap: 6px; margin-bottom: 12px; border: 1px solid var(--lineas, #888); border-radius: 6px; padding: 10px; }
+.elegir-tarjetas label { display: flex; gap: 8px; align-items: center; }
+.folio-tarjetas { grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 12px; }
+.carta { border: 1px dashed #999; padding: 6px; display: grid; gap: 4px; align-content: start; break-inside: avoid; }
+.carta h3 { margin: 0; font: 900 0.95rem/1 var(--display); text-transform: uppercase; }
+.carta p { font-size: 0.75rem; }
+.carta-pistas { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; }
+.carta-pistas .pista { border: 1px solid #999; }
+@media print {
+  .folio-tarjetas { break-after: page; margin: 0; height: 273mm; grid-template-rows: repeat(4, 1fr); }
+  .folio-tarjetas:last-child { break-after: auto; }
+  .carta p { font-size: 8.5pt; }
+}
