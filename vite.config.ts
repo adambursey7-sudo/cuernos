@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-// Cuernos: estilo Marcador con la paleta Parqué de inicio (elegido por Adam el 29/10).
+// Horns (antes Cuernos): estilo Marcador con la paleta Parqué de inicio (elegido por Adam el 29/10).
 // `npm run build:pages` (modo `pages`) compila para GitHub Pages, que sirve la app en /cuernos/.
 export default defineConfig(({ mode }) => ({
   base: mode === 'pages' ? '/cuernos/' : '/',
@@ -12,8 +12,8 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       workbox: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'] },
       manifest: {
-        name: 'Cuernos',
-        short_name: 'Cuernos',
+        name: 'Horns',
+        short_name: 'Horns',
         description: 'Sistemas, ejercicios y sesiones para entrenadores de baloncesto.',
         categories: ['sports'],
         lang: 'es',

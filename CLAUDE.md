@@ -1,10 +1,10 @@
-# Cuernos (app de baloncesto para entrenadores)
+# Horns (app de baloncesto para entrenadores; antes «Cuernos»)
 
 PWA (React + Vite, como English Lab) para el móvil. Plan y público en `PLAN.md`; fichas de sistemas en `sistemas/*.md`.
 
 ## Decisiones de Adam (29/10)
-- Nombre **Cuernos**, logo de los dos cuernos con el jugador (`public/icono.svg`; PNG con `node scripts/capturas.mjs iconos`).
-- Estilo **Marcador**: fondo oscuro, número de paso enorme en Big Shoulders Display, botones grandes para la banda. Texto en Atkinson Hyperlegible.
+- Nombre **Horns** (antes Cuernos; la jugada «Cuernos» sigue igual). Logo HORNS: la O son dos cuernos afilados enfrentados con un balón (`src/Logo.tsx`) (`public/icono.svg`; PNG con `node scripts/capturas.mjs iconos`).
+- Estilo **Marcador**: fondo oscuro, número de paso enorme en Graduate, botones grandes para la banda. Texto en Atkinson Hyperlegible.
 - Colores: empieza con **Parqué** y el entrenador cambia los cuatro colores (principal, fondo, pista, jugadores) en la pestaña Colores. Textos, líneas y flechas se calculan solos para que se lean (`src/temas.ts`).
 - Bocetos de la identidad: https://claude.ai/artifact/V3hUwLX7fjL6V16JQLBfzZ (`bocetos/identidad.html`).
 

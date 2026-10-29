@@ -11,15 +11,18 @@ await p.evaluate(() => localStorage.removeItem('cuernos.mios'));
 await p.reload();
 
 const capa = p.locator('.capa');
-/** Arrastra en coordenadas de pista (dm) de un punto a otro. */
-async function arrastrar(de, a) {
+/** Arrastra con el dedo por los puntos dados (coordenadas de pista en dm), pasando por cada uno. */
+async function arrastrar(...puntos) {
   const caja = await capa.boundingBox();
   const px = ([x, y]) => [caja.x + (x / 150) * caja.width, caja.y + (y / 140) * caja.height];
-  const [x1, y1] = px(de);
-  const [x2, y2] = px(a);
-  await p.mouse.move(x1, y1);
+  const [x0, y0] = px(puntos[0]);
+  await p.mouse.move(x0, y0);
   await p.mouse.down();
-  for (let i = 1; i <= 8; i++) await p.mouse.move(x1 + ((x2 - x1) * i) / 8, y1 + ((y2 - y1) * i) / 8);
+  for (let n = 1; n < puntos.length; n++) {
+    const [x1, y1] = px(puntos[n - 1]);
+    const [x2, y2] = px(puntos[n]);
+    for (let i = 1; i <= 8; i++) await p.mouse.move(x1 + ((x2 - x1) * i) / 8, y1 + ((y2 - y1) * i) / 8);
+  }
   await p.mouse.up();
 }
 
@@ -29,22 +32,14 @@ await arrastrar([14, 14], [55, 60]); // 4 al codo izquierdo
 await arrastrar([136, 14], [95, 60]); // 5 al codo derecho
 await p.screenshot({ path: `${salida}/e1-colocacion.png` });
 await p.getByText('Empezar pasos').click();
-await arrastrar([95, 60], [86, 88]); // 5 sube a bloquear
-await p.screenshot({ path: `${salida}/e2-eleccion.png` });
-await p.getByRole('button', { name: 'Bloqueo' }).click();
-await arrastrar([75, 100], [108, 80]); // 1 sale botando por el bloqueo
-await p.getByRole('button', { name: 'Bote' }).click();
-{
-  // Tocar la flecha del bloqueo del 5 (en su tramo central) para curvarla.
-  const caja = await capa.boundingBox();
-  await p.mouse.click(caja.x + (91 / 150) * caja.width, caja.y + (72.6 / 140) * caja.height);
-}
+await arrastrar([95, 60], [86, 88]); // 5 sube a bloquear al 1 (se adivina bloqueo)
+await arrastrar([75, 100], [92, 104], [108, 80]); // 1 sale botando por el bloqueo, en curva (se adivina bote)
 await p.screenshot({ path: `${salida}/e3-paso1.png` });
 await p.getByText('+ Paso').click();
-await p.getByRole('button', { name: 'Pase' }).click();
-await p.locator('.fila-chips.pase').getByRole('button', { name: '5' }).click();
-await arrastrar([86, 88], [80, 28]); // 5 continúa a canasta
-await p.getByRole('button', { name: 'Corte' }).click();
+await arrastrar([111, 75], [86, 88]); // pase: el balón del 1 se suelta encima del 5
+await arrastrar([86, 88], [70, 60], [80, 28]); // 5 continúa a canasta (corte en curva)
+await p.getByRole('button', { name: /Corte del 5/ }).click(); // la etiqueta cambia a bloqueo…
+await p.getByRole('button', { name: /Bloqueo del 5/ }).click(); // …y vuelve a corte
 await p.screenshot({ path: `${salida}/e4-paso2.png` });
 await p.getByText('Guardar jugada').click();
 await p.waitForTimeout(300);
@@ -64,6 +59,7 @@ await p.locator('#cargar-copia').setInputFiles(archivo);
 await p.waitForTimeout(300);
 await p.screenshot({ path: `${salida}/e7-copia.png`, fullPage: true });
 console.log('aviso:', await p.locator('.aviso-copia').textContent());
-console.log('curva del 5:', JSON.stringify(guardadas[0]?.pasos[0].movimientos.find((m) => m.jugador === '5')));
+console.log('paso 1:', JSON.stringify(guardadas[0]?.pasos[0].movimientos));
+console.log('paso 2:', JSON.stringify(guardadas[0]?.pasos[1]?.movimientos));
 console.log('guardadas:', guardadas.length, guardadas[0]?.nombre, guardadas[0]?.pasos.map((x) => x.texto).join(' | '));
 await navegador.close();

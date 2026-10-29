@@ -18,8 +18,8 @@ describe('copia de seguridad', () => {
   });
 
   it('un archivo cualquiera da un aviso claro', () => {
-    expect(() => leerCopia('hola')).toThrow('no es una copia de Cuernos');
-    expect(() => leerCopia('{"app":"otra"}')).toThrow('no es una copia de Cuernos');
+    expect(() => leerCopia('hola')).toThrow('no es una copia de Horns');
+    expect(() => leerCopia('{"app":"otra"}')).toThrow('no es una copia de Horns');
   });
 
   it('las jugadas rotas de una copia se ignoran', () => {

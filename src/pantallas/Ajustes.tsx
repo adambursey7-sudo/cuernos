@@ -21,7 +21,7 @@ export function Ajustes() {
     const archivo = new Blob([armarCopia(mios, c)], { type: 'application/json' });
     const enlace = document.createElement('a');
     enlace.href = URL.createObjectURL(archivo);
-    enlace.download = `cuernos-copia-${new Date().toISOString().slice(0, 10)}.json`;
+    enlace.download = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
     enlace.click();
     // Safari empieza la descarga más tarde: si se suelta el archivo enseguida, la copia sale vacía.
     setTimeout(() => URL.revokeObjectURL(enlace.href), 60_000);

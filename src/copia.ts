@@ -4,6 +4,7 @@ import { esSistemaValido } from './sistemas/almacen';
 import type { Sistema } from './sistemas/tipos';
 import type { Colores } from './temas';
 
+// Se queda «cuernos» (nombre antiguo de la app) para que sigan valiendo las copias ya guardadas.
 const MARCA = 'cuernos-copia';
 
 export function armarCopia(mios: Sistema[], colores: Colores): string {
@@ -16,10 +17,10 @@ export function leerCopia(texto: string): { mios: Sistema[]; colores?: Colores }
   try {
     datos = JSON.parse(texto);
   } catch {
-    throw new Error('Ese archivo no es una copia de Cuernos.');
+    throw new Error('Ese archivo no es una copia de Horns.');
   }
   const d = datos as { app?: string; mios?: unknown; colores?: Colores };
-  if (d?.app !== MARCA || !Array.isArray(d.mios)) throw new Error('Ese archivo no es una copia de Cuernos.');
+  if (d?.app !== MARCA || !Array.isArray(d.mios)) throw new Error('Ese archivo no es una copia de Horns.');
   const mios = d.mios.filter(esSistemaValido);
   const hex = /^#[0-9a-f]{6}$/i;
   const colores = d.colores && ['principal', 'fondo', 'pista', 'jugadores'].every((k) => hex.test(String(d.colores![k as keyof Colores]))) ? d.colores : undefined;

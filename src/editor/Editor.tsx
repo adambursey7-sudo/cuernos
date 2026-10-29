@@ -1,21 +1,25 @@
-// Editor «arrastra y elige»: primero se coloca a los cinco; luego, en cada paso, se arrastra a un jugador y se elige
-// qué movimiento ha sido. El pase va con su propio botón. Todo se guarda en el móvil.
+// Editor «arrastra y dibuja» (elegido por Adam el 29/10): primero se coloca a los cinco; luego, en cada paso, el camino
+// que hace el dedo con un jugador es su flecha y el movimiento se adivina (se cambia tocando la etiqueta). El pase se hace
+// arrastrando el balón a un compañero. Todo se guarda en el móvil.
 import { useRef, useState } from 'react';
-import { enCamino, inicios } from '../pizarra/animar';
+import { enCamino, foto, inicios } from '../pizarra/animar';
 import { Pista } from '../pizarra/Pista';
 import { guardarMio } from '../sistemas/almacen';
 import { NIVELES, type Jugador, type Nivel, type Punto, type Sistema } from '../sistemas/tipos';
-import { curvar, dentro, limpiar, mover, nuevoBorrador, pasar, type TipoMovimiento } from './editar';
+import { adivinar, ajustarCurva, cambiarTipo, dentro, limpiar, mover, nuevoBorrador, opcionesDe, pasar } from './editar';
 
 const JUGADORES: Jugador[] = ['1', '2', '3', '4', '5'];
 /** Distancia (en dm de pista) para agarrar a un jugador con el dedo y para que el arrastre cuente. */
 const AGARRE = 12;
 const MINIMO = 4;
+/** Radio (dm) para agarrar el balón, que va pegado al jugador que lo lleva. */
+const AGARRE_BALON = 5;
+const NOMBRE = { corte: 'Corte', bote: 'Bote', bloqueo: 'Bloqueo' } as const;
 
+/** Lo que se arrastra: un jugador (con el camino que hace el dedo) o el balón para pasarlo. */
 interface Arrastre {
-  jugador: Jugador;
-  desde: Punto;
-  hasta: Punto;
+  jugador: Jugador | 'balon';
+  camino: Punto[];
 }
 
 export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () => void; guardado: (id: string) => void }) {
@@ -23,7 +27,6 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
   const [historial, setHistorial] = useState<Sistema[]>([]);
   const [colocando, setColocando] = useState(b.pasos.length === 0);
   const [arrastre, setArrastre] = useState<Arrastre | null>(null);
-  const [eleccion, setEleccion] = useState<Arrastre | null>(null);
   const [pasando, setPasando] = useState(false);
   const [error, setError] = useState('');
   const capa = useRef<SVGSVGElement>(null);
@@ -35,6 +38,9 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
   const t = colocando ? 0 : b.pasos.length;
   const ahora = colocando ? marcas[0] : marcas[b.pasos.length];
   const alEmpezar = marcas[actual];
+  const pasoActual = b.pasos[actual];
+  // Bota quien tenía el balón al empezar el paso, salvo que ya lo haya pasado.
+  const conBalon = (j: Jugador) => j === alEmpezar.balon && !pasoActual?.movimientos.some((m) => m.tipo === 'pase');
 
   const cambiar = (n: Sistema) => {
     setHistorial((h) => [...h.slice(-30), b]);
@@ -53,40 +59,53 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
   };
 
   const agarrar = (e: React.PointerEvent) => {
-    if (eleccion || pasando) return;
+    if (pasando) return;
     const p = aPista(e);
+    const empezar = (jugador: Arrastre['jugador'], desde: Punto) => {
+      capa.current!.setPointerCapture(e.pointerId);
+      setArrastre({ jugador, camino: [desde] });
+    };
+    if (!colocando) {
+      const f = foto(vista, t);
+      const balon: Punto = [f.balon[0] + 5, f.balon[1] - 5];
+      if (Math.hypot(balon[0] - p[0], balon[1] - p[1]) < AGARRE_BALON) return empezar('balon', balon);
+    }
     let mejor: Jugador | null = null;
     let cerca = AGARRE;
     for (const j of JUGADORES) {
       const d = Math.hypot(ahora.pos[j][0] - p[0], ahora.pos[j][1] - p[1]);
       if (d < cerca) [mejor, cerca] = [j, d];
     }
-    if (!mejor) return;
-    capa.current!.setPointerCapture(e.pointerId);
-    setArrastre({ jugador: mejor, desde: ahora.pos[mejor], hasta: ahora.pos[mejor] });
+    if (mejor) empezar(mejor, ahora.pos[mejor]);
+  };
+
+  const arrastrar = (e: React.PointerEvent) => {
+    if (!arrastre) return;
+    const p = aPista(e);
+    const ultimo = arrastre.camino[arrastre.camino.length - 1];
+    // Un punto cada poco más de un decímetro basta para sacar la curva.
+    if (Math.hypot(p[0] - ultimo[0], p[1] - ultimo[1]) > 1.5) setArrastre({ ...arrastre, camino: [...arrastre.camino, p] });
   };
 
   const soltar = () => {
     if (!arrastre) return;
     setArrastre(null);
-    const { jugador, hasta } = arrastre;
-    if (Math.hypot(hasta[0] - arrastre.desde[0], hasta[1] - arrastre.desde[1]) < MINIMO) return;
-    if (colocando) cambiar({ ...b, inicio: { ...b.inicio, [jugador]: hasta } });
+    const { jugador, camino } = arrastre;
+    const hasta = camino[camino.length - 1];
+    if (Math.hypot(hasta[0] - camino[0][0], hasta[1] - camino[0][1]) < MINIMO) return;
+    if (jugador === 'balon') {
+      // Pase: el balón se suelta encima de un compañero.
+      const receptor = JUGADORES.find((j) => j !== alEmpezar.balon && Math.hypot(ahora.pos[j][0] - hasta[0], ahora.pos[j][1] - hasta[1]) < AGARRE);
+      if (receptor) cambiarPaso((p) => pasar(p, alEmpezar.balon, receptor));
+      return;
+    }
+    if (colocando) return cambiar({ ...b, inicio: { ...b.inicio, [jugador]: hasta } });
     // El movimiento sale desde donde estaba al empezar el paso, aunque ya se hubiera movido en este mismo paso.
-    else setEleccion({ jugador, desde: alEmpezar.pos[jugador], hasta });
+    const recorrido = [alEmpezar.pos[jugador], ...camino.slice(1)];
+    const companeros = JUGADORES.filter((j) => j !== jugador).map((j) => ahora.pos[j]);
+    const tipo = adivinar(conBalon(jugador), hasta, companeros);
+    cambiarPaso((p) => mover(p, jugador, tipo, hasta, ajustarCurva(recorrido)));
   };
-
-  const elegir = (tipo: TipoMovimiento) => {
-    if (!eleccion) return;
-    cambiarPaso((p) => mover(p, eleccion.jugador, tipo, eleccion.hasta));
-    setEleccion(null);
-  };
-
-  const opciones: TipoMovimiento[] = eleccion
-    ? eleccion.jugador === alEmpezar.balon
-      ? ['bote', 'corte']
-      : ['corte', 'bloqueo']
-    : [];
 
   const guardar = () => {
     const final = limpiar(b);
@@ -113,7 +132,7 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
           <span>Colocación: arrastra a cada jugador a su sitio y toca quién lleva el balón.</span>
         ) : (
           <span>
-            <b>Paso {actual + 1}</b> · arrastra a un jugador y elige qué ha hecho. Toca una flecha para curvarla.
+            <b>Paso {actual + 1}</b> · dibuja con el dedo el camino de cada jugador. Para pasar, arrastra el balón a un compañero. Toca la etiqueta de una flecha para cambiar el movimiento.
           </span>
         )}
       </div>
@@ -125,33 +144,14 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
           className="capa"
           viewBox="0 0 150 140"
           onPointerDown={agarrar}
-          onPointerMove={(e) => arrastre && setArrastre({ ...arrastre, hasta: aPista(e) })}
+          onPointerMove={arrastrar}
           onPointerUp={soltar}
           onPointerCancel={() => setArrastre(null)}
         >
-          {/* Zonas para tocar las flechas del paso y curvarlas (solo el tramo central, para no tapar al jugador). */}
-          {!colocando &&
-            !arrastre &&
-            b.pasos[actual]?.movimientos.map((m) => {
-              if (m.tipo === 'pase') return null;
-              const de = alEmpezar.pos[m.jugador];
-              const puntos = [0.15, 0.3, 0.45, 0.6, 0.75].map((k) => enCamino(de, m.a, k, m.por).map((n) => n.toFixed(1)).join(' '));
-              return (
-                <path
-                  key={'curva' + m.jugador}
-                  className="tocar-flecha"
-                  d={'M' + puntos.join('L')}
-                  onPointerDown={(e) => {
-                    e.stopPropagation();
-                    cambiarPaso((p) => curvar(p, m.jugador, de));
-                  }}
-                />
-              );
-            })}
           {arrastre && (
             <>
-              <path className="guia" d={`M${arrastre.desde[0]} ${arrastre.desde[1]}L${arrastre.hasta[0]} ${arrastre.hasta[1]}`} />
-              <circle className="fantasma" cx={arrastre.hasta[0]} cy={arrastre.hasta[1]} r="7.5" />
+              <path className="guia" d={'M' + arrastre.camino.map((q) => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join('L')} />
+              {arrastre.jugador !== 'balon' && <circle className="fantasma" cx={arrastre.camino.at(-1)![0]} cy={arrastre.camino.at(-1)![1]} r="7.5" />}
             </>
           )}
           {colocando &&
@@ -169,22 +169,25 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
               />
             ))}
         </svg>
-        {eleccion && <div className="marca-eleccion" style={{ left: `${(eleccion.hasta[0] / 150) * 100}%`, top: `${(eleccion.hasta[1] / 140) * 100}%` }} />}
-      </div>
-
-      {eleccion && (
-        <div className="eleccion" role="dialog" aria-label={`Qué ha hecho el ${eleccion.jugador}`}>
-          <span>¿Qué ha hecho el {eleccion.jugador}?</span>
-          <div className="fila-chips">
-            {opciones.map((o) => (
-              <button key={o} className="chip on" onClick={() => elegir(o)}>
-                {o === 'bote' ? 'Bote' : o === 'corte' ? 'Corte' : 'Bloqueo'}
+        {/* Etiqueta en mitad de cada flecha: tocarla cambia el movimiento si la app no lo ha adivinado bien. */}
+        {!colocando &&
+          !arrastre &&
+          pasoActual?.movimientos.map((m) => {
+            if (m.tipo === 'pase') return null;
+            const [x, y] = enCamino(alEmpezar.pos[m.jugador], m.a, 0.5, m.por);
+            return (
+              <button
+                key={'etiqueta' + m.jugador}
+                className={`etiqueta-flecha ${m.tipo}`}
+                style={{ left: `${(x / 150) * 100}%`, top: `${(y / 140) * 100}%` }}
+                onClick={() => cambiarPaso((p) => cambiarTipo(p, m.jugador, opcionesDe(conBalon(m.jugador))))}
+                aria-label={`${NOMBRE[m.tipo]} del ${m.jugador}: tocar para cambiarlo`}
+              >
+                {NOMBRE[m.tipo]}
               </button>
-            ))}
-            <button className="chip" onClick={() => setEleccion(null)}>Nada</button>
-          </div>
-        </div>
-      )}
+            );
+          })}
+      </div>
 
       {pasando && (
         <div className="fila-chips pase">

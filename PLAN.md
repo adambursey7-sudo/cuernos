@@ -1,6 +1,6 @@
 # App de baloncesto para entrenadores — enfoque y plan de trabajo
 
-Nombre: **Cuernos** (29/10). Empezado el 23/10/2026; se empezó a programar el 29/10 (ver `CLAUDE.md`).
+Nombre: **Horns** (29/10; antes Cuernos). Empezado el 23/10/2026; se empezó a programar el 29/10 (ver `CLAUDE.md`).
 
 Bocetos: https://claude.ai/artifact/1WyTMNX34sbgD2uvhbTnL8
 
