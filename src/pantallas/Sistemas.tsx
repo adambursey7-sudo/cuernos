@@ -1,15 +1,19 @@
 import { Pista } from '../pizarra/Pista';
-import { SISTEMAS } from '../sistemas/datos';
+import { todosLosSistemas } from '../sistemas/almacen';
 import { NIVELES } from '../sistemas/tipos';
 
 const nombreNivel = (id: string) => NIVELES.find((n) => n.id === id)?.nombre ?? id;
 
-export function Sistemas({ abrir }: { abrir: (id: string) => void }) {
+export function Sistemas({ abrir, crear }: { abrir: (id: string) => void; crear: () => void }) {
+  const lista = todosLosSistemas();
   return (
     <section className="pantalla">
-      <h1 className="titulo">Sistemas</h1>
+      <div className="titulo-fila">
+        <h1 className="titulo">Sistemas</h1>
+        <button className="nueva" onClick={crear}>+ Nueva jugada</button>
+      </div>
       <ul className="lista">
-        {SISTEMAS.map((s) => (
+        {lista.map((s) => (
           <li key={s.id}>
             <button className="tarjeta" onClick={() => abrir(s.id)}>
               <span className="mini">
@@ -18,8 +22,9 @@ export function Sistemas({ abrir }: { abrir: (id: string) => void }) {
               <span className="datos">
                 <span className="nombre">{s.nombre}</span>
                 <span className="meta">
-                  Desde {nombreNivel(s.nivelMinimo).toLowerCase()} · {s.pasos.length} pasos
+                  Desde {nombreNivel(s.nivelMinimo).toLowerCase()} · {s.pasos.length} {s.pasos.length === 1 ? 'paso' : 'pasos'}
                 </span>
+                {s.propio && <span className="mia">Mía</span>}
                 {s.borrador && <span className="aviso">Borrador por revisar</span>}
               </span>
             </button>

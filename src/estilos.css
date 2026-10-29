@@ -44,7 +44,7 @@ main { flex: 1; width: 100%; max-width: 560px; margin: 0 auto; }
 .niveles { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
 .chip { flex: none; padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--tenue); background: none; font-size: 0.92rem; }
 .chip.on { background: var(--principal); border-color: var(--principal); color: var(--sobre-principal); font-weight: 700; }
-.chip.defensa { margin-left: auto; }
+
 .chip.defensa.on { background: var(--defensa); border-color: var(--defensa); color: #fff8ee; }
 .marcador { display: flex; align-items: baseline; gap: 6px; margin-top: 4px; }
 .numero { font: 900 6.2rem/0.78 var(--display); color: var(--principal); font-variant-numeric: tabular-nums; }
@@ -113,3 +113,40 @@ main { flex: 1; width: 100%; max-width: 560px; margin: 0 auto; }
 .pista .defensor { fill: none; stroke: var(--defensa); stroke-width: 2.4; stroke-linecap: round; }
 .pista .balon { fill: #f26b1d; stroke: #3a1a05; stroke-width: 0.8; }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+
+/* lista: botón de jugada nueva y etiqueta de las propias */
+.titulo-fila { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; }
+.nueva { border: none; border-radius: 999px; padding: 10px 16px; margin-bottom: 8px; background: var(--principal); color: var(--sobre-principal); font: 800 1.1rem/1 var(--display); text-transform: uppercase; }
+.mia { justify-self: start; font-size: 0.78rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--principal); color: var(--sobre-principal); }
+
+/* ficha: editar, duplicar, borrar */
+.acciones-jugada { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.acciones-jugada button { border: 1.5px solid var(--tenue); background: none; border-radius: 999px; padding: 9px 16px; }
+.acciones-jugada .confirmar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.acciones-jugada .peligro { background: var(--defensa); border-color: var(--defensa); color: #fff8ee; }
+
+/* editor «arrastra y elige» */
+.nombre-editable { flex: 1; min-width: 0; font: 900 2rem/1 var(--display); text-transform: uppercase; color: var(--texto); background: none; border: none; border-bottom: 2px dashed var(--superficie); padding: 4px 0; }
+.nombre-editable:focus { outline: none; border-bottom-color: var(--principal); }
+.fase { color: var(--tenue); font-size: 0.95rem; }
+.fase b { color: var(--principal); }
+.lienzo { position: relative; border-radius: 14px; overflow: hidden; }
+.lienzo .capa { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+.capa .guia { stroke: var(--texto-jugadores); stroke-width: 1.2; stroke-dasharray: 2 2; fill: none; }
+.capa .fantasma { fill: none; stroke: var(--principal); stroke-width: 1.6; stroke-dasharray: 3 2; }
+.capa .tocar-balon { fill: transparent; stroke: var(--flechas); stroke-width: 0.6; stroke-dasharray: 1.5 1.5; }
+.capa .tocar-balon.con { stroke: none; }
+.eleccion { background: var(--superficie); border: 1.5px solid var(--principal); border-radius: 12px; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.eleccion .chip { padding: 9px 16px; font-size: 1rem; }
+.marca-eleccion { position: absolute; width: 10%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed var(--principal); pointer-events: none; }
+.fila-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.fila-chips.pase span { color: var(--tenue); margin-right: 4px; }
+.texto-paso-editor { width: 100%; font: inherit; font-size: 1.05rem; color: var(--texto); background: var(--superficie); border: none; border-radius: 10px; padding: 10px 12px; }
+.herramientas { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; }
+.herramientas button { border: none; border-radius: 12px; padding: 14px 8px; background: var(--superficie); font: 800 1.15rem/1 var(--display); text-transform: uppercase; }
+.herramientas .principal { background: var(--principal); color: var(--sobre-principal); }
+.ajustes-jugada { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.ajustes-jugada label { display: flex; gap: 8px; align-items: center; color: var(--tenue); }
+.ajustes-jugada select { font: inherit; color: var(--texto); background: var(--superficie); border: none; border-radius: 8px; padding: 6px 8px; }
+.guardar { border: none; border-radius: 12px; padding: 12px 18px; background: var(--principal); color: var(--sobre-principal); font: 800 1.2rem/1 var(--display); text-transform: uppercase; }
+.error { margin: 0; color: #ff8a7a; }

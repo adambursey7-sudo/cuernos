@@ -29,6 +29,8 @@ export interface Sistema {
   errores: string[];
   ejercicios: string[];
   borrador?: boolean;
+  /** Creado por el entrenador en el editor (se guarda en su móvil). */
+  propio?: boolean;
 }
 
 export const NIVELES: { id: Nivel; nombre: string }[] = [
