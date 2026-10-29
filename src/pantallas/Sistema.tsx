@@ -1,9 +1,10 @@
 // Un sistema en la pizarra: número de paso enorme, pista, explicación y botones grandes para usarlo en la banda.
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pista } from '../pizarra/Pista';
 import { useJugada } from '../pizarra/useJugada';
 import { borrarMio } from '../sistemas/almacen';
 import { NIVELES, type Nivel, type Sistema as SistemaDatos } from '../sistemas/tipos';
+import { guardarUltima } from '../ultima';
 import { Presentacion } from './Presentacion';
 
 const CLAVE_DEFENSA = 'cuernos.defensa';
@@ -26,13 +27,14 @@ function guardarDefensa(si: boolean) {
   }
 }
 
-export function Sistema({ s, volver, editar }: { s: SistemaDatos; volver: () => void; editar: (base: SistemaDatos) => void }) {
+export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDatos; pasoInicial?: number; volver: () => void; editar: (base: SistemaDatos) => void }) {
   const [borrando, setBorrando] = useState(false);
   const total = s.pasos.length;
   const niveles = NIVELES.slice(NIVELES.findIndex((n) => n.id === s.nivelMinimo));
   const [nivel, setNivel] = useState<Nivel>(niveles.some((n) => n.id === 'cadete') ? 'cadete' : niveles[0].id);
-  const jugada = useJugada(total);
+  const jugada = useJugada(total, pasoInicial);
   const { paso, t } = jugada;
+  useEffect(() => guardarUltima({ id: s.id, paso }), [s.id, paso]);
   const [conDefensa, setConDefensa] = useState(leerDefensa);
   const [presentando, setPresentando] = useState(false);
   const inicioDedo = useRef<number | null>(null);
@@ -65,7 +67,7 @@ export function Sistema({ s, volver, editar }: { s: SistemaDatos; volver: () => 
   return (
     <section className="pantalla sistema">
       <div className="cabecera">
-        <button className="atras" onClick={volver} aria-label="Volver a los sistemas">‹</button>
+        <button className="atras" onClick={volver} aria-label="Volver">‹</button>
         <h1 className="nombre-sistema">{s.nombre}</h1>
       </div>
       <div className="niveles" role="tablist" aria-label="Nivel del equipo">

@@ -5,9 +5,9 @@ import { pasoDe } from './animar';
 export const SEGUNDOS_POR_PASO = 1.6;
 export const VELOCIDADES = [0.5, 1, 2] as const;
 
-export function useJugada(total: number) {
+export function useJugada(total: number, pasoInicial = 0) {
   // t = 1 deja el primer paso dibujado y acabado.
-  const [t, setT] = useState(1);
+  const [t, setT] = useState(() => Math.min(Math.max(pasoInicial, 0), total - 1) + 1);
   const [hasta, setHasta] = useState<number | null>(null);
   const [velocidad, setVelocidad] = useState<number>(1);
   const ultimo = useRef(0);

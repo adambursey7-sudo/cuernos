@@ -171,3 +171,29 @@ main { flex: 1; width: 100%; max-width: 560px; margin: 0 auto; }
 .marca { display: inline-flex; align-items: baseline; gap: 0.06em; font-family: var(--display); line-height: 1; letter-spacing: 0.02em; }
 .marca-o { height: 0.7em; width: auto; flex: none; }
 .marca-cabecera { font-size: 1.7rem; justify-self: start; }
+
+/* Inicio de club: «Seguir donde lo dejaste» y colecciones que se deslizan de lado */
+.saludo { font: 900 1.9rem/1 var(--display); margin: 0; text-transform: uppercase; }
+.seguir { display: grid; grid-template-columns: 112px 1fr; gap: 14px; align-items: center; padding: 10px; border: none; border-radius: 16px; background: var(--principal); color: var(--sobre-principal); text-align: left; }
+.seguir .rotulo { font: 800 0.78rem/1 var(--display); text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.8; }
+.seguir .nombre { font-size: 1.7rem; }
+.seguir .paso-de { font-weight: 700; }
+.seguir .datos { gap: 6px; }
+.coleccion { display: grid; gap: 8px; min-width: 0; }
+.coleccion-cabeza { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.coleccion .sub { margin: 4px 0 0; }
+.ver-todas { border: none; background: none; padding: 4px 0; color: var(--principal); font-weight: 700; }
+/* El carrusel llega hasta el borde de la pantalla para que se note que sigue de lado. */
+.carrusel { list-style: none; margin: 0 calc(-1 * max(16px, env(safe-area-inset-right))) 0 0; padding: 0 max(16px, env(safe-area-inset-right)) 4px 0; display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.carrusel::-webkit-scrollbar { display: none; }
+.carrusel > li { flex: 0 0 148px; scroll-snap-align: start; display: flex; }
+.tarjeta-col { width: 100%; display: grid; align-content: start; gap: 6px; padding: 8px; border: none; border-radius: 14px; background: var(--superficie); text-align: left; }
+.tarjeta-col .nombre { font-size: 1.15rem; overflow-wrap: anywhere; }
+.tarjeta-col .meta { font-size: 0.82rem; }
+.nueva-col { border: 2px dashed var(--principal); background: none; }
+.nueva-col .mas { display: grid; place-items: center; aspect-ratio: 150 / 140; border-radius: 9px; background: var(--superficie); color: var(--principal); font: 900 2.6rem/1 var(--display); }
+.ejercicio .formato { font: 900 2.2rem/1 var(--display); color: var(--principal); text-transform: uppercase; }
+.ejercicio .texto-ejercicio { font-size: 0.9rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.nueva-ancha { display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; padding: 10px 12px; border: 2px dashed var(--principal); border-radius: 14px; background: none; text-align: left; }
+.nueva-ancha .mas { display: grid; place-items: center; height: 52px; border-radius: 10px; background: var(--superficie); color: var(--principal); font: 900 2rem/1 var(--display); }
+.nueva-ancha .nombre { font-size: 1.25rem; }
