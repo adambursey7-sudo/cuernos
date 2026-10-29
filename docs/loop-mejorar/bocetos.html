@@ -29,6 +29,10 @@ p{margin:0;max-width:68ch}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1.5px solid var(--tenue);border-radius:999px;padding:2px 10px;font-size:.82rem}
 .lista{margin:0;padding-left:1.1em;display:grid;gap:4px}
+.lv{background:var(--sup);border-radius:14px;padding:14px;display:grid;gap:12px;align-content:start;min-width:0}
+.lv svg.marca{width:100%;height:auto;display:block;border-radius:10px}
+.lv .iconos{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.lv .iconos figure{margin:0;display:grid;gap:4px;justify-items:center;font-size:.75rem;color:var(--tenue)}
 </style>
 
 <div class="wrap">
@@ -36,6 +40,17 @@ p{margin:0;max-width:68ch}
   <h1>Cuernos: bocetos del loop</h1>
   <p class="tenue">Cada vuelta del loop añade una entrada arriba: lo hecho con capturas, lo que se puede mejorar y, cuando toca diseñar, las opciones para elegir.</p>
 </header>
+
+<section class="entrada" id="v7">
+  <span class="fecha">29/10 · Logo HORNS</span>
+  <h2>Logo HORNS: seis versiones de la C</h2>
+  <div class="pregunta">
+    <strong>Elige una (o dime qué mezclar)</strong>
+    <p>Todas siguen tu elección: la idea C, los colores de Parqué y el nombre en inglés, <b>HORNS</b>. En cada una ves el icono grande, el icono al tamaño real del iPhone y en pequeño (como en la pestaña del navegador), y el nombre sobre fondo oscuro y claro.</p>
+    <p>Elegido ya: <b>interfaz C · Inicio de club</b>. Me falta saber cómo mover a los jugadores (te recomiendo la <b>A · Arrastra y dibuja</b>) y si la app entera pasa a llamarse <b>Horns</b> o solo el logo.</p>
+  </div>
+  <div class="opciones" id="logos-v7"></div>
+</section>
 
 <section class="entrada" id="v6">
   <span class="fecha">29/10 · Después de probarla en el iPhone</span>
@@ -394,4 +409,79 @@ document.getElementById("iC").innerHTML=
     R(10,202,140,30,"#2a3754",8)+T(20,214,"IDEA",{s:7,f:"Big Shoulders Display",c:"#f26b1d"})+T(20,226,"Cuernos con bloqueo ciego…",{s:7,w:400})+
     R(10,238,140,30,"#2a3754",8)+T(20,250,"EJERCICIOS",{s:7,f:"Big Shoulders Display",c:"#f26b1d"})+T(20,262,"3 de 2x0 a 5x5",{s:7,w:400})+
     btn(10,276,140,"▶ VER LA JUGADA",true));
+
+// ---- Entrada v7: logo HORNS (variantes de la C) ----
+// Cada glifo se dibuja en una caja de 100 x 100; `alto` y `base` dicen cómo encaja como letra junto al texto.
+const NAR="#f26b1d", CREMA="#fff8ee", AZUL="#1e2a44", OSC="#141a26";
+const costuras=(cx,cy,r,c)=>`<path d="M${cx} ${cy-r}V${cy+r}M${cx-r} ${cy}H${cx+r}M${cx-r*.66} ${cy-r*.72}C${cx-r*.3} ${cy-r*.3} ${cx-r*.3} ${cy+r*.3} ${cx-r*.66} ${cy+r*.72}M${cx+r*.66} ${cy-r*.72}C${cx+r*.3} ${cy-r*.3} ${cx+r*.3} ${cy+r*.3} ${cx+r*.66} ${cy+r*.72}" fill="none" stroke="${c}" stroke-width="${r*.1}"/>`;
+const GLIFOS={
+  // 1: los cuernos de la C con el balón dentro
+  cuernos:(c=NAR,b=CREMA)=>`<path d="M18 12C14 44 24 80 50 82C76 80 86 44 82 12C76 34 70 62 50 64C30 62 24 34 18 12Z" fill="${c}"/><circle cx="50" cy="42" r="9" fill="${b}"/>`,
+  // 2: balón de verdad con dos cuernos
+  balon:(c=NAR,h=CREMA,l=OSC)=>`<path d="M30 52C16 44 12 28 16 10C22 24 30 32 42 38Z" fill="${h}"/><path d="M70 52C84 44 88 28 84 10C78 24 70 32 58 38Z" fill="${h}"/><circle cx="50" cy="62" r="24" fill="${c}" stroke="${l}" stroke-width="2.5"/>${costuras(50,62,24,l)}`,
+  // 3: cuernos finos tipo media luna y balón naranja
+  luna:(c=CREMA,b=NAR,l=OSC)=>`<path d="M22 8C15 46 28 84 50 86C72 84 85 46 78 8C74 42 66 70 50 72C34 70 26 42 22 8Z" fill="${c}"/><circle cx="50" cy="48" r="15" fill="${b}" stroke="${l}" stroke-width="1.6"/>${costuras(50,48,15,l)}`,
+  // 4: la H con las patas convertidas en cuernos
+  hache:(c=NAR,b=CREMA)=>`<path d="M22 92H38V46C38 30 30 18 12 6C20 22 22 34 22 46Z" fill="${c}"/><path d="M78 92H62V46C62 30 70 18 88 6C80 22 78 34 78 46Z" fill="${c}"/><rect x="36" y="58" width="28" height="12" fill="${c}"/><circle cx="50" cy="38" r="8" fill="${b}"/>`,
+  // 5: los cuernos que se cierran en un aro, como un escudo
+  aro:(c=NAR,b=CREMA)=>`<circle cx="50" cy="58" r="30" fill="none" stroke="${c}" stroke-width="9"/><path d="M26 40C14 32 10 20 13 6C19 18 26 24 34 30Z" fill="${c}"/><path d="M74 40C86 32 90 20 87 6C81 18 74 24 66 30Z" fill="${c}"/><circle cx="50" cy="58" r="13" fill="${b}"/>`,
+};
+// Cómo se ve el nombre: [texto, glifo-letra, texto] o el glifo encima.
+const VARIANTES=[
+  {n:"1 · La O son los cuernos", g:"cuernos", partes:["H","#","RNS"], txt:"Los cuernos de tu C con el balón dentro hacen de O. Lo más fiel a lo que elegiste."},
+  {n:"2 · La O es un balón con cuernos", g:"balon", partes:["H","#","RNS"], txt:"Un balón de verdad hace de O y le salen los cuernos por encima de las letras. Se lee «baloncesto» al instante."},
+  {n:"3 · Media luna", g:"luna", partes:["H","#","RNS"], txt:"Cuernos finos en crema y balón naranja: más elegante, como una marca de ropa deportiva."},
+  {n:"4 · La H con cuernos", g:"hache", partes:["#","ORNS"], txt:"La primera letra ya es el logo: las patas de la H suben y se abren en cuernos. Muy bueno como icono solo."},
+  {n:"5 · Escudo de aro", g:"aro", partes:["#","HORNS"], txt:"Los cuernos salen de un aro, como el escudo de un equipo. El nombre va al lado, entero."},
+  {n:"6 · Cuernos encima", g:"cuernos", partes:["^","HORNS"], txt:"El glifo de la C corona la palabra entera. Muy limpio para camisetas y sudaderas."},
+];
+const NS="http://www.w3.org/2000/svg";
+function nombreHorns(svg, v, colorTexto){
+  // Coloca cada trozo midiendo el texto real, para que el glifo encaje como una letra más.
+  const tam=70, base=88, alto=tam*.74;
+  let x=0; const g=document.createElementNS(NS,"g"); svg.appendChild(g);
+  for(const parte of v.partes){
+    if(parte==="#"||parte==="^"){
+      const s=parte==="^"?.5:(alto*1.18)/76, w=100*s;
+      const y=parte==="^"?base-tam*.82-86*s-6:base-86*s+2;
+      const gx=parte==="^"?null:x-14*s;
+      const el=document.createElementNS(NS,"g");
+      el.setAttribute("data-encima",parte==="^"?"1":"");
+      // Sobre fondo claro, lo que era crema pasa a azul para que no desaparezca.
+      el.innerHTML=colorTexto===AZUL?GLIFOS[v.g]().replaceAll(CREMA,AZUL):GLIFOS[v.g]();
+      el.setAttribute("transform",`translate(${gx??0} ${y}) scale(${s})`);
+      g.appendChild(el);
+      if(parte==="#") x+=w-26*s+2;
+      else el.dataset.w=w;
+    } else {
+      const t=document.createElementNS(NS,"text");
+      t.setAttribute("x",x); t.setAttribute("y",base); t.setAttribute("fill",colorTexto);
+      t.setAttribute("font-family","Big Shoulders Display, Arial Narrow, sans-serif"); t.setAttribute("font-weight","900"); t.setAttribute("font-size",tam);
+      t.setAttribute("letter-spacing","2");
+      t.textContent=parte; g.appendChild(t);
+      x+=t.getComputedTextLength()+4;
+    }
+  }
+  // El glifo de «encima» se centra sobre la palabra.
+  const enc=g.querySelector('[data-encima="1"]');
+  if(enc){ const w=+enc.dataset.w; enc.setAttribute("transform",enc.getAttribute("transform").replace(/translate\(0 /,`translate(${(x-4-w)/2} `)); }
+  const caja=g.getBBox();
+  svg.setAttribute("viewBox",`${caja.x-22} ${caja.y-16} ${caja.width+44} ${caja.height+30}`);
+}
+const icono=(g,tam)=>`<svg viewBox="0 0 100 100" width="${tam}" height="${tam}" role="img" aria-label="Icono"><rect width="100" height="100" rx="22" fill="${AZUL}"/><g transform="translate(14 12) scale(.72)">${GLIFOS[g]()}</g></svg>`;
+async function pintarLogos(){
+  try{ await document.fonts.load('900 70px "Big Shoulders Display"'); }catch(e){}
+  const cont=document.getElementById("logos-v7");
+  cont.innerHTML=VARIANTES.map((v,i)=>`<div class="lv"><b class="letra" style="font-family:var(--display);font-size:1.4rem;font-weight:900">${v.n}</b>
+    <svg class="marca" id="lvo${i}" style="background:${OSC}"></svg>
+    <div class="iconos">
+      <figure>${icono(v.g,96)}<figcaption>Grande</figcaption></figure>
+      <figure>${icono(v.g,60)}<figcaption>iPhone</figcaption></figure>
+      <figure>${icono(v.g,24)}<figcaption>Pestaña</figcaption></figure>
+    </div>
+    <svg class="marca" id="lvc${i}" style="background:${CREMA}"></svg>
+    <p style="font-size:.92rem">${v.txt}</p></div>`).join("");
+  VARIANTES.forEach((v,i)=>{ nombreHorns(document.getElementById("lvo"+i),v,CREMA); nombreHorns(document.getElementById("lvc"+i),v,AZUL); });
+}
+pintarLogos();
 </script>
