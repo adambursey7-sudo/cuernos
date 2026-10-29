@@ -8,6 +8,18 @@ import { horas } from './Sesiones';
 
 type Audio = AudioContext | null;
 
+/** Hay que llamarla dentro del toque de «Empezar»: si no, el móvil deja el audio dormido. */
+export function crearAudio(): Audio {
+  try {
+    const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    const ctx = Ctx ? new Ctx() : null;
+    ctx?.resume().catch(() => {});
+    return ctx;
+  } catch {
+    return null;
+  }
+}
+
 function pitidos(ctx: Audio, veces: number) {
   if (!ctx) return;
   for (let k = 0; k < veces; k++) {
@@ -26,23 +38,19 @@ function pitidos(ctx: Audio, veces: number) {
 
 const nombreTipo = (id: string) => TIPOS.find((t) => t.id === id)?.nombre ?? '';
 
-export function Entrenando({ s, salir }: { s: Sesion; salir: () => void }) {
+export function Entrenando({ s, salir, audio: ctx }: { s: Sesion; salir: () => void; audio: Audio }) {
   const [base, setBase] = useState(0); // segundos ya contados cuando se pausó
   const [desde, setDesde] = useState<number | null>(Date.now()); // hora a la que arrancó; null = en pausa
   const [, pulso] = useState(0);
   const [sonido, setSonido] = useState(true);
-  const audio = useRef<Audio>(null);
+  const audio = useRef<Audio>(ctx);
   const anterior = useRef(0);
 
   const seg = base + (desde === null ? 0 : (Date.now() - desde) / 1000);
   const p = posicion(s, seg);
 
-  // El audio se crea al pulsar «Empezar» (el móvil lo exige), y la pantalla se queda encendida.
+  // La pantalla se queda encendida mientras dura el entrenamiento.
   useEffect(() => {
-    try {
-      const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-      if (Ctx) audio.current = new Ctx();
-    } catch { /* sin sonido */ }
     let cerrojo: { release: () => Promise<void> } | undefined;
     const pedir = () => (navigator as unknown as { wakeLock?: { request: (t: string) => Promise<typeof cerrojo> } }).wakeLock?.request('screen').then((c) => { cerrojo = c; }).catch(() => {});
     pedir();

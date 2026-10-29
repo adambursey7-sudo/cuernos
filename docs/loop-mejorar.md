@@ -38,7 +38,7 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - [x] 2.2 Ejercicios de las fichas (2x0 a 5x5) con su pizarra animada, nivel, tiempo, material y número de jugadores; filtros por sistema y nivel.
 - [x] 2.3 Sesiones: montar el entrenamiento con ejercicios, tiempos y total; varias por equipo.
 - [x] 2.4 Cronómetro de pista: pantalla grande, aviso con sonido al cambiar de ejercicio y siguiente ejercicio a la vista.
-- [ ] 2.5 Cierre del tramo.
+- [x] 2.5 Cierre del tramo.
 
 ## Tramo 3: compartir e imprimir
 - [ ] 3.1 Enviar una jugada por enlace (que se abra animada en el móvil del jugador) o como imagen.
@@ -70,3 +70,4 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - 29/10: Adam eligió biblioteca A y sesiones B con colores por tipo. 2.2 hecho: pestaña Ejercicios con filtros, ficha con pizarra recortada del sistema (`src/ejercicios/`); tipo, tiempo, material y pizarra marcados como borrador; 40 pruebas. Servidor en el 5313 (5311 y 5312 ocupados por otras sesiones).
 - 29/10: 2.3 hecho: pestaña Sesiones con equipos (categoría, sin nombres), varias sesiones por equipo, línea de tiempo con color por tipo (cambiable en cada bloque), minutos de 5 en 5, subir/bajar/quitar, duración prevista y aviso si te pasas (`src/sesiones/`, `src/pantallas/Sesiones.tsx`). Se guarda solo en el móvil. El `.pantalla` pasó a `minmax(0,1fr)` para que las filas con scroll no ensanchen la pantalla. Falta 2.4 cronómetro y 2.5 cierre.
 - 29/10: 2.4 hecho: botón «Empezar el entrenamiento» en la sesión abre el cronómetro de pista (`src/pantallas/Entrenando.tsx`, `src/sesiones/cronometro.ts`): reloj enorme con el color del tipo, siguiente ejercicio a la vista, pitidos y vibración al cambiar, pausa, anterior/siguiente, pantalla encendida y sonido apagable. Cuenta con la hora del reloj. Falta probar el sonido y la pantalla encendida en el iPhone, y 2.5 cierre.
+- 29/10: 2.5 cierre: revisión de código baja; un hallazgo (el audio se creaba al montar, no al tocar «Empezar», y en iPhone podía quedar dormido) arreglado creándolo en el toque. Tipado, 39 pruebas y build bien. TRAMO 2 CERRADO; sin unir a main ni publicar. Falta probar en el iPhone (sonido, pantalla encendida, Jugadas y Ejercicios por el cambio de .pantalla).
