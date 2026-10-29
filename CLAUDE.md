@@ -11,7 +11,7 @@ PWA (React + Vite, como English Lab) para el móvil. Plan y público en `PLAN.md
 ## Cómo está hecho
 - `src/sistemas/datos.ts`: sistemas pasados a mano desde las fichas (la IA no inventa jugadas). Coordenadas de media pista en decímetros, canasta en (75, 12). Movimientos: corte, bote, bloqueo (con `por` para curvas) y pase. `revisar: true` = paso que Adam tiene que confirmar.
 - `src/pizarra/animar.ts`: posición de jugadores y balón en el momento `t` (t = 2 es «paso 2 acabado»); `Pista.tsx` la dibuja con flechas recortadas para que el jugador no tape la punta.
-- `src/pantallas/`: Sistemas (lista), Sistema (pizarra paso a paso, niveles con su lectura, ficha), Ajustes (colores). Ejercicios y Sesiones aún vacías.
+- `src/pantallas/`: Inicio (interfaz C: seguir donde lo dejaste, guardado en `src/ultima.ts`, y colecciones de lado), Sistemas (pestaña Jugadas), Sistema (pizarra paso a paso, niveles con su lectura, ficha), Ajustes (colores). Sesiones aún vacía; los ejercicios salen en Inicio y en la ficha.
 
 ## Comandos
 - `npm run dev` (abierto a la wifi para probar en el iPhone), `npm run build`, `npm test`.
