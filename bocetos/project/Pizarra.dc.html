@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Pizarra animada</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Barlow:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#B8430F}a:hover{color:#8F330B}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F2F4F7; font-family: Barlow, sans-serif; color: #0F1B2D; display: flex; flex-direction: column">
+  <div style="padding: 24px 20px 8px; display: flex; align-items: center; gap: 12px">
+    <a href="Generar.dc.html" aria-label="Volver" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #0F1B2D">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </a>
+    <div style="display: flex; flex-direction: column">
+      <h1 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; line-height: 1">Cuernos con pase al codo</h1>
+      <div style="font-size: 14px; color: #4A5568">Cadete femenino · ataque</div>
+    </div>
+  </div>
+
+  <div style="margin: 8px 20px 0; position: relative; width: 350px; height: 330px; background: #E9C99A; border-radius: 12px; overflow: hidden">
+    <svg width="350" height="330" viewBox="0 0 350 330" fill="none" stroke="#0F1B2D" stroke-width="2" role="img" aria-label="Media pista de baloncesto">
+      <line x1="5" y1="10" x2="345" y2="10"></line>
+      <rect x="125" y="10" width="100" height="145" fill="#D9A86A"></rect>
+      <path d="M125 155 A50 50 0 0 0 225 155"></path>
+      <path d="M125 155 A50 50 0 0 1 225 155" stroke-dasharray="6 6"></path>
+      <line x1="155" y1="25" x2="195" y2="25" stroke-width="3"></line>
+      <circle cx="175" cy="40" r="8"></circle>
+      <path d="M28 10 L28 85 A154 154 0 0 0 322 85 L322 10"></path>
+      <line x1="5" y1="326" x2="345" y2="326"></line>
+      <path d="M130 326 A45 45 0 0 1 220 326"></path>
+    </svg>
+    <sc-for list="{{jugadoras}}" as="j" hint-placeholder-count="5">
+      <div style="{{j.estilo}}">{{j.n}}</div>
+    </sc-for>
+  </div>
+
+  <div style="margin: 16px 20px 0; display: flex; flex-direction: column; gap: 6px; min-height: 92px">
+    <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #4A5568">Paso {{numero}} de {{total}}</div>
+    <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700">{{titulo}}</div>
+    <div style="font-size: 15px; line-height: 1.4; color: #2D3748">{{texto}}</div>
+  </div>
+
+  <div style="margin: 12px 20px 0; display: flex; gap: 8px">
+    <button type="button" onClick="{{anterior}}" aria-label="Paso anterior" style="width: 56px; height: 52px; border-radius: 12px; border: 1.5px solid #0F1B2D; background: #FFFFFF; color: #0F1B2D; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <button type="button" onClick="{{reproducir}}" style="flex: 1; height: 52px; border-radius: 12px; border: 0; background: #B8430F; color: #FFFFFF; font: 600 16px Barlow, sans-serif">{{botonPlay}}</button>
+    <button type="button" onClick="{{siguiente}}" aria-label="Paso siguiente" style="width: 56px; height: 52px; border-radius: 12px; border: 1.5px solid #0F1B2D; background: #FFFFFF; color: #0F1B2D; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+    </button>
+  </div>
+
+  <div style="margin: 18px 20px 0; display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #4A5568">Mismo sistema para otro nivel</div>
+    <div style="display: flex; gap: 8px">
+      <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 20px; border: 1.5px solid #C3CBD6; background: #FFFFFF; color: #0F1B2D; font: 500 14px Barlow, sans-serif">Infantil</button>
+      <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 20px; border: 0; background: #0F1B2D; color: #FFFFFF; font: 600 14px Barlow, sans-serif">Cadete</button>
+      <button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 20px; border: 1.5px solid #C3CBD6; background: #FFFFFF; color: #0F1B2D; font: 500 14px Barlow, sans-serif">Sénior</button>
+    </div>
+    <div style="font-size: 13px; color: #4A5568">Arrastra a una jugadora con el dedo para cambiar el paso.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { paso: 0, sonando: false };
+  }
+  componentWillUnmount() {
+    clearInterval(this.reloj);
+  }
+  pasos() {
+    const base = { 1: [175, 262], 2: [36, 32], 3: [314, 32], 4: [125, 155], 5: [225, 155] };
+    return [
+      { titulo: 'Colocación inicial', texto: 'La base arriba con balón, las dos interiores en los codos y las aleros en las esquinas.', pos: base, balon: 1 },
+      { titulo: 'Pase al codo', texto: 'La 1 pasa a la 4 en el codo. La 5 se queda en el otro codo, ocupando a su defensora.', pos: base, balon: 4 },
+      { titulo: 'Puerta atrás de la esquina', texto: 'La 2 amaga subir y corta hacia canasta por detrás de su defensora. La 4 le da el pase.', pos: Object.assign({}, base, { 2: [148, 58] }), balon: 2 },
+      { titulo: 'Si ayudan, la 5 baja', texto: 'Si la defensora de la 5 sale a ayudar, la 5 baja a canasta y recibe de la 2.', pos: Object.assign({}, base, { 2: [148, 58], 5: [206, 66] }), balon: 5 }
+    ];
+  }
+  renderVals() {
+    const pasos = this.pasos();
+    const p = pasos[this.state.paso];
+    const ir = (i) => this.setState({ paso: (i + pasos.length) % pasos.length });
+    const jugadoras = [1, 2, 3, 4, 5].map((n) => {
+      const [x, y] = p.pos[n];
+      const conBalon = p.balon === n;
+      return {
+        n,
+        estilo: 'position: absolute; left: ' + (x - 18) + 'px; top: ' + (y - 18) + 'px; width: 36px; height: 36px; box-sizing: border-box; border-radius: 18px; background: #0F1B2D; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font: 700 17px Barlow, sans-serif; transition: left 0.7s ease, top 0.7s ease, border-color 0.3s; border: 4px solid ' + (conBalon ? '#E8641F' : '#0F1B2D') + '; box-shadow: ' + (conBalon ? '0 0 0 3px #FFFFFF' : 'none')
+      };
+    });
+    return {
+      jugadoras,
+      numero: this.state.paso + 1,
+      total: pasos.length,
+      titulo: p.titulo,
+      texto: p.texto,
+      botonPlay: this.state.sonando ? 'Pausa' : 'Reproducir',
+      anterior: () => ir(this.state.paso - 1),
+      siguiente: () => ir(this.state.paso + 1),
+      reproducir: () => {
+        if (this.state.sonando) {
+          clearInterval(this.reloj);
+          this.setState({ sonando: false });
+          return;
+        }
+        this.setState({ sonando: true, paso: 0 });
+        this.reloj = setInterval(() => {
+          if (this.state.paso >= pasos.length - 1) {
+            clearInterval(this.reloj);
+            this.setState({ sonando: false });
+          } else {
+            this.setState({ paso: this.state.paso + 1 });
+          }
+        }, 1600);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<title>Identidad de la app de baloncesto</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Hoja de bocetos: columna de lectura de 1080px; cada bloque es una decisión (nombre, color, estilo) con sus opciones en rejilla */
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --ink:#1d2330; --muted:#5d6574; --rule:#d9dcd6; --pick:#d45a12;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151922;--surface:#1e2430;--ink:#e9ebef;--muted:#a2a9b6;--rule:#323a48;--pick:#ff8a3d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#151922;--surface:#1e2430;--ink:#e9ebef;--muted:#a2a9b6;--rule:#323a48;--pick:#ff8a3d;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px;display:grid;gap:56px}
+h1,h2,h3{font-family:var(--display);line-height:1;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.6rem,7vw,4.4rem);font-weight:900}
+h2{font-size:2.1rem;font-weight:800}
+h3{font-size:1.6rem;font-weight:800}
+p{margin:0;max-width:65ch}
+.lead{color:var(--muted);font-size:1.05rem}
+header{display:grid;gap:12px}
+section{display:grid;gap:20px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.opt{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:18px;display:grid;gap:12px;align-content:start;min-width:0}
+.tag{font-family:var(--display);font-weight:800;font-size:1.1rem;color:var(--pick)}
+.pc{display:grid;gap:4px;font-size:.92rem}
+.pc b{font-weight:700}
+.pc .v::before{content:"+ ";color:#2e8b57;font-weight:700}
+.pc .i::before{content:"– ";color:#c0392b;font-weight:700}
+.icons{display:flex;gap:12px;align-items:center}
+.icon{width:76px;height:76px;border-radius:18px;display:grid;place-items:center;flex:none}
+.icon svg{width:52px;height:52px}
+.word{font-family:var(--display);font-weight:900;font-size:2rem;line-height:.9}
+/* paletas */
+.sw{display:flex;height:54px;border-radius:10px;overflow:hidden}
+.sw span{flex:1}
+.palbtn{all:unset;cursor:pointer;display:grid;gap:10px;background:var(--surface);border:2px solid var(--rule);border-radius:14px;padding:14px}
+.palbtn[aria-pressed="true"]{border-color:var(--pick)}
+.palbtn:focus-visible{outline:3px solid var(--pick);outline-offset:2px}
+.palbtn strong{font-family:var(--display);font-size:1.35rem;font-weight:800}
+.palbtn small{color:var(--muted);font-size:.88rem;line-height:1.4}
+.club{display:flex;gap:10px;align-items:center;font-size:.9rem;color:var(--muted)}
+.club input{width:38px;height:30px;border:none;padding:0;background:none}
+/* móviles */
+.phones{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.phone{width:100%;max-width:280px;aspect-ratio:9/18.5;border-radius:34px;border:8px solid #11151c;overflow:hidden;margin:0 auto;position:relative;background:var(--a-bg);color:var(--a-ink);font-family:var(--body);display:flex;flex-direction:column}
+.court .floor{fill:var(--a-floor)} .court .ln{fill:none;stroke:var(--a-line);stroke-width:1.2}
+.court .paint{fill:var(--a-paint)} .court .p{fill:var(--a-accent)} .court .pt{fill:var(--a-on);font:700 7px var(--body);text-anchor:middle;dominant-baseline:central}
+.court .mv{fill:none;stroke:var(--a-ink2);stroke-width:1.4} .court .ps{stroke-dasharray:3 2.5} .court .scr{stroke-width:2.2}
+/* estilo A pista */
+.A .bar{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;z-index:2}
+.pill{background:var(--a-surface);color:var(--a-ink);border-radius:999px;padding:5px 11px;font-size:.78rem;font-weight:700;box-shadow:0 2px 8px rgb(0 0 0 / .18)}
+.A .court{flex:1;width:100%;height:100%}
+.A .tools{position:absolute;bottom:12px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.play{width:46px;height:46px;border-radius:50%;background:var(--a-accent);color:var(--a-on);display:grid;place-items:center;font-size:1.1rem;box-shadow:0 3px 10px rgb(0 0 0 / .25)}
+/* estilo B cuaderno */
+.B{padding:14px 12px 0;gap:10px}
+.B .top{display:flex;justify-content:space-between;align-items:baseline}
+.B .top b{font-family:var(--display);font-size:1.7rem;font-weight:900}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--a-ink2);border-radius:999px;padding:2px 9px;font-size:.72rem;color:var(--a-ink)}
+.chip.on{background:var(--a-accent);border-color:var(--a-accent);color:var(--a-on)}
+.B .card{background:var(--a-surface);border-radius:14px;padding:6px}
+.B .court{width:100%;display:block;border-radius:9px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:.78rem}
+.steps li{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start;background:var(--a-surface);padding:7px 8px;border-radius:10px}
+.steps i{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--a-paint);color:var(--a-ink)}
+.steps li.on i{background:var(--a-accent);color:var(--a-on)}
+.tabs{margin-top:auto;display:flex;justify-content:space-around;padding:9px 0 12px;font-size:.68rem;color:var(--a-ink2);border-top:1px solid var(--a-paint)}
+.tabs .on{color:var(--a-accent);font-weight:700}
+/* estilo C marcador */
+.C{background:var(--a-ink);color:var(--a-bg);padding:14px 12px;gap:10px}
+.C .big{font-family:var(--display);font-weight:900;font-size:4.6rem;line-height:.8;color:var(--a-accent)}
+.C .big small{font-size:1.6rem;color:var(--a-bg);opacity:.6}
+.C .name{font-family:var(--display);font-weight:800;font-size:1.5rem;text-transform:uppercase;letter-spacing:.02em}
+.C .court{width:100%;display:block;border-radius:6px}
+.C .say{font-size:.86rem;line-height:1.35}
+.C .nav{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.C .nav span{background:var(--a-bg);color:var(--a-ink);text-align:center;padding:12px 0;border-radius:10px;font-family:var(--display);font-weight:800;font-size:1.2rem}
+.C .nav span.go{background:var(--a-accent);color:var(--a-on)}
+.answer{background:var(--surface);border:2px dashed var(--pick);border-radius:14px;padding:18px;display:grid;gap:8px}
+@media (prefers-reduced-motion:no-preference){.palbtn{transition:border-color .15s}}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Cómo se va a ver la app</h1>
+  <p class="lead">Tres decisiones antes de programar: el nombre con su logo, los colores y el estilo de las pantallas. Al tocar una paleta, los tres móviles de abajo se pintan con ella. Todas las paletas quedan dentro de la app y cada entrenador elige la suya.</p>
+</header>
+
+<section>
+  <h2>1. Nombre y logo</h2>
+  <p class="lead">Cada logo, en claro y en oscuro, tal como se vería el icono en el iPhone.</p>
+  <div class="grid">
+    <div class="opt">
+      <span class="tag">A · Tiempo Muerto</span>
+      <div class="icons">
+        <div class="icon" style="background:#f26b1d"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="#fff" stroke-width="3"/><rect x="12" y="15" width="28" height="7" rx="3.5" fill="#fff"/><rect x="22.5" y="15" width="7" height="25" rx="3.5" fill="#fff"/></svg></div>
+        <div class="icon" style="background:#1e2a44"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="#f26b1d" stroke-width="3"/><rect x="12" y="15" width="28" height="7" rx="3.5" fill="#f26b1d"/><rect x="22.5" y="15" width="7" height="25" rx="3.5" fill="#f26b1d"/></svg></div>
+        <span class="word">Tiempo<br>Muerto</span>
+      </div>
+      <div class="pc"><span class="v">Lo dice cualquier entrenador; la T del gesto es el logo.</span><span class="v">Suena a pararse a pensar, que es lo que hace la app.</span><span class="i">Dos palabras: más largo bajo el icono.</span></div>
+    </div>
+    <div class="opt">
+      <span class="tag">B · Pizarra</span>
+      <div class="icons">
+        <div class="icon" style="background:#24463a"><svg viewBox="0 0 52 52"><rect x="9" y="8" width="34" height="38" rx="5" fill="none" stroke="#f2f1e8" stroke-width="3"/><rect x="19" y="4" width="14" height="7" rx="2" fill="#f2d35b"/><path d="M15 20l7 7m0-7l-7 7" stroke="#f2f1e8" stroke-width="2.6" stroke-linecap="round"/><circle cx="34" cy="23" r="4" fill="none" stroke="#f2f1e8" stroke-width="2.6"/><path d="M19 38c6-6 11-6 16-4" fill="none" stroke="#f2d35b" stroke-width="2.6" stroke-linecap="round"/><path d="M32 30.5l3.5 3.5-4.5 1.6" fill="none" stroke="#f2d35b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="icon" style="background:#f2f1e8;border:1px solid var(--rule)"><svg viewBox="0 0 52 52"><rect x="9" y="8" width="34" height="38" rx="5" fill="none" stroke="#24463a" stroke-width="3"/><rect x="19" y="4" width="14" height="7" rx="2" fill="#f26b1d"/><path d="M15 20l7 7m0-7l-7 7" stroke="#24463a" stroke-width="2.6" stroke-linecap="round"/><circle cx="34" cy="23" r="4" fill="none" stroke="#24463a" stroke-width="2.6"/><path d="M19 38c6-6 11-6 16-4" fill="none" stroke="#f26b1d" stroke-width="2.6" stroke-linecap="round"/><path d="M32 30.5l3.5 3.5-4.5 1.6" fill="none" stroke="#f26b1d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="word">Pizarra</span>
+      </div>
+      <div class="pc"><span class="v">Dice exactamente lo que es; corto y claro.</span><span class="v">La X, la O y la flecha se entienden en cualquier club.</span><span class="i">Muy común: más difícil de registrar como marca.</span></div>
+    </div>
+    <div class="opt">
+      <span class="tag">C · Cuernos</span>
+      <div class="icons">
+        <div class="icon" style="background:#1e2a44"><svg viewBox="0 0 52 52"><path d="M26 40C14 38 9 28 11 12" fill="none" stroke="#ffb020" stroke-width="3.4" stroke-linecap="round"/><path d="M26 40c12-2 17-12 15-28" fill="none" stroke="#ffb020" stroke-width="3.4" stroke-linecap="round"/><path d="M7.5 16 11 11l4 4.5M37 15.5l4-4.5 3.5 5" fill="none" stroke="#ffb020" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="26" cy="40" r="5" fill="#fff"/></svg></div>
+        <div class="icon" style="background:#ffb020"><svg viewBox="0 0 52 52"><path d="M26 40C14 38 9 28 11 12" fill="none" stroke="#1e2a44" stroke-width="3.4" stroke-linecap="round"/><path d="M26 40c12-2 17-12 15-28" fill="none" stroke="#1e2a44" stroke-width="3.4" stroke-linecap="round"/><path d="M7.5 16 11 11l4 4.5M37 15.5l4-4.5 3.5 5" fill="none" stroke="#1e2a44" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="26" cy="40" r="5" fill="#fff"/></svg></div>
+        <span class="word">Cuernos</span>
+      </div>
+      <div class="pc"><span class="v">El nombre más original: es el sistema con el que nació la idea.</span><span class="v">Fácil de recordar y de registrar.</span><span class="i">Quien no entrena puede no entenderlo (familias, otros deportes).</span></div>
+    </div>
+    <div class="opt">
+      <span class="tag">D · Bote</span>
+      <div class="icons">
+        <div class="icon" style="background:#e5508a"><svg viewBox="0 0 52 52"><circle cx="26" cy="20" r="13" fill="none" stroke="#fff" stroke-width="3"/><path d="M13 20h26M26 7v26M17 10c5 5 5 15 0 20M35 10c-5 5-5 15 0 20" fill="none" stroke="#fff" stroke-width="2.2"/><path d="M14 42h24M18 47h16" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+        <div class="icon" style="background:#1f8a5b"><svg viewBox="0 0 52 52"><circle cx="26" cy="20" r="13" fill="none" stroke="#fff" stroke-width="3"/><path d="M13 20h26M26 7v26M17 10c5 5 5 15 0 20M35 10c-5 5-5 15 0 20" fill="none" stroke="#fff" stroke-width="2.2"/><path d="M14 42h24M18 47h16" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+        <span class="word">Bote</span>
+      </div>
+      <div class="pc"><span class="v">Una sílaba, simpático, sirve para minibasket y sénior.</span><span class="v">El balón se reconoce aunque el icono sea pequeño.</span><span class="i">Dice menos de lo que hace (no suena a sistemas ni a sesiones).</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>2. Colores</h2>
+  <p class="lead">Toca una para verla en los móviles. «Tu club» deja poner los dos colores del equipo; de ejemplo, el rosa y el verde de las sudaderas.</p>
+  <div class="grid" id="pals"></div>
+</section>
+
+<section>
+  <h2>3. Estilo de las pantallas</h2>
+  <p class="lead">Los tres enseñan lo mismo: Cuernos para cadete, paso 2 de 4 (el 5 sube a bloquear y el 1 sale botando por el bloqueo).</p>
+  <div class="phones" id="mocks">
+    <div class="opt">
+      <span class="tag">A · Pista</span>
+      <div class="phone A"><div class="bar"><span class="pill">Cuernos · Cadete</span><span class="pill">2 / 4</span></div><svg class="court full" viewBox="0 0 150 300" preserveAspectRatio="xMidYMid slice"></svg><div class="tools"><span class="pill">✎ Dibujar</span><span class="play">▶</span><span class="pill">Ejercicios</span></div></div>
+      <div class="pc"><span class="v">La pista ocupa todo: la mejor para enseñar la jugada en un tiempo muerto.</span><span class="v">Parece una app moderna, de las de pago.</span><span class="i">La explicación del paso queda escondida; hay que tocar para leerla.</span></div>
+    </div>
+    <div class="opt">
+      <span class="tag">B · Cuaderno</span>
+      <div class="phone B"><div class="top"><b>Cuernos</b><span class="chip on">Cadete</span></div><div class="chips"><span class="chip">Mini</span><span class="chip">Infantil</span><span class="chip on">Cadete</span><span class="chip">Júnior</span></div><div class="card"><svg class="court" viewBox="0 0 150 140"></svg></div><ol class="steps"><li><i>1</i><span>1 sube el balón, 4 y 5 en los codos.</span></li><li class="on"><i>2</i><span>5 sube a bloquear; 1 sale por el bloqueo.</span></li><li><i>3</i><span>5 continúa a canasta; 4 se abre fuera.</span></li></ol><div class="tabs"><span class="on">Sistemas</span><span>Ejercicios</span><span>Sesiones</span><span>Equipo</span></div></div>
+      <div class="pc"><span class="v">Todo a la vista: dibujo, pasos y nivel en la misma pantalla.</span><span class="v">La más fácil para quien empieza a entrenar.</span><span class="i">La pista se ve más pequeña.</span></div>
+    </div>
+    <div class="opt">
+      <span class="tag">C · Marcador</span>
+      <div class="phone C"><span class="name">Cuernos · Cadete</span><span class="big">2<small> / 4</small></span><svg class="court" viewBox="0 0 150 140"></svg><p class="say">5 sube a bloquear. El 1 sale botando por el bloqueo.</p><div class="nav"><span>Atrás</span><span class="go">Siguiente</span></div></div>
+      <div class="pc"><span class="v">Botones enormes y mucho contraste: se usa en la banda, con prisa y con poca luz.</span><span class="v">Tiene carácter: no se parece a ninguna otra.</span><span class="i">Para planificar en casa resulta menos cómoda.</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="answer">
+  <h3>Para elegir</h3>
+  <p>Basta con decir algo como «B, colores Parqué, estilo A». Se pueden mezclar: el estilo Pista para la pizarra y el Cuaderno para las listas, o el logo de una opción con el nombre de otra.</p>
+</div>
+</div>
+
+<script>
+const PALS=[
+ {id:"parque",n:"Parqué",d:"Madera de pista, líneas azul marino y naranja de balón. Clara, para el día a día.",bg:"#f7f1e8",surface:"#ffffff",ink:"#1e2a44",ink2:"#5a6378",accent:"#f26b1d",on:"#ffffff",floor:"#d9a066",line:"#fff8ee",paint:"#e8c7a0"},
+ {id:"noche",n:"Noche de partido",d:"Azul de pabellón y ámbar de marcador. Oscura, cansa menos la vista por la tarde.",bg:"#0f1b2d",surface:"#1a2a42",ink:"#eef2f8",ink2:"#9fb0c8",accent:"#ffb020",on:"#1a1200",floor:"#16263d",line:"#7f93b3",paint:"#21375a"},
+ {id:"tiza",n:"Pizarra verde",d:"Pizarra de tiza de toda la vida, con tiza amarilla para lo que se mueve.",bg:"#eef0e8",surface:"#ffffff",ink:"#1d2b25",ink2:"#5b6b62",accent:"#d9a300",on:"#1d2b25",floor:"#24463a",line:"#f2f1e8",paint:"#2f5a4a"},
+ {id:"club",n:"Tu club",d:"Los colores del equipo. Aquí, el rosa y el verde de las sudaderas.",bg:"#f6f3f5",surface:"#ffffff",ink:"#22252b",ink2:"#626873",accent:"#e5508a",on:"#ffffff",floor:"#1f8a5b",line:"#f4fff9",paint:"#2a9e6b",club:true}
+];
+function court(h){
+  // media pista FIBA a escala 1 m = 10 unidades; canasta arriba
+  const y0=h>140?(h-140)/2:0;
+  return `<rect class="floor" width="150" height="${h}"/><g transform="translate(0 ${y0})">
+  <rect class="paint" x="50.5" y="0" width="49" height="58"/>
+  <path class="ln" d="M0 .6H150M50.5 0V58H99.5V0M57 58a18 18 0 0 0 36 0M9 0V26A67.5 67.5 0 0 0 141 26V0M0 139.4H150"/>
+  <circle class="ln" cx="75" cy="12" r="2.3"/><path class="ln" d="M66 9H84"/>
+  <path class="mv scr" d="M95 62 L84 88"/><path class="mv scr" d="M79 90.5 L89 85.5"/>
+  <path class="mv" d="M82 104q5-1 7-5t7-5 8-6"/><path class="mv" d="M99 86.5l5.5-1-1.5 5.5"/>
+  ${[["1",75,102],["4",55,62],["5",86,86],["2",12,10],["3",138,10]].map(([t,x,y])=>`<circle class="p" cx="${x}" cy="${y}" r="7"/><text class="pt" x="${x}" y="${y}">${t}</text>`).join("")}
+  </g>`;
+}
+document.querySelectorAll("#mocks .court").forEach(s=>{s.innerHTML=court(s.classList.contains("full")?300:140)});
+const box=document.getElementById("pals"), mocks=document.getElementById("mocks");
+function apply(p){for(const k of["bg","surface","ink","ink2","accent","on","floor","line","paint"])mocks.style.setProperty("--a-"+k,p[k]);
+  box.querySelectorAll(".palbtn").forEach(b=>b.setAttribute("aria-pressed",b.dataset.id===p.id))}
+PALS.forEach(p=>{
+  const b=document.createElement("button");b.className="palbtn";b.dataset.id=p.id;b.id="pal-"+p.id;
+  b.innerHTML=`<span class="sw">${[p.floor,p.accent,p.ink,p.bg].map(c=>`<span style="background:${c}"></span>`).join("")}</span><strong>${p.n}</strong><small>${p.d}</small>`;
+  b.onclick=()=>apply(p);box.appendChild(b);
+  if(p.club){const c=document.createElement("div");c.className="club";
+    c.innerHTML=`<label>Color 1 <input type="color" id="club1" value="${p.accent}"></label><label>Color 2 <input type="color" id="club2" value="${p.floor}"></label>`;
+    b.after(c);const w=document.createElement("div");w.style.display="grid";w.style.gap="8px";b.before(w);w.append(b,c);
+    c.addEventListener("input",()=>{p.accent=c.querySelector("#club1").value;p.floor=c.querySelector("#club2").value;p.paint=p.floor+"cc";
+      b.querySelector(".sw").children[0].style.background=p.floor;b.querySelector(".sw").children[1].style.background=p.accent;apply(p)});}
+});
+apply(PALS[0]);
+</script>

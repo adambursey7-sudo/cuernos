@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Inicio</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Barlow:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#B8430F}a:hover{color:#8F330B}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F2F4F7; font-family: Barlow, sans-serif; color: #0F1B2D; display: flex; flex-direction: column">
+  <div style="padding: 28px 20px 0; display: flex; flex-direction: column; gap: 4px">
+    <div style="font-size: 14px; color: #4A5568">Cadete femenino · martes 19:00</div>
+    <h1 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: 0.5px">Hola, Adam</h1>
+  </div>
+
+  <div style="margin: 20px 20px 0; background: #0F1B2D; color: #FFFFFF; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #F5B08F">Próxima sesión</div>
+    <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; line-height: 1.1">Cuernos y defensa del bloqueo directo</div>
+    <div style="font-size: 14px; color: #C9D2DE">90 min · 10 jugadoras · 6 ejercicios</div>
+    <button type="button" style="align-self: flex-start; margin-top: 4px; background: #D9531E; color: #FFFFFF; border: 0; border-radius: 10px; padding: 12px 18px; font: 600 15px Barlow, sans-serif; min-height: 44px">Abrir sesión</button>
+  </div>
+
+  <label for="pedir" style="margin: 24px 20px 8px; font-weight: 600; font-size: 15px">Pide un sistema o un ejercicio</label>
+  <div style="margin: 0 20px; display: flex; gap: 8px">
+    <input id="pedir" type="text" placeholder="«Cuernos para cadete…»" style="flex: 1; min-width: 0; height: 48px; box-sizing: border-box; border: 1.5px solid #C3CBD6; border-radius: 12px; padding: 0 14px; font: 400 16px Barlow, sans-serif; background: #FFFFFF; color: #0F1B2D">
+    <button type="button" aria-label="Hablar" style="width: 48px; height: 48px; border-radius: 12px; border: 0; background: #B8430F; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>
+    </button>
+  </div>
+
+  <div style="margin: 26px 20px 10px; display: flex; justify-content: space-between; align-items: baseline">
+    <h2 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700">Mi biblioteca</h2>
+    <a href="#" style="font-size: 14px; font-weight: 600">Ver todo</a>
+  </div>
+  <div style="margin: 0 20px 12px; display: flex; gap: 8px">
+    <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 18px; border: 0; background: #0F1B2D; color: #FFFFFF; font: 600 14px Barlow, sans-serif">Ataque</button>
+    <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 18px; border: 1.5px solid #C3CBD6; background: #FFFFFF; color: #0F1B2D; font: 500 14px Barlow, sans-serif">Defensa</button>
+    <button type="button" style="min-height: 36px; padding: 0 14px; border-radius: 18px; border: 1.5px solid #C3CBD6; background: #FFFFFF; color: #0F1B2D; font: 500 14px Barlow, sans-serif">Transición</button>
+  </div>
+
+  <div style="margin: 0 20px; display: flex; flex-direction: column; gap: 8px">
+    <sc-for list="{{sistemas}}" as="s" hint-placeholder-count="4">
+      <div style="background: #FFFFFF; border-radius: 12px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; min-height: 44px; box-sizing: border-box">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <div style="font-weight: 600; font-size: 16px">{{s.nombre}}</div>
+          <div style="font-size: 13px; color: #4A5568">{{s.detalle}}</div>
+        </div>
+        <div style="font-size: 12px; font-weight: 600; color: #0F1B2D; background: #E3E8EF; border-radius: 6px; padding: 4px 8px">{{s.nivel}}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <nav style="margin-top: auto; background: #FFFFFF; border-top: 1px solid #DDE2E9; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); height: 72px">
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="5">
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; font-size: 12px; font-weight: 600; color: {{n.color}}">
+        <span style="width: 6px; height: 6px; border-radius: 3px; background: {{n.color}}"></span>{{n.t}}
+      </a>
+    </sc-for>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const activo = 'Inicio';
+    return {
+      sistemas: [
+        { nombre: 'Cuernos', detalle: '5 variantes · 6 ejercicios', nivel: 'Cadete' },
+        { nombre: 'Flex', detalle: '3 variantes · 4 ejercicios', nivel: 'Júnior' },
+        { nombre: '1-4 alto', detalle: '2 variantes · 3 ejercicios', nivel: 'Infantil' },
+        { nombre: 'Ataque a zona 2-3', detalle: '2 variantes · 5 ejercicios', nivel: 'Cadete' }
+      ],
+      nav: ['Inicio', 'Biblioteca', 'Pizarra', 'Sesiones', 'Equipo'].map((t) => ({ t, color: t === activo ? '#B8430F' : '#4A5568' }))
+    };
+  }
+}
+</script>
+</body>
+</html>
