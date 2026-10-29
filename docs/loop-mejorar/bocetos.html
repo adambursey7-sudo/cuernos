@@ -56,6 +56,17 @@ p{margin:0;max-width:68ch}
   <p class="tenue">Cada vuelta del loop añade una entrada arriba: lo hecho con capturas, lo que se puede mejorar y, cuando toca diseñar, las opciones para elegir.</p>
 </header>
 
+<section class="entrada" id="v10">
+  <span class="fecha">29/10 · Logo: dos cuernos que cierran la O</span>
+  <h2>Cuernos enfrentados: ahora se lee HORNS</h2>
+  <div class="pregunta">
+    <strong>Tu idea, en las ocho variantes</strong>
+    <p>Con una sola U se leía «HURNS». Ahora hay unos cuernos abajo y otros boca abajo arriba, enfrentados, con un solo balón en medio: se cierran y forman la <b>O</b>. Están las mismas ocho variantes de antes, con la misma numeración, para que compares.</p>
+    <p>Dime un número o una mezcla.</p>
+  </div>
+  <div class="opciones" id="o-v10"></div>
+</section>
+
 <section class="entrada" id="v9">
   <span class="fecha">29/10 · Logo: más variantes de la U</span>
   <h2>La U de cuernos, ocho variantes con Graduate</h2>
@@ -612,7 +623,7 @@ const GRAD="Graduate, Georgia, serif";
 function texto(x,y,t,tam,p,contorno,extra=""){
   return `<text x="${x}" y="${y}" fill="${p.txt}" font-family="${GRAD}" font-size="${tam}" letter-spacing="1" ${contorno?`stroke="${p.gl}" stroke-width="5" paint-order="stroke" stroke-linejoin="round"`:""} ${extra}>${t}</text>`;
 }
-const parche=(p)=>`<circle cx="50" cy="50" r="46" fill="${p.bg===NAR?AZUL:NAR}"/><circle cx="50" cy="50" r="39" fill="none" stroke="${p.bg===NAR?CREMA:CREMA}" stroke-width="2.5" stroke-dasharray="4 3"/><g transform="translate(20 18) scale(.6)">${U.varsity({gl:CREMA,bola:p.bg===NAR?NAR:AZUL})}</g>`;
+const parche=(p,k="varsity")=>`<circle cx="50" cy="50" r="46" fill="${p.bg===NAR?AZUL:NAR}"/><circle cx="50" cy="50" r="39" fill="none" stroke="${p.bg===NAR?CREMA:CREMA}" stroke-width="2.5" stroke-dasharray="4 3"/><g transform="translate(20 18) scale(.6)">${U[k]({gl:CREMA,bola:p.bg===NAR?NAR:AZUL})}</g>`;
 function tira(svg,v,p){
   const tam=64, base=86;
   let html="";
@@ -625,14 +636,14 @@ function tira(svg,v,p){
     for(const parte of v.partes){
       if(parte==="#"){
         const sc=.66, el=document.createElementNS(NS,"g");
-        el.innerHTML=v.contorno?U[v.u](p).replace("/>",` stroke="${p.txt}" stroke-width="5" paint-order="stroke"/>`):U[v.u](p);
+        el.innerHTML=v.contorno?U[v.u](p).replace(/<path /g,`<path stroke="${p.txt}" stroke-width="5" paint-order="stroke" `):U[v.u](p);
         // Se mide el dibujo real para dejar el mismo hueco a los dos lados, como entre letras.
         svg.appendChild(el); el.setAttribute("transform",`scale(${sc})`); const bb=el.getBBox();
         el.setAttribute("transform",`translate(${x+4-bb.x*sc} ${base-90*sc}) scale(${sc})`); x+=bb.width*sc+12;
       } else if(parte==="^"){
         const el=document.createElementNS(NS,"g"); el.innerHTML=U[v.u](p); el.dataset.encima="1"; svg.appendChild(el);
       } else if(parte==="@"){
-        const el=document.createElementNS(NS,"g"); el.innerHTML=parche(p); el.setAttribute("transform",`translate(${x} ${base-74}) scale(.82)`); svg.appendChild(el); x+=92;
+        const el=document.createElementNS(NS,"g"); el.innerHTML=parche(p,v.u); el.setAttribute("transform",`translate(${x} ${base-74}) scale(.82)`); svg.appendChild(el); x+=92;
       } else {
         const t=document.createElementNS(NS,"g"); t.innerHTML=texto(x,base,parte,tam,p,v.contorno); svg.appendChild(t);
         x+=t.querySelector("text").getComputedTextLength()+6;
@@ -647,7 +658,7 @@ function tira(svg,v,p){
 }
 const icono9=(v,tam)=>{
   const p=PAL.azul;
-  const dentro=v.parche?`<g transform="translate(6 6) scale(.88)">${parche(p)}</g>`:`<g transform="translate(14 12) scale(.72)">${U[v.u](p)}</g>`;
+  const dentro=v.parche?`<g transform="translate(6 6) scale(.88)">${parche(p,v.u)}</g>`:`<g transform="translate(14 12) scale(.72)">${U[v.u](p)}</g>`;
   return `<svg viewBox="0 0 100 100" width="${tam}" height="${tam}" role="img" aria-label="Icono"><rect width="100" height="100" rx="22" fill="${AZUL}"/>${dentro}</svg>`;
 };
 async function pintarU(){
@@ -660,4 +671,40 @@ async function pintarU(){
   VAR9.forEach((v,i)=>["azul","crema","naranja"].forEach(f=>tira(document.getElementById(`u${i}${f}`),v,PAL[f])));
 }
 pintarU();
+
+// ---- Entrada v10: la O hecha con dos cuernos enfrentados y un solo balón ----
+const FORMAS={
+  clasica:["M18 12C14 44 24 80 50 82C76 80 86 44 82 12C76 34 70 62 50 64C30 62 24 34 18 12Z",12],
+  gruesa:["M12 8C8 46 20 88 50 90C80 88 92 46 88 8C80 34 72 60 50 62C28 60 20 34 12 8Z",8],
+  varsity:["M10 10H30C28 34 36 58 50 60C64 58 72 34 70 10H90C92 50 78 88 50 90C22 88 8 50 10 10Z",10],
+  afilada:["M14 4C10 46 22 86 50 88C78 86 90 46 86 4C80 38 70 64 50 66C30 64 20 38 14 4Z",4],
+};
+// Los cuernos de abajo se aplastan un poco y se copian boca abajo: las puntas se tocan en la línea del centro (y = 50).
+function hacerO(k,{sy=.56,r=11,balon=false}={}){
+  const [d,punta]=FORMAS[k];
+  return (p)=>`<path d="${d}" fill="${p.gl}" transform="translate(0 ${50-punta*sy}) scale(1 ${sy})"/><path d="${d}" fill="${p.gl}" transform="translate(0 ${50+punta*sy}) scale(1 ${-sy})"/><circle cx="50" cy="50" r="${r}" fill="${p.bola}"/>${balon?costuras(50,50,r,p.gl):""}`;
+}
+U.o_clasica=hacerO("clasica");
+U.o_gruesa=hacerO("gruesa",{sy:.58,r:13,balon:true});
+U.o_varsity=hacerO("varsity",{sy:.56,r:11});
+U.o_afilada=hacerO("afilada",{sy:.54,r:10});
+const VAR10=VAR9.map(v=>({...v,u:"o_"+v.u}));
+VAR10[0].txt="La U de siempre con su pareja arriba. Las puntas se tocan a los lados y el balón queda en el centro, como una pupila.";
+VAR10[1].txt="Más gruesa, para que pese como las letras, y el centro es un balón con sus costuras.";
+VAR10[2].txt="Las puntas rectas se juntan y cierran la O del todo: parece una O de Graduate con el balón dentro. La más segura.";
+VAR10[3].txt="La 3 con doble línea, como los dorsales y las chaquetas de equipo.";
+VAR10[4].txt="Las puntas finas se cruzan a los lados: la más agresiva, más de toro.";
+VAR10[5].txt="La O de cuernos corona la palabra HORNS, que se lee completa.";
+VAR10[6].txt="HORNS en arco sobre la O de cuernos, como en las chaquetas universitarias.";
+VAR10[7].txt="La O universitaria dentro de un parche cosido. Queda redonda en el icono y en una gorra.";
+async function pintarO(){
+  try{ await document.fonts.load('64px "Graduate"'); }catch(e){}
+  const cont=document.getElementById("o-v10");
+  cont.innerHTML=VAR10.map((v,i)=>`<div class="uv"><b class="letra" style="font-family:var(--display);font-size:1.4rem;font-weight:900">${v.n.replace("La U de siempre","La de siempre").replace("U gruesa","Gruesa").replace("U universitaria","Universitaria")}</b>
+    <div class="iconos"><figure>${icono9(v,96)}<figcaption>Grande</figcaption></figure><figure>${icono9(v,60)}<figcaption>iPhone</figcaption></figure><figure>${icono9(v,24)}<figcaption>Pestaña</figcaption></figure></div>
+    ${["azul","crema","naranja"].map(f=>`<svg class="tira" id="o${i}${f}"></svg>`).join("")}
+    <p style="font-size:.92rem">${v.txt}</p></div>`).join("");
+  VAR10.forEach((v,i)=>["azul","crema","naranja"].forEach(f=>tira(document.getElementById(`o${i}${f}`),v,PAL[f])));
+}
+pintarO();
 </script>
