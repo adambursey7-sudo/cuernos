@@ -1,6 +1,7 @@
 <title>Bocetos de Cuernos</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Unbounded:wght@800;900&family=Graduate&family=Teko:wght@600;700&family=Archivo:wdth,wght@100,400;100,700;125,900&family=Manrope:wght@400;700&family=Barlow:wght@400;700&display=swap">
 <style>
 /* Diario del loop: entradas de más nueva a más vieja; cada entrada = una vuelta, con sus opciones o capturas. Estética de la app (Marcador, Parqué). */
 :root{
@@ -33,6 +34,16 @@ p{margin:0;max-width:68ch}
 .lv svg.marca{width:100%;height:auto;display:block;border-radius:10px}
 .lv .iconos{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
 .lv .iconos figure{margin:0;display:grid;gap:4px;justify-items:center;font-size:.75rem;color:var(--tenue)}
+.tipo{background:var(--sup);border-radius:14px;padding:14px;display:grid;gap:10px;align-content:start;min-width:0}
+.tipo .muestra{background:#141a26;border-radius:10px;padding:16px;display:grid;gap:8px;overflow:hidden}
+.tipo .marca-t{font-size:3.6rem;line-height:.9;color:var(--texto)}
+.tipo .fila{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.tipo .num{font-size:3.2rem;line-height:.8;color:var(--naranja)}
+.tipo .boton{background:var(--naranja);color:#141a26;border-radius:10px;padding:9px 14px;font-size:1.05rem}
+.tipo .cuerpo{font-size:.95rem;color:var(--texto);margin:0}
+.lg{background:var(--sup);border-radius:14px;padding:14px;display:grid;gap:12px;align-content:start;min-width:0}
+.lg .vista{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:#141a26;border-radius:10px;padding:14px}
+.lg .prompt{font:0.8rem/1.45 ui-monospace,Consolas,monospace;background:#141a26;border-radius:8px;padding:10px;color:var(--tenue);white-space:pre-wrap;user-select:all;margin:0}
 </style>
 
 <div class="wrap">
@@ -40,6 +51,22 @@ p{margin:0;max-width:68ch}
   <h1>Cuernos: bocetos del loop</h1>
   <p class="tenue">Cada vuelta del loop añade una entrada arriba: lo hecho con capturas, lo que se puede mejorar y, cuando toca diseñar, las opciones para elegir.</p>
 </header>
+
+<section class="entrada" id="v8">
+  <span class="fecha">29/10 · Letra y logo con gancho</span>
+  <h2>Primero la letra, luego un logo que enganche</h2>
+  <div class="pregunta">
+    <strong>Dos cosas para elegir</strong>
+    <p><b>Tipografía:</b> elige una de las seis. Es la letra de los títulos, los números de paso y los botones, y también la del nombre HORNS. La letra pequeña de los textos va con ella.</p>
+    <p><b>Logo:</b> son ideas nuevas con más gancho que las variantes de la C (esas siguen valiendo; están en la entrada de abajo). Cada una lleva un prompt en inglés por si quieres probarla en Gemini y ver una versión más pulida; mantén pulsado el prompt para copiarlo.</p>
+  </div>
+
+  <h3>Tipografía</h3>
+  <div class="opciones" id="tipos-v8"></div>
+
+  <h3>Logo con gancho</h3>
+  <div class="opciones" id="logos-v8"></div>
+</section>
 
 <section class="entrada" id="v7">
   <span class="fecha">29/10 · Logo HORNS</span>
@@ -484,4 +511,61 @@ async function pintarLogos(){
   VARIANTES.forEach((v,i)=>{ nombreHorns(document.getElementById("lvo"+i),v,CREMA); nombreHorns(document.getElementById("lvc"+i),v,AZUL); });
 }
 pintarLogos();
+
+// ---- Entrada v8: tipografía y logos con gancho ----
+const TIPOS=[
+  {n:"A · Big Shoulders (la de ahora)", d:"'Big Shoulders Display'", dw:900, b:"'Atkinson Hyperlegible'", up:true, txt:"Estrecha y alta, como los números de un marcador de pabellón. Caben muchas letras y se lee de lejos."},
+  {n:"B · Anton", d:"Anton", dw:400, b:"'Atkinson Hyperlegible'", up:true, txt:"Muy gruesa y apretada, la de los carteles de partido y los titulares deportivos. La que más pega."},
+  {n:"C · Unbounded", d:"Unbounded", dw:900, b:"Manrope", up:true, txt:"Ancha, redonda y moderna, como las apps nuevas de deporte. Muy reconocible, pero ocupa más."},
+  {n:"D · Graduate", d:"Graduate", dw:400, b:"Barlow", up:true, txt:"La letra de las camisetas universitarias de Estados Unidos (varsity). Mucho carácter de equipo."},
+  {n:"E · Teko", d:"Teko", dw:700, b:"Barlow", up:true, txt:"Técnica y cuadrada, como un cronómetro o un marcador digital. Encaja con la pizarra y los tiempos."},
+  {n:"F · Archivo ancha", d:"Archivo", dw:900, st:"font-stretch:125%", b:"Archivo", up:true, txt:"Ancha y negra, de marca deportiva seria. Con la misma familia en estrecha para los textos."},
+];
+document.getElementById("tipos-v8").innerHTML=TIPOS.map(t=>{
+  const D=`font-family:${t.d},sans-serif;font-weight:${t.dw};${t.st||""};text-transform:uppercase`;
+  const B=`font-family:${t.b},sans-serif`;
+  return `<div class="tipo"><b class="letra" style="font-family:var(--display);font-size:1.4rem;font-weight:900">${t.n}</b>
+    <div class="muestra">
+      <div class="marca-t" style="${D}">HORNS</div>
+      <div class="fila"><div style="display:grid;gap:2px"><span style="${D};font-size:.85rem;color:var(--tenue);letter-spacing:.06em">Ataque · Cadete</span><span style="${D};font-size:1.6rem;line-height:1">Cuernos Flex</span></div><span class="num" style="${D}">2/5</span></div>
+      <p class="cuerpo" style="${B}">1 pone un bloqueo ciego a 5; 5 corta a canasta. Si su defensor se cierra, 1 sale abierto.</p>
+      <div class="fila"><span style="${B};font-size:.85rem;color:var(--tenue)">Siguiente ejercicio: 3x3 · 8 min</span><span class="boton" style="${D}">Siguiente</span></div>
+    </div>
+    <p style="font-size:.92rem">${t.txt}</p></div>`;}).join("");
+
+// Logos nuevos: cada uno en su caja de 100 x 100.
+const LOGOS8=[
+  {n:"1 · La zona es el toro", g:`<rect x="32" y="6" width="36" height="48" fill="none" stroke="${CREMA}" stroke-width="3"/><path d="M38 54a12 12 0 0 0 24 0" fill="none" stroke="${CREMA}" stroke-width="3"/><circle cx="50" cy="16" r="4" fill="none" stroke="${CREMA}" stroke-width="2.6"/>
+     <path d="M32 54C18 50 10 40 8 22C16 34 24 40 33 43Z" fill="${NAR}"/><path d="M68 54C82 50 90 40 92 22C84 34 76 40 67 43Z" fill="${NAR}"/>
+     <circle cx="32" cy="54" r="7" fill="${NAR}" stroke="${OSC}" stroke-width="2"/><circle cx="68" cy="54" r="7" fill="${NAR}" stroke="${OSC}" stroke-width="2"/><circle cx="50" cy="84" r="7" fill="${CREMA}"/>`,
+   txt:"La jugada Cuernos vista desde arriba es una cabeza de toro: la zona es la cara y los cuernos salen de los codos, justo donde se colocan los dos jugadores. Solo un entrenador lo pilla, y eso engancha.",
+   prompt:"Minimal flat vector logo for a basketball coaching app called HORNS. Top-down view of a basketball half-court key (the paint) drawn with clean cream lines, shaped like a bull's face; two bold orange horns grow out of the two elbows of the key, where two orange player dots stand. Navy blue background #1e2a44, orange #f26b1d, cream #fff8ee. Geometric, bold, readable at app-icon size, no text, no gradients."},
+  {n:"2 · Las costuras son los cuernos", g:`<circle cx="50" cy="60" r="27" fill="${NAR}"/>
+     <path d="M34 34C20 26 12 16 12 4C22 14 30 22 40 30Z" fill="${CREMA}"/><path d="M66 34C80 26 88 16 88 4C78 14 70 22 60 30Z" fill="${CREMA}"/>
+     <path d="M38 34C50 48 50 72 38 86M62 34C50 48 50 72 62 86M23 60H77M50 33V87" fill="none" stroke="${CREMA}" stroke-width="3.4" stroke-linecap="round"/>`,
+   txt:"Las líneas curvas del balón siguen hacia fuera y se convierten en cuernos. Un solo dibujo, sin piezas sueltas: se reconoce en un vistazo y queda muy bien pequeño.",
+   prompt:"Minimal flat vector logo: an orange basketball whose two curved side seams continue beyond the ball and turn into a pair of cream bull horns. One continuous elegant line, bold and simple, centered on a navy blue background #1e2a44, orange #f26b1d, cream #fff8ee. Sports brand style, readable as a tiny app icon, no text, no gradients, no shading."},
+  {n:"3 · El aro es el toro", g:`<path d="M30 42L38 80H62L70 42" fill="none" stroke="${CREMA}" stroke-width="2.4"/><path d="M30 42L50 80L70 42M40 42L58 80M60 42L42 80M34 60H66" fill="none" stroke="${CREMA}" stroke-width="1.8" opacity=".75"/>
+     <ellipse cx="50" cy="42" rx="22" ry="6" fill="none" stroke="${NAR}" stroke-width="5"/>
+     <path d="M29 40C16 34 10 24 9 8C17 20 24 26 33 30Z" fill="${NAR}"/><path d="M71 40C84 34 90 24 91 8C83 20 76 26 67 30Z" fill="${NAR}"/>`,
+   txt:"La canasta vista de frente con dos cuernos: el aro es la frente y la red, el hocico. De lejos parece un toro; de cerca, una canasta.",
+   prompt:"Minimal flat vector logo: a basketball hoop seen from the front, orange rim and cream net, with two orange bull horns growing from the ends of the rim so the whole hoop reads as a bull's head. Navy blue background #1e2a44, orange #f26b1d, cream #fff8ee. Bold, geometric, symmetrical, works as a small app icon, no text, no gradients."},
+  {n:"4 · La señal de la mano", g:`<rect x="30" y="12" width="12" height="44" rx="6" fill="${NAR}"/><rect x="60" y="20" width="11" height="36" rx="5.5" fill="${NAR}"/>
+     <rect x="28" y="46" width="46" height="44" rx="14" fill="${NAR}"/>
+     <path d="M43 50h16M43 58h16" stroke="${OSC}" stroke-width="3" stroke-linecap="round"/><rect x="34" y="64" width="30" height="11" rx="5.5" fill="${NAR}" stroke="${OSC}" stroke-width="2.6"/>`,
+   txt:"La mano con los cuernos es la señal que muchos entrenadores hacen desde la banda para pedir la jugada. Tiene rollo, se recuerda y se puede hacer con la mano en la grada. Mi dibujo es tosco: esta es la que más ganaría pasándola por Gemini.",
+   prompt:"Minimal flat vector logo: a bold geometric hand making the 'horns' sign (index and pinky up), the hand signal a basketball coach uses from the sideline to call the Horns play. Orange hand #f26b1d with thin navy outlines, on a navy blue background #1e2a44, with a small cream basketball accent #fff8ee. Sports brand style, readable at app-icon size, no text, no gradients."},
+  {n:"5 · Toro de frente", g:`<path d="M30 30C16 26 8 16 6 4C14 12 22 16 32 18Z" fill="${CREMA}"/><path d="M70 30C84 26 92 16 94 4C86 12 78 16 68 18Z" fill="${CREMA}"/>
+     <path d="M26 22H74L70 54L58 88H42L30 54Z" fill="${NAR}"/>
+     <path d="M36 40L44 46M64 40L56 46" stroke="${OSC}" stroke-width="4" stroke-linecap="round"/>
+     <circle cx="50" cy="74" r="9" fill="none" stroke="${OSC}" stroke-width="3"/>`,
+   txt:"Una cabeza de toro de frente, seria, con la nariz anillada en forma de aro. Es la más «escudo de equipo»: queda bien en sudaderas y en la equipación.",
+   prompt:"Minimal flat geometric vector logo of a fierce bull head seen from the front, orange face #f26b1d with cream horns #fff8ee, the nose ring shaped like a basketball rim. Navy blue background #1e2a44. Bold sports team crest style, symmetrical, readable at small app-icon size, no text, no gradients."},
+];
+document.getElementById("logos-v8").innerHTML=LOGOS8.map(l=>{
+  const ic=(t)=>`<svg viewBox="0 0 100 100" width="${t}" height="${t}" role="img" aria-label="Icono"><rect width="100" height="100" rx="22" fill="${AZUL}"/><g transform="translate(10 8) scale(.8)">${l.g}</g></svg>`;
+  return `<div class="lg"><b class="letra" style="font-family:var(--display);font-size:1.4rem;font-weight:900">${l.n}</b>
+    <div class="vista">${ic(110)}${ic(60)}${ic(26)}<span style="font:900 2.6rem/1 var(--display);color:${CREMA};letter-spacing:.02em">HORNS</span></div>
+    <p style="font-size:.92rem">${l.txt}</p>
+    <pre class="prompt">${l.prompt}</pre></div>`;}).join("");
 </script>
