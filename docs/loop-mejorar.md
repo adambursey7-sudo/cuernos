@@ -1,0 +1,54 @@
+# Loop «Cuernos profesional»
+
+Empezado el 29/10/2026. Objetivo de Adam: que Cuernos sea muy dinámica y se parezca a las apps profesionales, cogiendo
+lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; lo aprobado se une a `main` y se publica.
+
+## Lo mejor de cada app (de dónde sale cada idea)
+- **FastDraw / TacticalPad:** animación fluida por fotogramas, defensa que se mueve, velocidad, modo presentación.
+- **Coach's Clipboard / CoachesPad:** dibujar una jugada con el dedo en segundos y compartirla.
+- **Elite Hoops:** biblioteca de más de 200 ejercicios, planes de entrenamiento en PDF, modo presentación.
+- **The Hoops Geek:** planificador arrastrando ejercicios, vídeo o nota en cada uno, compartir con un enlace.
+- **Sportplan:** biblioteca grande de ejercicios por categoría y planificador de sesiones.
+- **농구링 플레이북 (app coreana nueva):** la IA comenta espacios y emparejamientos (queda para un loop futuro, porque cuesta dinero).
+
+## Decisiones de Adam (29/10)
+- Bloques: pizarra viva + editor, ejercicios y sesiones, compartir e imprimir, acabado profesional. La IA, más adelante.
+- **Con defensa** en la pizarra (se puede ocultar con un botón).
+- Todo **solo en el móvil**: sin cuentas, gratis. Botón de copia de seguridad (descargar y cargar un archivo).
+- **Por tramos:** al acabar cada tramo, bocetos y parar hasta que Adam lo apruebe.
+
+## Reglas del loop
+1. **Diseño antes de programar:** cada pantalla nueva tiene 2 o 3 formas, con boceto, ventajas e inconvenientes, en la página de bocetos. Se pregunta a Adam y esa parte no se programa hasta que conteste (lo que no dependa de ella sí avanza).
+2. **Página de bocetos** (`docs/loop-mejorar/bocetos.html`, artifact): cada vuelta añade arriba una entrada con capturas reales en tamaño iPhone, «Hecho» y «Mejorable». Lo mejorable lo arregla el loop por su cuenta si no es una decisión de diseño.
+3. **Cada vuelta:** `npm test` y `npm run build` sin errores, y capturas con `scripts/capturas.mjs`. La IA no inventa jugadas: los ejercicios y sistemas salen de las fichas de `sistemas/` o se marcan como borrador para que Adam los revise.
+4. **Al cerrar un tramo:** `/code-review low`, entrada de cierre en los bocetos, aviso a Adam y parar. Se une a `main` y se publica (`sh scripts/publicar.sh`) solo cuando Adam lo aprueba.
+5. Ligero para el portátil: nada de librerías pesadas; la pizarra sigue siendo SVG.
+6. Nada de nombres de menores ni datos de jugadores reales en el código (es público).
+
+## Tramo 1: pizarra viva y editor
+- [ ] 1.1 Diseño: modo presentación (vertical y horizontal) y editor, en 2 o 3 formas con boceto → preguntar.
+- [ ] 1.2 Defensa: X que siguen a su atacante entre él y la canasta, y reaccionan a los bloqueos (pasar por detrás o por delante); botón para ocultarla.
+- [ ] 1.3 Animación viva: balón que bota en los botes y viaja con arco en los pases, flechas de bote en zigzag, velocidad 0,5× / 1× / 2×, deslizar el dedo para cambiar de paso, pantalla completa.
+- [ ] 1.4 Editor: crear sistema, colocar jugadores arrastrando, añadir pasos dibujando cortes, botes, bloqueos y pases con el dedo, deshacer, duplicar como variante.
+- [ ] 1.5 Guardar en el móvil + copia de seguridad (descargar y cargar archivo).
+- [ ] 1.6 Cierre del tramo.
+
+## Tramo 2: ejercicios y sesiones
+- [ ] 2.1 Diseño: biblioteca de ejercicios y planificador de sesiones (2 o 3 formas) → preguntar.
+- [ ] 2.2 Ejercicios de las fichas (2x0 a 5x5) con su pizarra animada, nivel, tiempo, material y número de jugadores; filtros por sistema y nivel.
+- [ ] 2.3 Sesiones: montar el entrenamiento con ejercicios, tiempos y total; varias por equipo.
+- [ ] 2.4 Cronómetro de pista: pantalla grande, aviso con sonido al cambiar de ejercicio y siguiente ejercicio a la vista.
+- [ ] 2.5 Cierre del tramo.
+
+## Tramo 3: compartir e imprimir
+- [ ] 3.1 Enviar una jugada por enlace (que se abra animada en el móvil del jugador) o como imagen.
+- [ ] 3.2 Ficha para imprimir de un sistema y de una sesión.
+- [ ] 3.3 Cierre del tramo.
+
+## Tramo 4: acabado profesional
+- [ ] 4.1 Transiciones entre pantallas, gestos y estados vacíos cuidados.
+- [ ] 4.2 Pantalla de bienvenida con el logo y primera vez guiada.
+- [ ] 4.3 Revisión general con capturas, boceto final («Cambios» y «Mejoras para el próximo loop»).
+
+## Registro
+- 29/10: plan escrito y decisiones de Adam apuntadas.
