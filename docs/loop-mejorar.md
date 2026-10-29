@@ -37,7 +37,7 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - [x] 2.1 Diseño → Adam eligió (29/10): biblioteca **A · Lista con filtros** (al abrir, la pizarra grande) y sesiones **B · Línea de tiempo** con un color por tipo: táctica, técnica individual, defensa y drills. Bocetos: https://claude.ai/artifact/7oLvwqtJi5qiMn9UP755up (`docs/loop-mejorar/bocetos-tramo2.html`).
 - [x] 2.2 Ejercicios de las fichas (2x0 a 5x5) con su pizarra animada, nivel, tiempo, material y número de jugadores; filtros por sistema y nivel.
 - [x] 2.3 Sesiones: montar el entrenamiento con ejercicios, tiempos y total; varias por equipo.
-- [ ] 2.4 Cronómetro de pista: pantalla grande, aviso con sonido al cambiar de ejercicio y siguiente ejercicio a la vista.
+- [x] 2.4 Cronómetro de pista: pantalla grande, aviso con sonido al cambiar de ejercicio y siguiente ejercicio a la vista.
 - [ ] 2.5 Cierre del tramo.
 
 ## Tramo 3: compartir e imprimir
@@ -69,3 +69,4 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - 29/10: Tramo 2 empieza en la copia `C:\devaloncesto-t-tramo2` (rama loop/tramo2, sacada de loop/mejorar porque main no tiene el Tramo 1). 2.1: bocetos de biblioteca (A lista con filtros / B tarjeta grande / C escalera por sistema) y sesiones (A lista que se ordena / B línea de tiempo / C por partes) en una página aparte, porque la de siempre ya tiene una entrada del Tramo 3 hecha en otra sesión.
 - 29/10: Adam eligió biblioteca A y sesiones B con colores por tipo. 2.2 hecho: pestaña Ejercicios con filtros, ficha con pizarra recortada del sistema (`src/ejercicios/`); tipo, tiempo, material y pizarra marcados como borrador; 40 pruebas. Servidor en el 5313 (5311 y 5312 ocupados por otras sesiones).
 - 29/10: 2.3 hecho: pestaña Sesiones con equipos (categoría, sin nombres), varias sesiones por equipo, línea de tiempo con color por tipo (cambiable en cada bloque), minutos de 5 en 5, subir/bajar/quitar, duración prevista y aviso si te pasas (`src/sesiones/`, `src/pantallas/Sesiones.tsx`). Se guarda solo en el móvil. El `.pantalla` pasó a `minmax(0,1fr)` para que las filas con scroll no ensanchen la pantalla. Falta 2.4 cronómetro y 2.5 cierre.
+- 29/10: 2.4 hecho: botón «Empezar el entrenamiento» en la sesión abre el cronómetro de pista (`src/pantallas/Entrenando.tsx`, `src/sesiones/cronometro.ts`): reloj enorme con el color del tipo, siguiente ejercicio a la vista, pitidos y vibración al cambiar, pausa, anterior/siguiente, pantalla encendida y sonido apagable. Cuenta con la hora del reloj. Falta probar el sonido y la pantalla encendida en el iPhone, y 2.5 cierre.

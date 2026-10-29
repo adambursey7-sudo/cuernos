@@ -243,3 +243,20 @@ button.principal.ancho { border: none; border-radius: 12px; padding: 16px 10px; 
 .nuevo-equipo { margin-top: 18px; display: grid; gap: 6px; }
 .nuevo-equipo input { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--tenue); background: var(--superficie); color: var(--texto); font-size: 1rem; }
 .selector { padding: 12px 16px 24px; display: grid; gap: 12px; }
+
+/* Cronómetro de pista (2.4): letras enormes y alto contraste para verlo desde el otro lado de la pista */
+.entrenando { position: fixed; inset: 0; z-index: 30; display: grid; grid-template-rows: auto 1fr auto auto; gap: 12px; background: var(--fondo); border-top: 14px solid var(--tipo, var(--principal)); padding: max(10px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+.ent-arriba { display: flex; align-items: center; gap: 12px; }
+.ent-arriba .meta { flex: 1; text-align: right; }
+.ent-arriba button, .ent-mandos button { border: none; border-radius: 14px; background: var(--superficie); color: var(--texto); font-size: 1.4rem; min-width: 52px; min-height: 52px; }
+.ent-centro { display: grid; align-content: center; justify-items: center; gap: 6px; text-align: center; min-height: 0; }
+.ent-tipo { margin: 0; font: 900 1.4rem/1 var(--display); text-transform: uppercase; color: var(--tipo, var(--principal)); }
+.ent-reloj { margin: 0; font: 900 min(34vw, 40vh)/0.9 var(--display); font-variant-numeric: tabular-nums; color: var(--texto); }
+.ent-reloj.poco { color: var(--tipo, var(--principal)); }
+.ent-nombre { margin: 0; font: 800 1.7rem/1.15 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+.ent-siguiente { display: grid; gap: 2px; background: var(--superficie); border-left: 6px solid var(--tenue); border-radius: 12px; padding: 10px 14px; }
+.ent-siguiente b { font: 800 1.15rem/1.2 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+.ent-mandos { display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 12px; }
+.ent-mandos button:disabled { opacity: 0.4; }
+.ent-mandos .grande { background: var(--principal); color: var(--sobre-principal); font-size: 2rem; min-height: 72px; }
+.empezar { margin-top: 4px; }

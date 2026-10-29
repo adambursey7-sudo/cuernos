@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { todosLosEjercicios } from '../ejercicios/ejercicios';
 import { bloqueDe, conMinutos, conTipo, diferencia, guardarSesiones, huerfanos, inicios, leerSesiones, mover, nuevaSesion, quitar, reparto, total } from './sesiones';
+import { inicioDe, posicion, reloj } from './cronometro';
 
 const memoria = () => {
   const datos = new Map<string, string>();
@@ -64,5 +65,27 @@ describe('sesiones', () => {
     const s = montar();
     expect(huerfanos(s)).toBe(0);
     expect(huerfanos({ ...s, bloques: [...s.bloques, bloqueDe('borrada~0', 10, 'drill')] })).toBe(1);
+  });
+});
+
+describe('cronómetro', () => {
+  it('dice qué bloque toca y cuánto queda', () => {
+    const s = montar();
+    expect(posicion(s, 0)).toMatchObject({ i: 0, resto: 600, restoTotal: 2700 });
+    expect(posicion(s, 599).i).toBe(0);
+    expect(posicion(s, 600)).toMatchObject({ i: 1, resto: 1200 });
+    expect(posicion(s, 1800).i).toBe(2);
+    expect(posicion(s, 2700)).toMatchObject({ i: -1, acabada: true });
+    expect(posicion({ ...s, bloques: [] }, 0).acabada).toBe(true);
+  });
+
+  it('salta a un bloque y da formato al reloj', () => {
+    const s = montar();
+    expect(inicioDe(s, 1)).toBe(600);
+    expect(inicioDe(s, 9)).toBe(1800);
+    expect(inicioDe(s, -3)).toBe(0);
+    expect(reloj(605)).toBe('10:05');
+    expect(reloj(8.2)).toBe('0:09');
+    expect(reloj(-4)).toBe('0:00');
   });
 });

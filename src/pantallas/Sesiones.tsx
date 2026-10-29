@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { TIPOS, buscarEjercicio, filtrar, todosLosEjercicios, type Ejercicio } from '../ejercicios/ejercicios';
 import { Pista } from '../pizarra/Pista';
+import { Entrenando } from './Entrenando';
 import {
   DURACIONES, PASO_MINUTOS, bloqueDe, conMinutos, conTipo, diferencia, guardarSesiones, huerfanos, inicios, leerSesiones, mover, nuevaSesion, quitar,
   reparto, total, type Sesion,
@@ -73,8 +74,11 @@ function Selector({ elegir, cerrar }: { elegir: (e: Ejercicio) => void; cerrar: 
 
 function Editor({ s, cambiar, volver, abrirEjercicio }: { s: Sesion; cambiar: (s: Sesion) => void; volver: () => void; abrirEjercicio: (id: string) => void }) {
   const [anadiendo, setAnadiendo] = useState(false);
+  const [cronometro, setCronometro] = useState(false);
   const desde = inicios(s);
   const perdidos = huerfanos(s);
+
+  if (cronometro) return <Entrenando s={s} salir={() => setCronometro(false)} />;
 
   if (anadiendo)
     return (
@@ -137,6 +141,7 @@ function Editor({ s, cambiar, volver, abrirEjercicio }: { s: Sesion; cambiar: (s
         </ol>
       )}
       <button className="principal ancho" onClick={() => setAnadiendo(true)}>+ Añadir ejercicio</button>
+      {s.bloques.length > 0 && <button className="principal ancho empezar" onClick={() => setCronometro(true)}>▶ Empezar el entrenamiento</button>}
     </section>
   );
 }
