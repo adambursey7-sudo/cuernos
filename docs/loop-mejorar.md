@@ -34,7 +34,7 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - [x] 1.6 Cierre del tramo (revisión de código: 3 fallos arreglados). Esperando visto bueno de Adam para unir a main y publicar.
 
 ## Tramo 2: ejercicios y sesiones
-- [ ] 2.1 Diseño: biblioteca de ejercicios y planificador de sesiones (2 o 3 formas) → preguntar.
+- [ ] 2.1 Diseño: biblioteca de ejercicios y planificador de sesiones (2 o 3 formas) → preguntar. Bocetos publicados aparte (https://claude.ai/artifact/7oLvwqtJi5qiMn9UP755up, `docs/loop-mejorar/bocetos-tramo2.html`); esperando que Adam elija.
 - [ ] 2.2 Ejercicios de las fichas (2x0 a 5x5) con su pizarra animada, nivel, tiempo, material y número de jugadores; filtros por sistema y nivel.
 - [ ] 2.3 Sesiones: montar el entrenamiento con ejercicios, tiempos y total; varias por equipo.
 - [ ] 2.4 Cronómetro de pista: pantalla grande, aviso con sonido al cambiar de ejercicio y siguiente ejercicio a la vista.
@@ -66,3 +66,4 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - 29/10: Adam pide la O de cuernos más pequeña o dentro de la letra. Bocetos v11: variantes 1-5 en A (O de cuernos a la altura de las letras) y B (dentro de la O de Graduate).
 - 29/10: Adam eligió el logo 5 (cuernos afilados), puesto en forma A (O a la altura de las letras). Hecho: letra Graduate en toda la app con tamaños ajustados, logo HORNS en icono (PNG y SVG), cabecera de Sistemas, pestaña del navegador y GIF. Revisión de código baja: sin fallos.
 - 29/10: Adam: la app se llama **Horns** y mover jugadores con la **A · Arrastra y dibuja**. Hecho: nombre Horns (icono, pestaña, copia de seguridad; las copias viejas siguen valiendo); el camino del dedo es la flecha con su curva, el movimiento se adivina (con balón bote, a un cuerpo de un compañero bloqueo, si no corte) y se cambia tocando su etiqueta; pase arrastrando el balón a un compañero. Arreglado: el editor se salía por la derecha con Graduate. Probado con el guion del dedo; 22 pruebas; revisión baja sin fallos. Falta: interfaz C (inicio de club).
+- 29/10: Tramo 2 empieza en la copia `C:\devaloncesto-t-tramo2` (rama loop/tramo2, sacada de loop/mejorar porque main no tiene el Tramo 1). 2.1: bocetos de biblioteca (A lista con filtros / B tarjeta grande / C escalera por sistema) y sesiones (A lista que se ordena / B línea de tiempo / C por partes) en una página aparte, porque la de siempre ya tiene una entrada del Tramo 3 hecha en otra sesión.
