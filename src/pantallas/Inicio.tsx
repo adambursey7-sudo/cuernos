@@ -2,12 +2,10 @@
 import type { ReactNode } from 'react';
 import { Marca } from '../Logo';
 import { Pista } from '../pizarra/Pista';
+import { todosLosEjercicios } from '../ejercicios/ejercicios';
 import { buscarSistema, todosLosSistemas } from '../sistemas/almacen';
 import type { Sistema } from '../sistemas/tipos';
 import { leerUltima } from '../ultima';
-
-/** «2x0 bloqueo directo…» → «2x0»: la etiqueta grande de la tarjeta del ejercicio. */
-const formato = (e: string) => /^\d\s?x\s?\d/i.exec(e)?.[0].replace(/\s/g, '').toLowerCase();
 
 function Coleccion({ titulo, verTodas, children }: { titulo: string; verTodas?: () => void; children: ReactNode }) {
   return (
@@ -33,13 +31,19 @@ function TarjetaJugada({ s, abrir }: { s: Sistema; abrir: () => void }) {
   );
 }
 
-export function Inicio({ abrir, crear, verTodas }: { abrir: (id: string, paso?: number) => void; crear: () => void; verTodas: () => void }) {
+export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios }: {
+  abrir: (id: string, paso?: number) => void;
+  abrirEjercicio: (id: string) => void;
+  crear: () => void;
+  verTodas: () => void;
+  verEjercicios: () => void;
+}) {
   const lista = todosLosSistemas();
   const mias = lista.filter((s) => s.propio);
   const libro = lista.filter((s) => !s.propio);
   const ataque = libro.filter((s) => s.tipo === 'ataque');
   const defensa = libro.filter((s) => s.tipo === 'defensa');
-  const ejercicios = libro.flatMap((s) => s.ejercicios.map((e) => ({ e, s })));
+  const ejercicios = todosLosEjercicios().filter((e) => !e.sistema.propio);
 
   // Si la última jugada se borró, o es la primera vez, se propone empezar por la primera del libro.
   const ultima = leerUltima();
@@ -95,13 +99,13 @@ export function Inicio({ abrir, crear, verTodas }: { abrir: (id: string, paso?: 
       )}
 
       {ejercicios.length > 0 && (
-        <Coleccion titulo="Ejercicios">
-          {ejercicios.map(({ e, s }) => (
-            <li key={s.id + e}>
-              <button className="tarjeta-col ejercicio" onClick={() => abrir(s.id)}>
-                <span className="formato">{formato(e) ?? '·'}</span>
-                <span className="texto-ejercicio">{e}</span>
-                <span className="meta">De {s.nombre}</span>
+        <Coleccion titulo="Ejercicios" verTodas={verEjercicios}>
+          {ejercicios.map((e) => (
+            <li key={e.id}>
+              <button className="tarjeta-col ejercicio" onClick={() => abrirEjercicio(e.id)}>
+                <span className="formato">{e.formato || '·'}</span>
+                <span className="texto-ejercicio">{e.nombre}</span>
+                <span className="meta">De {e.sistema.nombre}</span>
               </button>
             </li>
           ))}

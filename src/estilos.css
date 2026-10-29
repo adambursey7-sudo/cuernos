@@ -99,7 +99,7 @@ main { flex: 1; width: 100%; max-width: 560px; margin: 0 auto; }
 .restaurar { justify-self: start; border: 1.5px solid var(--tenue); background: none; border-radius: 999px; padding: 9px 16px; }
 
 /* pestañas de abajo */
-.pestanas { position: sticky; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr); background: var(--fondo); border-top: 1px solid var(--superficie); padding: 6px max(8px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
+.pestanas { position: sticky; bottom: 0; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--fondo); border-top: 1px solid var(--superficie); padding: 6px max(8px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
 .pestanas button { border: none; background: none; padding: 10px 0; color: var(--tenue); font: 800 0.74rem/1 var(--display); text-transform: uppercase; }
 .pestanas button.on { color: var(--principal); }
 
@@ -197,3 +197,20 @@ main { flex: 1; width: 100%; max-width: 560px; margin: 0 auto; }
 .nueva-ancha { display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; padding: 10px 12px; border: 2px dashed var(--principal); border-radius: 14px; background: none; text-align: left; }
 .nueva-ancha .mas { display: grid; place-items: center; height: 52px; border-radius: 10px; background: var(--superficie); color: var(--principal); font: 900 2rem/1 var(--display); }
 .nueva-ancha .nombre { font-size: 1.25rem; }
+
+/* Ejercicios (tramo 2): lista con filtros (opción A) y ficha con la pizarra a lo grande. */
+.filtros { display: grid; gap: 8px; }
+.filtro { margin-right: calc(-1 * max(16px, env(safe-area-inset-right))); padding-right: max(16px, env(safe-area-inset-right)); }
+.filtro::-webkit-scrollbar { display: none; }
+.tarjeta-ejercicio .datos { display: grid; gap: 3px; min-width: 0; }
+.tarjeta-ejercicio .formato { font: 900 1.7rem/1 var(--display); color: var(--principal); text-transform: uppercase; }
+.tarjeta-ejercicio .texto-ejercicio { font-weight: 700; line-height: 1.25; }
+.tarjeta-ejercicio .meta { font-size: 0.82rem; line-height: 1.3; }
+.ficha-ejercicio .nombre-sistema { font-size: 1.45rem; line-height: 1.05; }
+.ficha-ejercicio .nombre-sistema .formato { color: var(--principal); font-size: 2rem; }
+.datos-ejercicio { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin: 4px 0 0; padding-top: 12px; border-top: 1px solid var(--superficie); }
+.dato dt { font: 800 0.95rem/1 var(--display); color: var(--principal); text-transform: uppercase; }
+.dato dd { margin: 4px 0 0; }
+.pie-borrador { margin: 0; color: var(--tenue); font-size: 0.92rem; }
+.pie-borrador b { color: var(--aviso); }
+.ver-sistema { justify-self: start; border: none; border-radius: 12px; padding: 14px 16px; background: var(--superficie); font: 800 1rem/1 var(--display); text-transform: uppercase; }

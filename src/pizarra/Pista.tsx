@@ -49,6 +49,8 @@ export function Pista({ sistema, t, alto = 140, conDefensa = false }: { sistema:
   const i = pasoDe(t, sistema.pasos.length);
   const antes = inicios(sistema)[i].pos;
   const y0 = (alto - 140) / 2;
+  // En un ejercicio (2x0, 3x3…) solo salen sus jugadores.
+  const quienes = sistema.visibles ?? JUGADORES;
 
   return (
     <svg className="pista" viewBox={`0 0 150 ${alto}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={`${sistema.nombre}, paso ${i + 1}`}>
@@ -79,10 +81,10 @@ export function Pista({ sistema, t, alto = 140, conDefensa = false }: { sistema:
           );
         })}
         {d &&
-          JUGADORES.map((j) => (
+          quienes.map((j) => (
             <path key={'x' + j} className="defensor" transform={`translate(${d[j][0]} ${d[j][1]})`} d="M-4 -4L4 4M4 -4L-4 4" />
           ))}
-        {JUGADORES.map((j) => {
+        {quienes.map((j) => {
           const [x, y] = f.jugadores[j];
           return (
             <g key={j} className="jugador" transform={`translate(${x} ${y})`}>
@@ -92,8 +94,12 @@ export function Pista({ sistema, t, alto = 140, conDefensa = false }: { sistema:
           );
         })}
         {/* Vista desde arriba: al subir, el balón se separa de su sombra y se ve un poco más grande. */}
-        <ellipse className="sombra" cx={f.balon[0] + 5} cy={f.balon[1] - 4} rx={3 - f.altura} ry={1.6 - f.altura * 0.5} />
-        <circle className="balon" cx={f.balon[0] + 5} cy={f.balon[1] - 5 - f.altura * 7} r={3.2 * (1 + f.altura * 0.35)} />
+        {!sistema.sinBalon && (
+          <>
+            <ellipse className="sombra" cx={f.balon[0] + 5} cy={f.balon[1] - 4} rx={3 - f.altura} ry={1.6 - f.altura * 0.5} />
+            <circle className="balon" cx={f.balon[0] + 5} cy={f.balon[1] - 5 - f.altura * 7} r={3.2 * (1 + f.altura * 0.35)} />
+          </>
+        )}
       </g>
     </svg>
   );

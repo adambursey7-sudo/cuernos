@@ -31,6 +31,10 @@ export interface Sistema {
   borrador?: boolean;
   /** Creado por el entrenador en el editor (se guarda en su móvil). */
   propio?: boolean;
+  /** Solo se dibujan estos jugadores (la pizarra de un ejercicio 2x0 o 3x3). Sin él, los cinco. */
+  visibles?: Jugador[];
+  /** El balón lo tiene alguien que no sale en el ejercicio: no se dibuja. */
+  sinBalon?: boolean;
 }
 
 export const NIVELES: { id: Nivel; nombre: string }[] = [
