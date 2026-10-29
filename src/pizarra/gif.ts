@@ -5,6 +5,7 @@ import { createElement } from 'react';
 import { flushSync } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import type { Sistema } from '../sistemas/tipos';
+import { APLASTADO, BALON, CAJA_O, CUERNO, PUNTA } from '../Logo';
 import { pasoDe } from './animar';
 import { Pista } from './Pista';
 import { SEGUNDOS_POR_PASO } from './useJugada';
@@ -62,10 +63,46 @@ function lineas(ctx: CanvasRenderingContext2D, texto: string, ancho: number): st
   return salida;
 }
 
+/** El logo HORNS en pequeño, con su borde derecho en x y la línea de las letras en `base`. */
+function marca(ctx: CanvasRenderingContext2D, x: number, base: number, tam: number, texto: string, principal: string) {
+  ctx.save();
+  // El resto del GIF escribe centrado en vertical; el logo se apoya en la línea de las letras.
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `${tam}px Graduate, serif`;
+  const alto = ctx.measureText('H').actualBoundingBoxAscent;
+  const ancho = (alto * CAJA_O.ancho) / CAJA_O.alto;
+  const [h, rns] = [ctx.measureText('H').width, ctx.measureText('RNS').width];
+  const hueco = tam * 0.08;
+  let x0 = x - (h + hueco + ancho + hueco + rns);
+  ctx.fillStyle = texto;
+  ctx.fillText('H', x0, base);
+  x0 += h + hueco;
+  const cuerno = new Path2D(CUERNO);
+  ctx.save();
+  ctx.translate(x0, base - alto);
+  ctx.scale(alto / CAJA_O.alto, alto / CAJA_O.alto);
+  ctx.translate(-CAJA_O.x, -CAJA_O.y);
+  ctx.fillStyle = principal;
+  for (const lado of [1, -1]) {
+    ctx.save();
+    ctx.translate(0, 50 - lado * PUNTA * APLASTADO);
+    ctx.scale(1, lado * APLASTADO);
+    ctx.fill(cuerno);
+    ctx.restore();
+  }
+  ctx.fillStyle = texto;
+  ctx.beginPath();
+  ctx.arc(BALON.cx, BALON.cy, BALON.r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+  ctx.fillText('RNS', x0 + ancho + hueco, base);
+  ctx.restore();
+}
+
 export async function crearGif(s: Sistema, conDefensa: boolean, avance: (k: number) => void): Promise<Blob> {
   const raiz = getComputedStyle(document.documentElement);
   const color = (v: string) => raiz.getPropertyValue(v).trim();
-  await Promise.all([document.fonts.load('900 34px "Big Shoulders Display"'), document.fonts.load('17px "Atkinson Hyperlegible"')]);
+  await Promise.all([document.fonts.load('30px "Graduate"'), document.fonts.load('17px "Atkinson Hyperlegible"')]);
 
   const lienzo = document.createElement('canvas');
   lienzo.width = ANCHO;
@@ -99,7 +136,7 @@ export async function crearGif(s: Sistema, conDefensa: boolean, avance: (k: numb
       ctx.fillRect(0, 0, lienzo.width, lienzo.height);
       ctx.textBaseline = 'middle';
       ctx.fillStyle = color('--texto');
-      ctx.font = '900 34px "Big Shoulders Display", sans-serif';
+      ctx.font = '30px Graduate, serif';
       ctx.fillText(s.nombre.toUpperCase(), 16, CABECERA / 2 + 2, ANCHO - 140);
       ctx.textAlign = 'right';
       ctx.fillStyle = color('--principal');
@@ -108,12 +145,9 @@ export async function crearGif(s: Sistema, conDefensa: boolean, avance: (k: numb
       ctx.drawImage(img, 0, CABECERA, ANCHO, ALTO_PISTA);
       ctx.fillStyle = color('--texto');
       ctx.font = '17px "Atkinson Hyperlegible", sans-serif';
-      lineas(ctx, s.pasos[paso].texto, ANCHO - 32).forEach((l, i) => ctx.fillText(l, 16, CABECERA + ALTO_PISTA + 22 + i * 24));
-      ctx.textAlign = 'right';
-      ctx.fillStyle = color('--principal');
-      ctx.font = '800 14px "Big Shoulders Display", sans-serif';
-      ctx.fillText('CUERNOS', ANCHO - 12, lienzo.height - 12);
-      ctx.textAlign = 'left';
+      // Se deja sitio a la derecha para el logo.
+      lineas(ctx, s.pasos[paso].texto, ANCHO - 120).forEach((l, i) => ctx.fillText(l, 16, CABECERA + ALTO_PISTA + 22 + i * 24));
+      marca(ctx, ANCHO - 14, lienzo.height - 12, 22, color('--texto'), color('--principal'));
 
       const { data } = ctx.getImageData(0, 0, lienzo.width, lienzo.height);
       // Una sola paleta, sacada del primer fotograma: los colores de la jugada no cambian y el GIF pesa menos.

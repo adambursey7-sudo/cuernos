@@ -1,3 +1,4 @@
+import { Marca } from '../Logo';
 import { Pista } from '../pizarra/Pista';
 import { todosLosSistemas } from '../sistemas/almacen';
 import { NIVELES } from '../sistemas/tipos';
@@ -8,6 +9,7 @@ export function Sistemas({ abrir, crear }: { abrir: (id: string) => void; crear:
   const lista = todosLosSistemas();
   return (
     <section className="pantalla">
+      <Marca className="marca-cabecera" />
       <div className="titulo-fila">
         <h1 className="titulo">Sistemas</h1>
         <button className="nueva" onClick={crear}>+ Nueva jugada</button>
