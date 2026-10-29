@@ -56,6 +56,18 @@ p{margin:0;max-width:68ch}
   <p class="tenue">Cada vuelta del loop añade una entrada arriba: lo hecho con capturas, lo que se puede mejorar y, cuando toca diseñar, las opciones para elegir.</p>
 </header>
 
+<section class="entrada" id="v11">
+  <span class="fecha">29/10 · Logo: la O a medida</span>
+  <h2>La O de cuernos a la altura de las letras, o dentro de la O</h2>
+  <div class="pregunta">
+    <strong>Dos formas en cada variante</strong>
+    <p><b>A · Del tamaño de las letras:</b> la O de cuernos baja hasta medir exactamente lo mismo que la H y la R.</p>
+    <p><b>B · Dentro de la letra:</b> se queda la O de verdad de Graduate y los cuernos con el balón van metidos en su hueco. En el icono, la O grande con los cuernos dentro. Es más discreta: el nombre se lee perfecto, pero los cuernos quedan pequeños y en la pestaña apenas se ven.</p>
+    <p>Dime el número y la letra (por ejemplo, «3B»).</p>
+  </div>
+  <div class="opciones" id="o-v11"></div>
+</section>
+
 <section class="entrada" id="v10">
   <span class="fecha">29/10 · Logo: dos cuernos que cierran la O</span>
   <h2>Cuernos enfrentados: ahora se lee HORNS</h2>
@@ -707,4 +719,70 @@ async function pintarO(){
   VAR10.forEach((v,i)=>["azul","crema","naranja"].forEach(f=>tira(document.getElementById(`o${i}${f}`),v,PAL[f])));
 }
 pintarO();
+
+// ---- Entrada v11: la O de cuernos a la altura de las letras (A) o dentro de la O de Graduate (B) ----
+const VAR11=[
+  {n:"1 · La de siempre", u:"o_clasica"},
+  {n:"2 · Gruesa con balón", u:"o_gruesa"},
+  {n:"3 · Universitaria", u:"o_varsity"},
+  {n:"4 · Universitaria con contorno", u:"o_varsity", contorno:true},
+  {n:"5 · Cuernos afilados", u:"o_afilada"},
+];
+const TAM11=64, BASE11=86;
+function metricas(){
+  const c=document.createElement("canvas").getContext("2d"); c.font=`${TAM11}px Graduate`;
+  return {cap:c.measureText("H").actualBoundingBoxAscent, o:c.measureText("O")};
+}
+function glifoEn(svg,k,p,contorno,cx,cy,alto){
+  // Coloca el glifo con su centro en (cx, cy) y la altura pedida (la O de cuernos ocupa de y 11,5 a 88,5).
+  const el=document.createElementNS(NS,"g");
+  el.innerHTML=contorno?U[k](p).replace(/<path /g,`<path stroke="${p.txt}" stroke-width="6" paint-order="stroke" `):U[k](p);
+  const sc=alto/77;
+  el.setAttribute("transform",`translate(${cx-50*sc} ${cy-50*sc}) scale(${sc})`);
+  svg.appendChild(el); return el;
+}
+function tira11(svg,v,p,modo){
+  const {cap}=metricas();
+  svg.innerHTML="";
+  if(modo==="A"){
+    let x=0;
+    const t1=document.createElementNS(NS,"g"); t1.innerHTML=texto(0,BASE11,"H",TAM11,p,v.contorno); svg.appendChild(t1);
+    x+=t1.querySelector("text").getComputedTextLength()+4;
+    const el=glifoEn(svg,v.u,p,v.contorno,0,0,cap);
+    const bb=el.getBBox(), sc=cap/77;
+    el.setAttribute("transform",`translate(${x-bb.x*sc} ${BASE11-cap/2-50*sc}) scale(${sc})`);
+    x+=bb.width*sc+7;
+    const t2=document.createElementNS(NS,"g"); t2.innerHTML=texto(x,BASE11,"RNS",TAM11,p,v.contorno); svg.appendChild(t2);
+  } else {
+    const t=document.createElementNS(NS,"g"); t.innerHTML=texto(0,BASE11,"HORNS",TAM11,p,v.contorno); svg.appendChild(t);
+    const ext=t.querySelector("text").getExtentOfChar(1);
+    // El hueco de la O de Graduate es algo menos de la mitad de su ancho: los cuernos caben dentro sin tocar el trazo.
+    // Se ajusta al hueco real: algo más de un tercio del ancho de la letra y la mitad de su alto, centrado por su propio dibujo.
+    const el=glifoEn(svg,v.u,p,false,0,0,cap);
+    const bb=el.getBBox(), sx=ext.width*.3/bb.width, sy=cap*.5/bb.height;
+    el.setAttribute("transform",`translate(${ext.x+ext.width/2-.5-(bb.x+bb.width/2)*sx} ${BASE11-cap/2-(bb.y+bb.height/2)*sy}) scale(${sx} ${sy})`);
+  }
+  const caja=svg.getBBox();
+  svg.setAttribute("viewBox",`${caja.x-24} ${caja.y-16} ${caja.width+48} ${caja.height+32}`);
+  svg.style.background=p.bg;
+}
+function iconoB(v,tam){
+  // La O grande de Graduate con los cuernos dentro.
+  return `<svg viewBox="0 0 100 100" width="${tam}" height="${tam}" role="img" aria-label="Icono"><rect width="100" height="100" rx="22" fill="${AZUL}"/>
+    <text x="50" y="82" text-anchor="middle" font-family="${GRAD}" font-size="96" fill="${CREMA}">O</text>
+    <g transform="translate(${50-50*.24} ${50-50*.36}) scale(.24 .36)">${U[v.u](PAL.azul)}</g></svg>`;
+}
+async function pintar11(){
+  try{ await document.fonts.load('64px "Graduate"'); }catch(e){}
+  const cont=document.getElementById("o-v11");
+  cont.innerHTML=VAR11.map((v,i)=>`<div class="uv"><b class="letra" style="font-family:var(--display);font-size:1.4rem;font-weight:900">${v.n}</b>
+    <span class="tenue" style="font-size:.85rem">A · Del tamaño de las letras</span>
+    <div class="iconos"><figure>${icono9(v,60)}<figcaption>iPhone</figcaption></figure><figure>${icono9(v,24)}<figcaption>Pestaña</figcaption></figure></div>
+    <svg class="tira" id="a11${i}azul"></svg><svg class="tira" id="a11${i}crema"></svg>
+    <span class="tenue" style="font-size:.85rem">B · Dentro de la O</span>
+    <div class="iconos"><figure>${iconoB(v,60)}<figcaption>iPhone</figcaption></figure><figure>${iconoB(v,24)}<figcaption>Pestaña</figcaption></figure></div>
+    <svg class="tira" id="b11${i}azul"></svg><svg class="tira" id="b11${i}crema"></svg></div>`).join("");
+  VAR11.forEach((v,i)=>["azul","crema"].forEach(f=>{ tira11(document.getElementById(`a11${i}${f}`),v,PAL[f],"A"); tira11(document.getElementById(`b11${i}${f}`),v,PAL[f],"B"); }));
+}
+pintar11();
 </script>
