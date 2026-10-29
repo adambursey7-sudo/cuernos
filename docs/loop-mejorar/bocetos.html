@@ -56,6 +56,49 @@ p{margin:0;max-width:68ch}
   <p class="tenue">Cada vuelta del loop añade una entrada arriba: lo hecho con capturas, lo que se puede mejorar y, cuando toca diseñar, las opciones para elegir.</p>
 </header>
 
+<section class="entrada" id="t2-1">
+  <span class="fecha">29/10 · Tramo 2 · Paso 1: diseño</span>
+  <h2>Ejercicios y sesiones: elige cómo</h2>
+  <div class="pregunta">
+    <strong>Dos preguntas: una letra para la biblioteca y otra para las sesiones</strong>
+    <p>Por ejemplo, «biblioteca A, sesiones C». Se pueden mezclar ideas.</p>
+    <p><b>Lo que sale de las fichas y lo que no:</b> las fichas de <i>sistemas/</i> dan el formato y una línea por ejercicio (por ejemplo, «2x0 bloqueo directo y continuación»). El nivel sale del sistema y el número de jugadores, del formato. El <b>tiempo, el material y la pizarra</b> de cada ejercicio no están escritos: saldrán marcados como <b>borrador</b> para que los revises (la pizarra, sacada de los pasos del sistema, solo con los jugadores del ejercicio). El calentamiento y la vuelta a la calma tampoco están en las fichas: quedan como hueco o como ejercicio tuyo.</p>
+  </div>
+
+  <h3>Biblioteca de ejercicios</h3>
+  <div class="opciones">
+    <div class="op"><b class="letra">A · Lista con filtros</b>
+      <svg viewBox="0 0 200 340" id="bA"></svg>
+      <div class="pc"><span class="v">Encuentras uno concreto en dos toques: formato, sistema y nivel arriba (como Sportplan).</span><span class="v">Caben cinco o seis en pantalla; al tocar uno se abre con su pizarra animada.</span><span class="i">En la lista, la pizarra es pequeña: no se ve el movimiento hasta abrirlo.</span></div>
+    </div>
+    <div class="op"><b class="letra">B · Una tarjeta grande</b>
+      <svg viewBox="0 0 200 340" id="bB"></svg>
+      <div class="pc"><span class="v">Cada ejercicio con su pizarra animada a lo grande; deslizas hacia arriba para el siguiente (como Elite Hoops).</span><span class="v">Botón directo «A la sesión».</span><span class="i">Para buscar uno concreto hay que pasar muchos; los filtros quedan escondidos.</span></div>
+    </div>
+    <div class="op"><b class="letra">C · Escalera por sistema</b>
+      <svg viewBox="0 0 200 340" id="bC"></svg>
+      <div class="pc"><span class="v">Enseña la progresión de cada sistema, de 2x0 a 5x5, tal y como está en la ficha.</span><span class="v">Un botón monta la sesión entera de ese sistema.</span><span class="i">Lo que no es de un sistema (tiro, calentamiento) no tiene un sitio claro.</span></div>
+    </div>
+  </div>
+
+  <h3>Planificador de sesiones</h3>
+  <div class="opciones">
+    <div class="op"><b class="letra">A · Lista que se ordena</b>
+      <svg viewBox="0 0 200 340" id="sA"></svg>
+      <div class="pc"><span class="v">La más rápida: arrastras para cambiar el orden y tocas − / + para los minutos (como The Hoops Geek).</span><span class="v">El total y la barra avisan si te pasas de la hora.</span><span class="i">No separa las partes del entrenamiento.</span></div>
+    </div>
+    <div class="op"><b class="letra">B · Línea de tiempo</b>
+      <svg viewBox="0 0 200 340" id="sB"></svg>
+      <div class="pc"><span class="v">Ves de un vistazo cómo se reparte la hora y dónde quedan huecos libres.</span><span class="v">Estiras un bloque para darle más minutos.</span><span class="i">Los ejercicios de 5 minutos quedan finos y cuesta tocarlos.</span></div>
+    </div>
+    <div class="op"><b class="letra">C · Por partes</b>
+      <svg viewBox="0 0 200 340" id="sC"></svg>
+      <div class="pc"><span class="v">Ordena el entrenamiento como se enseña: calentamiento, parte principal y vuelta a la calma.</span><span class="v">Compara el tiempo que querías con el que llevas en cada parte.</span><span class="i">Más toques para montarla y más rígida.</span></div>
+    </div>
+  </div>
+  <p class="tenue">En las tres: arriba eliges el equipo (por categoría, sin nombres de jugadores) y cada equipo guarda varias sesiones. Mi recomendación: <b>biblioteca A</b> (al abrir un ejercicio se ve grande, como en B) y <b>sesiones A</b>, que es la que menos estorba con prisa en la banda.</p>
+</section>
+
 <section class="entrada" id="v11">
   <span class="fecha">29/10 · Logo: la O a medida</span>
   <h2>La O de cuernos a la altura de las letras, o dentro de la O</h2>
@@ -785,4 +828,52 @@ async function pintar11(){
   VAR11.forEach((v,i)=>["azul","crema"].forEach(f=>{ tira11(document.getElementById(`a11${i}${f}`),v,PAL[f],"A"); tira11(document.getElementById(`b11${i}${f}`),v,PAL[f],"B"); }));
 }
 pintar11();
+
+{ // ---- Tramo 2.1 (bloque aparte para no chocar con los nombres de otras entradas): biblioteca de ejercicios y planificador de sesiones (ejercicios tal cual las fichas) ----
+const DSP="Big Shoulders Display";
+const tenue=(x,y,t,s=8,a="start")=>T(x,y,t,{s,w:400,c:"#a9b2c3",a});
+const fmt=(x,y,t,s=14)=>T(x,y,t,{s,f:DSP,w:900,c:"#f26b1d"});
+const chips=(x,y,l,on)=>{let o="";l.forEach((t,i)=>{o+=pill(x,y,t,i===on);x+=t.length*5.6+18;});return o;};
+const borr=(x,y)=>R(x,y,34,11,"#ffb02033",5)+T(x+17,y+8,"borrador",{a:"middle",s:6.2,c:"#ffb020"});
+
+const EJ=[["2X0","Bloqueo directo y continuación","Cuernos"],["3X0","Base y dos codos: elegir lado","Cuernos"],["2X2","Bloqueo directo, defensa que cambia","Cuernos"],["2X0","Corte con bloqueo de fondo y pase","Flex"],["3X3","Solo con bloqueos","Flex"]];
+document.getElementById("bA").innerHTML=tel(200,340)+fase("EJERCICIOS")+chips(10,38,["Todos","2x0","3x0","2x2","5x5"],0)+chips(10,58,["Cuernos","Flex","Cadete"],-1)+
+  EJ.map(([f,n,s],i)=>{const y=82+i*48;return R(10,y,180,42,"#2a3754",8)+pista(14,y+4,36)+fmt(56,y+18,f)+T(56,y+31,n,{s:7.2,w:400})+tenue(56,y+40,s,6.5)+borr(152,y+8);}).join("");
+
+document.getElementById("bB").innerHTML=tel(200,340)+fase("EJERCICIOS · 1 DE 14")+pista(10,40,180)+
+  fmt(14,234,"2X0",26)+tenue(58,233,"Cuernos · infantil",8.5)+T(14,250,"Bloqueo directo y continuación",{s:9.5})+
+  pill(14,258,"2 jugadores",false)+pill(86,258,"10 min",false)+borr(140,260)+
+  btn(10,290,86,"Filtros")+btn(104,290,86,"+ A la sesión",true)+tenue(100,334,"Desliza arriba para el siguiente",7,"middle");
+
+const ESC=[["2X0","Bloqueo directo y continuación"],["3X0","Base y dos codos: elegir lado"],["2X2","Defensa que cambia"],["5X0","Completo, 2 primeras lecturas"],["5X5","Puntos dobles en continuación"]];
+document.getElementById("bC").innerHTML=tel(200,340)+fase("ESCALERA")+chips(10,38,["Cuernos","Flex","Cuernos Flex"],0)+
+  `<path d="M32 84V276" stroke="#f26b1d" stroke-width="2" stroke-dasharray="3 3"/>`+
+  ESC.map(([f,n],i)=>{const y=84+i*48;return `<circle cx="32" cy="${y}" r="15" fill="#2a3754" stroke="#f26b1d" stroke-width="1.6"/>`+T(32,y+4,f,{a:"middle",s:10,f:DSP,w:900})+T(54,y+3,n,{s:7.6,w:400})+R(166,y-9,22,18,"#2a3754",6)+T(177,y+4,"+",{a:"middle",s:11})+(i?tenue(54,y-12,"↓ más difícil",6):"");}).join("")+
+  btn(10,300,180,"Sesión con los 5 de Cuernos",true);
+
+const FILAS=[["Calentamiento",10,true],["2x0 bloqueo directo",10],["3x0 base y dos codos",15],["2x2 defensa que cambia",15],["5x5 puntos dobles",25]];
+document.getElementById("sA").innerHTML=tel(200,340)+fase("INFANTIL · MARTES")+
+  T(14,68,"75",{s:38,f:DSP,w:900,c:"#f26b1d"})+tenue(52,66,"de 90 min",10)+
+  `<rect x="14" y="76" width="172" height="6" rx="3" fill="#2a3754"/><rect x="14" y="76" width="143" height="6" rx="3" fill="#4cc38a"/>`+
+  FILAS.map(([n,m,b],i)=>{const y=92+i*38;return R(10,y,180,32,"#2a3754",8)+tenue(18,y+20,"⋮⋮",10)+T(32,y+(b?15:19),n,{s:8,w:400})+(b?borr(32,y+18):"")+T(150,y+20,"−",{s:11,a:"middle"})+T(166,y+20,m+"′",{s:9,a:"middle"})+T(182,y+20,"+",{s:11,a:"middle"});}).join("")+
+  dedo(22,176)+btn(10,290,86,"+ Ejercicio")+btn(104,290,86,"▶ A la pista",true);
+
+const BLQ=[[0,10,"Calentamiento",,1],[10,20,"2x0 bloqueo directo","#f26b1d"],[20,35,"3x0 base y dos codos","#d9a066"],[35,50,"2x2 defensa que cambia","#4cc38a"],[50,65,"15 min libres",,1],[65,90,"5x5 puntos dobles","#ffb020"]];
+const yb=m=>40+m*2.7;
+document.getElementById("sB").innerHTML=tel(200,340)+fase("INFANTIL · MARTES · 90′")+
+  [0,15,30,45,60,75,90].map(m=>tenue(14,yb(m)+3,m+"′",7)+`<path d="M34 ${yb(m)}H186" stroke="#2a3754"/>`).join("")+
+  BLQ.map(([a,b,n,c,hueco])=>{const y=yb(a)+1,alto=(b-a)*2.7-2;return hueco?`<rect x="40" y="${y}" width="146" height="${alto}" rx="6" fill="none" stroke="#a9b2c3" stroke-dasharray="4 3"/>`+tenue(48,y+alto/2+3,n):R(40,y,146,alto,c+"cc",6)+T(48,y+Math.min(14,alto/2+3),n,{s:8,c:"#141a26"});}).join("")+
+  `<rect x="98" y="${yb(50)-3}" width="30" height="5" rx="2.5" fill="#fff8ee"/>`+dedo(113,yb(50))+
+  btn(10,300,86,"+ Ejercicio")+btn(104,300,86,"▶ A la pista",true);
+
+// C: cada parte con lo que lleva / lo que querías (verde si cuadra, rojo si te pasas).
+const PARTES=[["CALENTAMIENTO",0,15,[["Hueco: pon un ejercicio tuyo","",1]]],["PARTE PRINCIPAL",65,60,[["2x0 bloqueo directo",10],["3x0 base y dos codos",15],["2x2 defensa que cambia",15],["5x5 puntos dobles",25]]],["VUELTA A LA CALMA",0,15,[]]];
+let yc=38,sc="";
+PARTES.forEach(([t,lleva,quiere,ej])=>{
+  sc+=T(14,yc+10,t,{s:11,f:DSP,w:900})+T(186,yc+10,`${lleva}′ / ${quiere}′`,{s:8.5,a:"end",c:lleva===quiere?"#4cc38a":lleva<quiere?"#a9b2c3":"#ff7a6b"});yc+=16;
+  ej.forEach(([n,m,hueco])=>{sc+=R(14,yc,172,22,"#2a3754",6)+(hueco?tenue(22,yc+14,n):T(22,yc+14,n,{s:8,w:400}))+tenue(180,yc+14,m?m+"′":"",8,"end");yc+=26;});
+  sc+=tenue(22,yc+8,"+ añadir aquí",7.5);yc+=20;});
+document.getElementById("sC").innerHTML=tel(200,340)+fase("INFANTIL · MARTES")+sc+
+  R(10,290,180,30,"#141a26",8)+T(18,309,"TOTAL 65′ DE 90′",{s:11,f:DSP,w:900})+R(120,293,66,24,"#f26b1d",7)+T(153,309,"▶ A la pista",{a:"middle",s:8.5,c:"#141a26"});
+}
 </script>
