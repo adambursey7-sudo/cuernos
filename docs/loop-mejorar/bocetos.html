@@ -44,6 +44,10 @@ p{margin:0;max-width:68ch}
 .lg{background:var(--sup);border-radius:14px;padding:14px;display:grid;gap:12px;align-content:start;min-width:0}
 .lg .vista{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:#141a26;border-radius:10px;padding:14px}
 .lg .prompt{font:0.8rem/1.45 ui-monospace,Consolas,monospace;background:#141a26;border-radius:8px;padding:10px;color:var(--tenue);white-space:pre-wrap;user-select:all;margin:0}
+.uv{background:var(--sup);border-radius:14px;padding:14px;display:grid;gap:10px;align-content:start;min-width:0}
+.uv svg.tira{width:100%;height:auto;display:block;border-radius:10px}
+.uv .iconos{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.uv .iconos figure{margin:0;display:grid;gap:4px;justify-items:center;font-size:.75rem;color:var(--tenue)}
 </style>
 
 <div class="wrap">
@@ -51,6 +55,17 @@ p{margin:0;max-width:68ch}
   <h1>Cuernos: bocetos del loop</h1>
   <p class="tenue">Cada vuelta del loop añade una entrada arriba: lo hecho con capturas, lo que se puede mejorar y, cuando toca diseñar, las opciones para elegir.</p>
 </header>
+
+<section class="entrada" id="v9">
+  <span class="fecha">29/10 · Logo: más variantes de la U</span>
+  <h2>La U de cuernos, ocho variantes con Graduate</h2>
+  <div class="pregunta">
+    <strong>Elegido: tipografía D · Graduate</strong>
+    <p>Todas parten de la U de cuernos que te gustaba, con la letra Graduate y los colores de siempre. Cada una se ve como icono (grande, iPhone y pestaña) y con el nombre sobre azul, crema y naranja, que es como quedaría en la app, en papel y en una camiseta naranja.</p>
+    <p>Dime un número o una mezcla (por ejemplo, «el icono de la 3 con el nombre de la 8»).</p>
+  </div>
+  <div class="opciones" id="u-v9"></div>
+</section>
 
 <section class="entrada" id="v8">
   <span class="fecha">29/10 · Letra y logo con gancho</span>
@@ -568,4 +583,81 @@ document.getElementById("logos-v8").innerHTML=LOGOS8.map(l=>{
     <div class="vista">${ic(110)}${ic(60)}${ic(26)}<span style="font:900 2.6rem/1 var(--display);color:${CREMA};letter-spacing:.02em">HORNS</span></div>
     <p style="font-size:.92rem">${l.txt}</p>
     <pre class="prompt">${l.prompt}</pre></div>`;}).join("");
+
+// ---- Entrada v9: variantes de la U de cuernos con Graduate ----
+// Paletas por fondo: texto, glifo, balón y línea (contorno o costuras).
+const PAL={
+  azul:{bg:AZUL,txt:CREMA,gl:NAR,bola:CREMA,linea:OSC},
+  crema:{bg:CREMA,txt:AZUL,gl:NAR,bola:AZUL,linea:CREMA},
+  naranja:{bg:NAR,txt:AZUL,gl:AZUL,bola:CREMA,linea:NAR},
+};
+const U={
+  clasica:(p)=>`<path d="M18 12C14 44 24 80 50 82C76 80 86 44 82 12C76 34 70 62 50 64C30 62 24 34 18 12Z" fill="${p.gl}"/><circle cx="50" cy="42" r="9" fill="${p.bola}"/>`,
+  gruesa:(p)=>`<path d="M12 8C8 46 20 88 50 90C80 88 92 46 88 8C80 34 72 60 50 62C28 60 20 34 12 8Z" fill="${p.gl}"/><circle cx="50" cy="40" r="13" fill="${p.bola}"/><path d="M50 27V53M37 40H63M41 30C46 36 46 44 41 50M59 30C54 36 54 44 59 50" fill="none" stroke="${p.gl}" stroke-width="1.8"/>`,
+  // U de letra universitaria: puntas cortadas en recto como las remates de Graduate
+  varsity:(p)=>`<path d="M10 10H30C28 34 36 58 50 60C64 58 72 34 70 10H90C92 50 78 88 50 90C22 88 8 50 10 10Z" fill="${p.gl}"/><circle cx="50" cy="38" r="10" fill="${p.bola}"/>`,
+  afilada:(p)=>`<path d="M14 4C10 46 22 86 50 88C78 86 90 46 86 4C80 38 70 64 50 66C30 64 20 38 14 4Z" fill="${p.gl}"/><circle cx="50" cy="44" r="8" fill="${p.bola}"/>`,
+};
+const VAR9=[
+  {n:"1 · La U de siempre", u:"clasica", partes:["H","#","RNS"], txt:"La que te gustaba, tal cual, con Graduate. Los cuernos hacen de O y el balón queda dentro."},
+  {n:"2 · U gruesa con balón de verdad", u:"gruesa", partes:["H","#","RNS"], txt:"Más gruesa para que pese igual que las letras, y el punto pasa a ser un balón con sus costuras."},
+  {n:"3 · U universitaria", u:"varsity", partes:["H","#","RNS"], txt:"Las puntas se cortan en recto como las letras de Graduate: parece una letra más del alfabeto. La más segura."},
+  {n:"4 · Universitaria con contorno", u:"varsity", partes:["H","#","RNS"], contorno:true, txt:"La 3 con doble línea, como los dorsales y las chaquetas de equipo. Mucho carácter en camisetas."},
+  {n:"5 · Cuernos afilados", u:"afilada", partes:["H","#","RNS"], txt:"Puntas más largas y finas: más agresiva, más toro. Sigue leyéndose HORNS."},
+  {n:"6 · Encima del nombre", u:"varsity", partes:["^","HORNS"], txt:"La U universitaria corona la palabra entera, que se lee completa. Ideal para el pecho de una sudadera."},
+  {n:"7 · Nombre en arco", u:"clasica", arco:true, txt:"HORNS en arco sobre los cuernos, como en las chaquetas universitarias. Muy de equipo, perfecto para escudo."},
+  {n:"8 · Parche redondo", u:"varsity", parche:true, partes:["@","HORNS"], txt:"La U dentro de un parche con borde, como los que se cosen en la ropa. Queda redondo en el icono y en una gorra."},
+];
+const GRAD="Graduate, Georgia, serif";
+function texto(x,y,t,tam,p,contorno,extra=""){
+  return `<text x="${x}" y="${y}" fill="${p.txt}" font-family="${GRAD}" font-size="${tam}" letter-spacing="1" ${contorno?`stroke="${p.gl}" stroke-width="5" paint-order="stroke" stroke-linejoin="round"`:""} ${extra}>${t}</text>`;
+}
+const parche=(p)=>`<circle cx="50" cy="50" r="46" fill="${p.bg===NAR?AZUL:NAR}"/><circle cx="50" cy="50" r="39" fill="none" stroke="${p.bg===NAR?CREMA:CREMA}" stroke-width="2.5" stroke-dasharray="4 3"/><g transform="translate(20 18) scale(.6)">${U.varsity({gl:CREMA,bola:p.bg===NAR?NAR:AZUL})}</g>`;
+function tira(svg,v,p){
+  const tam=64, base=86;
+  let html="";
+  if(v.arco){
+    html=`<defs><path id="arco${svg.id}" d="M-120 64A190 190 0 0 1 120 64"/></defs><text fill="${p.txt}" font-family="${GRAD}" font-size="48" letter-spacing="5" text-anchor="middle"><textPath href="#arco${svg.id}" startOffset="50%">HORNS</textPath></text><g transform="translate(-44 44) scale(.88)">${U[v.u](p)}</g>`;
+    svg.innerHTML=html;
+  } else {
+    svg.innerHTML="";
+    let x=0;
+    for(const parte of v.partes){
+      if(parte==="#"){
+        const sc=.66, el=document.createElementNS(NS,"g");
+        el.innerHTML=v.contorno?U[v.u](p).replace("/>",` stroke="${p.txt}" stroke-width="5" paint-order="stroke"/>`):U[v.u](p);
+        // Se mide el dibujo real para dejar el mismo hueco a los dos lados, como entre letras.
+        svg.appendChild(el); el.setAttribute("transform",`scale(${sc})`); const bb=el.getBBox();
+        el.setAttribute("transform",`translate(${x+4-bb.x*sc} ${base-90*sc}) scale(${sc})`); x+=bb.width*sc+12;
+      } else if(parte==="^"){
+        const el=document.createElementNS(NS,"g"); el.innerHTML=U[v.u](p); el.dataset.encima="1"; svg.appendChild(el);
+      } else if(parte==="@"){
+        const el=document.createElementNS(NS,"g"); el.innerHTML=parche(p); el.setAttribute("transform",`translate(${x} ${base-74}) scale(.82)`); svg.appendChild(el); x+=92;
+      } else {
+        const t=document.createElementNS(NS,"g"); t.innerHTML=texto(x,base,parte,tam,p,v.contorno); svg.appendChild(t);
+        x+=t.querySelector("text").getComputedTextLength()+6;
+      }
+    }
+    const enc=svg.querySelector('[data-encima="1"]');
+    if(enc){ const sc=.55; enc.setAttribute("transform",`translate(${(x-6-100*sc)/2} ${base-tam*.8-92*sc-4}) scale(${sc})`); }
+  }
+  const caja=svg.getBBox();
+  svg.setAttribute("viewBox",`${caja.x-24} ${caja.y-16} ${caja.width+48} ${caja.height+32}`);
+  svg.style.background=p.bg;
+}
+const icono9=(v,tam)=>{
+  const p=PAL.azul;
+  const dentro=v.parche?`<g transform="translate(6 6) scale(.88)">${parche(p)}</g>`:`<g transform="translate(14 12) scale(.72)">${U[v.u](p)}</g>`;
+  return `<svg viewBox="0 0 100 100" width="${tam}" height="${tam}" role="img" aria-label="Icono"><rect width="100" height="100" rx="22" fill="${AZUL}"/>${dentro}</svg>`;
+};
+async function pintarU(){
+  try{ await document.fonts.load('64px "Graduate"'); }catch(e){}
+  const cont=document.getElementById("u-v9");
+  cont.innerHTML=VAR9.map((v,i)=>`<div class="uv"><b class="letra" style="font-family:var(--display);font-size:1.4rem;font-weight:900">${v.n}</b>
+    <div class="iconos"><figure>${icono9(v,96)}<figcaption>Grande</figcaption></figure><figure>${icono9(v,60)}<figcaption>iPhone</figcaption></figure><figure>${icono9(v,24)}<figcaption>Pestaña</figcaption></figure></div>
+    ${["azul","crema","naranja"].map(f=>`<svg class="tira" id="u${i}${f}"></svg>`).join("")}
+    <p style="font-size:.92rem">${v.txt}</p></div>`).join("");
+  VAR9.forEach((v,i)=>["azul","crema","naranja"].forEach(f=>tira(document.getElementById(`u${i}${f}`),v,PAL[f])));
+}
+pintarU();
 </script>
