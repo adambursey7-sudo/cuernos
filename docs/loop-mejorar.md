@@ -36,7 +36,7 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 ## Tramo 2: ejercicios y sesiones
 - [x] 2.1 Diseño → Adam eligió (29/10): biblioteca **A · Lista con filtros** (al abrir, la pizarra grande) y sesiones **B · Línea de tiempo** con un color por tipo: táctica, técnica individual, defensa y drills. Bocetos: https://claude.ai/artifact/7oLvwqtJi5qiMn9UP755up (`docs/loop-mejorar/bocetos-tramo2.html`).
 - [x] 2.2 Ejercicios de las fichas (2x0 a 5x5) con su pizarra animada, nivel, tiempo, material y número de jugadores; filtros por sistema y nivel.
-- [ ] 2.3 Sesiones: montar el entrenamiento con ejercicios, tiempos y total; varias por equipo.
+- [x] 2.3 Sesiones: montar el entrenamiento con ejercicios, tiempos y total; varias por equipo.
 - [ ] 2.4 Cronómetro de pista: pantalla grande, aviso con sonido al cambiar de ejercicio y siguiente ejercicio a la vista.
 - [ ] 2.5 Cierre del tramo.
 
@@ -68,3 +68,4 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - 29/10: Adam: la app se llama **Horns** y mover jugadores con la **A · Arrastra y dibuja**. Hecho: nombre Horns (icono, pestaña, copia de seguridad; las copias viejas siguen valiendo); el camino del dedo es la flecha con su curva, el movimiento se adivina (con balón bote, a un cuerpo de un compañero bloqueo, si no corte) y se cambia tocando su etiqueta; pase arrastrando el balón a un compañero. Arreglado: el editor se salía por la derecha con Graduate. Probado con el guion del dedo; 22 pruebas; revisión baja sin fallos. Falta: interfaz C (inicio de club).
 - 29/10: Tramo 2 empieza en la copia `C:\devaloncesto-t-tramo2` (rama loop/tramo2, sacada de loop/mejorar porque main no tiene el Tramo 1). 2.1: bocetos de biblioteca (A lista con filtros / B tarjeta grande / C escalera por sistema) y sesiones (A lista que se ordena / B línea de tiempo / C por partes) en una página aparte, porque la de siempre ya tiene una entrada del Tramo 3 hecha en otra sesión.
 - 29/10: Adam eligió biblioteca A y sesiones B con colores por tipo. 2.2 hecho: pestaña Ejercicios con filtros, ficha con pizarra recortada del sistema (`src/ejercicios/`); tipo, tiempo, material y pizarra marcados como borrador; 40 pruebas. Servidor en el 5313 (5311 y 5312 ocupados por otras sesiones).
+- 29/10: 2.3 hecho: pestaña Sesiones con equipos (categoría, sin nombres), varias sesiones por equipo, línea de tiempo con color por tipo (cambiable en cada bloque), minutos de 5 en 5, subir/bajar/quitar, duración prevista y aviso si te pasas (`src/sesiones/`, `src/pantallas/Sesiones.tsx`). Se guarda solo en el móvil. El `.pantalla` pasó a `minmax(0,1fr)` para que las filas con scroll no ensanchen la pantalla. Falta 2.4 cronómetro y 2.5 cierre.

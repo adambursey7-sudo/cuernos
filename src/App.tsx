@@ -5,6 +5,7 @@ import { Ajustes } from './pantallas/Ajustes';
 import { Ejercicio } from './pantallas/Ejercicio';
 import { Ejercicios } from './pantallas/Ejercicios';
 import { Inicio } from './pantallas/Inicio';
+import { Sesiones } from './pantallas/Sesiones';
 import { Sistema } from './pantallas/Sistema';
 import { Sistemas } from './pantallas/Sistemas';
 import { buscarSistema } from './sistemas/almacen';
@@ -32,16 +33,12 @@ export function App() {
   const abrir = (id: string, paso = 0) => setAbierto({ id, paso });
   // El ejercicio abierto queda encima de su lista (o de Inicio); desde él se puede ir a su sistema.
   const [ejercicioId, setEjercicioId] = useState<string | null>(null);
+  // La sesión abierta se recuerda aquí para volver a ella tras mirar un ejercicio.
+  const [sesionId, setSesionId] = useState<string | null>(null);
   const ejercicio = ejercicioId ? buscarEjercicio(ejercicioId) : undefined;
 
   let contenido;
-  if (pestana === 'sesiones')
-    contenido = (
-      <section className="pantalla">
-        <h1 className="titulo">Sesiones</h1>
-        <p className="vacio">Aquí se planificarán los entrenamientos de cada equipo: arrastrar ejercicios, tiempos y material.</p>
-      </section>
-    );
+  if (pestana === 'sesiones' && !ejercicio) contenido = <Sesiones abrirEjercicio={setEjercicioId} abierta={sesionId} abrir={setSesionId} />;
   else if (pestana === 'ajustes') contenido = <Ajustes />;
   else if (edicion)
     contenido = (
@@ -77,7 +74,7 @@ export function App() {
       <main>{contenido}</main>
       <nav className="pestanas">
         {PESTANAS.map((p) => (
-          <button key={p.id} className={p.id === pestana ? 'on' : ''} onClick={() => { setPestana(p.id); setAbierto(null); setEdicion(null); setEjercicioId(null); }}>
+          <button key={p.id} className={p.id === pestana ? 'on' : ''} onClick={() => { setPestana(p.id); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>
             {p.nombre}
           </button>
         ))}
