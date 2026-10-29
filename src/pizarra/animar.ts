@@ -65,4 +65,39 @@ export function foto(s: Sistema, t: number): Foto {
   return { jugadores, balon, conBalon: marcas[i + 1].balon };
 }
 
+const CANASTA: Punto = [75, 12];
+/** Cuánto va la defensa por detrás del ataque (en pasos): así se queda atrás al chocar con un bloqueo. */
+const RETRASO = 0.14;
+
+/**
+ * Defensa individual: cada X entre su atacante y la canasta. La del balón va pegada (1 m); las demás,
+ * más separadas y cerradas hacia el balón para ayudar.
+ */
+export function defensa(s: Sistema, t: number): Record<Jugador, Punto> {
+  const ahora = foto(s, t);
+  const atras = foto(s, Math.max(0, t - RETRASO));
+  const pos = {} as Record<Jugador, Punto>;
+  for (const j of JUGADORES) {
+    const [ax, ay] = atras.jugadores[j];
+    const dx = CANASTA[0] - ax;
+    const dy = CANASTA[1] - ay;
+    const lejos = Math.hypot(dx, dy) || 1;
+    const conBalon = j === ahora.conBalon;
+    // Separación pensada para que la X no quede tapada por el círculo del atacante (radio 7).
+    const d = Math.min(conBalon ? 10 : 13, lejos * 0.6);
+    let x = ax + (dx / lejos) * d;
+    let y = ay + (dy / lejos) * d;
+    if (!conBalon) {
+      // Ayuda: se cierra hacia el balón, como mucho 6 dm para no perder a su atacante.
+      const bx = ahora.balon[0] - x;
+      const by = ahora.balon[1] - y;
+      const k = Math.min(0.22, 6 / (Math.hypot(bx, by) || 1));
+      x += bx * k;
+      y += by * k;
+    }
+    pos[j] = [Math.max(4, Math.min(146, x)), Math.max(4, Math.min(136, y))];
+  }
+  return pos;
+}
+
 export { JUGADORES };

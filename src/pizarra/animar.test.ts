@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SISTEMAS } from '../sistemas/datos';
-import { foto, inicios } from './animar';
+import { defensa, foto, inicios } from './animar';
 
 const cuernos = SISTEMAS.find((s) => s.id === 'cuernos')!;
 const cflex = SISTEMAS.find((s) => s.id === 'cuernos-flex')!;
@@ -21,6 +21,25 @@ describe('pizarra', () => {
     const f = foto(cflex, 1);
     expect(f.balon).toEqual(cflex.inicio['4']);
     expect(inicios(cflex)[3].balon).toBe('1');
+  });
+
+  it('al empezar, cada defensor está entre su atacante y la canasta', () => {
+    const canasta = (p: number[]) => Math.hypot(p[0] - 75, p[1] - 12);
+    for (const s of SISTEMAS) {
+      const ataque = foto(s, 0).jugadores;
+      const d = defensa(s, 0);
+      for (const j of ['1', '2', '3', '4', '5'] as const) expect(canasta(d[j])).toBeLessThan(canasta(ataque[j]));
+    }
+  });
+
+  it('ningún defensor se despega de su atacante (como mucho 3 m, al perderlo en un corte)', () => {
+    for (const s of SISTEMAS)
+      for (let t = 0; t <= s.pasos.length; t += 0.1) {
+        const ataque = foto(s, t).jugadores;
+        const d = defensa(s, t);
+        for (const j of ['1', '2', '3', '4', '5'] as const)
+          expect(Math.hypot(d[j][0] - ataque[j][0], d[j][1] - ataque[j][1])).toBeLessThan(30);
+      }
   });
 
   it('todos los puntos quedan dentro de la media pista', () => {

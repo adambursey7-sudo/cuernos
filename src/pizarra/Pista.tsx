@@ -1,6 +1,6 @@
 // Media pista con los cinco atacantes y el balón. Se pinta con los colores del tema (variables CSS).
 import type { Punto, Sistema } from '../sistemas/tipos';
-import { foto, inicios, JUGADORES, pasoDe } from './animar';
+import { defensa, foto, inicios, JUGADORES, pasoDe } from './animar';
 
 /** El jugador acaba encima del final de su flecha: se recorta para que la punta quede a la vista. */
 const HUECO = 9;
@@ -27,8 +27,9 @@ function remate(desde: Punto, a: Punto, bloqueo: boolean) {
   return `M${x1} ${y1}L${a[0]} ${a[1]}L${x2} ${y2}`;
 }
 
-export function Pista({ sistema, t, alto = 140 }: { sistema: Sistema; t: number; alto?: number }) {
+export function Pista({ sistema, t, alto = 140, conDefensa = false }: { sistema: Sistema; t: number; alto?: number; conDefensa?: boolean }) {
   const f = foto(sistema, t);
+  const d = conDefensa ? defensa(sistema, t) : null;
   const i = pasoDe(t, sistema.pasos.length);
   const antes = inicios(sistema)[i].pos;
   const y0 = (alto - 140) / 2;
@@ -61,6 +62,10 @@ export function Pista({ sistema, t, alto = 140 }: { sistema: Sistema; t: number;
             </g>
           );
         })}
+        {d &&
+          JUGADORES.map((j) => (
+            <path key={'x' + j} className="defensor" transform={`translate(${d[j][0]} ${d[j][1]})`} d="M-4 -4L4 4M4 -4L-4 4" />
+          ))}
         {JUGADORES.map((j) => {
           const [x, y] = f.jugadores[j];
           return (

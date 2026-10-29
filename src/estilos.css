@@ -7,6 +7,7 @@
   --tenue: color-mix(in srgb, var(--texto) 62%, var(--fondo));
   --zona: color-mix(in srgb, var(--pista) 78%, var(--fondo));
   --aviso: #ffb020;
+  --defensa: #d63a2f;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; background: var(--fondo); color: var(--texto); font: 17px/1.5 var(--body); -webkit-tap-highlight-color: transparent; }
@@ -43,6 +44,8 @@ main { flex: 1; width: 100%; max-width: 560px; margin: 0 auto; }
 .niveles { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
 .chip { flex: none; padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--tenue); background: none; font-size: 0.92rem; }
 .chip.on { background: var(--principal); border-color: var(--principal); color: var(--sobre-principal); font-weight: 700; }
+.chip.defensa { margin-left: auto; }
+.chip.defensa.on { background: var(--defensa); border-color: var(--defensa); color: #fff8ee; }
 .marcador { display: flex; align-items: baseline; gap: 6px; margin-top: 4px; }
 .numero { font: 900 6.2rem/0.78 var(--display); color: var(--principal); font-variant-numeric: tabular-nums; }
 .de { font: 800 2rem/1 var(--display); color: var(--tenue); }
@@ -85,5 +88,6 @@ main { flex: 1; width: 100%; max-width: 560px; margin: 0 auto; }
 .pista .flecha.bloqueo path { stroke-width: 2.2; }
 .pista .jugador circle { fill: var(--jugadores); stroke: var(--principal); stroke-width: 1.3; }
 .pista .jugador text { fill: var(--texto-jugadores); font: 700 7px var(--body); text-anchor: middle; dominant-baseline: central; }
+.pista .defensor { fill: none; stroke: var(--defensa); stroke-width: 2.4; stroke-linecap: round; }
 .pista .balon { fill: #f26b1d; stroke: #3a1a05; stroke-width: 0.8; }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }

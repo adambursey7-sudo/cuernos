@@ -6,6 +6,23 @@ import { SISTEMAS } from '../sistemas/datos';
 import { NIVELES, type Nivel } from '../sistemas/tipos';
 
 const SEGUNDOS_POR_PASO = 1.6;
+const CLAVE_DEFENSA = 'cuernos.defensa';
+
+function leerDefensa(): boolean {
+  try {
+    return localStorage.getItem(CLAVE_DEFENSA) !== 'no';
+  } catch {
+    return true;
+  }
+}
+
+function guardarDefensa(si: boolean) {
+  try {
+    localStorage.setItem(CLAVE_DEFENSA, si ? 'si' : 'no');
+  } catch {
+    /* sin almacenamiento: vale solo hasta cerrar */
+  }
+}
 
 export function Sistema({ id, volver }: { id: string; volver: () => void }) {
   const s = SISTEMAS.find((x) => x.id === id)!;
@@ -15,7 +32,12 @@ export function Sistema({ id, volver }: { id: string; volver: () => void }) {
   // t = 1 deja el primer paso dibujado y acabado; «Ver jugada» la anima desde el principio.
   const [t, setT] = useState(1);
   const [jugando, setJugando] = useState(false);
+  const [conDefensa, setConDefensa] = useState(leerDefensa);
   const ultimo = useRef(0);
+  const cambiarDefensa = () => {
+    setConDefensa(!conDefensa);
+    guardarDefensa(!conDefensa);
+  };
   const paso = pasoDe(t, total);
 
   useEffect(() => {
@@ -58,6 +80,9 @@ export function Sistema({ id, volver }: { id: string; volver: () => void }) {
             {n.nombre}
           </button>
         ))}
+        <button className={conDefensa ? 'chip defensa on' : 'chip defensa'} aria-pressed={conDefensa} onClick={cambiarDefensa}>
+          ✕ Defensa
+        </button>
       </div>
 
       <div className="marcador" aria-live="polite">
@@ -65,7 +90,7 @@ export function Sistema({ id, volver }: { id: string; volver: () => void }) {
         <span className="de">/ {total}</span>
       </div>
       <button className="pizarra" onClick={verJugada} aria-label="Ver la jugada entera">
-        <Pista sistema={s} t={t} />
+        <Pista sistema={s} t={t} conDefensa={conDefensa} />
       </button>
       <p className="explica">
         {s.pasos[paso].texto}
