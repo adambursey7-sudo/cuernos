@@ -37,6 +37,82 @@ p{margin:0;max-width:68ch}
   <p class="tenue">Cada vuelta del loop añade una entrada arriba: lo hecho con capturas, lo que se puede mejorar y, cuando toca diseñar, las opciones para elegir.</p>
 </header>
 
+<section class="entrada" id="v6">
+  <span class="fecha">29/10 · Después de probarla en el iPhone</span>
+  <h2>Mover mejor, GIF, logo e interfaz</h2>
+  <div class="pregunta">
+    <strong>Tres cosas para elegir</strong>
+    <p>Dime una letra en cada bloque: <b>1 · cómo mover a los jugadores</b>, <b>2 · el logo</b> y <b>3 · la interfaz</b>. Se pueden mezclar (por ejemplo, «interfaz A con la galería de la B»). Estas tres no las programo hasta que elijas; el GIF y lo del dedo ya están hechos.</p>
+  </div>
+
+  <h3>Ya hecho</h3>
+  <div class="opciones" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+    <figure style="margin:0;display:grid;gap:6px"><img src="capturas/v6-gif.png" alt="Pantalla del sistema con la vista previa del GIF debajo de la pista" style="width:100%;border-radius:12px"><figcaption class="tenue">Botón GIF: se crea en unos segundos y «Enviar o guardar» abre WhatsApp, Fotos…</figcaption></figure>
+    <figure style="margin:0;display:grid;gap:6px"><img src="capturas/v6-fotograma.png" alt="Un fotograma del GIF: nombre, paso 2 de 5, pista y explicación" style="width:100%;border-radius:12px"><figcaption class="tenue">Un fotograma del GIF: nombre, paso, jugada animada y explicación</figcaption></figure>
+  </div>
+  <div class="opciones">
+    <div><h3>Cambios</h3><ul class="lista">
+      <li><b>Dedo fuera de la pista:</b> ya no se selecciona texto ni sale el menú de copiar al arrastrar. Escribir en los campos sigue funcionando.</li>
+      <li><b>GIF de la jugada:</b> respeta tus colores y si la defensa está puesta o no. Se repite solo, con una pausa al final de cada paso. También puedes mantener pulsada la vista previa para guardarla en Fotos.</li>
+    </ul></div>
+    <div><h3>Mejorable</h3><ul class="lista">
+      <li>El GIF pesa 1,6 MB con 5 pasos; WhatsApp lo pasa a vídeo corto y va bien.</li>
+      <li>Más adelante se puede sacar también en vídeo MP4 o como imagen fija de cada paso.</li>
+    </ul></div>
+  </div>
+
+  <h3>1 · Mover a los jugadores</h3>
+  <p class="tenue">En las tres el jugador va pegado al dedo (ya no una sombra), se agarra aunque no le aciertes de lleno y se pueden mover varios jugadores en el mismo paso.</p>
+  <div class="opciones">
+    <div class="op"><b class="letra">A · Arrastra y dibuja</b>
+      <svg viewBox="0 0 200 340" id="mA"></svg>
+      <div class="pc"><span class="v">El camino que hace tu dedo es la flecha, con su curva. Sin ventanas en medio.</span><span class="v">Adivina el movimiento: con balón es bote; si acaba pegado a un compañero, bloqueo; si no, corte. El pase se hace arrastrando el balón al compañero.</span><span class="i">Si adivina mal, tocas la etiqueta de la flecha para cambiarlo (un toque más).</span></div>
+    </div>
+    <div class="op"><b class="letra">B · Elige y dibuja</b>
+      <svg viewBox="0 0 200 340" id="mB"></svg>
+      <div class="pc"><span class="v">Barra fija con Corte, Bote, Bloqueo y Pase: eliges y dibujas tantos como quieras de ese tipo.</span><span class="v">Nunca se equivoca: lo que eliges es lo que sale.</span><span class="i">Hay que cambiar de herramienta entre movimientos distintos.</span></div>
+    </div>
+    <div class="op"><b class="letra">C · Grabar en directo</b>
+      <svg viewBox="0 0 200 340" id="mC"></svg>
+      <div class="pc"><span class="v">Pulsas grabar y mueves a los jugadores como si fuera la pista, incluso dos a la vez con dos dedos. Guarda el ritmo real.</span><span class="v">La más divertida y la más parecida a jugar.</span><span class="i">Más difícil de corregir un detalle; hay que regrabar el paso.</span></div>
+    </div>
+  </div>
+
+  <h3>2 · Logo</h3>
+  <p class="tenue">Irá en el icono del iPhone, en una pantalla de bienvenida al abrir, arriba en Sistemas, en el GIF y en la pestaña del navegador.</p>
+  <div class="opciones">
+    <div class="op"><b class="letra">A · Balón con cuernos</b>
+      <svg viewBox="0 0 320 150" id="lA"></svg>
+      <div class="pc"><span class="v">Se entiende al momento: baloncesto y cuernos. Muy reconocible en pequeño.</span><span class="v">Tiene algo de escudo de equipo.</span><span class="i">Más de mascota que de herramienta de entrenador.</span></div>
+    </div>
+    <div class="op"><b class="letra">B · La jugada es el logo</b>
+      <svg viewBox="0 0 320 150" id="lB"></svg>
+      <div class="pc"><span class="v">Es la jugada Cuernos dibujada: dos jugadores en los codos con sus flechas formando los cuernos.</span><span class="v">Dice «pizarra de entrenador» sin palabras.</span><span class="i">En tamaño muy pequeño se pierden los detalles de la pista.</span></div>
+    </div>
+    <div class="op"><b class="letra">C · La U son los cuernos</b>
+      <svg viewBox="0 0 320 150" id="lC"></svg>
+      <div class="pc"><span class="v">El nombre y el logo son lo mismo: la U de CUERNOS son dos cuernos con el balón dentro.</span><span class="v">El más limpio y moderno; queda bien en camisetas y sudaderas.</span><span class="i">Sin el nombre al lado, el icono solo es más abstracto.</span></div>
+    </div>
+  </div>
+
+  <h3>3 · Interfaz</h3>
+  <p class="tenue">En cada opción: la lista de jugadas y una jugada abierta.</p>
+  <div class="opciones">
+    <div class="op"><b class="letra">A · Marcador pro</b>
+      <svg viewBox="0 0 340 330" id="iA"></svg>
+      <div class="pc"><span class="v">Sigue el estilo de ahora, pero más ordenado: buscador, filtros, barra de tiempo con los pasos y la ficha en pestañas en vez de un texto largo.</span><span class="v">El cambio menos brusco.</span><span class="i">Sigue habiendo que bajar para ver algunas cosas.</span></div>
+    </div>
+    <div class="op"><b class="letra">B · Pizarra primero</b>
+      <svg viewBox="0 0 340 330" id="iB"></svg>
+      <div class="pc"><span class="v">Como FastDraw o TacticalPad: la pista ocupa casi toda la pantalla y el resto va en una hoja que subes desde abajo.</span><span class="v">Galería de jugadas en dos columnas, como fotos.</span><span class="i">La explicación y la ficha quedan escondidas hasta que subes la hoja.</span></div>
+    </div>
+    <div class="op"><b class="letra">C · Inicio de club</b>
+      <svg viewBox="0 0 340 330" id="iC"></svg>
+      <div class="pc"><span class="v">Como Elite Hoops: pantalla de inicio con «Seguir donde lo dejaste» y colecciones (ataque, defensa, ejercicios) que se deslizan.</span><span class="v">La que más parece una app profesional de pago.</span><span class="i">Un toque más para llegar a la pizarra; más trabajo de programar.</span></div>
+    </div>
+  </div>
+</section>
+
 <section class="entrada" id="cierre-1">
   <span class="fecha">29/10 · Tramo 1 · Cierre</span>
   <h2>Tramo 1 terminado: falta tu visto bueno</h2>
@@ -221,4 +297,101 @@ document.getElementById("eC").innerHTML=tel(200,340)+T(14,30,"PASO 2 · 2 DE 3",
   T(14,56,"¿Qué hace el 5?",{s:16,f:"Big Shoulders Display"})+
   ["Corta a canasta","Bota","Pone un bloqueo","Pasa el balón"].map((t,i)=>R(14,70+i*40,172,32,i===2?"#f26b1d":"#2a3754",8)+T(26,90+i*40,t,{s:10})).join("")+
   pista(50,236,100)+T(100,336,"",{});
+
+// ---- Entrada v6: mover jugadores, logo e interfaz ----
+const fase=(t)=>T(14,30,t,{s:11,f:"Big Shoulders Display"});
+const dedo=(x,y)=>`<circle cx="${x}" cy="${y}" r="9" fill="#fff8ee" fill-opacity=".28" stroke="#fff8ee" stroke-width="1.2"/>`;
+const jug=(x,y,t,fant)=>`<circle cx="${x}" cy="${y}" r="8.4" fill="#1e2a44" stroke="#f26b1d" stroke-width="1.6" ${fant?'stroke-dasharray="2 2" fill-opacity=".5"':''}/>`+T(x,y+3,t,{a:"middle",s:8.5});
+const btn=(x,y,w,t,on)=>R(x,y,w,30,on?"#f26b1d":"#2a3754",8)+T(x+w/2,y+19,t,{a:"middle",s:9,c:on?"#141a26":"#fff8ee"});
+
+// A: el camino del dedo queda dibujado y lleva una etiqueta que se toca para cambiar el tipo.
+document.getElementById("mA").innerHTML=tel(200,340)+fase("MI JUGADA · PASO 2")+pista(10,40,180)+
+  `<path d="M176 52C182 80 170 104 146 116" fill="none" stroke="#141a26" stroke-width="2.4" stroke-linecap="round"/>`+jug(176,52,"3",true)+jug(146,116,"3")+dedo(152,122)+
+  R(148,82,40,15,"#f26b1d",7)+T(168,93,"Corte ▾",{a:"middle",s:8,c:"#141a26"})+
+  T(100,232,"Dibuja con el dedo. Toca la etiqueta para cambiarla.",{a:"middle",s:7.6,w:400,c:"#a9b2c3"})+
+  btn(10,250,86,"↶ Deshacer")+btn(104,250,86,"+ Paso",true)+T(100,302,"Pase: arrastra el balón al compañero",{a:"middle",s:8,w:400,c:"#a9b2c3"});
+
+// B: herramienta elegida en una barra fija.
+document.getElementById("mB").innerHTML=tel(200,340)+fase("MI JUGADA · PASO 2")+
+  ["Corte","Bote","Bloqueo","Pase"].map((t,i)=>R(10+i*46,36,42,26,i===2?"#f26b1d":"#2a3754",8)+T(31+i*46,53,t,{a:"middle",s:8.2,c:i===2?"#141a26":"#fff8ee"})).join("")+
+  pista(10,68,180)+`<path d="M114 172Q126 150 124 132" fill="none" stroke="#141a26" stroke-width="2.6"/><path d="M118 132H130" stroke="#141a26" stroke-width="2.6"/>`+dedo(124,130)+
+  T(100,260,"Bloqueo: toca al jugador y dibuja",{a:"middle",s:8,w:400,c:"#a9b2c3"})+btn(10,274,86,"↶ Deshacer")+btn(104,274,86,"+ Paso",true);
+
+// C: grabación en directo con dos dedos y rastro de cada jugador.
+document.getElementById("mC").innerHTML=tel(200,340)+R(12,20,96,20,"#d63a2f",10)+`<circle cx="24" cy="30" r="4" fill="#fff8ee"/>`+T(34,34,"GRABANDO 0:03",{s:9,f:"Big Shoulders Display"})+
+  T(188,34,"PASO 2",{a:"end",s:11,f:"Big Shoulders Display"})+pista(10,48,180)+
+  `<path d="M76 120C66 104 60 90 58 76" fill="none" stroke="#fff8ee" stroke-opacity=".75" stroke-width="2" stroke-dasharray="1 3" stroke-linecap="round"/>`+
+  `<path d="M114 152C126 136 140 120 150 98" fill="none" stroke="#fff8ee" stroke-opacity=".75" stroke-width="2" stroke-dasharray="1 3" stroke-linecap="round"/>`+
+  jug(58,76,"4")+dedo(54,72)+jug(150,98,"5")+dedo(154,94)+
+  T(100,262,"Mueve a quien quieras, con uno o dos dedos",{a:"middle",s:8,w:400,c:"#a9b2c3"})+
+  `<rect x="14" y="278" width="172" height="5" rx="2.5" fill="#2a3754"/><rect x="14" y="278" width="70" height="5" rx="2.5" fill="#d63a2f"/>`+
+  btn(10,296,86,"■ Parar",true)+btn(104,296,86,"↻ Repetir");
+
+// Logos: icono a la izquierda (como en el iPhone) y el nombre a la derecha.
+const ESC=(x,y,s,inner)=>`<g transform="translate(${x} ${y}) scale(${s})">${inner}</g>`;
+const LOGO={
+  A:`<rect width="100" height="100" rx="22" fill="#1e2a44"/>
+     <path d="M33 46C18 40 12 26 15 10C22 22 30 30 43 37Z" fill="#fff8ee"/><path d="M67 46C82 40 88 26 85 10C78 22 70 30 57 37Z" fill="#fff8ee"/>
+     <circle cx="50" cy="60" r="25" fill="#f26b1d" stroke="#141a26" stroke-width="2.5"/>
+     <path d="M50 35V85M25 60H75M33 42C42 52 42 68 33 78M67 42C58 52 58 68 67 78" fill="none" stroke="#141a26" stroke-width="2.5"/>`,
+  B:`<rect width="100" height="100" rx="22" fill="#1e2a44"/>
+     <path d="M14 0V30A36 36 0 0 0 86 30V0" fill="none" stroke="#a9b2c3" stroke-opacity=".45" stroke-width="2"/>
+     <circle cx="50" cy="14" r="3.4" fill="none" stroke="#a9b2c3" stroke-opacity=".7" stroke-width="2"/>
+     <path d="M31 50C21 42 17 32 19 18M69 50C79 42 83 32 81 18" fill="none" stroke="#f26b1d" stroke-width="6" stroke-linecap="round"/>
+     <path d="M12 25L19 15L26 24M74 24L81 15L88 25" fill="none" stroke="#f26b1d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+     <path d="M47 76L36 60M53 76L64 60" stroke="#fff8ee" stroke-width="2.4" stroke-dasharray="3 3"/>
+     <circle cx="32" cy="54" r="7.5" fill="#fff8ee"/><circle cx="68" cy="54" r="7.5" fill="#fff8ee"/>
+     <circle cx="50" cy="82" r="7.5" fill="#fff8ee"/><circle cx="56" cy="76" r="4" fill="#f26b1d" stroke="#141a26" stroke-width="1.2"/>`,
+  C:`<rect width="100" height="100" rx="22" fill="#1e2a44"/>
+     <path d="M18 12C14 44 24 80 50 82C76 80 86 44 82 12C76 34 70 62 50 64C30 62 24 34 18 12Z" fill="#f26b1d"/>
+     <circle cx="50" cy="42" r="9" fill="#fff8ee"/>`,
+};
+const nombre=(x,y,s=40)=>T(x,y,"CUERNOS",{s,f:"Big Shoulders Display",w:900});
+document.getElementById("lA").innerHTML=R(0,0,320,150,"#141a26",12)+ESC(20,25,1,LOGO.A)+ESC(140,47,.36,LOGO.A)+nombre(182,90);
+document.getElementById("lB").innerHTML=R(0,0,320,150,"#141a26",12)+ESC(20,25,1,LOGO.B)+ESC(140,47,.36,LOGO.B)+nombre(182,90);
+// En la C, el nombre lleva los cuernos en lugar de la U.
+document.getElementById("lC").innerHTML=R(0,0,320,150,"#141a26",12)+ESC(20,25,1,LOGO.C)+
+  T(172,92,"C",{s:44,f:"Big Shoulders Display",w:900,a:"end"})+
+  `<g transform="translate(166 52) scale(.44)"><path d="M18 12C14 44 24 80 50 82C76 80 86 44 82 12C76 34 70 62 50 64C30 62 24 34 18 12Z" fill="#f26b1d"/><circle cx="50" cy="42" r="9" fill="#fff8ee"/></g>`+
+  T(204,92,"ERNOS",{s:44,f:"Big Shoulders Display",w:900});
+
+// Interfaz: dos móviles por opción (lista y jugada abierta).
+const movil=(x,inner)=>`<g transform="translate(${x} 4)">${tel(160,320)}${inner}</g>`;
+const marca=(x,y)=>ESC(x,y,.16,LOGO.C);
+const tarjeta=(y,n,m)=>R(10,y,140,40,"#2a3754",8)+pista(14,y+4,34)+T(56,y+18,n,{s:10,f:"Big Shoulders Display",w:900})+T(56,y+31,m,{s:6.5,w:400,c:"#a9b2c3"});
+const pestanas=(y,on)=>["SISTEMAS","EJERCICIOS","SESIONES","AJUSTES"].map((t,i)=>T(22+i*39,y,t,{a:"middle",s:6.4,f:"Big Shoulders Display",c:i===on?"#f26b1d":"#a9b2c3"})).join("");
+
+document.getElementById("iA").innerHTML=
+  movil(6,marca(12,12)+T(34,26,"CUERNOS",{s:11,f:"Big Shoulders Display",w:900})+T(12,58,"SISTEMAS",{s:26,f:"Big Shoulders Display",w:900})+
+    R(10,68,140,18,"#2a3754",9)+T(20,80,"⌕  Buscar jugada",{s:7,w:400,c:"#a9b2c3"})+
+    pill(10,92,"Ataque",true)+pill(56,92,"Defensa",false)+pill(108,92,"Cadete",false)+
+    tarjeta(116,"CUERNOS","4 pasos · desde infantil")+tarjeta(162,"CUERNOS FLEX","5 pasos · desde cadete")+tarjeta(208,"FLEX","6 pasos · borrador")+pestanas(304,0))+
+  movil(174,T(12,26,"‹  CUERNOS FLEX",{s:13,f:"Big Shoulders Display",w:900})+pista(6,36,148)+R(10,146,40,24,"#141a26",6)+T(30,164,"2/5",{a:"middle",s:17,f:"Big Shoulders Display",w:900,c:"#f26b1d"})+
+    `<rect x="12" y="180" width="136" height="4" rx="2" fill="#2a3754"/><rect x="12" y="180" width="54" height="4" rx="2" fill="#f26b1d"/>`+[0,1,2,3,4,5].map(i=>`<circle cx="${12+i*27.2}" cy="182" r="3" fill="${i<3?"#f26b1d":"#2a3754"}"/>`).join("")+
+    T(12,202,"1 bloquea a 5; 5 corta a canasta.",{s:7.5,w:400})+btn(10,212,44,"‹")+btn(58,212,40,"▶")+btn(102,212,48,"›",true)+
+    ["Idea","Lectura","Errores","Ejerc."].map((t,i)=>T(26+i*36,262,t,{a:"middle",s:7,c:i===1?"#f26b1d":"#a9b2c3"})).join("")+`<rect x="44" y="266" width="32" height="2" fill="#f26b1d"/>`+
+    T(12,282,"Si el 5 se cierra, el 1 sale",{s:7,w:400,c:"#a9b2c3"})+T(12,292,"por el otro lado…",{s:7,w:400,c:"#a9b2c3"})+pestanas(304,0));
+
+const galeria=[["CUERNOS",0],["C. FLEX",1],["FLEX",2],["MI 1-4",3]];
+document.getElementById("iB").innerHTML=
+  movil(6,marca(12,12)+T(34,26,"MIS JUGADAS",{s:11,f:"Big Shoulders Display",w:900})+T(148,26,"+",{s:16,a:"end",c:"#f26b1d"})+
+    galeria.map(([n,i])=>{const x=10+(i%2)*72,y=40+Math.floor(i/2)*96;return pista(x,y,68)+T(x,y+76,n,{s:10,f:"Big Shoulders Display",w:900})+T(x,y+86,"5 pasos",{s:6.5,w:400,c:"#a9b2c3"});}).join("")+
+    pill(10,236,"Ataque",true)+pill(56,236,"Defensa",false)+pestanas(304,0))+
+  movil(174,pista(2,16,156)+
+    [["▶",60],["✕",90],["GIF",120]].map(([t,y])=>`<circle cx="140" cy="${y}" r="11" fill="#141a26" fill-opacity=".8"/>`+T(140,y+3.5,t,{a:"middle",s:t==="GIF"?6.5:9})).join("")+
+    R(8,148,40,24,"#141a26",6)+T(28,166,"2/5",{a:"middle",s:17,f:"Big Shoulders Display",w:900,c:"#f26b1d"})+
+    R(2,190,156,126,"#2a3754",14)+R(66,197,28,4,"#a9b2c3",2)+T(12,220,"CUERNOS FLEX · PASO 2",{s:10,f:"Big Shoulders Display",w:900})+
+    T(12,236,"1 bloquea a 5; 5 corta a canasta.",{s:7.5,w:400})+T(12,256,"Sube la hoja: idea, lectura,",{s:7,w:400,c:"#a9b2c3"})+T(12,266,"errores y ejercicios.",{s:7,w:400,c:"#a9b2c3"}));
+
+const carrusel=(y,titulo,nombres)=>T(12,y,titulo,{s:12,f:"Big Shoulders Display",w:900})+nombres.map((n,i)=>pista(12+i*64,y+6,58)+T(12+i*64,y+70,n,{s:8.5,f:"Big Shoulders Display",w:900})).join("");
+document.getElementById("iC").innerHTML=
+  movil(6,marca(12,12)+T(34,26,"CUERNOS",{s:11,f:"Big Shoulders Display",w:900})+T(12,50,"Hola, entrenador",{s:12,w:700})+
+    R(10,58,140,40,"#f26b1d",10)+T(20,74,"SEGUIR DONDE LO DEJASTE",{s:7,f:"Big Shoulders Display",c:"#141a26"})+T(20,90,"Cuernos Flex · paso 3",{s:9,c:"#141a26"})+
+    carrusel(120,"ATAQUE",["CUERNOS","FLEX","1-4"])+carrusel(210,"EJERCICIOS",["2X0","3X3","5X5"])+
+    ["INICIO","JUGADAS","SESIONES","AJUSTES"].map((t,i)=>T(22+i*39,304,t,{a:"middle",s:6.4,f:"Big Shoulders Display",c:i===0?"#f26b1d":"#a9b2c3"})).join(""))+
+  movil(174,pista(2,2,156)+R(2,2,156,145,"#141a26",0).replace('fill="#141a26"','fill="#141a26" fill-opacity=".25"')+
+    T(12,170,"CUERNOS FLEX",{s:18,f:"Big Shoulders Display",w:900})+pill(12,178,"Cadete",true)+pill(58,178,"5 pasos",false)+
+    R(10,202,140,30,"#2a3754",8)+T(20,214,"IDEA",{s:7,f:"Big Shoulders Display",c:"#f26b1d"})+T(20,226,"Cuernos con bloqueo ciego…",{s:7,w:400})+
+    R(10,238,140,30,"#2a3754",8)+T(20,250,"EJERCICIOS",{s:7,f:"Big Shoulders Display",c:"#f26b1d"})+T(20,262,"3 de 2x0 a 5x5",{s:7,w:400})+
+    btn(10,276,140,"▶ VER LA JUGADA",true));
 </script>
