@@ -382,3 +382,7 @@ select#fi-sis { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.
 .org-barra { display: grid; gap: 8px; margin: 8px 0; }
 .org-buscar { width: 100%; box-sizing: border-box; font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid #3a3d44; background: #14161a; color: inherit; }
 #org-nueva { flex: 1; min-width: 0; font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid #3a3d44; background: #14161a; color: inherit; }
+
+/* Pedir a Claude (tramo 4) */
+.ia-previa { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 0.85rem; background: rgba(0, 0, 0, 0.05); border-radius: 8px; padding: 10px; margin: 6px 0 0; max-height: 40vh; overflow: auto; }
+.enlace { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; font: inherit; cursor: pointer; }

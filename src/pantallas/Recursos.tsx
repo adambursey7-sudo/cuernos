@@ -14,7 +14,7 @@ function Miniatura({ r }: { r: Recurso }) {
   return r.miniatura ? <img className="rec-mini" src={r.miniatura} alt="" loading="lazy" referrerPolicy="no-referrer" /> : <span className={`rec-mini ${r.origen}`} aria-hidden="true">{NOMBRE_ORIGEN[r.origen].slice(0, 2)}</span>;
 }
 
-export function Recursos({ enlaceInicial, convertir }: { enlaceInicial?: string; convertir: (r: Recurso) => void }) {
+export function Recursos({ enlaceInicial, convertir, pedirIA }: { enlaceInicial?: string; convertir: (r: Recurso) => void; pedirIA: (r: Recurso) => void }) {
   const [lista, setLista] = useState(leerRecursos);
   const [estado, setEstado] = useState<Estado>('nuevo');
   const [abierto, setAbierto] = useState<Abierto>(enlaceInicial ? { nuevo: true, enlace: enlaceInicial } : null);
@@ -41,7 +41,7 @@ export function Recursos({ enlaceInicial, convertir }: { enlaceInicial?: string;
   }
   const r = abierto ? lista.find((x) => x.id === abierto.id) : undefined;
   if (r) {
-    return <Detalle r={r} colecciones={coleccionesDe(lista)} convertir={() => convertir(r)} volver={() => setAbierto(null)} cambiar={(n) => poner(lista.map((x) => (x.id === n.id ? n : x)))} borrar={() => { poner(lista.filter((x) => x.id !== r.id)); setAbierto(null); }} />;
+    return <Detalle r={r} colecciones={coleccionesDe(lista)} convertir={() => convertir(r)} pedirIA={() => pedirIA(r)} volver={() => setAbierto(null)} cambiar={(n) => poner(lista.map((x) => (x.id === n.id ? n : x)))} borrar={() => { poner(lista.filter((x) => x.id !== r.id)); setAbierto(null); }} />;
   }
 
   // Con una búsqueda o un filtro puesto se mira en todos los estados a la vez.
@@ -113,7 +113,7 @@ function Nuevo({ enlace: inicial, cancelar, guardar }: { enlace: string; cancela
   );
 }
 
-function Detalle({ r, colecciones, convertir, volver, cambiar, borrar }: { r: Recurso; colecciones: string[]; convertir: () => void; volver: () => void; cambiar: (r: Recurso) => void; borrar: () => void }) {
+function Detalle({ r, colecciones, convertir, pedirIA, volver, cambiar, borrar }: { r: Recurso; colecciones: string[]; convertir: () => void; pedirIA: () => void; volver: () => void; cambiar: (r: Recurso) => void; borrar: () => void }) {
   const [seguro, setSeguro] = useState(false);
   return (
     <section className="pantalla">
@@ -128,6 +128,7 @@ function Detalle({ r, colecciones, convertir, volver, cambiar, borrar }: { r: Re
         {ESTADOS.map((e) => <button key={e.id} className={e.id === r.estado ? 'chip on' : 'chip'} aria-pressed={e.id === r.estado} onClick={() => cambiar({ ...r, estado: e.id })}>{e.nombre}</button>)}
       </div>
       <button className="principal ancho" onClick={convertir}>Convertir en ejercicio</button>
+      <button className="secundario ancho" onClick={pedirIA}>Pedir la ficha a Claude</button>
       <Estrella activa={r.favorito} cambiar={() => cambiar({ ...r, favorito: !r.favorito })} />
       <CampoColeccion valor={r.coleccion} existentes={colecciones} cambiar={(coleccion) => cambiar({ ...r, coleccion })} />
       <label className="campo-diario"><span>Título</span><input id="rec-d-titulo" value={r.titulo} maxLength={200} onChange={(e) => cambiar({ ...r, titulo: e.target.value })} /></label>

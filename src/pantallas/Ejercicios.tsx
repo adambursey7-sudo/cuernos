@@ -6,6 +6,7 @@ import { NIVELES } from '../sistemas/tipos';
 import { guardarRecursos, leerRecursos, type Recurso } from '../recursos/recursos';
 import { nuevaFicha, type Ficha } from '../recursos/fichas';
 import { MisFichas } from './Fichas';
+import { PedirIA } from './PedirIA';
 import { Recursos } from './Recursos';
 
 const nombreNivel = (id: string) => NIVELES.find((n) => n.id === id)?.nombre ?? id;
@@ -55,23 +56,28 @@ export function TarjetaEjercicio({ e, abrir }: { e: Ejercicio; abrir: () => void
 
 /** La pestaña Ejercicios tiene dos vistas: los de la biblioteca y los recursos guardados de internet. */
 export function Ejercicios({ abrir, enlaceInicial }: { abrir: (id: string) => void; enlaceInicial?: string }) {
-  type Vista = 'ejercicios' | 'fichas' | 'recursos';
+  type Vista = 'ejercicios' | 'fichas' | 'recursos' | 'ia';
   const [vista, setVista] = useState<Vista>(enlaceInicial ? 'recursos' : 'ejercicios');
   // Al convertir un recurso se abre la ficha nueva con su título y su fuente; al guardarla el recurso pasa a «Convertido».
   const [desde, setDesde] = useState<Recurso | undefined>();
-  const convertir = (r: Recurso) => { setDesde(r); setVista('fichas'); };
+  // «Pedir a Claude» (con o sin recurso de partida) devuelve un borrador de ficha que se abre en el editor para revisarlo.
+  const [iaDe, setIaDe] = useState<Recurso | undefined>();
+  const [borrador, setBorrador] = useState<Ficha | undefined>();
+  const convertir = (r: Recurso) => { setDesde(r); setBorrador(undefined); setVista('fichas'); };
+  const pedirIA = (r: Recurso) => { setIaDe(r); setVista('ia'); };
   const terminada = (f: Ficha) => {
     if (!f.recursoId) return;
     guardarRecursos(leerRecursos().map((r) => (r.id === f.recursoId ? { ...r, estado: 'convertido' as const } : r)));
   };
-  const VISTAS: [Vista, string][] = [['ejercicios', 'Biblioteca'], ['fichas', 'Mis ejercicios'], ['recursos', 'Recursos']];
+  const VISTAS: [Vista, string][] = [['ejercicios', 'Biblioteca'], ['fichas', 'Mis ejercicios'], ['recursos', 'Recursos'], ['ia', 'Pedir a Claude']];
   return (
     <>
       <div className="niveles filtro rec-vistas" role="group" aria-label="Vista">
-        {VISTAS.map(([id, nombre]) => <button key={id} className={vista === id ? 'chip on' : 'chip'} aria-pressed={vista === id} onClick={() => { setDesde(undefined); setVista(id); }}>{nombre}</button>)}
+        {VISTAS.map(([id, nombre]) => <button key={id} className={vista === id ? 'chip on' : 'chip'} aria-pressed={vista === id} onClick={() => { setDesde(undefined); setBorrador(undefined); if (id !== 'ia') setIaDe(undefined); setVista(id); }}>{nombre}</button>)}
       </div>
-      {vista === 'recursos' && <section className="pantalla"><h1 className="titulo">Recursos</h1><Recursos enlaceInicial={enlaceInicial} convertir={convertir} /></section>}
-      {vista === 'fichas' && <section className="pantalla"><h1 className="titulo">Mis ejercicios</h1><MisFichas key={desde?.id ?? 'sin'} nueva={desde ? nuevaFicha(desde) : undefined} alTerminar={terminada} /></section>}
+      {vista === 'recursos' && <section className="pantalla"><h1 className="titulo">Recursos</h1><Recursos enlaceInicial={enlaceInicial} convertir={convertir} pedirIA={pedirIA} /></section>}
+      {vista === 'fichas' && <section className="pantalla"><h1 className="titulo">Mis ejercicios</h1><MisFichas key={borrador?.id ?? desde?.id ?? 'sin'} nueva={borrador ?? (desde ? nuevaFicha(desde) : undefined)} alTerminar={terminada} /></section>}
+      {vista === 'ia' && <section className="pantalla"><h1 className="titulo">Pedir a Claude</h1><PedirIA key={iaDe?.id ?? 'sin'} recurso={iaDe} borrador={(f) => { setBorrador(f); setVista('fichas'); }} /></section>}
       {vista === 'ejercicios' && <Biblioteca abrir={abrir} />}
     </>
   );
