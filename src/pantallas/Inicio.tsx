@@ -1,6 +1,6 @@
 // Inicio de club (interfaz C, elegida por Adam el 29/10): «Seguir donde lo dejaste» y colecciones que se deslizan de lado.
 import type { ReactNode } from 'react';
-import { Marca } from '../Logo';
+import { IconoBiblioteca, IconoCronometro } from '../Iconos';
 import { Pista } from '../pizarra/Pista';
 import { todosLosEjercicios } from '../ejercicios/ejercicios';
 import { buscarSistema, todosLosSistemas } from '../sistemas/almacen';
@@ -9,6 +9,7 @@ import { leerUltima } from '../ultima';
 import { hoy, leerDiario } from '../diario/diario';
 import { leerSesiones } from '../sesiones/sesiones';
 import { DIAS, diaSemana, lunesDe, sumarDias } from '../temporada/fechas';
+import { cuando, siguiente } from '../temporada/siguiente';
 import { agendaDia, leerTemporadas, temporadaDe } from '../temporada/temporada';
 
 /** «Esta semana» (lunes a domingo) del primer equipo, con sus partidos y entrenos. Al tocar un día se abre en Equipo → Temporada. */
@@ -49,6 +50,43 @@ function EstaSemana({ verDia, abrirSesion }: { verDia: (fecha: string) => void; 
   );
 }
 
+/** «Lo siguiente»: el próximo partido o entreno, con su sesión a un toque. Si no hay nada, invita a apuntarlo. */
+function LoSiguiente({ verDia, abrirSesion }: { verDia: (fecha: string) => void; abrirSesion: (id: string) => void }) {
+  const hoyTexto = hoy();
+  const equipo = leerDiario().equipos[0];
+  const t = equipo ? temporadaDe(leerTemporadas(), equipo.id) : undefined;
+  const ahora = new Date().toTimeString().slice(0, 5);
+  const item = t ? siguiente(t, hoyTexto, ahora) : undefined;
+  if (!item) {
+    return (
+      <section className="siguiente vacio-card" aria-label="Lo siguiente">
+        <span className="rotulo">Lo siguiente</span>
+        <b className="titulo-sig">Aún no hay nada apuntado</b>
+        <span className="meta">Apunta tus entrenos y partidos y aquí verás siempre el próximo.</span>
+        <button className="accion-sig" onClick={() => verDia(hoyTexto)}>{equipo ? 'Apuntar un entreno' : 'Crear mi equipo'}</button>
+      </section>
+    );
+  }
+  const sesion = item.sesionId ? leerSesiones().find((x) => x.id === item.sesionId) : undefined;
+  const partido = item.tipo === 'partido';
+  return (
+    <section className={`siguiente ${item.tipo}`} aria-label="Lo siguiente">
+      <span className="rotulo">Lo siguiente</span>
+      <div className="cuando"><b>{cuando(item.fecha, hoyTexto)}</b><span className="hora">{item.hora}</span></div>
+      <b className="titulo-sig">{partido ? `Partido · ${item.titulo || 'sin rival'}` : item.titulo || 'Entreno'}</b>
+      <span className="meta">
+        {partido && item.evento ? (item.evento.casa === false ? 'Fuera' : 'En casa') : equipo?.nombre}
+        {item.evento?.lugar ? ` · ${item.evento.lugar}` : ''}
+      </span>
+      {sesion ? (
+        <button className="accion-sig" onClick={() => abrirSesion(sesion.id)}>Abrir sesión: {sesion.nombre}</button>
+      ) : (
+        <button className="accion-sig suave" onClick={() => verDia(item.fecha)}>Ver el día</button>
+      )}
+    </section>
+  );
+}
+
 function Coleccion({ titulo, verTodas, children }: { titulo: string; verTodas?: () => void; children: ReactNode }) {
   return (
     <section className="coleccion" aria-label={titulo}>
@@ -73,7 +111,8 @@ function TarjetaJugada({ s, abrir }: { s: Sistema; abrir: () => void }) {
   );
 }
 
-export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, verDia, abrirSesion }: {
+export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, verDia, abrirSesion, verSesiones }: {
+  verSesiones: () => void;
   verDia: (fecha: string) => void;
   abrirSesion: (id: string) => void;
   abrir: (id: string, paso?: number) => void;
@@ -96,10 +135,14 @@ export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, 
 
   return (
     <section className="pantalla inicio">
-      <Marca className="marca-cabecera" />
       <h1 className="saludo">Hola, entrenador</h1>
 
-      <EstaSemana verDia={verDia} abrirSesion={abrirSesion} />
+      <LoSiguiente verDia={verDia} abrirSesion={abrirSesion} />
+
+      <div className="atajos">
+        <button onClick={verSesiones}><span className="burbuja-atajo"><IconoCronometro /></span>Cronómetro</button>
+        <button onClick={crear}><span className="burbuja-atajo"><IconoBiblioteca /></span>Pizarra</button>
+      </div>
 
       {sigue && (
         <button className="seguir" onClick={() => abrir(sigue.s.id, sigue.paso)}>
@@ -111,6 +154,8 @@ export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, 
           </span>
         </button>
       )}
+
+      <EstaSemana verDia={verDia} abrirSesion={abrirSesion} />
 
       {mias.length === 0 ? (
         <button className="nueva-ancha" onClick={crear}>

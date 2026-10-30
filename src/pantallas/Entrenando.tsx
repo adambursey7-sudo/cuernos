@@ -1,9 +1,13 @@
 // Cronómetro de pista (2.4): pantalla grande para mirar de lejos, con aviso de sonido al cambiar de ejercicio
 // y el siguiente a la vista. Cuenta con la hora del reloj, así no se atrasa si el móvil frena la página.
-import { useEffect, useRef, useState } from 'react';
-import { TIPOS } from '../ejercicios/ejercicios';
+import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import { TIPOS, buscarEjercicio } from '../ejercicios/ejercicios';
 import { inicioDe, posicion, reloj } from '../sesiones/cronometro';
 import { total, tituloBloque, type Sesion } from '../sesiones/sesiones';
+import { sinMovimiento } from '../preferencias';
+import { Pista } from '../pizarra/Pista';
+import { useJugada } from '../pizarra/useJugada';
+import type { Sistema } from '../sistemas/tipos';
 import { horas } from './Sesiones';
 
 type Audio = AudioContext | null;
@@ -36,6 +40,25 @@ function pitidos(ctx: Audio, veces: number) {
   }
 }
 
+/** Tercer panel: la pizarra del ejercicio que toca, a lo grande; tocar la pista pasa al paso siguiente. */
+function PanelPizarra({ pizarra, defensa }: { pizarra?: Sistema; defensa: boolean }) {
+  const jugada = useJugada(pizarra?.pasos.length ?? 1);
+  if (!pizarra) return <p className="vacio">Este ejercicio no tiene pizarra.</p>;
+  const n = pizarra.pasos.length;
+  return (
+    <>
+      <button className="ent-pista" onClick={() => (jugada.t >= n ? jugada.todo() : jugada.siguiente())} aria-label="Paso siguiente">
+        <Pista sistema={pizarra} t={jugada.t} conDefensa={defensa} alto={260} />
+      </button>
+      <p className="ent-paso"><b>{jugada.paso + 1}/{n}</b> {pizarra.pasos[jugada.paso].texto}</p>
+      <div className="ent-pizarra-mandos">
+        <button onClick={() => jugada.anterior()} disabled={jugada.t <= 1}>Atrás</button>
+        <button onClick={() => jugada.todo()}>▶ Todo</button>
+      </div>
+    </>
+  );
+}
+
 const nombreTipo = (id: string) => TIPOS.find((t) => t.id === id)?.nombre ?? '';
 
 export function Entrenando({ s, salir, audio: ctx }: { s: Sesion; salir: () => void; audio: Audio }) {
@@ -43,6 +66,9 @@ export function Entrenando({ s, salir, audio: ctx }: { s: Sesion; salir: () => v
   const [desde, setDesde] = useState<number | null>(Date.now()); // hora a la que arrancó; null = en pausa
   const [, pulso] = useState(0);
   const [sonido, setSonido] = useState(true);
+  const [panel, setPanel] = useState(1); // 0 sesión · 1 cronómetro · 2 pizarra
+  const pistas = useRef<HTMLDivElement>(null);
+  const yDedo = useRef<number | null>(null);
   const audio = useRef<Audio>(ctx);
   const anterior = useRef(0);
 
@@ -90,44 +116,82 @@ export function Entrenando({ s, salir, audio: ctx }: { s: Sesion; salir: () => v
     ir(p.acabada || dentro > 3 ? inicioDe(s, i) : inicioDe(s, i - 1));
   };
 
+  // Los paneles se deslizan de lado; empezamos en el del cronómetro.
+  useEffect(() => { const c = pistas.current; if (c) c.scrollLeft = c.clientWidth; }, []);
+  const ver = (n: number) => pistas.current?.scrollTo({ left: n * pistas.current.clientWidth, behavior: sinMovimiento() ? 'auto' : 'smooth' });
+  const alDeslizar = () => { const c = pistas.current; if (c) setPanel(Math.round(c.scrollLeft / c.clientWidth)); };
+  // Deslizar la barra de arriba hacia abajo cierra el modo banda.
+  const abajoIni = (ev: PointerEvent) => { yDedo.current = ev.clientY; };
+  const abajoFin = (ev: PointerEvent) => { if (yDedo.current !== null && ev.clientY - yDedo.current > 80) salir(); yDedo.current = null; };
+
   const actual = p.i >= 0 ? s.bloques[p.i] : undefined;
   const sig = p.i >= 0 ? s.bloques[p.i + 1] : undefined;
-  const e = actual && tituloBloque(actual.ejercicio);
-  const eSig = sig && tituloBloque(sig.ejercicio);
+  const e = actual && buscarEjercicio(actual.ejercicio);
+  const nombreActual = actual && tituloBloque(actual.ejercicio);
+  const nombreSig = sig && tituloBloque(sig.ejercicio);
   const poco = !p.acabada && p.resto <= 60;
 
   return (
     <div className={`entrenando ${actual ? `tipo-${actual.tipo}` : ''}`} role="dialog" aria-label="Cronómetro de la sesión">
-      <div className="ent-arriba">
+      <div className="ent-arriba" onPointerDown={abajoIni} onPointerUp={abajoFin}>
         <button onClick={salir} aria-label="Salir del cronómetro">✕</button>
         <span className="cuenta">{p.acabada ? s.bloques.length : p.i + 1} / {s.bloques.length}</span>
         <span className="meta">Quedan {horas(Math.ceil(p.restoTotal / 60))}</span>
         <button onClick={() => { setSonido(!sonido); audio.current?.resume().catch(() => {}); }} aria-pressed={sonido} aria-label="Sonido">{sonido ? '🔔' : '🔕'}</button>
       </div>
 
-      {p.acabada ? (
-        <div className="ent-centro">
-          <p className="ent-tipo">Sesión terminada</p>
-          <p className="ent-reloj">{horas(total(s))}</p>
-          <p className="ent-nombre">{s.nombre}</p>
+      <div className="ent-pistas" ref={pistas} onScroll={alDeslizar}>
+        <div className="ent-panel" aria-label="Sesión">
+          <ol className="ent-lista">
+            {s.bloques.map((b, i) => {
+              const estado = i < (p.acabada ? s.bloques.length : p.i) ? 'hecho' : i === p.i ? 'ahora' : '';
+              return (
+                <li key={i}>
+                  <button className={estado} onClick={() => { ir(inicioDe(s, i)); ver(1); }}>
+                    <span className="min">{b.minutos}′</span>
+                    <span>{tituloBloque(b.ejercicio) ?? 'Ejercicio que ya no existe'}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
         </div>
-      ) : (
-        <div className="ent-centro">
-          <p className="ent-tipo">{nombreTipo(actual!.tipo)}</p>
-          <p className={poco ? 'ent-reloj poco' : 'ent-reloj'} aria-live="off">{reloj(p.resto)}</p>
-          <p className="ent-nombre">{e ?? 'Ejercicio que ya no existe'}</p>
-        </div>
-      )}
 
-      <div className="ent-siguiente">
-        {sig ? (
-          <>
-            <span className="meta">Después · {sig.minutos}′ · {nombreTipo(sig.tipo)}</span>
-            <b>{eSig ?? 'Ejercicio que ya no existe'}</b>
-          </>
-        ) : (
-          <span className="meta">{p.acabada ? 'Buen trabajo.' : 'Es el último ejercicio.'}</span>
-        )}
+        <div className="ent-panel" aria-label="Cronómetro">
+          {p.acabada ? (
+            <div className="ent-centro">
+              <p className="ent-tipo">Sesión terminada</p>
+              <p className="ent-reloj">{horas(total(s))}</p>
+              <p className="ent-nombre">{s.nombre}</p>
+            </div>
+          ) : (
+            <div className="ent-centro">
+              <p className="ent-tipo">{nombreTipo(actual!.tipo)}</p>
+              <p className={poco ? 'ent-reloj poco' : 'ent-reloj'} aria-live="off">{reloj(p.resto)}</p>
+              <p className="ent-nombre">{nombreActual ?? 'Ejercicio que ya no existe'}</p>
+            </div>
+          )}
+          <div className="ent-siguiente">
+            {sig ? (
+              <>
+                <span className="meta">Después · {sig.minutos}′ · {nombreTipo(sig.tipo)}</span>
+                <b>{nombreSig ?? 'Ejercicio que ya no existe'}</b>
+              </>
+            ) : (
+              <span className="meta">{p.acabada ? 'Buen trabajo.' : 'Es el último ejercicio.'}</span>
+            )}
+          </div>
+        </div>
+
+        <div className="ent-panel" aria-label="Pizarra">
+          {e ? <PanelPizarra key={e.id} pizarra={e.pizarra} defensa={!!e.defensores} /> : <p className="vacio">{nombreActual ? 'Este ejercicio no tiene pizarra.' : 'No hay ejercicio ahora.'}</p>}
+        </div>
+      </div>
+
+      <div className="ent-puntos" role="tablist" aria-label="Paneles">
+        {['Sesión', 'Reloj', 'Pizarra'].map((n, i) => (
+          <button key={n} role="tab" aria-selected={panel === i} className={panel === i ? 'on' : ''} onClick={() => ver(i)}>{n}</button>
+        ))}
       </div>
 
       <div className="ent-mandos">

@@ -1,33 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Marca } from './Logo';
 import { Editor } from './editor/Editor';
 import { buscarEjercicio } from './ejercicios/ejercicios';
+import { IconoBiblioteca, IconoEquipo, IconoHoy, IconoMas, IconoSesiones } from './Iconos';
 import { Ajustes } from './pantallas/Ajustes';
+import { Biblioteca, type Rama } from './pantallas/Biblioteca';
 import { Ejercicio } from './pantallas/Ejercicio';
-import { Ejercicios } from './pantallas/Ejercicios';
 import { Equipo } from './pantallas/Equipo';
 import { Inicio } from './pantallas/Inicio';
 import { Sesiones } from './pantallas/Sesiones';
 import { Sistema } from './pantallas/Sistema';
-import { Sistemas } from './pantallas/Sistemas';
 import { primerEnlace } from './recursos/recursos';
 import { buscarSistema } from './sistemas/almacen';
 import type { Sistema as SistemaDatos } from './sistemas/tipos';
 
-type Pestana = 'inicio' | 'jugadas' | 'ejercicios' | 'sesiones' | 'equipo' | 'ajustes';
-
-const PESTANAS: { id: Pestana; nombre: string }[] = [
-  { id: 'inicio', nombre: 'Inicio' },
-  { id: 'jugadas', nombre: 'Jugadas' },
-  { id: 'ejercicios', nombre: 'Ejercicios' },
-  { id: 'sesiones', nombre: 'Sesiones' },
-  { id: 'equipo', nombre: 'Equipo' },
-  { id: 'ajustes', nombre: 'Ajustes' },
-];
-
-/** En el editor: `null` = no se edita; `{}` = jugada nueva; `{ base }` = editar una propia o duplicar una del libro. */
-type Edicion = { base?: SistemaDatos } | null;
-
-/** Un enlace que llega por la dirección (?enlace=, ?url= o ?text=: atajo de Atajos o «Compartir» en Android) abre la bandeja con él puesto. */
+// Menú de abajo (opción A de Adam, 30/10): cinco apartados iguales.
 function enlaceDeLaDireccion(): string | undefined {
   try {
     const q = new URLSearchParams(location.search);
@@ -39,10 +26,24 @@ function enlaceDeLaDireccion(): string | undefined {
   }
 }
 
+type Pestana = 'hoy' | 'biblioteca' | 'sesiones' | 'equipo' | 'mas';
+
+const PESTANAS: { id: Pestana; nombre: string; icono: () => React.JSX.Element }[] = [
+  { id: 'hoy', nombre: 'Hoy', icono: IconoHoy },
+  { id: 'biblioteca', nombre: 'Biblioteca', icono: IconoBiblioteca },
+  { id: 'sesiones', nombre: 'Sesiones', icono: IconoSesiones },
+  { id: 'equipo', nombre: 'Equipo', icono: IconoEquipo },
+  { id: 'mas', nombre: 'Más', icono: IconoMas },
+];
+
+/** En el editor: `null` = no se edita; `{}` = jugada nueva; `{ base }` = editar una propia o duplicar una del libro. */
+type Edicion = { base?: SistemaDatos } | null;
+
 export function App() {
-  const [entrante] = useState(enlaceDeLaDireccion);
-  const [pestana, setPestana] = useState<Pestana>(entrante ? 'ejercicios' : 'inicio');
-  // La jugada abierta queda encima de Inicio o de Jugadas; al volver se ve la pestaña desde la que se abrió.
+  const [entrante] = useState(enlaceDeLaDireccion);   // un enlace compartido a la app abre Recursos con ese enlace
+  const [pestana, setPestana] = useState<Pestana>(entrante ? 'biblioteca' : 'hoy');
+  const [rama, setRama] = useState<Rama>(entrante ? 'ejercicios' : 'jugadas');
+  // La jugada abierta queda encima de Hoy o de la Biblioteca; al volver se ve la pestaña desde la que se abrió.
   const [abierto, setAbierto] = useState<{ id: string; paso: number } | null>(null);
   const [edicion, setEdicion] = useState<Edicion>(null);
   const sistema = abierto ? buscarSistema(abierto.id) : undefined;
@@ -55,12 +56,13 @@ export function App() {
   // Un día de la temporada abierto desde Inicio («Esta semana»): lleva a Equipo → Temporada en ese día.
   const [fechaAbrir, setFechaAbrir] = useState<string | undefined>();
   const abrirSesion = (id: string) => { setPestana('sesiones'); setSesionId(id); setEjercicioId(null); };
+  const irABiblioteca = (r: Rama) => { setRama(r); setPestana('biblioteca'); };
   const verDia = (fecha: string) => { setFechaAbrir(fecha); setPestana('equipo'); };
 
   let contenido;
   if (pestana === 'sesiones' && !ejercicio) contenido = <Sesiones abrirEjercicio={setEjercicioId} abierta={sesionId} abrir={setSesionId} />;
-  else if (pestana === 'equipo') contenido = <Equipo key={fechaAbrir ?? 'sin-fecha'} ir={setPestana} fecha={fechaAbrir} abrirSesion={abrirSesion} />;
-  else if (pestana === 'ajustes') contenido = <Ajustes />;
+  else if (pestana === 'equipo') contenido = <Equipo key={fechaAbrir ?? 'sin-fecha'} ir={irABiblioteca} fecha={fechaAbrir} abrirSesion={abrirSesion} />;
+  else if (pestana === 'mas') contenido = <><header className="cabecera-app"><Marca className="marca-cabecera" /></header><Ajustes /></>;
   else if (edicion)
     contenido = (
       <Editor
@@ -83,20 +85,44 @@ export function App() {
     contenido = (
       <Sistema key={sistema.id} s={sistema} pasoInicial={abierto!.paso} volver={() => setAbierto(null)} editar={(base) => setEdicion({ base })} />
     );
-  else if (pestana === 'inicio')
+  else if (pestana === 'hoy')
     contenido = (
-      <Inicio verDia={verDia} abrirSesion={abrirSesion} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => setPestana('jugadas')} verEjercicios={() => setPestana('ejercicios')} />
+      <>
+        <header className="cabecera-app"><Marca className="marca-cabecera" /></header>
+        <Inicio verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} />
+      </>
     );
-  else if (pestana === 'ejercicios') contenido = <Ejercicios abrir={setEjercicioId} enlaceInicial={entrante} />;
-  else contenido = <Sistemas abrir={abrir} crear={() => setEdicion({})} />;
+  else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} enlaceInicial={entrante} />;
+
+  // Sin conexión: la app funciona igual, solo se avisa.
+  const [enLinea, setEnLinea] = useState(navigator.onLine);
+  useEffect(() => {
+    const poner = () => setEnLinea(navigator.onLine);
+    window.addEventListener('online', poner);
+    window.addEventListener('offline', poner);
+    return () => { window.removeEventListener('online', poner); window.removeEventListener('offline', poner); };
+  }, []);
+
+  // Volver deslizando: un dedo que empieza en el borde izquierdo y avanza a la derecha cierra la pantalla abierta.
+  const dedo = useRef<{ x: number; y: number } | null>(null);
+  const atras = edicion ? undefined : ejercicio ? () => setEjercicioId(null) : sistema ? () => setAbierto(null) : pestana === 'sesiones' && sesionId ? () => setSesionId(null) : undefined;
+  const tocar = (e: React.TouchEvent) => { const t = e.touches[0]; dedo.current = t.clientX < 28 ? { x: t.clientX, y: t.clientY } : null; };
+  const soltar = (e: React.TouchEvent) => {
+    const d = dedo.current;
+    dedo.current = null;
+    const t = e.changedTouches[0];
+    if (d && atras && t.clientX - d.x > 80 && Math.abs(t.clientY - d.y) < 60) atras();
+  };
 
   return (
-    <div className="app">
-      <main>{contenido}</main>
-      <nav className="pestanas">
+    <div className="app" onTouchStart={tocar} onTouchEnd={soltar}>
+      {!enLinea && <p className="sin-red" role="status">Sin conexión: todo sigue funcionando, menos abrir enlaces.</p>}
+      <main key={pestana} className="entra">{contenido}</main>
+      <nav className="pestanas" aria-label="Secciones">
         {PESTANAS.map((p) => (
-          <button key={p.id} className={p.id === pestana ? 'on' : ''} onClick={() => { setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>
-            {p.nombre}
+          <button key={p.id} className={p.id === pestana ? 'on' : ''} aria-current={p.id === pestana ? 'page' : undefined} onClick={() => { setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>
+            <span className="burbuja"><p.icono /></span>
+            <span className="rotulo-pestana">{p.nombre}</span>
           </button>
         ))}
       </nav>

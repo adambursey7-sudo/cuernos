@@ -1,13 +1,13 @@
 // Temporada y calendario (tramo 3 del loop Diario). Elegido por Adam el 30/10: vive dentro de Equipo; fases arriba, calendario del mes,
 // hoja del día desde abajo (con «Abrir día» a pantalla completa), entrenos fijos de la semana, partidos sueltos o en lista y .ics.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { hoy, type Equipo } from '../diario/diario';
+import { hoy, type Equipo, type Jugadora } from '../diario/diario';
 import { leerSesiones } from '../sesiones/sesiones';
 import { DIAS, DIAS_LARGOS, corta, cuadriculaMes, mesDe, nombreMes, sumarMeses } from '../temporada/fechas';
 import { escribirIcs } from '../temporada/ics';
 import {
   agendaDia, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporada, guardarTemporadas, itemsParaIcs, leerTemporadas, marcasDia,
-  nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, quitarEvento, quitarFase, quitarFijo, temporadaDe, temporadaPorDefecto,
+  nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarEvento, quitarFase, quitarFijo, temporadaDe, temporadaPorDefecto,
   type Evento, type Fase, type Item, type Temporada as TemporadaDatos, type TipoEvento,
 } from '../temporada/temporada';
 import { ImportarCalendario } from './ImportarCalendario';
@@ -77,10 +77,11 @@ function EditorFijos({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: T
   );
 }
 
-function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equipo }: {
-  t: TemporadaDatos; fecha: string; completa: boolean; alternar: () => void; cerrar: () => void; cambiar: (t: TemporadaDatos) => void; abrirSesion: (id: string) => void; equipo: Equipo;
+function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equipo, jugadoras }: {
+  jugadoras: Jugadora[]; t: TemporadaDatos; fecha: string; completa: boolean; alternar: () => void; cerrar: () => void; cambiar: (t: TemporadaDatos) => void; abrirSesion: (id: string) => void; equipo: Equipo;
 }) {
   const [edita, setEdita] = useState<string | null>(null);
+  const [lista, setLista] = useState<string | null>(null);
   const items = agendaDia(t, fecha);
   const fase = faseDe(t, fecha);
   const sesiones = leerSesiones().filter((s) => s.equipo === equipo.nombre);
@@ -195,6 +196,32 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
                     </span>
                   </button>
                   {s && <button className="chip pequeno" onClick={() => abrirSesion(s.id)}>{i.tipo === 'partido' ? 'Antes' : 'Sesión'}: {s.nombre} →</button>}
+                  {i.tipo === 'entreno' && !i.cancelado && jugadoras.length > 0 && (() => {
+                    const vinieron = t.asistencia?.[i.clave];
+                    const abierta = lista === i.clave;
+                    const poner = (ids: string[] | null) => cambiar(ponerAsistencia(t, i.clave, ids));
+                    return (
+                      <div className="asistencia">
+                        <button className="chip pequeno" aria-expanded={abierta} onClick={() => setLista(abierta ? null : i.clave)}>
+                          Asistencia: {vinieron ? `${vinieron.length} de ${jugadoras.length}` : 'pasar lista'}
+                        </button>
+                        {abierta && (
+                          <>
+                            <div className="niveles filtro asis-chips" role="group" aria-label="Quién ha venido">
+                              {jugadoras.map((j) => {
+                                const esta = !!vinieron?.includes(j.id);
+                                return <button key={j.id} className={esta ? 'chip on' : 'chip'} aria-pressed={esta} onClick={() => poner(esta ? (vinieron ?? []).filter((x) => x !== j.id) : [...(vinieron ?? []), j.id])}>{j.numero ? `#${j.numero} ` : ''}{j.nombre || 'Sin nombre'}</button>;
+                              })}
+                            </div>
+                            <div className="dos-botones">
+                              <button className="chip" onClick={() => poner(jugadoras.map((j) => j.id))}>Han venido todas</button>
+                              <button className="chip" onClick={() => poner(null)}>Borrar lista</button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })()}
                   {e?.tipo === 'partido' && e.balance && completa && <p className="nota-jugadora">{e.balance}</p>}
                 </li>
               );
@@ -217,7 +244,7 @@ function puntos(a: string | number | undefined, c: string | number | undefined):
   return { a: Number.isNaN(x) ? 0 : x, c: Number.isNaN(y) ? 0 : y };
 }
 
-export function Temporada({ equipo, fechaInicial, abrirSesion }: { equipo: Equipo; fechaInicial?: string; abrirSesion: (id: string) => void }) {
+export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion }: { equipo: Equipo; jugadoras: Jugadora[]; fechaInicial?: string; abrirSesion: (id: string) => void }) {
   const [lista, setLista] = useState<TemporadaDatos[]>(leerTemporadas);
   const [vista, setVista] = useState<Vista>('mes');
   const [mes, setMes] = useState(() => `${mesDe(fechaInicial ?? hoy())}-01`);
@@ -322,6 +349,7 @@ export function Temporada({ equipo, fechaInicial, abrirSesion }: { equipo: Equip
           cambiar={cambiar}
           abrirSesion={abrirSesion}
           equipo={equipo}
+          jugadoras={jugadoras}
         />
       )}
     </section>

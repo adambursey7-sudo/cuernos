@@ -8,6 +8,7 @@ import { guardarRecursos, juntarRecursos, leerRecursos } from '../recursos/recur
 import { guardarTemporadas, juntarTemporadas, leerTemporadas } from '../temporada/temporada';
 import { guardarTodosMios, leerMios } from '../sistemas/almacen';
 import { SISTEMAS } from '../sistemas/datos';
+import { aplicarLectura, ESCALAS, leerLectura, NOMBRES_LETRA, type Letra } from '../preferencias';
 import { aplicarColores, leerColores, NOMBRES_COLOR, PALETAS, type Colores } from '../temas';
 
 const CAMPOS = Object.keys(NOMBRES_COLOR) as (keyof Colores)[];
@@ -17,6 +18,8 @@ export function Ajustes() {
   const [c, setC] = useState(leerColores);
   const [aviso, setAviso] = useState('');
   const [intro, setIntro] = useState(introActiva);
+  const [lectura, setLectura] = useState(leerLectura);
+  const leer = (n: typeof lectura) => { setLectura(n); aplicarLectura(n); };
   const poner = (n: Colores) => {
     setC(n);
     aplicarColores(n);
@@ -55,10 +58,21 @@ export function Ajustes() {
 
   return (
     <section className="pantalla">
-      <h1 className="titulo">Ajustes</h1>
+      <h1 className="titulo">Más</h1>
       <h2 className="sub">Entrada</h2>
       <label className="campo-diario">
         <span><input type="checkbox" checked={intro} onChange={(ev) => { setIntro(ev.target.checked); ponerIntroActiva(ev.target.checked); }} /> Vídeo de entrada al abrir la app (una vez al día)</span>
+      </label>
+      <h2 className="sub">Lectura</h2>
+      <div className="letras" role="group" aria-label="Tamaño de letra">
+        {(Object.keys(ESCALAS) as Letra[]).map((l) => (
+          <button key={l} className={l === lectura.letra ? 'on' : ''} aria-pressed={l === lectura.letra} onClick={() => leer({ ...lectura, letra: l })} style={{ fontSize: `${ESCALAS[l]}rem` }}>
+            {NOMBRES_LETRA[l]}
+          </button>
+        ))}
+      </div>
+      <label className="campo-diario">
+        <span><input type="checkbox" checked={lectura.quieto} onChange={(ev) => leer({ ...lectura, quieto: ev.target.checked })} /> Reducir movimiento (sin animaciones)</span>
       </label>
       <h2 className="sub">Colores</h2>
       <div className="muestra">

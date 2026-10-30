@@ -5,12 +5,14 @@ import '@fontsource/atkinson-hyperlegible/700.css';
 import '@fontsource/graduate/400.css';
 import './estilos.css';
 import { aplicarColores, leerColores } from './temas';
+import { aplicarLectura, leerLectura } from './preferencias';
 import { App } from './App';
 import { ConIntro } from './Intro';
 import { leerEnlace } from './compartir/enlace';
 import { Visor } from './compartir/Visor';
 
 aplicarColores(leerColores());
+aplicarLectura(leerLectura(), false);
 const raiz = createRoot(document.getElementById('raiz')!);
 
 // Un enlace de jugada (…#j= o …#p=) abre solo el visor, con los colores de quien la manda y sin guardarlos.

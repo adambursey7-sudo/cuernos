@@ -1,12 +1,13 @@
 // Equipo (tramo 1 del loop Diario): plantilla con dorsal grande y ficha de cada jugadora con tres pestañas (opción A, Adam 30/10).
 // Los datos viven solo en este móvil. La ficha se guarda sola al escribir.
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   POSICIONES, guardarDiario, guardarEquipo, guardarJugadora, hoy, leerDiario, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, quitarJugadora, repetida,
   type Diario, type Equipo as EquipoDatos, type Jugadora,
 } from '../diario/diario';
 import { NOMBRE_PUESTO, PUESTOS, rellenarPuestos } from '../diario/puestos';
 import { leerTexto, textoDePdf, type Candidata } from '../diario/importar';
+import { leerTemporadas, resumenAsistencia, temporadaDe } from '../temporada/temporada';
 import { Temporada } from './Temporada';
 
 type Vista = { tipo: 'plantilla' } | { tipo: 'temporada' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
@@ -25,6 +26,7 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
   const [seguro, setSeguro] = useState(false);
   const [nota, setNota] = useState('');
   const otra = repetida(d, j);
+  const asis = useMemo(() => resumenAsistencia(temporadaDe(leerTemporadas(), j.equipoId), j.id), [j.equipoId, j.id]);
   const poner = (c: Partial<Jugadora>) => cambiar({ ...j, ...c });
   return (
     <section className="pantalla ficha-jugadora">
@@ -51,6 +53,7 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
               <input value={j.numero} maxLength={2} inputMode="numeric" onChange={(ev) => poner({ numero: ev.target.value.replace(/\D/g, '') })} />
             </label>
           </div>
+          {asis.de > 0 && <p className="meta">Asistencia: ha venido a <b>{asis.vino} de {asis.de}</b> entrenos con lista.</p>}
           {otra && <p className="aviso">El {j.numero} ya lo lleva {otra.nombre || 'otra jugadora'}.</p>}
           <div className="niveles filtro" role="group" aria-label="Posición">
             {POSICIONES.map((p) => (
@@ -307,7 +310,7 @@ export function Equipo({ ir, fecha, abrirSesion }: { ir: (t: 'ejercicios' | 'jug
             </div>
           )}
         </section>
-        <Temporada key={equipo.id} equipo={equipo} fechaInicial={fecha} abrirSesion={abrirSesion} />
+        <Temporada key={equipo.id} equipo={equipo} jugadoras={plantilla(d, equipo.id)} fechaInicial={fecha} abrirSesion={abrirSesion} />
       </>
     );
 
