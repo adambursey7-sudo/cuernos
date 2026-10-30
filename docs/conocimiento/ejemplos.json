@@ -1,0 +1,1424 @@
+[
+ {
+  "nombre": "Pase y corte 2x0",
+  "objetivo": "Pasar y cortar a canasta, y cambiar de sitio",
+  "minutos": 6,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    128,
+    60
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "1 pasa a 2 y corta a canasta",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       75,
+       45
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 sigue al bloque derecho y 2 le devuelve el pase",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       98,
+       28
+      ]
+     },
+     {
+      "tipo": "pase",
+      "de": "2",
+      "a": "1"
+     }
+    ]
+   },
+   {
+    "texto": "1 bota al ala derecha y 2 va al frontal: cambian de papel",
+    "movimientos": [
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       128,
+       60
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       75,
+       85
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Corte de puerta atrás 2x0",
+  "objetivo": "Salir al pase y cortar por detrás",
+  "minutos": 6,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    128,
+    60
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "2 sale hacia el balón como para recibir",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       110,
+       72
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "2 gira y corta por detrás; 1 le pasa a su paso",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       98,
+       28
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "2 tira y 1 ocupa el ala derecha",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       128,
+       60
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Pase y sustituye 3x0",
+  "objetivo": "Pasar y ocupar el sitio de la compañera",
+  "minutos": 8,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    128,
+    60
+   ],
+   "3": [
+    22,
+    60
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "1 pasa a 2, que sale al frontal; 1 ocupa el ala derecha",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     },
+     {
+      "tipo": "bote",
+      "jugador": "2",
+      "a": [
+       75,
+       85
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       128,
+       60
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "2 pasa a 3, que sale al frontal; 2 ocupa el ala izquierda",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "2",
+      "a": "3"
+     },
+     {
+      "tipo": "bote",
+      "jugador": "3",
+      "a": [
+       75,
+       85
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       22,
+       60
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "3 pasa a 1, que sale al frontal; 3 ocupa el ala derecha",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "3",
+      "a": "1"
+     },
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       75,
+       85
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       128,
+       60
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Pase y corte 3x0, rellenar el hueco",
+  "objetivo": "Pasar, cortar y ocupar el espacio que queda libre",
+  "minutos": 8,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    22,
+    60
+   ],
+   "3": [
+    128,
+    60
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "1 pasa a 2 y corta al bloque; 3 sube al frontal",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       52,
+       28
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       75,
+       85
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 sale al ala derecha; 2 pasa a 3 y corta a canasta",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       128,
+       60
+      ]
+     },
+     {
+      "tipo": "pase",
+      "de": "2",
+      "a": "3"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       75,
+       30
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "2 sale al ala izquierda: quedan como al empezar",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       22,
+       60
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Pase y corte con devolución 3x0",
+  "objetivo": "Pasar, cortar y recibir de vuelta mientras la otra sube",
+  "minutos": 8,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    128,
+    60
+   ],
+   "3": [
+    22,
+    60
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "1 pasa a 2 y corta; 3 sube al frontal",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       98,
+       40
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       75,
+       85
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "2 devuelve el pase a 1",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "2",
+      "a": "1"
+     }
+    ]
+   },
+   {
+    "texto": "1 tira y sale botando al ala izquierda; 3 sigue en el frontal",
+    "movimientos": [
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       22,
+       60
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Pase y bloqueo lejos del balón 3x0",
+  "objetivo": "Pasar y bloquear a la compañera del otro lado",
+  "minutos": 8,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    22,
+    60
+   ],
+   "3": [
+    128,
+    60
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "1 pasa a 2 y va a bloquear a 3",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     },
+     {
+      "tipo": "bloqueo",
+      "jugador": "1",
+      "a": [
+       114,
+       66
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "3 usa el bloqueo y corta al bloque derecho; 1 se abre al frontal",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       98,
+       28
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       75,
+       85
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "2 pasa a 3 en el bloque",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "2",
+      "a": "3"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Bloqueo directo 2x0",
+  "objetivo": "Bloquear, usar el bloqueo y rodar a canasta",
+  "minutos": 8,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    100,
+    58
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "2 baja a bloquear a 1",
+    "movimientos": [
+     {
+      "tipo": "bloqueo",
+      "jugador": "2",
+      "a": [
+       87,
+       82
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 bota pegada al bloqueo; 2 rueda al bloque izquierdo",
+    "movimientos": [
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       100,
+       45
+      ],
+      "por": [
+       92,
+       72
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       52,
+       28
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 pasa a 2, que tira",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Bloqueo directo 3x0 con pase de seguridad",
+  "objetivo": "Usar el bloqueo y abrir el campo con la compañera del otro lado",
+  "minutos": 10,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    100,
+    58
+   ],
+   "3": [
+    22,
+    60
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "2 bloquea a 1 en el frontal",
+    "movimientos": [
+     {
+      "tipo": "bloqueo",
+      "jugador": "2",
+      "a": [
+       87,
+       82
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 bota hacia canasta; 2 rueda al bloque; 3 sube al frontal",
+    "movimientos": [
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       110,
+       50
+      ],
+      "por": [
+       92,
+       76
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       98,
+       28
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       75,
+       85
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 pasa a 3, que está libre en el frontal",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "3"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Aclarado y penetración 2x0",
+  "objetivo": "Dejar espacio al bote y salir al ala para recibir",
+  "minutos": 6,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    128,
+    60
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "2 se aclara a la esquina derecha",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       142,
+       12
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 bota a canasta por el centro; 2 sale de la esquina al ala derecha",
+    "movimientos": [
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       70,
+       35
+      ],
+      "por": [
+       75,
+       60
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       128,
+       60
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 pasa a 2 en el ala",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Penetrar y pasar fuera 3x0",
+  "objetivo": "Botar a canasta mientras las demás ocupan los espacios",
+  "minutos": 8,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    22,
+    60
+   ],
+   "3": [
+    128,
+    60
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "1 bota hacia el lado derecho; 3 baja a la esquina y 2 sube al frontal",
+    "movimientos": [
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       105,
+       55
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       142,
+       12
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       75,
+       85
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 pasa a 3 en la esquina",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "3"
+     }
+    ]
+   },
+   {
+    "texto": "1 sale al ala derecha y 3 pasa a 2 en el frontal",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       128,
+       60
+      ]
+     },
+     {
+      "tipo": "pase",
+      "de": "3",
+      "a": "2"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Pase al poste alto y corte 3x0",
+  "objetivo": "Pasar al poste alto y cortar por delante",
+  "minutos": 8,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "3": [
+    128,
+    60
+   ],
+   "4": [
+    100,
+    58
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "1 pasa a 4 en el poste alto y corta al bloque izquierdo",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "4"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       52,
+       28
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "4 pasa a 1, que ha cortado; 3 sube al frontal",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "4",
+      "a": "1"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       75,
+       85
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 sale botando al ala derecha, que ha quedado libre",
+    "movimientos": [
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       128,
+       60
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Alto-bajo con ala 3x0",
+  "objetivo": "Pasar al poste alto y buscar el pase alto-bajo",
+  "minutos": 10,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "4": [
+    100,
+    58
+   ],
+   "5": [
+    52,
+    28
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "1 pasa a 4 en el poste alto y va al ala derecha",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "4"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       128,
+       60
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "4 da el pase alto-bajo a 5 en el bloque",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "4",
+      "a": "5"
+     }
+    ]
+   },
+   {
+    "texto": "5 saca el balón a 1 en el ala",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "5",
+      "a": "1"
+     }
+    ]
+   },
+   {
+    "texto": "1 bota al frontal y vuelven a empezar",
+    "movimientos": [
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       75,
+       85
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Corte en V 2x0",
+  "objetivo": "Fintar hacia canasta y salir a recibir",
+  "minutos": 6,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    128,
+    60
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "2 baja como para cortar",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       112,
+       40
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "2 sale rápido al ala",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       128,
+       60
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 pasa a 2 y corta a canasta",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       75,
+       45
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Pase, corte y relleno 5 fuera",
+  "objetivo": "Rotar un sitio cada vez que alguien pasa y corta",
+  "minutos": 12,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    22,
+    60
+   ],
+   "3": [
+    128,
+    60
+   ],
+   "4": [
+    8,
+    12
+   ],
+   "5": [
+    142,
+    12
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "1 pasa a 2 y corta al centro; 3 sube al frontal y 5 al ala derecha",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       75,
+       35
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       75,
+       85
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "5",
+      "a": [
+       128,
+       60
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 cae a la esquina derecha; 2 pasa a 3 y corta; 4 sube al ala",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       142,
+       12
+      ]
+     },
+     {
+      "tipo": "pase",
+      "de": "2",
+      "a": "3"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       60,
+       32
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "4",
+      "a": [
+       22,
+       60
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "2 sale a la esquina izquierda: la forma es la inicial",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       8,
+       12
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Pase, corte y relleno 4 fuera",
+  "objetivo": "Rotar la formación pasando y cortando",
+  "minutos": 10,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "2": [
+    128,
+    60
+   ],
+   "3": [
+    22,
+    60
+   ],
+   "4": [
+    8,
+    12
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "1 pasa a 3 y corta; 2 sube al frontal",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "3"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       75,
+       32
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       75,
+       85
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 sale al ala derecha",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       128,
+       60
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "3 pasa a 2 y corta al bloque; 4 sube al ala izquierda",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "3",
+      "a": "2"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       52,
+       28
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "4",
+      "a": [
+       22,
+       60
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "3 sale a la esquina izquierda",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       8,
+       12
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Contraataque 2x0",
+  "objetivo": "Correr abiertas, pasar y terminar",
+  "minutos": 6,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    40,
+    125
+   ],
+   "2": [
+    110,
+    125
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "Corren por dos carriles; 1 bota",
+    "movimientos": [
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       50,
+       85
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       100,
+       85
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 pasa a 2 y corta a canasta; 2 bota",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "2"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       70,
+       40
+      ]
+     },
+     {
+      "tipo": "bote",
+      "jugador": "2",
+      "a": [
+       105,
+       60
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "2 devuelve el pase a 1, que tira",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "2",
+      "a": "1"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Contraataque 3x0 en tres carriles",
+  "objetivo": "Ocupar los tres carriles y finalizar",
+  "minutos": 8,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    125
+   ],
+   "2": [
+    25,
+    125
+   ],
+   "3": [
+    125,
+    125
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "Corren por tres carriles; 1 bota por el centro",
+    "movimientos": [
+     {
+      "tipo": "bote",
+      "jugador": "1",
+      "a": [
+       75,
+       90
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       22,
+       85
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       128,
+       85
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 pasa a 3 y corta al centro; 2 baja por su carril",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "3"
+     },
+     {
+      "tipo": "corte",
+      "jugador": "1",
+      "a": [
+       75,
+       45
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "2",
+      "a": [
+       30,
+       50
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "3 pasa a 1, que tira",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "3",
+      "a": "1"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "nombre": "Bloqueo sin balón 3x0",
+  "objetivo": "Salir de la esquina usando un bloqueo",
+  "minutos": 10,
+  "material": "1 balón",
+  "jugadoras": {
+   "1": [
+    75,
+    85
+   ],
+   "3": [
+    142,
+    12
+   ],
+   "4": [
+    98,
+    28
+   ]
+  },
+  "balon": "1",
+  "pasos": [
+   {
+    "texto": "4 sube a bloquear a 3",
+    "movimientos": [
+     {
+      "tipo": "bloqueo",
+      "jugador": "4",
+      "a": [
+       132,
+       28
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "3 sale al ala derecha usando el bloqueo; 4 baja al bloque",
+    "movimientos": [
+     {
+      "tipo": "corte",
+      "jugador": "3",
+      "a": [
+       128,
+       60
+      ]
+     },
+     {
+      "tipo": "corte",
+      "jugador": "4",
+      "a": [
+       98,
+       28
+      ]
+     }
+    ]
+   },
+   {
+    "texto": "1 pasa a 3 en el ala",
+    "movimientos": [
+     {
+      "tipo": "pase",
+      "de": "1",
+      "a": "3"
+     }
+    ]
+   }
+  ]
+ }
+]
