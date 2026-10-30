@@ -52,6 +52,129 @@ img{width:100%;max-width:260px;height:auto;border-radius:12px;margin:0 auto;disp
 </header>
 
 
+<section id="vuelta3">
+  <h2>Vuelta 3 · Temporada y calendario: cuatro cosas por decidir (30/10)</h2>
+  <p class="mute">La forma general ya la elegiste (fases arriba, mes, semana al tocar). Falta decidir <b>dónde vive</b>, <b>cómo se apunta</b> un partido o un entreno, <b>qué pasa al tocar un día</b> y <b>cómo entra un .ics</b>. Fechas, rivales y números inventados. Mientras contestas no programo estas pantallas; lo que no depende de ellas (el modelo de datos y las fechas) sí puede avanzar.</p>
+
+  <h3>1 · Dónde vive en la app</h3>
+  <p class="mute">La barra de abajo ya tiene seis pestañas (Inicio, Jugadas, Ejercicios, Sesiones, Equipo, Ajustes).</p>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Dentro de «Equipo»</h3>
+      <div class="tel"><span class="tit">Equipo</span>
+        <div class="pestanas"><span>Plantilla</span><span>Ficha</span><span class="on">Temporada</span></div>
+        <div style="display:flex;gap:2px"><span class="fase" style="background:var(--ok);flex:2">Pretemp.</span><span class="fase" style="background:var(--acc);flex:4">Liga 1</span></div>
+        <div class="cal"><span class="h">L</span><span class="h">M</span><span class="h">X</span><span class="h">J</span><span class="h">V</span><span class="h">S</span><span class="h">D</span><span class="e">1</span><span>2</span><span class="e">3</span><span>4</span><span class="e">5</span><span class="p">6</span><span>7</span></div>
+        <div class="barra"><span>Inicio</span><span>Jugadas</span><span>Ejerc.</span><span>Ses.</span><span class="on">Equipo</span><span>Ajust.</span></div></div>
+      <div class="pros"><span><b>＋</b> La barra no crece: siguen seis pestañas.</span><span><b>＋</b> Plantilla, temporada y calendario son del mismo equipo.</span><span><i>－</i> Un toque más para llegar al calendario.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Pestaña nueva «Temporada»</h3>
+      <div class="tel"><span class="tit">Temporada</span>
+        <div style="display:flex;gap:2px"><span class="fase" style="background:var(--ok);flex:2">Pretemp.</span><span class="fase" style="background:var(--acc);flex:4">Liga 1</span></div>
+        <div class="cal"><span class="h">L</span><span class="h">M</span><span class="h">X</span><span class="h">J</span><span class="h">V</span><span class="h">S</span><span class="h">D</span><span class="e">1</span><span>2</span><span class="e">3</span><span>4</span><span class="e">5</span><span class="p">6</span><span>7</span></div>
+        <div class="barra" style="font-size:8px"><span>Inicio</span><span>Jug.</span><span>Ejer.</span><span>Ses.</span><span>Equi.</span><span class="on">Temp.</span><span>Aj.</span></div></div>
+      <div class="pros"><span><b>＋</b> Un toque desde cualquier sitio.</span><span><i>－</i> Siete pestañas: la letra se queda diminuta en el iPhone.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>En «Inicio»: «Esta semana»</h3>
+      <div class="tel"><span class="tit">Inicio</span>
+        <p class="etq">Esta semana</p>
+        <div class="fila"><span class="chip">Lun</span><span>Entreno · defensa</span></div>
+        <div class="fila"><span class="chip">Mié</span><span>Entreno</span></div>
+        <div class="fila" style="background:var(--acc);color:#14110e"><span class="chip">Sáb</span><span>PARTIDO · Ejemplo CB</span></div>
+        <p class="mini">Ver mes y temporada ›</p>
+        <div class="barra"><span class="on">Inicio</span><span>Jugadas</span><span>Ejerc.</span><span>Ses.</span><span>Equipo</span><span>Ajust.</span></div></div>
+      <div class="pros"><span><b>＋</b> Al abrir la app ya ves lo de hoy y esta semana.</span><span><b>＋</b> Sin pestaña nueva.</span><span><i>－</i> El mes y las fases quedan un nivel más adentro.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo A + C:</b> «Esta semana» en Inicio (lo que mira un entrenador cada día) y el mes y las fases dentro de Equipo.</p>
+
+  <h3>2 · Cómo se apunta un partido o un entreno</h3>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Tocar el día y elegir qué es</h3>
+      <div class="tel"><span class="tit">Sáb 13 oct</span>
+        <div class="pestanas"><span class="on">Partido</span><span>Entreno</span><span>Otro</span></div>
+        <div class="fila"><span class="chip">Rival</span><span>Ejemplo CB</span></div>
+        <div class="fila"><span class="chip">Hora</span><span>11:00</span></div>
+        <div class="pestanas"><span class="on">Casa</span><span>Fuera</span></div>
+        <div class="fila"><span class="chip">Pabellón</span><span>(opcional)</span></div>
+        <div class="fila"><span class="chip">Resultado</span><span>— después —</span></div></div>
+      <div class="pros"><span><b>＋</b> Intuitivo: tocas el día y lo apuntas.</span><span><b>＋</b> Sirve para partidos sueltos.</span><span><i>－</i> Apuntar 20 jornadas una a una es pesado (para eso está la lista o el .ics).</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Pegar la lista de jornadas</h3>
+      <div class="tel"><span class="tit">Calendario de liga</span>
+        <pre style="font-size:9px">J1 13/10 11:00 Ejemplo CB (C)
+J2 20/10 12:30 Ejemplo BC (F)
+J3 27/10 11:00 Ejemplo AB (C)</pre>
+        <p class="mini">Detecta fecha, hora, rival y casa/fuera</p>
+        <div class="fila"><span class="chip v">✓</span><span>J1 · Sáb 13 · Ejemplo CB · casa</span></div>
+        <div class="fila"><span class="chip v">✓</span><span>J2 · Sáb 20 · Ejemplo BC · fuera</span></div>
+        <div class="fila"><span class="chip r">?</span><span>J3 · fecha dudosa</span></div></div>
+      <div class="pros"><span><b>＋</b> Toda la liga de golpe, copiada del PDF de la federación.</span><span><b>＋</b> Vista previa para corregir lo dudoso.</span><span><i>－</i> Cada federación escribe distinto; algunas filas habrá que arreglarlas.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>Semana tipo + excepciones</h3>
+      <div class="tel"><span class="tit">Entrenos fijos</span>
+        <div class="fila"><span class="chip">Lun</span><span>18:30 · 90 min</span></div>
+        <div class="fila"><span class="chip">Mié</span><span>18:30 · 90 min</span></div>
+        <div class="fila"><span class="chip">Vie</span><span>19:00 · 75 min</span></div>
+        <p class="mini">Se repiten toda la temporada.<br>Un día suelto: «cancelar» o «cambiar hora»</p></div>
+      <div class="pros"><span><b>＋</b> Los entrenos se ponen una vez para toda la temporada.</span><span><b>＋</b> Festivos y parones los quitan solos.</span><span><i>－</i> Una cosa más que entender; se completa con A o B para los partidos.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo juntar C (entrenos) con B (liga de golpe) y A para lo suelto.</b> Los tres caminos acaban en los mismos días del calendario.</p>
+
+  <h3>3 · Qué pasa al tocar un día</h3>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Hoja del día desde abajo</h3>
+      <div class="tel"><span class="tit">Octubre</span>
+        <div class="cal"><span class="e">8</span><span>9</span><span class="e">10</span><span>11</span><span class="e">12</span><span class="p">13</span><span>14</span></div>
+        <div class="fila" style="margin-top:auto;flex-direction:column;align-items:flex-start;padding:8px"><b>Sáb 13</b><span>Partido · Ejemplo CB · casa 11:00</span><span class="chip">Antes: sesión «Ritmo» →</span><span class="chip">Después: balance →</span></div></div>
+      <div class="pros"><span><b>＋</b> El calendario no se pierde de vista.</span><span><b>＋</b> Un toque a la sesión o al balance.</span><span><i>－</i> Si hay mucho ese día, la hoja se llena.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Pantalla del día</h3>
+      <div class="tel"><span class="tit">‹ Sáb 13 oct</span>
+        <div class="fase" style="background:var(--acc)">PARTIDO 11:00<br>Ejemplo CB · casa</div>
+        <div class="fila"><span class="chip">Vie 12</span><span>Sesión «Ritmo» · 75 min</span></div>
+        <div class="fila"><span class="chip">Balance</span><span>Qué funcionó · a quién mirar</span></div>
+        <div class="fila"><span class="chip">Convocadas</span><span>12 de 13</span></div></div>
+      <div class="pros"><span><b>＋</b> Espacio para todo (preparación, balance, convocatoria).</span><span><i>－</i> Sales del calendario; para ir al día siguiente vuelves atrás.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo A</b> para consultar y un botón «Abrir día» dentro de la hoja que lleva a B cuando quieras el balance.</p>
+
+  <h3>4 · Traer un .ics (Google Calendar, Apple, Outlook)</h3>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Vista previa con casillas</h3>
+      <div class="tel"><span class="tit">Calendario.ics · 34 eventos</span>
+        <div class="fila"><span class="chip v">✓</span><span>Sáb 13 · Ejemplo CB (casa) · Partido</span></div>
+        <div class="fila"><span class="chip v">✓</span><span>Lun · 18:30 · Entreno (semanal)</span></div>
+        <div class="fila"><span class="chip">☐</span><span>Cumple de familiar</span></div>
+        <div class="fila"><span class="chip r">?</span><span>Reunión de club · ¿Otro?</span></div>
+        <div class="pestanas"><span>Marcar partidos</span><span class="on">Importar 31</span></div></div>
+      <div class="pros"><span><b>＋</b> Adivina partido o entreno por el título y los repetidos; tú corriges.</span><span><b>＋</b> Lo que no sea del equipo se desmarca y no entra.</span><span><i>－</i> Un calendario personal trae cosas ajenas: hay que revisar la lista.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Solo partidos, el resto se ignora</h3>
+      <div class="tel"><span class="tit">Calendario.ics</span>
+        <p class="mini">Solo eventos con «vs», «-» o «jornada» en el título</p>
+        <div class="fila"><span class="chip v">✓</span><span>J1 · Ejemplo CB</span></div>
+        <div class="fila"><span class="chip v">✓</span><span>J2 · Ejemplo BC</span></div>
+        <div class="pestanas"><span class="on">Importar 20 partidos</span></div></div>
+      <div class="pros"><span><b>＋</b> Mínimo esfuerzo: dos toques.</span><span><i>－</i> Si el título es raro, se queda fuera sin avisar; los entrenos no entran.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo A.</b> Y al revés, «Exportar» deja la temporada como un archivo .ics para meterla en el calendario del móvil.</p>
+
+  <p class="pie"><b>Qué necesito de ti:</b> tus letras para 1, 2, 3 y 4 (por ejemplo «A+C, C+B+A, A, A» si te sirven mis recomendaciones). Dos preguntas rápidas: ¿el resultado se apunta solo como puntos a favor y en contra, o también por cuartos? ¿Quieres un campo «Convocadas»?</p>
+</section>
+
 <section id="vuelta2">
   <h2>Vuelta 2 · La pizarra: moverse con el dedo (30/10)</h2>
   <p class="mute">Dices que el movimiento en las pizarras no es intuitivo. Lo que veo en el editor de hoy: los jugadores no parecen «agarrables», el movimiento se adivina sin que lo elijas, el balón es un puntito, no hay forma de ver el paso ya hecho ni de ir a un paso anterior, y la explicación es un párrafo largo. Tres formas de arreglarlo (dibujos con números inventados):</p>

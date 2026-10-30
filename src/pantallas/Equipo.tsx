@@ -7,8 +7,9 @@ import {
 } from '../diario/diario';
 import { NOMBRE_PUESTO, PUESTOS, rellenarPuestos } from '../diario/puestos';
 import { leerTexto, textoDePdf, type Candidata } from '../diario/importar';
+import { Temporada } from './Temporada';
 
-type Vista = { tipo: 'plantilla' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
+type Vista = { tipo: 'plantilla' } | { tipo: 'temporada' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
 
 function Campo({ etiqueta, valor, cambiar, filas = 3, ayuda }: { etiqueta: string; valor: string; cambiar: (v: string) => void; filas?: number; ayuda?: string }) {
   return (
@@ -216,10 +217,20 @@ function Importar({ equipoId, existentes, crear, volver }: { equipoId: string; e
   );
 }
 
-export function Equipo({ ir }: { ir: (t: 'ejercicios' | 'jugadas') => void }) {
+function Apartados({ ver, vista }: { ver: (v: 'plantilla' | 'temporada') => void; vista: 'plantilla' | 'temporada' }) {
+  return (
+    <div className="niveles filtro" role="tablist" aria-label="Apartados del equipo">
+      {([['plantilla', 'Plantilla'], ['temporada', 'Temporada']] as const).map(([id, nombre]) => (
+        <button key={id} role="tab" aria-selected={vista === id} className={vista === id ? 'chip on' : 'chip'} onClick={() => ver(id)}>{nombre}</button>
+      ))}
+    </div>
+  );
+}
+
+export function Equipo({ ir, fecha, abrirSesion }: { ir: (t: 'ejercicios' | 'jugadas') => void; fecha?: string; abrirSesion: (id: string) => void }) {
   const [d, setD] = useState<Diario>(leerDiario);
   const [activo, setActivo] = useState<string>(() => leerDiario().equipos[0]?.id ?? '');
-  const [vista, setVista] = useState<Vista>({ tipo: 'plantilla' });
+  const [vista, setVista] = useState<Vista>(() => (fecha ? { tipo: 'temporada' } : { tipo: 'plantilla' }));
   const [nombre, setNombre] = useState('');
   const [fallo, setFallo] = useState(false);
   const primera = useRef(true);
@@ -284,10 +295,27 @@ export function Equipo({ ir }: { ir: (t: 'ejercicios' | 'jugadas') => void }) {
       />
     );
 
+  if (vista.tipo === 'temporada')
+    return (
+      <>
+        <section className="pantalla encabezado-equipo">
+          <h1 className="titulo">Equipo</h1>
+          <Apartados vista="temporada" ver={(v) => setVista({ tipo: v })} />
+          {d.equipos.length > 1 && (
+            <div className="niveles filtro" role="group" aria-label="Equipo">
+              {d.equipos.map((e) => <button key={e.id} className={e.id === equipo.id ? 'chip on' : 'chip'} aria-pressed={e.id === equipo.id} onClick={() => setActivo(e.id)}>{e.nombre}</button>)}
+            </div>
+          )}
+        </section>
+        <Temporada key={equipo.id} equipo={equipo} fechaInicial={fecha} abrirSesion={abrirSesion} />
+      </>
+    );
+
   const jugadoras = plantilla(d, equipo.id);
   return (
     <section className="pantalla">
       <h1 className="titulo">Equipo</h1>
+      <Apartados vista="plantilla" ver={(v) => setVista({ tipo: v })} />
       {d.equipos.length > 1 && (
         <div className="niveles filtro" role="group" aria-label="Equipo">
           {d.equipos.map((e) => (

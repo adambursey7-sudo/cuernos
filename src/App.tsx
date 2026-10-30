@@ -38,10 +38,14 @@ export function App() {
   // La sesión abierta se recuerda aquí para volver a ella tras mirar un ejercicio.
   const [sesionId, setSesionId] = useState<string | null>(null);
   const ejercicio = ejercicioId ? buscarEjercicio(ejercicioId) : undefined;
+  // Un día de la temporada abierto desde Inicio («Esta semana»): lleva a Equipo → Temporada en ese día.
+  const [fechaAbrir, setFechaAbrir] = useState<string | undefined>();
+  const abrirSesion = (id: string) => { setPestana('sesiones'); setSesionId(id); setEjercicioId(null); };
+  const verDia = (fecha: string) => { setFechaAbrir(fecha); setPestana('equipo'); };
 
   let contenido;
   if (pestana === 'sesiones' && !ejercicio) contenido = <Sesiones abrirEjercicio={setEjercicioId} abierta={sesionId} abrir={setSesionId} />;
-  else if (pestana === 'equipo') contenido = <Equipo ir={setPestana} />;
+  else if (pestana === 'equipo') contenido = <Equipo key={fechaAbrir ?? 'sin-fecha'} ir={setPestana} fecha={fechaAbrir} abrirSesion={abrirSesion} />;
   else if (pestana === 'ajustes') contenido = <Ajustes />;
   else if (edicion)
     contenido = (
@@ -67,7 +71,7 @@ export function App() {
     );
   else if (pestana === 'inicio')
     contenido = (
-      <Inicio abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => setPestana('jugadas')} verEjercicios={() => setPestana('ejercicios')} />
+      <Inicio verDia={verDia} abrirSesion={abrirSesion} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => setPestana('jugadas')} verEjercicios={() => setPestana('ejercicios')} />
     );
   else if (pestana === 'ejercicios') contenido = <Ejercicios abrir={setEjercicioId} />;
   else contenido = <Sistemas abrir={abrir} crear={() => setEdicion({})} />;
@@ -77,7 +81,7 @@ export function App() {
       <main>{contenido}</main>
       <nav className="pestanas">
         {PESTANAS.map((p) => (
-          <button key={p.id} className={p.id === pestana ? 'on' : ''} onClick={() => { setPestana(p.id); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>
+          <button key={p.id} className={p.id === pestana ? 'on' : ''} onClick={() => { setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>
             {p.nombre}
           </button>
         ))}

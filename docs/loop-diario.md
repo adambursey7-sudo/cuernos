@@ -47,11 +47,13 @@ Horns pasa de ser una biblioteca de jugadas a ser el **cuaderno del entrenador**
 
 ## Tramo 3: temporada y calendario
 - [x] 3.1 Diseño → Adam eligió la mezcla (30/10).
-- [ ] 3.2 Temporada: fechas de inicio y fin, fases con objetivo (pretemporada, liga, parón…) y qué trabajar en cada una.
-- [ ] 3.3 Calendario: partidos (rival, casa/fuera, hora, resultado), entrenamientos fijos de la semana, festivos; las sesiones ya hechas se enlazan al día.
-- [ ] 3.3b Importar `.ics` (lector hecho a mano, sin librerías) con vista previa, y exportar la temporada a `.ics`.
-- [ ] 3.4 Vista semana y vista mes; hoy; el cronómetro de pista abre la sesión del día.
+- [x] 3.2 Temporada: fechas de inicio y fin, fases con objetivo (pretemporada, liga, parón…) y qué trabajar en cada una.
+- [x] 3.3 Calendario: partidos (rival, casa/fuera, hora, resultado), entrenamientos fijos de la semana, festivos; las sesiones ya hechas se enlazan al día.
+- [x] 3.3b Importar `.ics` (lector hecho a mano, sin librerías) con vista previa, y exportar la temporada a `.ics`.
+- [x] 3.4 Vista mes (Equipo → Temporada) y «Esta semana» en Inicio; cada día enlaza su sesión («Abrir la sesión →»). Falta: que el cronómetro de pista abra solo la sesión del día.
 - [ ] 3.5 Entrada de balance de partido (qué funcionó, a quién mirar) que cuelga de la ficha de la jugadora; revisión; parar.
+
+Decisiones de Adam (30/10, vuelta 3): dónde vive A+C (dentro de Equipo + «Esta semana» en Inicio); apuntar C+B+A (entrenos fijos, lista de jornadas y tocar el día); hoja del día A con «Abrir día»; .ics A (vista previa con casillas) y exportar. Resultado solo con puntos a favor y en contra; sin «Convocadas» (no contestó, supuesto mío). Código en `src/temporada/` y `src/pantallas/Temporada.tsx`, `ImportarCalendario.tsx`.
 
 ## Tramo 4: cuestionario y prompt para la IA
 - [ ] 4.1 **Diseño** del cuestionario (bocetos) → Adam elige: paso a paso con una pregunta por pantalla, o una sola pantalla con secciones plegables. Con vista previa del prompt que se va rellenando.

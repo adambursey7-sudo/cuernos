@@ -3,6 +3,7 @@ import { armarCopia, juntar, leerCopia } from './copia';
 import { nuevoBorrador, mover } from './editor/editar';
 import { PALETAS } from './temas';
 import { nuevaJugadora, nuevoEquipo } from './diario/diario';
+import { guardarEvento, guardarFijo, nuevaTemporada, nuevoEvento, nuevoFijo } from './temporada/temporada';
 
 const jugada = () => {
   const b = nuevoBorrador();
@@ -43,5 +44,19 @@ describe('copia con diario', () => {
     const r = leerCopia(armarCopia([], { principal: '#e8883a', fondo: '#14110e', pista: '#c98f55', jugadores: '#f3ece2' }, diario));
     expect(r.diario?.jugadoras[0].nombre).toBe('Ejemplo');
     expect(leerCopia(JSON.stringify({ app: 'cuernos-copia', mios: [], diario: { equipos: 3 } })).diario).toEqual({ equipos: [], jugadoras: [] });
+  });
+});
+
+describe('copia con temporada', () => {
+  it('guarda y recupera la temporada, y descarta la de un equipo que no está', () => {
+    const e = nuevoEquipo('Cadete femenino');
+    let t = guardarFijo(nuevaTemporada(e.id, '2026-09-01', '2027-06-30'), nuevoFijo(0));
+    t = guardarEvento(t, { ...nuevoEvento('2026-10-17', 'partido'), titulo: 'Ejemplo CB' });
+    const huerfana = nuevaTemporada('otro', '2026-09-01', '2027-06-30');
+    const r = leerCopia(armarCopia([], PALETAS[0], { equipos: [e], jugadoras: [] }, [t, huerfana]));
+    expect(r.temporadas).toEqual([t]);
+  });
+  it('una copia antigua sin temporada sigue valiendo', () => {
+    expect(leerCopia(armarCopia([], PALETAS[0])).temporadas).toBeUndefined();
   });
 });
