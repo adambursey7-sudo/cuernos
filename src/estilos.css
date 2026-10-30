@@ -357,3 +357,10 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 .tp-previa-linea { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .tp-previa-linea input[type='date'], .tp-previa-linea input[type='time'] { padding: 6px; border-radius: 8px; border: 1.5px solid var(--tenue); background: var(--fondo); color: var(--texto); font: inherit; min-width: 0; }
 .semana .tp-semana + .tp-semana { margin-top: 0; }
+
+/* Intro de entrada (vídeo del túnel) */
+.intro { position: fixed; inset: 0; z-index: 100; background: #141c33; display: grid; place-items: center; transition: opacity .35s; }
+.intro.sale { opacity: 0; pointer-events: none; }
+.intro video { width: 100%; height: 100%; object-fit: contain; }
+.intro-botones { position: absolute; top: max(14px, env(safe-area-inset-top)); right: max(14px, env(safe-area-inset-right)); display: flex; gap: 8px; }
+.intro-botones button { border: none; border-radius: 20px; padding: 8px 14px; background: rgba(0, 0, 0, .55); color: #fff8ee; font: 700 .95rem/1 var(--texto, inherit); }

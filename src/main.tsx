@@ -6,6 +6,7 @@ import '@fontsource/graduate/400.css';
 import './estilos.css';
 import { aplicarColores, leerColores } from './temas';
 import { App } from './App';
+import { ConIntro } from './Intro';
 import { leerEnlace } from './compartir/enlace';
 import { Visor } from './compartir/Visor';
 
@@ -17,7 +18,7 @@ leerEnlace(location.hash)
   .then(
     (compartida) => {
       if (compartida?.colores) aplicarColores(compartida.colores, false);
-      return compartida ? <Visor datos={compartida} /> : <App />;
+      return compartida ? <Visor datos={compartida} /> : <ConIntro><App /></ConIntro>;
     },
     () => <Visor datos="roto" />,
   )
