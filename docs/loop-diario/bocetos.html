@@ -1,0 +1,203 @@
+<title>Diario Horns</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Graduate&display=swap">
+<style>
+/* Estilo Marcador de Horns: fondo oscuro, parqué como color principal, números enormes. Una sola cara (oscura) a propósito. */
+:root{--bg:#14110e;--panel:#211c17;--panel2:#2c251e;--fg:#f3ece2;--mute:#a89d8e;--acc:#e8883a;--ok:#7fc58a;--mal:#e5736a;--linea:#3a3128;--pista:#c98f55;
+--disp:'Graduate','Impact',serif;--txt:'Atkinson Hyperlegible','Segoe UI',sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--txt);font-size:16px;line-height:1.5;margin:0;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--disp);font-weight:400;text-wrap:balance;margin:0}
+h1{font-size:2.2rem;line-height:1.1}
+h2{font-size:1.5rem;color:var(--acc)}
+h3{font-size:1.1rem}
+p{margin:0}
+.mute{color:var(--mute)}
+.etq{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+section{background:var(--panel);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.opciones{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.op{background:var(--panel2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.op.rec{outline:2px solid var(--acc)}
+.letra{font-family:var(--disp);font-size:1.8rem;color:var(--acc);line-height:1}
+.pros{font-size:.9rem;display:grid;gap:4px}
+.pros b{color:var(--ok)}.pros i{color:var(--mal);font-style:normal;font-weight:700}
+.tel{width:100%;max-width:230px;margin:0 auto;aspect-ratio:9/15;background:var(--bg);border:2px solid var(--linea);border-radius:20px;padding:10px;display:flex;flex-direction:column;gap:6px;overflow:hidden;font-size:11px;line-height:1.3}
+.tel .tit{font-family:var(--disp);font-size:13px}
+.fila{display:flex;align-items:center;gap:6px;background:var(--panel);border-radius:8px;padding:5px 6px}
+.dor{width:24px;height:24px;border-radius:50%;background:var(--acc);color:#14110e;font-family:var(--disp);display:grid;place-items:center;font-size:12px;flex:none}
+.chip{background:var(--panel2);border-radius:20px;padding:1px 7px;font-size:10px;color:var(--mute);white-space:nowrap}
+.chip.v{color:var(--ok)}.chip.r{color:var(--mal)}
+.barra{display:flex;gap:4px;margin-top:auto}
+.barra span{flex:1;text-align:center;padding:4px 0;border-radius:6px;background:var(--panel);font-size:9px;color:var(--mute)}
+.barra .on{color:var(--acc)}
+.pestanas{display:flex;gap:4px}.pestanas span{padding:2px 7px;border-radius:12px;background:var(--panel);font-size:10px;color:var(--mute)}.pestanas .on{background:var(--acc);color:#14110e}
+.pista{background:var(--pista);border-radius:8px;position:relative;flex:1;min-height:90px}
+.jug{position:absolute;width:22px;height:22px;border-radius:50%;background:#14110e;color:var(--fg);display:grid;place-items:center;font-family:var(--disp);font-size:11px;border:2px solid var(--fg);transform:translate(-50%,-50%)}
+.mini{font-size:9px;color:var(--mute);text-align:center}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.cal span{font-size:9px;padding:3px 0;border-radius:4px;background:var(--panel)}
+.cal .p{background:var(--acc);color:#14110e}.cal .e{border-bottom:2px solid var(--ok)}.cal .h{color:var(--mute);background:none}
+.fase{border-radius:6px;padding:4px 6px;font-size:10px;color:#14110e}
+.nota{background:var(--panel2);border-left:4px solid var(--acc);padding:10px 12px;border-radius:0 10px 10px 0}
+pre{margin:0;background:#0d0b09;border-radius:8px;padding:10px;font-size:.78rem;overflow-x:auto;color:var(--mute);white-space:pre-wrap}
+.pie{font-size:.85rem;color:var(--mute)}
+</style>
+<main>
+<header>
+  <p class="etq">Horns · loop «Diario del entrenador» · 30/10/2026</p>
+  <h1>De libro de jugadas a cuaderno del entrenador</h1>
+  <p class="mute" style="margin-top:8px">Plantilla con fichas, números en las pizarras, temporada con calendario y paso a una IA. Todo en el móvil, sin cuentas. Los nombres y números de los dibujos son inventados.</p>
+</header>
+
+<section>
+  <h2>El proyecto en una vista</h2>
+  <div class="opciones">
+    <div class="op"><span class="letra">1</span><h3>Plantilla y fichas</h3><p class="mute">Jugadoras con número, posición, puntos fuertes, a mejorar, forma de jugar y cómo entrenarlas. Ficha del equipo con sus virtudes.</p></div>
+    <div class="op"><span class="letra">2</span><h3>Números en pizarra</h3><p class="mute">Cada círculo de la pizarra lleva el dorsal de la jugadora que hace ese puesto. También en GIF, hoja de compartir y ficha A4.</p></div>
+    <div class="op"><span class="letra">3</span><h3>Temporada</h3><p class="mute">Fases con objetivo, calendario de partidos y entrenos, sesiones enlazadas a su día, balance de cada partido.</p></div>
+    <div class="op"><span class="letra">4</span><h3>Paso a una IA</h3><p class="mute">Un dosier de texto para pegar en Claude u otra IA, y un archivo de vuelta que entra como borrador.</p></div>
+  </div>
+  <p class="pie">Los cuatro tramos están en <b>docs/loop-diario.md</b>. En cada tramo el diseño se elige antes de programar. Estas son las cuatro decisiones.</p>
+</section>
+
+<section>
+  <h2>Decisión 1 · La plantilla y la ficha de jugadora</h2>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Lista con dorsal y ficha larga</h3>
+      <div class="tel"><span class="tit">Cadete · Plantilla</span>
+        <div class="fila"><span class="dor">4</span><div style="flex:1"><b>Ejemplo Uno</b><br><span class="mute">Base</span></div><span class="chip v">tiro</span></div>
+        <div class="fila"><span class="dor">7</span><div style="flex:1"><b>Ejemplo Dos</b><br><span class="mute">Alero</span></div><span class="chip v">1x1</span></div>
+        <div class="fila"><span class="dor">11</span><div style="flex:1"><b>Ejemplo Tres</b><br><span class="mute">Pívot</span></div><span class="chip r">pies</span></div>
+        <div class="fila"><span class="dor">13</span><div style="flex:1"><b>Ejemplo Cuatro</b><br><span class="mute">Escolta</span></div><span class="chip v">robos</span></div>
+        <div class="barra"><span>Inicio</span><span>Jugadas</span><span class="on">Equipo</span><span>Temporada</span></div></div>
+      <div class="pros"><span><b>＋</b> Se lee de un vistazo con el dorsal grande y un punto fuerte o una carencia.</span><span><b>＋</b> Es lo más parecido a la libreta que usas hoy.</span><span><i>－</i> En la lista no se ve de quién depende cada jugada.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Plantilla sobre la pista</h3>
+      <div class="tel"><span class="tit">Cadete · Quinteto</span>
+        <div class="pista">
+          <span class="jug" style="left:50%;top:78%">4</span><span class="jug" style="left:20%;top:55%">13</span><span class="jug" style="left:80%;top:55%">7</span><span class="jug" style="left:32%;top:22%">9</span><span class="jug" style="left:68%;top:22%">11</span></div>
+        <p class="mini">Toca un círculo para abrir su ficha</p>
+        <div class="fila"><span class="dor">4</span><span>Ejemplo Uno · Base</span></div>
+        <div class="barra"><span>Inicio</span><span>Jugadas</span><span class="on">Equipo</span><span>Temporada</span></div></div>
+      <div class="pros"><span><b>＋</b> Ves el quinteto como en la pizarra y conecta con la decisión 2.</span><span><b>＋</b> Para el banquillo habría una fila debajo.</span><span><i>－</i> Con 12 jugadoras queda apretado y es más lento de editar.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>Fichas que se deslizan</h3>
+      <div class="tel"><span class="tit">Ejemplo Uno · #4</span>
+        <div class="pestanas"><span class="on">Perfil</span><span>Entrenar</span><span>Notas</span></div>
+        <div class="fila" style="flex-direction:column;align-items:flex-start"><span class="etq">Puntos fuertes</span><span>Tiro de media, lectura de juego</span></div>
+        <div class="fila" style="flex-direction:column;align-items:flex-start"><span class="etq">A mejorar</span><span>Bote con la izquierda</span></div>
+        <div class="fila" style="flex-direction:column;align-items:flex-start"><span class="etq">Cómo juega</span><span>Dirige, pasa y busca el pick and roll</span></div>
+        <p class="mini">‹ desliza a la siguiente jugadora ›</p>
+        <div class="barra"><span>Inicio</span><span>Jugadas</span><span class="on">Equipo</span><span>Temporada</span></div></div>
+      <div class="pros"><span><b>＋</b> Una ficha por pantalla, cómoda en el banquillo.</span><span><b>＋</b> Se repasa una jugadora tras otra antes del partido.</span><span><i>－</i> No hay vista de conjunto de la plantilla.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo A</b> para la lista y, dentro de la ficha, las tres pestañas de C (Perfil, Entrenar, Notas con fecha). La vista de pista de B entra en la decisión 2.</p>
+</section>
+
+<section>
+  <h2>Decisión 2 · Los números en las pizarras</h2>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Un «quién es quién» por equipo</h3>
+      <div class="tel"><span class="tit">Cadete · Puestos</span>
+        <div class="fila"><span class="dor" style="background:#14110e;color:var(--fg);border:2px solid var(--fg)">1</span><span style="flex:1">Base</span><span class="dor">4</span></div>
+        <div class="fila"><span class="dor" style="background:#14110e;color:var(--fg);border:2px solid var(--fg)">2</span><span style="flex:1">Escolta</span><span class="dor">13</span></div>
+        <div class="fila"><span class="dor" style="background:#14110e;color:var(--fg);border:2px solid var(--fg)">3</span><span style="flex:1">Alero</span><span class="dor">7</span></div>
+        <div class="fila"><span class="dor" style="background:#14110e;color:var(--fg);border:2px solid var(--fg)">4</span><span style="flex:1">Ala-pívot</span><span class="dor">9</span></div>
+        <div class="fila"><span class="dor" style="background:#14110e;color:var(--fg);border:2px solid var(--fg)">5</span><span style="flex:1">Pívot</span><span class="dor">11</span></div>
+        <p class="mini">Todos los sistemas usan estos cinco</p></div>
+      <div class="pros"><span><b>＋</b> Se pone una vez y vale para todas las jugadas.</span><span><b>＋</b> Interruptor «1–5 / dorsales» en la pizarra.</span><span><i>－</i> Si cambia el quinteto en un partido, se cambia a mano en el puesto.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Elegir quién juega cada jugada</h3>
+      <div class="tel"><span class="tit">Cuernos · Elige quinteto</span>
+        <div class="pista"><span class="jug" style="left:50%;top:78%">4</span><span class="jug" style="left:20%;top:55%">13</span><span class="jug" style="left:80%;top:55%">7</span><span class="jug" style="left:32%;top:22%">9</span><span class="jug" style="left:68%;top:22%">11</span></div>
+        <p class="mini">Toca un círculo para cambiar la jugadora</p>
+        <div class="fila"><span class="chip">Banquillo</span><span class="dor">5</span><span class="dor">8</span><span class="dor">10</span></div></div>
+      <div class="pros"><span><b>＋</b> Cada jugada puede tener su quinteto (el de las rotaciones).</span><span><i>－</i> Hay que elegir en cada jugada, más toques.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>Dorsal con nombre corto</h3>
+      <div class="tel"><span class="tit">Cuernos · Paso 2</span>
+        <div class="pista"><span class="jug" style="left:50%;top:78%">4</span><span class="jug" style="left:20%;top:55%">13</span><span class="jug" style="left:80%;top:55%">7</span><span class="jug" style="left:32%;top:22%">9</span><span class="jug" style="left:68%;top:22%">11</span>
+          <span class="mini" style="position:absolute;left:50%;top:86%;transform:translateX(-50%)">Uno</span><span class="mini" style="position:absolute;left:20%;top:66%">Cuatro</span><span class="mini" style="position:absolute;left:78%;top:66%">Dos</span></div></div>
+      <div class="pros"><span><b>＋</b> Se ve a quién hablas en la pizarra.</span><span><i>－</i> Los nombres de menores salen en capturas, GIF y hojas que se comparten.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo A</b>, con la opción de cambiar quién hace un puesto en una jugada concreta (lo mejor de B). Sin nombres en la pizarra (C) porque el GIF y la hoja se comparten con familias y otros clubes.</p>
+</section>
+
+<section>
+  <h2>Decisión 3 · La temporada y el calendario</h2>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Fases arriba y calendario del mes</h3>
+      <div class="tel"><span class="tit">Octubre</span>
+        <div style="display:flex;gap:2px"><span class="fase" style="background:var(--ok);flex:2">Pretemp.</span><span class="fase" style="background:var(--acc);flex:4">Liga 1</span></div>
+        <div class="cal"><span class="h">L</span><span class="h">M</span><span class="h">X</span><span class="h">J</span><span class="h">V</span><span class="h">S</span><span class="h">D</span>
+          <span class="e">1</span><span>2</span><span class="e">3</span><span>4</span><span class="e">5</span><span class="p">6</span><span>7</span>
+          <span class="e">8</span><span>9</span><span class="e">10</span><span>11</span><span class="e">12</span><span class="p">13</span><span>14</span>
+          <span class="e">15</span><span>16</span><span class="e">17</span><span>18</span><span class="e">19</span><span class="p">20</span><span>21</span></div>
+        <div class="fila"><span class="chip">Sáb 13</span><span>vs Ejemplo CB · casa 11:00</span></div>
+        <div class="fila"><span class="chip">Lun 8</span><span>Sesión: 1x1 y ayudas</span></div>
+        <p class="mini">▮ partido · subrayado verde: entreno</p></div>
+      <div class="pros"><span><b>＋</b> Lo que ves en cualquier calendario más el contexto de cada fase.</span><span><b>＋</b> Tocar un día abre su sesión.</span><span><i>－</i> Menos espacio para el detalle de la semana.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Línea de la temporada por bloques</h3>
+      <div class="tel"><span class="tit">Temporada 26/27</span>
+        <div class="fase" style="background:var(--ok)">Sep–Oct · Pretemporada<br>Objetivo: defensa y condición</div>
+        <div class="fase" style="background:var(--acc)">Oct–Dic · Liga 1<br>Objetivo: ritmo y transición</div>
+        <div class="fase" style="background:var(--pista)">Ene · Parón<br>Objetivo: técnica individual</div>
+        <div class="fase" style="background:var(--mute)">Feb–May · Liga 2<br>Objetivo: sistemas ofensivos</div>
+        <p class="mini">Toca una fase para ver sus semanas</p></div>
+      <div class="pros"><span><b>＋</b> Ves la temporada entera y su lógica.</span><span><i>－</i> Hasta bajar a la semana no ves los partidos. Complementa a A.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>Semana a semana en lista</h3>
+      <div class="tel"><span class="tit">Semana 6 · 6–12 oct</span>
+        <div class="fila"><span class="chip">Lun</span><span>Entreno · defensa</span></div>
+        <div class="fila"><span class="chip">Mié</span><span>Entreno · transición</span></div>
+        <div class="fila"><span class="chip">Vie</span><span>Entreno · sistemas</span></div>
+        <div class="fila" style="background:var(--acc);color:#14110e"><span class="chip">Sáb</span><span>PARTIDO · vs Ejemplo CB</span></div>
+        <p class="mini">‹ semana anterior · siguiente ›</p></div>
+      <div class="pros"><span><b>＋</b> Es el modo de trabajar de un entrenador: la semana.</span><span><b>＋</b> Muy cómoda en el móvil.</span><span><i>－</i> No da vista de mes.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo juntar las tres:</b> B de portada (la temporada y sus fases), A para el mes y C al tocar una semana. Se programa por ese orden.</p>
+</section>
+
+<section>
+  <h2>Decisión 4 · Pasarlo a Claude u otra IA</h2>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Dosier de texto y archivo de vuelta</h3>
+      <p class="mute">Pulsas «Preparar para la IA», se copia un texto con la plantilla, las virtudes del equipo y el calendario, más lo que pides. Lo pegas en Claude (o la que uses). Te devuelve un bloque en un formato fijo; lo pegas o subes en la app y entra como borrador.</p>
+      <pre>Eres entrenador ayudante de baloncesto.
+Equipo: Cadete femenino. Virtudes: ritmo, defensa presionante.
+Plantilla (sin nombres): #4 base, tiro de media, mejorar bote izq.; #7 alero, 1x1...
+Calendario: sáb 13 casa, sáb 20 fuera...
+Pídeme: planificación de octubre en bloques de semana.
+Respóndeme SOLO con este JSON: { "semanas": [ ... ] }</pre>
+      <div class="pros"><span><b>＋</b> Sin coste, sin claves y sin que los datos salgan solos.</span><span><b>＋</b> Interruptor «quitar nombres»: solo dorsal y posición.</span><span><b>＋</b> Funciona con cualquier IA, también una que no tengas hoy.</span><span><i>－</i> Un copiar y pegar a mano.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>La app llama a una IA por su cuenta</h3>
+      <p class="mute">Botón «Hazme la planificación» que manda los datos a una API y escribe el resultado. Habría que guardar una clave en el móvil.</p>
+      <div class="pros"><span><b>＋</b> Un toque y listo.</span><span><i>－</i> Cuesta dinero cada vez y la clave quedaría en una web pública.</span><span><i>－</i> Los datos de menores salen sin que los revises.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo A.</b> B queda para cuando haya un servidor propio y la confidencialidad esté resuelta. Antes de exportar saldrá un aviso de que son datos de personas.</p>
+</section>
+
+<section>
+  <h2>Qué necesito de ti</h2>
+  <p>Elige una letra por decisión (o una mezcla). Si te vale lo recomendado, di «recomendado» y empiezo por el tramo 1.</p>
+  <p class="pie">Un par de cosas más para decidir cuando toque: si la plantilla lleva fecha de nacimiento (se puede dejar solo la categoría) y si hay un campo de lesiones, que sería dato de salud.</p>
+</section>
+</main>
