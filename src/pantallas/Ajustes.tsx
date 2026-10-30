@@ -26,7 +26,8 @@ export function Ajustes() {
     enlace.click();
     // Safari empieza la descarga más tarde: si se suelta el archivo enseguida, la copia sale vacía.
     setTimeout(() => URL.revokeObjectURL(enlace.href), 60_000);
-    setAviso(`Copia descargada: ${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'} y tus colores.`);
+    const njug = leerDiario().jugadoras.length;
+    setAviso(`Copia descargada: ${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'}, ${njug} ${njug === 1 ? 'jugadora' : 'jugadoras'} y tus colores.`);
   };
 
   const cargar = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +39,7 @@ export function Ajustes() {
       guardarTodosMios(juntar(leerMios(), copia.mios));
       if (copia.diario) guardarDiario(juntarDiario(leerDiario(), copia.diario));
       if (copia.colores) poner(copia.colores);
-      setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.colores ? ' y los colores' : ''}.`);
+      setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${copia.diario.jugadoras.length} jugadoras` : ''}${copia.colores ? ' y los colores' : ''}.`);
     } catch (err) {
       setAviso(err instanceof Error ? err.message : 'No se ha podido cargar la copia.');
     }

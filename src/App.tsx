@@ -41,7 +41,7 @@ export function App() {
 
   let contenido;
   if (pestana === 'sesiones' && !ejercicio) contenido = <Sesiones abrirEjercicio={setEjercicioId} abierta={sesionId} abrir={setSesionId} />;
-  else if (pestana === 'equipo') contenido = <Equipo />;
+  else if (pestana === 'equipo') contenido = <Equipo ir={setPestana} />;
   else if (pestana === 'ajustes') contenido = <Ajustes />;
   else if (edicion)
     contenido = (

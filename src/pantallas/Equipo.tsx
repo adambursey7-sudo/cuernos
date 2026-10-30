@@ -104,7 +104,7 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
   );
 }
 
-function FichaEquipo({ e, cambiar, borrar, volver }: { e: EquipoDatos; cambiar: (e: EquipoDatos) => void; borrar: () => void; volver: () => void }) {
+function FichaEquipo({ e, cambiar, borrar, volver, ir }: { e: EquipoDatos; cambiar: (e: EquipoDatos) => void; borrar: () => void; volver: () => void; ir: (t: 'ejercicios' | 'jugadas') => void }) {
   const [seguro, setSeguro] = useState(false);
   return (
     <section className="pantalla ficha-jugadora">
@@ -120,6 +120,10 @@ function FichaEquipo({ e, cambiar, borrar, volver }: { e: EquipoDatos; cambiar: 
       <Campo etiqueta="Virtudes del equipo" valor={e.virtudes} cambiar={(virtudes) => cambiar({ ...e, virtudes })} ayuda="En qué es bueno" />
       <Campo etiqueta="A trabajar" valor={e.trabajar} cambiar={(trabajar) => cambiar({ ...e, trabajar })} ayuda="Lo que hay que mejorar" />
       <Campo etiqueta="Cómo entrenarlo" valor={e.como} cambiar={(como) => cambiar({ ...e, como })} ayuda="Qué tipo de ejercicios y sistemas, y cuánto" filas={5} />
+      <div className="dos-botones">
+        <button className="secundario" onClick={() => ir('ejercicios')}>Buscar ejercicios</button>
+        <button className="secundario" onClick={() => ir('jugadas')}>Buscar jugadas</button>
+      </div>
       <div className="peligro">
         {seguro ? (
           <>
@@ -195,7 +199,7 @@ function Importar({ equipoId, crear, volver }: { equipoId: string; crear: (c: Ca
   );
 }
 
-export function Equipo() {
+export function Equipo({ ir }: { ir: (t: 'ejercicios' | 'jugadas') => void }) {
   const [d, setD] = useState<Diario>(leerDiario);
   const [activo, setActivo] = useState<string>(() => leerDiario().equipos[0]?.id ?? '');
   const [vista, setVista] = useState<Vista>({ tipo: 'plantilla' });
@@ -246,6 +250,7 @@ export function Equipo() {
         cambiar={(e) => setD(guardarEquipo(d, e))}
         borrar={() => { const resto = d.equipos.filter((e) => e.id !== equipo.id); setD(quitarEquipo(d, equipo.id)); setActivo(resto[0]?.id ?? ''); setVista({ tipo: 'plantilla' }); }}
         volver={() => setVista({ tipo: 'plantilla' })}
+        ir={ir}
       />
     );
   if (vista.tipo === 'importar')
