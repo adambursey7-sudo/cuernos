@@ -301,3 +301,12 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 .puesto .dorsal { width: 38px; height: 38px; font-size: 1.2rem; flex: none; }
 .puesto .meta { flex: 1; min-width: 0; }
 .puesto select { flex: 1.4; min-width: 0; min-height: 44px; }
+
+/* Editor: tira de pasos, jugador marcado y jugador que sigue al dedo */
+.tira-pasos { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.tira-pasos .chip { flex: none; min-width: 44px; min-height: 40px; }
+.lienzo .capa.marca { pointer-events: none; }
+.capa .elegido { fill: none; stroke: var(--principal); stroke-width: 1.6; }
+.capa .viva { fill: var(--jugadores); stroke: var(--principal); stroke-width: 1.6; }
+.capa .viva-num { fill: var(--texto-jugadores); font: 700 8px var(--body); text-anchor: middle; dominant-baseline: central; }
+.barra-jugador .chip:disabled { opacity: 0.4; }

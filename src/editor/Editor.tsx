@@ -1,19 +1,19 @@
 // Editor «arrastra y dibuja» (elegido por Adam el 29/10): primero se coloca a los cinco; luego, en cada paso, el camino
 // que hace el dedo con un jugador es su flecha y el movimiento se adivina (se cambia tocando la etiqueta). El pase se hace
 // arrastrando el balón a un compañero. Todo se guarda en el móvil.
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { enCamino, foto, inicios } from '../pizarra/animar';
 import { Pista } from '../pizarra/Pista';
 import { guardarMio } from '../sistemas/almacen';
 import { NIVELES, type Jugador, type Nivel, type Punto, type Sistema } from '../sistemas/tipos';
-import { adivinar, ajustarCurva, cambiarTipo, dentro, limpiar, mover, nuevoBorrador, opcionesDe, pasar } from './editar';
+import { adivinar, ajustarCurva, cambiarTipo, dentro, fijarTipo, limpiar, mover, nuevoBorrador, opcionesDe, pasar, quitarMovimiento, quitarPase } from './editar';
 
 const JUGADORES: Jugador[] = ['1', '2', '3', '4', '5'];
 /** Distancia (en dm de pista) para agarrar a un jugador con el dedo y para que el arrastre cuente. */
 const AGARRE = 12;
 const MINIMO = 4;
 /** Radio (dm) para agarrar el balón, que va pegado al jugador que lo lleva. */
-const AGARRE_BALON = 5;
+const AGARRE_BALON = 7;
 const NOMBRE = { corte: 'Corte', bote: 'Bote', bloqueo: 'Bloqueo' } as const;
 
 /** Lo que se arrastra: un jugador (con el camino que hace el dedo) o el balón para pasarlo. */
@@ -28,19 +28,39 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
   const [colocando, setColocando] = useState(b.pasos.length === 0);
   const [arrastre, setArrastre] = useState<Arrastre | null>(null);
   const [pasando, setPasando] = useState(false);
+  // Paso que se está editando (se puede volver a cualquiera), jugador marcado y reproducción del paso (0 a 1).
+  const [selecc, setSelecc] = useState(Math.max(0, b.pasos.length - 1));
+  const [elegido, setElegido] = useState<Jugador | null>(null);
+  const [viendo, setViendo] = useState<number | null>(null);
   const [error, setError] = useState('');
   const capa = useRef<SVGSVGElement>(null);
 
-  const actual = Math.max(0, b.pasos.length - 1);
+  const actual = Math.min(selecc, Math.max(0, b.pasos.length - 1));
   const marcas = inicios(b);
   // Lo que se ve: al colocar, la posición de partida; en los pasos, el final del paso en curso con sus flechas.
   const vista: Sistema = colocando ? { ...b, pasos: [{ texto: '', movimientos: [] }] } : b;
-  const t = colocando ? 0 : b.pasos.length;
-  const ahora = colocando ? marcas[0] : marcas[b.pasos.length];
+  const t = colocando ? 0 : viendo !== null ? actual + Math.max(0.01, viendo) : actual + 1;
+  const ahora = colocando ? marcas[0] : marcas[actual + 1];
   const alEmpezar = marcas[actual];
   const pasoActual = b.pasos[actual];
   // Bota quien tenía el balón al empezar el paso, salvo que ya lo haya pasado.
   const conBalon = (j: Jugador) => j === alEmpezar.balon && !pasoActual?.movimientos.some((m) => m.tipo === 'pase');
+
+  useEffect(() => {
+    if (viendo === null) return;
+    const inicio = performance.now();
+    let raf = 0;
+    const tick = (ahoraMs: number) => {
+      const k = (ahoraMs - inicio) / 1600;
+      if (k >= 1) return setViendo(null);
+      setViendo(k);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+    // Solo al empezar y al acabar: el avance (viendo) no debe reiniciar el reloj.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viendo === null]);
 
   const cambiar = (n: Sistema) => {
     setHistorial((h) => [...h.slice(-30), b]);
@@ -59,7 +79,7 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
   };
 
   const agarrar = (e: React.PointerEvent) => {
-    if (pasando) return;
+    if (pasando || viendo !== null) return;
     const p = aPista(e);
     const empezar = (jugador: Arrastre['jugador'], desde: Punto) => {
       capa.current!.setPointerCapture(e.pointerId);
@@ -77,6 +97,7 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
       if (d < cerca) [mejor, cerca] = [j, d];
     }
     if (mejor) empezar(mejor, ahora.pos[mejor]);
+    else setElegido(null);
   };
 
   const arrastrar = (e: React.PointerEvent) => {
@@ -92,7 +113,11 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
     setArrastre(null);
     const { jugador, camino } = arrastre;
     const hasta = camino[camino.length - 1];
-    if (Math.hypot(hasta[0] - camino[0][0], hasta[1] - camino[0][1]) < MINIMO) return;
+    if (Math.hypot(hasta[0] - camino[0][0], hasta[1] - camino[0][1]) < MINIMO) {
+      // Un toque marca al jugador: la barra de abajo deja elegir qué hace.
+      if (jugador !== 'balon' && !colocando) setElegido(jugador);
+      return;
+    }
     if (jugador === 'balon') {
       // Pase: el balón se suelta encima de un compañero.
       const receptor = JUGADORES.find((j) => j !== alEmpezar.balon && Math.hypot(ahora.pos[j][0] - hasta[0], ahora.pos[j][1] - hasta[1]) < AGARRE);
@@ -104,6 +129,7 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
     const recorrido = [alEmpezar.pos[jugador], ...camino.slice(1)];
     const companeros = JUGADORES.filter((j) => j !== jugador).map((j) => ahora.pos[j]);
     const tipo = adivinar(conBalon(jugador), hasta, companeros);
+    setElegido(jugador);
     cambiarPaso((p) => mover(p, jugador, tipo, hasta, ajustarCurva(recorrido)));
   };
 
@@ -127,18 +153,35 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
         <input id="nombre-jugada" className="nombre-editable" value={b.nombre} onFocus={recordar} onChange={(e) => setB({ ...b, nombre: e.target.value })} aria-label="Nombre de la jugada" />
       </div>
 
+      <div className="tira-pasos" role="tablist" aria-label="Pasos de la jugada">
+        <button role="tab" aria-selected={colocando} className={colocando ? 'chip on' : 'chip'} onClick={() => { setColocando(true); setElegido(null); setViendo(null); }}>Colocar</button>
+        {b.pasos.map((_, n) => (
+          <button key={n} role="tab" aria-selected={!colocando && n === actual} className={!colocando && n === actual ? 'chip on' : 'chip'} onClick={() => { setColocando(false); setSelecc(n); setElegido(null); setPasando(false); setViendo(null); }}>
+            {n + 1}
+          </button>
+        ))}
+        {!colocando && (
+          <button className="chip" onClick={() => setViendo(0)} disabled={!pasoActual?.movimientos.length || viendo !== null} aria-label="Ver este paso en movimiento">▶ Ver</button>
+        )}
+      </div>
+
       <div className="fase">
         {colocando ? (
-          <span>Colocación: arrastra a cada jugador a su sitio y toca quién lleva el balón.</span>
+          <span>Arrastra a cada jugador a su sitio. Toca el círculo del balón para decir quién lo lleva.</span>
+        ) : elegido ? (
+          <span><b>Jugador {elegido}</b> · elige qué hace, o arrástralo otra vez.</span>
         ) : (
-          <span>
-            <b>Paso {actual + 1}</b> · dibuja con el dedo el camino de cada jugador. Para pasar, arrastra el balón a un compañero. Toca la etiqueta de una flecha para cambiar el movimiento.
-          </span>
+          <span><b>Paso {actual + 1}</b> · arrastra a un jugador: lo que dibujes es su movimiento.</span>
         )}
       </div>
 
       <div className="lienzo">
         <Pista sistema={vista} t={t} numeros={null} />
+        {!colocando && elegido && !arrastre && (
+          <svg className="capa marca" viewBox="0 0 150 140" aria-hidden>
+            <circle className="elegido" cx={ahora.pos[elegido][0]} cy={ahora.pos[elegido][1]} r="10.5" />
+          </svg>
+        )}
         <svg
           ref={capa}
           className="capa"
@@ -151,7 +194,12 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
           {arrastre && (
             <>
               <path className="guia" d={'M' + arrastre.camino.map((q) => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join('L')} />
-              {arrastre.jugador !== 'balon' && <circle className="fantasma" cx={arrastre.camino.at(-1)![0]} cy={arrastre.camino.at(-1)![1]} r="7.5" />}
+              {arrastre.jugador !== 'balon' && (
+                <g transform={`translate(${arrastre.camino.at(-1)![0]} ${arrastre.camino.at(-1)![1]})`}>
+                  <circle className="viva" r="8.5" />
+                  <text className="viva-num">{arrastre.jugador}</text>
+                </g>
+              )}
             </>
           )}
           {colocando &&
@@ -189,6 +237,24 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
           })}
       </div>
 
+      {!colocando && elegido && !pasando && (
+        <div className="fila-chips barra-jugador" role="group" aria-label={`Qué hace el jugador ${elegido}`}>
+          {(['corte', 'bote', 'bloqueo'] as const).filter((x) => opcionesDe(conBalon(elegido)).includes(x)).map((x) => {
+            const m = pasoActual?.movimientos.find((y) => y.tipo !== 'pase' && y.jugador === elegido);
+            return (
+              <button key={x} className={m?.tipo === x ? 'chip on' : 'chip'} disabled={!m} onClick={() => cambiarPaso((p) => fijarTipo(p, elegido, x))}>
+                {NOMBRE[x]}
+              </button>
+            );
+          })}
+          {conBalon(elegido) && <button className="chip" onClick={() => setPasando(true)}>Pase a…</button>}
+          <button className="chip" disabled={!pasoActual?.movimientos.some((y) => y.tipo !== 'pase' && y.jugador === elegido)} onClick={() => cambiarPaso((p) => quitarMovimiento(p, elegido))} aria-label={`Borrar el movimiento del ${elegido}`}>🗑</button>
+        </div>
+      )}
+      {!colocando && pasoActual?.movimientos.some((m) => m.tipo === 'pase') && !pasando && (
+        <div className="fila-chips"><button className="chip" onClick={() => cambiarPaso(quitarPase)}>Quitar el pase de este paso</button></div>
+      )}
+
       {pasando && (
         <div className="fila-chips pase">
           <span>¿A quién pasa el {alEmpezar.balon}?</span>
@@ -214,20 +280,17 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
       )}
 
       <div className="herramientas">
-        <button onClick={() => { const h = historial.at(-1); if (h) { setB(h); setHistorial(historial.slice(0, -1)); setColocando(h.pasos.length === 0); } }} disabled={!historial.length}>
+        <button onClick={() => { const h = historial.at(-1); if (h) { setB(h); setHistorial(historial.slice(0, -1)); setColocando(h.pasos.length === 0); setElegido(null); setSelecc(Math.max(0, h.pasos.length - 1)); } }} disabled={!historial.length}>
           ↶ Deshacer
         </button>
         {colocando ? (
-          <button className="principal" onClick={() => { cambiar({ ...b, pasos: [{ texto: '', movimientos: [] }] }); setColocando(false); }}>
-            Empezar pasos
+          <button className="principal" onClick={() => { if (!b.pasos.length) cambiar({ ...b, pasos: [{ texto: '', movimientos: [] }] }); setSelecc(0); setColocando(false); }}>
+            {b.pasos.length ? 'Seguir con los pasos' : 'Empezar pasos'}
           </button>
         ) : (
-          <>
-            <button onClick={() => setPasando(true)}>Pase</button>
-            <button onClick={() => cambiar({ ...b, pasos: [...b.pasos, { texto: '', movimientos: [] }] })} disabled={!b.pasos[actual]?.movimientos.length}>
-              + Paso
-            </button>
-          </>
+          <button className="principal" onClick={() => { cambiar({ ...b, pasos: [...b.pasos, { texto: '', movimientos: [] }] }); setSelecc(b.pasos.length); setElegido(null); }} disabled={!b.pasos[b.pasos.length - 1]?.movimientos.length}>
+            + Paso
+          </button>
         )}
       </div>
 

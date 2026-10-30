@@ -43,7 +43,7 @@ Horns pasa de ser una biblioteca de jugadas a ser el **cuaderno del entrenador**
 - [x] 2.1 Diseño → Adam eligió A (30/10).
 - [x] 2.2 «Quién es quién» por equipo: la 1, 2, 3, 4 y 5 de cada sistema con su jugadora.
 - [x] 2.3 Los círculos de la pizarra, el GIF, la hoja de compartir y la ficha A4 enseñan el número elegido (con interruptor 1–5 / dorsales).
-- [ ] 2.4 Editor de sistemas propios con los puestos del equipo; revisión; parar.
+- [x] 2.4 Editor de sistemas propios con los puestos del equipo; revisión; parar.
 
 ## Tramo 3: temporada y calendario
 - [x] 3.1 Diseño → Adam eligió la mezcla (30/10).
@@ -65,4 +65,4 @@ Fotos de las jugadoras, estadísticas de partido en directo, asistencia a entren
 
 ## Vuelta 2 (30/10): pizarra
 - Hecho: «quién es quién» en la ficha del equipo (con «Rellenar según su posición»), interruptor 1–5 / equipo en la pizarra y en pantalla completa, leyenda puesto = dorsal bajo la explicación, el GIF, la hoja y las fichas usan lo elegido; el editor sigue con 1–5. Los ejercicios (2x0, 3x3) no cambian.
-- Pendiente de Adam: boceto «moverse con el dedo» (A recomendado: tocar, mover y elegir; tira de pasos). 2.4 y el editor esperan esa respuesta.
+- Editor con la opción A de Adam: el jugador sigue al dedo, un toque lo marca, barra con corte/bote/bloqueo/pase/borrar, tira de pasos (se puede volver a cualquiera) y ▶ Ver. Falta: resaltar el camino al tocar un jugador en la pizarra de ver.

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { SISTEMAS } from '../sistemas/datos';
 import { esSistemaValido } from '../sistemas/almacen';
 import type { Paso } from '../sistemas/tipos';
-import { adivinar, ajustarCurva, cambiarTipo, describir, limpiar, mover, nuevoBorrador, opcionesDe, pasar } from './editar';
+import { adivinar, ajustarCurva, cambiarTipo, describir, limpiar, mover, nuevoBorrador, opcionesDe, pasar, fijarTipo, quitarMovimiento, quitarPase } from './editar';
 
 describe('editor', () => {
   it('una jugada nueva empieza con cinco abiertos y el balón en el 1', () => {
@@ -70,5 +70,23 @@ describe('editor', () => {
     const g = limpiar(b);
     expect(g.pasos.length).toBe(1);
     expect(esSistemaValido(g)).toBe(true);
+  });
+});
+
+describe('editor: elegir el movimiento', () => {
+  const base: Paso = { texto: '', movimientos: [] };
+  const con = mover(mover(base, '5', 'corte', [86, 88]), '1', 'bote', [92, 104]);
+
+  it('fija el tipo sin tocar el camino y rehace el texto automático', () => {
+    const p = fijarTipo(con, '5', 'bloqueo');
+    expect(p.movimientos.find((m) => m.tipo === 'bloqueo')).toMatchObject({ jugador: '5', a: [86, 88] });
+    expect(p.texto).toBe('1 bota; 5 bloquea.');
+    expect(fijarTipo(base, '3', 'corte')).toBe(base);
+  });
+
+  it('quita el movimiento de un jugador o el pase', () => {
+    expect(quitarMovimiento(con, '5').movimientos).toHaveLength(1);
+    const conPase = pasar(con, '1', '5');
+    expect(quitarPase(conPase).movimientos).toHaveLength(2);
   });
 });

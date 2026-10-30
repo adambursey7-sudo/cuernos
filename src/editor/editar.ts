@@ -119,6 +119,18 @@ export function cambiarTipo(paso: Paso, jugador: Jugador, opciones: TipoMovimien
   return mover(paso, jugador, siguiente, m.a, m.por);
 }
 
+/** Cambia el tipo de movimiento de un jugador sin tocar su camino (si no tiene movimiento, no hace nada). */
+export function fijarTipo(paso: Paso, jugador: Jugador, tipo: TipoMovimiento): Paso {
+  const m = paso.movimientos.find((x) => x.tipo !== 'pase' && x.jugador === jugador);
+  return m && m.tipo !== 'pase' ? mover(paso, jugador, tipo, m.a, m.por) : paso;
+}
+
+/** Quita el movimiento de un jugador en el paso. */
+export const quitarMovimiento = (paso: Paso, jugador: Jugador): Paso =>
+  conMovimientos(paso, paso.movimientos.filter((m) => m.tipo === 'pase' || m.jugador !== jugador));
+
+export const quitarPase = (paso: Paso): Paso => conMovimientos(paso, paso.movimientos.filter((m) => m.tipo !== 'pase'));
+
 /** Un pase por paso como mucho. */
 export function pasar(paso: Paso, de: Jugador, a: Jugador): Paso {
   const resto = paso.movimientos.filter((m) => m.tipo !== 'pase');
