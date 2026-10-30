@@ -6,10 +6,22 @@ import '@fontsource/graduate/400.css';
 import './estilos.css';
 import { aplicarColores, leerColores } from './temas';
 import { aplicarLectura, leerLectura } from './preferencias';
+import { registerSW } from 'virtual:pwa-register';
 import { App } from './App';
 import { ConIntro } from './Intro';
 import { leerEnlace } from './compartir/enlace';
 import { Visor } from './compartir/Visor';
+
+// La app instalada se actualiza sola: busca versión nueva al abrirla y al volver a ella, y se recarga al tenerla.
+registerSW({
+  immediate: true,
+  onRegisteredSW(_url, registro) {
+    if (!registro) return;
+    const buscar = () => void registro.update().catch(() => {});
+    document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && buscar());
+    setInterval(buscar, 60 * 60 * 1000);
+  },
+});
 
 aplicarColores(leerColores());
 aplicarLectura(leerLectura(), false);
