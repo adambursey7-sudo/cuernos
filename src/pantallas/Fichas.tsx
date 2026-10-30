@@ -7,6 +7,9 @@ import { leerRecursos } from '../recursos/recursos';
 import { coleccionesDe, etiquetasDeTexto, filtrarOrganizables, type Filtro } from '../recursos/organizar';
 import { BarraFiltro, CampoColeccion, Estrella, FILTRO_VACIO } from './Organizar';
 import { AnadirASesion } from './AnadirASesion';
+import { enviarTexto, textoColeccion, textoFicha } from '../recursos/compartirTexto';
+
+const AVISO_ENVIO = { enviado: '', copiado: 'Texto copiado. Pégalo donde quieras.', nada: '' } as const;
 
 const PASOS = ['Básico', 'Cómo se juega', 'Coaching', 'Extras'] as const;
 
@@ -16,6 +19,7 @@ export function MisFichas({ nueva, alTerminar }: { nueva?: Ficha; alTerminar?: (
   const [abierta, setAbierta] = useState<string | null>(null);
   const [aviso, setAviso] = useState('');
   const [filtro, setFiltro] = useState<Filtro>(FILTRO_VACIO);
+  const compartirColeccion = async (nombre: string) => setAviso(AVISO_ENVIO[await enviarTexto(textoColeccion(nombre, lista.filter((x) => x.coleccion === nombre)))]);
 
   const poner = (n: Ficha[]) => {
     if (guardarFichas(n)) { setLista(n); setAviso(''); return true; }
@@ -46,6 +50,7 @@ export function MisFichas({ nueva, alTerminar }: { nueva?: Ficha; alTerminar?: (
     <>
       <button className="principal ancho" onClick={() => setEdicion(nuevaFicha())}>Nuevo ejercicio</button>
       {lista.length > 0 && <BarraFiltro lista={lista} filtro={filtro} cambiar={setFiltro} />}
+      {filtro.coleccion && <button className="secundario ancho" onClick={() => compartirColeccion(filtro.coleccion!)}>Compartir «{filtro.coleccion}» como texto</button>}
       {aviso && <p className="aviso" role="status">{aviso}</p>}
       {lista.length === 0 ? (
         <p className="vacio">Aquí estarán tus ejercicios. Crea uno desde cero o abre un recurso guardado y toca «Convertir en ejercicio».</p>
@@ -163,6 +168,7 @@ function Editor({ f: inicial, colecciones, cancelar, guardar }: { f: Ficha; cole
 
 function Lectura({ f, cambiar, volver, editar, borrar }: { f: Ficha; cambiar: (f: Ficha) => void; volver: () => void; editar: () => void; borrar: () => void }) {
   const [seguro, setSeguro] = useState(false);
+  const [aviso, setAviso] = useState('');
   const pasos = pasosDe(f);
   const sistema = f.sistemaId ? todosLosSistemas().find((s) => s.id === f.sistemaId) : undefined;
   const nivel = NIVELES.find((n) => n.id === f.nivel)?.nombre;
@@ -185,6 +191,8 @@ function Lectura({ f, cambiar, volver, editar, borrar }: { f: Ficha; cambiar: (f
       {f.etiquetas.length > 0 && <p className="meta">{f.etiquetas.map((e) => `#${e}`).join(' ')}</p>}
       <Estrella activa={f.favorita} cambiar={() => cambiar({ ...f, favorita: !f.favorita })} />
       <AnadirASesion f={f} />
+      <button className="secundario ancho" onClick={async () => setAviso(AVISO_ENVIO[await enviarTexto(textoFicha(f))])}>Compartir como texto</button>
+      {aviso && <p className="aviso" role="status">{aviso}</p>}
       <div className="rec-acciones">
         <button className="principal" onClick={editar}>Editar</button>
         {seguro ? <button className="secundario" onClick={borrar}>Sí, borrar</button> : <button className="secundario" onClick={() => setSeguro(true)}>Borrar</button>}
