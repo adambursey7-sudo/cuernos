@@ -279,7 +279,7 @@ button.principal.ancho { border: none; border-radius: 12px; padding: 16px 10px; 
 .selector { padding: 12px 16px 24px; display: grid; gap: 12px; }
 
 /* Cronómetro de pista (2.4): letras enormes y alto contraste para verlo desde el otro lado de la pista */
-.entrenando { position: fixed; inset: 0; z-index: 30; display: grid; grid-template-rows: auto 1fr auto auto; gap: 12px; background: var(--fondo); border-top: 14px solid var(--tipo, var(--principal)); padding: max(10px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+.entrenando { position: fixed; inset: 0; z-index: 30; display: grid; grid-template-rows: auto 1fr auto auto; grid-template-columns: minmax(0, 1fr); gap: 12px; background: var(--fondo); border-top: 14px solid var(--tipo, var(--principal)); padding: max(10px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
 .ent-arriba { display: flex; align-items: center; gap: 12px; }
 .ent-arriba .meta { flex: 1; text-align: right; }
 .ent-arriba button, .ent-mandos button { border: none; border-radius: 14px; background: var(--superficie); color: var(--texto); font-size: 1.4rem; min-width: 52px; min-height: 52px; }
@@ -418,3 +418,22 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 .asistencia { display: grid; gap: 8px; padding: 0 6px 6px; }
 .asis-chips { flex-wrap: wrap; overflow: visible; }
 .asis-chips .chip { min-height: 44px; }
+
+/* Modo banda: tres paneles que se deslizan de lado (sesión · reloj · pizarra). */
+.ent-pistas { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; min-height: 0; scrollbar-width: none; overscroll-behavior-x: contain; }
+.ent-pistas::-webkit-scrollbar { display: none; }
+.ent-panel { flex: 0 0 100%; scroll-snap-align: center; scroll-snap-stop: always; display: grid; grid-template-rows: 1fr auto; gap: 12px; min-height: 0; overflow-y: auto; }
+.ent-panel:nth-child(1), .ent-panel:nth-child(3) { grid-template-rows: none; align-content: start; }
+.ent-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ent-lista button { width: 100%; display: flex; gap: 12px; align-items: center; text-align: left; min-height: 56px; border: none; border-left: 6px solid var(--tenue); border-radius: 12px; background: var(--superficie); color: var(--texto); font: 800 1.2rem/1.2 var(--display); text-transform: uppercase; padding: 8px 12px; }
+.ent-lista button.hecho { opacity: 0.45; }
+.ent-lista button.ahora { border-left-color: var(--principal); background: var(--principal); color: var(--sobre-principal); }
+.ent-lista .min { font-variant-numeric: tabular-nums; min-width: 3ch; }
+.ent-pista { border: none; background: var(--superficie); border-radius: 14px; padding: 0; width: 100%; color: inherit; }
+.ent-paso { margin: 8px 0 0; font: 700 1.6rem/1.25 var(--display); }
+.ent-pizarra-mandos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+.ent-pizarra-mandos button { border: none; border-radius: 14px; background: var(--superficie); color: var(--texto); font: 800 1.3rem var(--display); min-height: 56px; }
+.ent-pizarra-mandos button:disabled { opacity: 0.4; }
+.ent-puntos { display: flex; justify-content: center; gap: 8px; }
+.ent-puntos button { border: none; border-radius: 999px; background: var(--superficie); color: var(--tenue); font: 800 0.95rem var(--display); min-height: 44px; padding: 0 18px; }
+.ent-puntos button.on { background: var(--tipo, var(--principal)); color: var(--sobre-principal); }
