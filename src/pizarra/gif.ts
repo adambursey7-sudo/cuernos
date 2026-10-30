@@ -99,31 +99,32 @@ function marca(ctx: CanvasRenderingContext2D, x: number, base: number, tam: numb
   ctx.restore();
 }
 
-export async function crearGif(s: Sistema, conDefensa: boolean, avance: (k: number) => void): Promise<Blob> {
+/** Pinta momentos de la jugada en un lienzo: cabecera, pista con la misma <Pista> de la app y explicación. */
+async function dibujante(s: Sistema, conDefensa: boolean, escala = 1) {
   const raiz = getComputedStyle(document.documentElement);
   const color = (v: string) => raiz.getPropertyValue(v).trim();
   await Promise.all([document.fonts.load('30px "Graduate"'), document.fonts.load('17px "Atkinson Hyperlegible"')]);
 
   const lienzo = document.createElement('canvas');
-  lienzo.width = ANCHO;
-  lienzo.height = CABECERA + ALTO_PISTA + PIE;
+  lienzo.width = ANCHO * escala;
+  lienzo.height = (CABECERA + ALTO_PISTA + PIE) * escala;
   const ctx = lienzo.getContext('2d', { willReadFrequently: true })!;
+  ctx.scale(escala, escala);
 
   const caja = document.createElement('div');
   caja.style.cssText = `position:fixed;left:-9999px;top:0;width:${ANCHO}px`;
   document.body.append(caja);
   const react = createRoot(caja);
   const css = estiloPista();
-  const gif = GIFEncoder();
-  let paleta: number[][] | null = null;
 
-  try {
-    const lista = fotogramas(s.pasos.length);
-    for (const [k, { t, ms }] of lista.entries()) {
+  return {
+    lienzo,
+    ctx,
+    async pintar(t: number) {
       flushSync(() => react.render(createElement(Pista, { sistema: s, t, conDefensa })));
       const svg = caja.querySelector('svg')!.cloneNode(true) as SVGSVGElement;
-      svg.setAttribute('width', String(ANCHO));
-      svg.setAttribute('height', String(ALTO_PISTA));
+      svg.setAttribute('width', String(ANCHO * escala));
+      svg.setAttribute('height', String(ALTO_PISTA * escala));
       const estilo = document.createElementNS('http://www.w3.org/2000/svg', 'style');
       estilo.textContent = css;
       svg.prepend(estilo);
@@ -132,8 +133,9 @@ export async function crearGif(s: Sistema, conDefensa: boolean, avance: (k: numb
       await img.decode();
 
       const paso = pasoDe(t, s.pasos.length);
+      const alto = CABECERA + ALTO_PISTA + PIE;
       ctx.fillStyle = color('--fondo');
-      ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+      ctx.fillRect(0, 0, ANCHO, alto);
       ctx.textBaseline = 'middle';
       ctx.fillStyle = color('--texto');
       ctx.font = '30px Graduate, serif';
@@ -147,8 +149,25 @@ export async function crearGif(s: Sistema, conDefensa: boolean, avance: (k: numb
       ctx.font = '17px "Atkinson Hyperlegible", sans-serif';
       // Se deja sitio a la derecha para el logo.
       lineas(ctx, s.pasos[paso].texto, ANCHO - 120).forEach((l, i) => ctx.fillText(l, 16, CABECERA + ALTO_PISTA + 22 + i * 24));
-      marca(ctx, ANCHO - 14, lienzo.height - 12, 22, color('--texto'), color('--principal'));
+      marca(ctx, ANCHO - 14, alto - 12, 22, color('--texto'), color('--principal'));
+    },
+    cerrar() {
+      react.unmount();
+      caja.remove();
+    },
+  };
+}
 
+export async function crearGif(s: Sistema, conDefensa: boolean, avance: (k: number) => void): Promise<Blob> {
+  const d = await dibujante(s, conDefensa);
+  const { lienzo, ctx } = d;
+  const gif = GIFEncoder();
+  let paleta: number[][] | null = null;
+
+  try {
+    const lista = fotogramas(s.pasos.length);
+    for (const [k, { t, ms }] of lista.entries()) {
+      await d.pintar(t);
       const { data } = ctx.getImageData(0, 0, lienzo.width, lienzo.height);
       // Una sola paleta, sacada del primer fotograma: los colores de la jugada no cambian y el GIF pesa menos.
       if (!paleta) paleta = quantize(data, 256);
@@ -160,14 +179,25 @@ export async function crearGif(s: Sistema, conDefensa: boolean, avance: (k: numb
     gif.finish();
     return new Blob([gif.bytes()], { type: 'image/gif' });
   } finally {
-    react.unmount();
-    caja.remove();
+    d.cerrar();
+  }
+}
+
+/** Imagen fija de un paso (índice desde 0), al doble de tamaño para que se vea bien impresa o en la tele:
+ *  los jugadores donde empiezan el paso y las flechas de lo que van a hacer. */
+export async function crearImagen(s: Sistema, conDefensa: boolean, paso: number): Promise<Blob> {
+  const d = await dibujante(s, conDefensa, 2);
+  try {
+    await d.pintar(paso + 0.001);
+    return await new Promise<Blob>((ok, mal) => d.lienzo.toBlob((b) => (b ? ok(b) : mal(new Error('sin imagen'))), 'image/png'));
+  } finally {
+    d.cerrar();
   }
 }
 
 /** En el iPhone abre el menú de compartir (WhatsApp, Fotos…); si no se puede, lo descarga. */
-export async function compartirGif(gif: Blob, nombre: string) {
-  const archivo = new File([gif], `${nombre.toLowerCase().replace(/[^a-z0-9ñáéíóúü]+/gi, '-')}.gif`, { type: 'image/gif' });
+export async function compartirArchivo(datos: Blob, nombre: string, extension: string) {
+  const archivo = new File([datos], `${nombre.toLowerCase().replace(/[^a-z0-9ñáéíóúü]+/gi, '-')}.${extension}`, { type: datos.type });
   if (navigator.canShare?.({ files: [archivo] })) {
     try {
       await navigator.share({ files: [archivo] });
@@ -183,3 +213,5 @@ export async function compartirGif(gif: Blob, nombre: string) {
   // Safari empieza la descarga más tarde: si se suelta el archivo enseguida, sale vacío.
   setTimeout(() => URL.revokeObjectURL(enlace.href), 60_000);
 }
+
+export const compartirGif = (gif: Blob, nombre: string) => compartirArchivo(gif, nombre, 'gif');

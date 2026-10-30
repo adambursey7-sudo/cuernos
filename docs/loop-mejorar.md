@@ -41,8 +41,8 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - [x] 2.5 Cierre del tramo.
 
 ## Tramo 3: compartir e imprimir
-- [ ] 3.1 Enviar una jugada por enlace (que se abra animada en el móvil del jugador) o como imagen.
-- [ ] 3.2 Ficha para imprimir de un sistema y de una sesión.
+- [x] 3.1 Enviar una jugada por enlace (que se abra animada en el móvil del jugador) o como imagen.
+- [ ] 3.2 Ficha para imprimir: A (ficha completa de un sistema) HECHA 29/10; C (tarjetas de bolsillo, 8 por folio) HECHA 29/10 como segundo botón; falta la hoja de sesión (al unir con tramo2).
 - [ ] 3.3 Cierre del tramo.
 
 ## Tramo 4: acabado profesional
@@ -71,3 +71,6 @@ lo mejor de cada una. Trabaja en `C:\dev\baloncesto-app`, rama `loop/mejorar`; l
 - 29/10: 2.3 hecho: pestaña Sesiones con equipos (categoría, sin nombres), varias sesiones por equipo, línea de tiempo con color por tipo (cambiable en cada bloque), minutos de 5 en 5, subir/bajar/quitar, duración prevista y aviso si te pasas (`src/sesiones/`, `src/pantallas/Sesiones.tsx`). Se guarda solo en el móvil. El `.pantalla` pasó a `minmax(0,1fr)` para que las filas con scroll no ensanchen la pantalla. Falta 2.4 cronómetro y 2.5 cierre.
 - 29/10: 2.4 hecho: botón «Empezar el entrenamiento» en la sesión abre el cronómetro de pista (`src/pantallas/Entrenando.tsx`, `src/sesiones/cronometro.ts`): reloj enorme con el color del tipo, siguiente ejercicio a la vista, pitidos y vibración al cambiar, pausa, anterior/siguiente, pantalla encendida y sonido apagable. Cuenta con la hora del reloj. Falta probar el sonido y la pantalla encendida en el iPhone, y 2.5 cierre.
 - 29/10: 2.5 cierre: revisión de código baja; un hallazgo (el audio se creaba al montar, no al tocar «Empezar», y en iPhone podía quedar dormido) arreglado creándolo en el toque. Tipado, 39 pruebas y build bien. TRAMO 2 CERRADO; sin unir a main ni publicar. Falta probar en el iPhone (sonido, pantalla encendida, Jugadas y Ejercicios por el cambio de .pantalla).
+- 29/10: 3.1 compartir (copia aparte `C:\dev\baloncesto-t-compartir`, rama loop/compartir, sacada de loop/mejorar porque main no tiene el editor): bocetos v12 con el visor común y tres formas de enviar (A solo enlace, B enlace y GIF a la vez, C hoja con enlace, GIF, imagen y QR); la jugada va dentro del enlace (unas 500 letras las propias, enlace corto las del libro). Esperando que Adam elija.
+- 29/10: Adam eligió la C (hoja Compartir con todo). Hecho en loop/compartir: enlace animado con la jugada dentro (las de la app solo con su id), visor del jugador que se repite solo con los colores de quien la manda (sin pisar los suyos) y «Guardar en mi Horns», GIF desde la hoja, imagen del paso al doble de tamaño y QR. Enlaces rotos avisan. Pantallas comunes tocadas lo mínimo (Sistema: un botón; main, temas y useJugada: unas líneas); lo nuevo va en `src/compartir/`. 28 pruebas, prueba completa en tamaño iPhone, revisión baja sin fallos. Sin unir a main.
+- 29/10: 3.2 Adam elige A + hoja de sesión (C después). Hecha la ficha A (src/imprimir/, botón «Imprimir ficha» abajo en la jugada, cabe en un A4); arreglo de las dos filas de botones (Presentar solo con icono). 28 pruebas pasan.

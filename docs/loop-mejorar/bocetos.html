@@ -97,6 +97,67 @@ p{margin:0;max-width:68ch}
     </div>
   </div>
   <p class="tenue">En las tres: arriba eliges el equipo (por categoría, sin nombres de jugadores) y cada equipo guarda varias sesiones. Mi recomendación: <b>biblioteca A</b> (al abrir un ejercicio se ve grande, como en B) y <b>sesiones A</b>, que es la que menos estorba con prisa en la banda.</p>
+<section class="entrada" id="v13">
+  <span class="fecha">29/10 · Tramo 3 · 3.1 hecho</span>
+  <h2>Compartir: hecho con la C</h2>
+  <div class="pregunta" style="border-left-color:var(--verde)">
+    <strong>Elegido por Adam: C · Hoja «Compartir» con todo</strong>
+    <p>Está en una copia aparte, sin unir. Para verlo de verdad en el iPhone hay que publicarla, porque el enlace apunta a la dirección desde la que se envía.</p>
+  </div>
+  <div class="opciones" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+    <figure style="margin:0;display:grid;gap:6px"><img src="capturas/v13-hoja.png" alt="Hoja Compartir con enlace animado, GIF, imagen del paso y QR" style="width:100%;border-radius:12px"><figcaption class="tenue">1. «↗ Compartir» abre la hoja</figcaption></figure>
+    <figure style="margin:0;display:grid;gap:6px"><img src="capturas/v13-qr.png" alt="Código QR de la jugada Cuernos" style="width:100%;border-radius:12px"><figcaption class="tenue">2. QR para el equipo</figcaption></figure>
+    <figure style="margin:0;display:grid;gap:6px"><img src="capturas/v13-visor.png" alt="Visor de una jugada propia con los colores de quien la manda" style="width:100%;border-radius:12px"><figcaption class="tenue">3. Lo que abre el jugador (con tus colores)</figcaption></figure>
+    <figure style="margin:0;display:grid;gap:6px"><img src="capturas/v13-imagen.png" alt="Imagen fija del paso 2 de Cuernos" style="width:100%;border-radius:12px"><figcaption class="tenue">4. Imagen del paso</figcaption></figure>
+  </div>
+  <div class="opciones">
+    <div><h3>Hecho</h3><ul class="lista">
+      <li><b>Enlace animado:</b> la jugada va dentro del enlace; abre WhatsApp o Mensajes, y si no se puede, se copia.</li>
+      <li><b>Visor del jugador:</b> se mueve sola y se repite; parar, paso a paso, velocidad y defensa. Tus colores no cambian los suyos.</li>
+      <li><b>Guardar en mi Horns</b> para jugadas tuyas (las de la app solo llevan «Abrir Horns»).</li>
+      <li><b>GIF</b> como antes, ahora desde la hoja; <b>imagen del paso</b> que estás viendo, al doble de tamaño; <b>QR</b> negro sobre blanco para que lo lea cualquier cámara.</li>
+      <li>Un enlace cortado o raro avisa en vez de romperse. 28 pruebas automáticas y prueba completa en tamaño iPhone; revisión de código sin fallos.</li>
+    </ul></div>
+    <div><h3>Mejorable</h3><ul class="lista">
+      <li>Con «Compartir» los botones de arriba ocupan dos filas en un iPhone normal.</li>
+      <li>En WhatsApp la vista previa del enlace es la general de Horns, no la jugada (sin servidor no se puede hacer una por jugada).</li>
+      <li>Un enlace de una jugada de la app depende de que esa jugada siga en la app; las tuyas viajan enteras.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="entrada" id="v12">
+  <span class="fecha">29/10 · Tramo 3 · 3.1 Compartir una jugada</span>
+  <h2>Mandar una jugada al móvil del jugador</h2>
+  <div class="pregunta">
+    <strong>Elegido por Adam: C</strong>
+    <p>En las tres la jugada viaja <b>dentro del propio enlace</b>: no hace falta cuenta ni servidor, y no pasa por ningún sitio nuestro. Lo que cambia es qué pulsas tú y qué le llega al jugador en WhatsApp. Se pueden mezclar (por ejemplo, «B con el QR de la C»). No programo nada hasta que elijas.</p>
+  </div>
+
+  <h3>Igual en las tres: lo que se abre en el móvil del jugador</h3>
+  <div class="opciones">
+    <div class="op" style="max-width:360px"><b class="letra">Visor de la jugada</b>
+      <svg viewBox="0 0 200 340" id="cV"></svg>
+      <div class="pc"><span class="v">Se abre en Safari o Chrome sin instalar nada: pista entera, la jugada se mueve sola y se repite, y el jugador puede pararla o ir paso a paso.</span><span class="v">Con tus colores y con o sin defensa, como la tenías al enviarla.</span><span class="v">Si quien la abre también usa Horns (otro entrenador), «Guardar en mi Horns» se la queda para editarla.</span><span class="i">El enlace de una jugada tuya es largo (unas 500 letras), porque la jugada va dentro. Las del libro (Cuernos, Flex…) llevan un enlace corto.</span></div>
+    </div>
+  </div>
+
+  <h3>Cómo se envía</h3>
+  <div class="opciones">
+    <div class="op"><b class="letra">A · Solo el enlace</b>
+      <svg viewBox="0 0 400 340" id="cA"></svg>
+      <div class="pc"><span class="v">Un botón, «Enviar», y al momento sale WhatsApp. Lo más rápido.</span><span class="v">Lo que menos pesa: el jugador no gasta datos en un vídeo.</span><span class="i">En el chat solo se ve un texto con el enlace: hay que tocarlo para ver la jugada.</span><span class="i">El GIF sigue en su botón aparte, como ahora.</span></div>
+    </div>
+    <div class="op"><b class="letra">B · Enlace y GIF a la vez</b>
+      <svg viewBox="0 0 400 340" id="cB"></svg>
+      <div class="pc"><span class="v">En el chat la jugada ya se mueve (el GIF) y, debajo, el enlace para verla despacio o paso a paso.</span><span class="v">Sirve aunque el jugador no toque nada: la ve al abrir el grupo.</span><span class="i">Tarda unos segundos en preparar el GIF antes de abrir WhatsApp.</span><span class="i">En algunos iPhone WhatsApp no deja mandar imagen y texto juntos: entonces el enlace se copia solo y lo pegas debajo.</span></div>
+    </div>
+    <div class="op"><b class="letra">C · Hoja «Compartir» con todo</b>
+      <svg viewBox="0 0 400 340" id="cC"></svg>
+      <div class="pc"><span class="v">Como las apps de pago: un botón abre una hoja con Enlace, GIF, Imagen del paso y QR.</span><span class="v">El QR sirve en el vestuario o en la charla: lo enseñas en tu móvil y lo escanean con la cámara, sin pasar teléfonos.</span><span class="v">La imagen de un paso sirve para la pizarra del vestuario.</span><span class="i">Un toque más para enviar y más trabajo de programar (el QR es una pieza pequeña nueva).</span></div>
+    </div>
+  </div>
+  <p class="tenue">Recomiendo la <b>B</b> para el día a día (el jugador la ve sin hacer nada), con el <b>QR de la C</b> como extra si lo usas en charlas de equipo.</p>
 </section>
 
 <section class="entrada" id="v11">
@@ -875,5 +936,58 @@ PARTES.forEach(([t,lleva,quiere,ej])=>{
   sc+=tenue(22,yc+8,"+ añadir aquí",7.5);yc+=20;});
 document.getElementById("sC").innerHTML=tel(200,340)+fase("INFANTIL · MARTES")+sc+
   R(10,290,180,30,"#141a26",8)+T(18,309,"TOTAL 65′ DE 90′",{s:11,f:DSP,w:900})+R(120,293,66,24,"#f26b1d",7)+T(153,309,"▶ A la pista",{a:"middle",s:8.5,c:"#141a26"});
+// ---- Entrada v12: compartir una jugada ----
+{
+const cab=(t)=>T(12,26,t,{s:12,f:"Graduate,serif"});
+const enlaceTxt="adambursey7-sudo.github.io/cuernos/#j=…";
+const burbuja=(x,y,w,h)=>R(x,y,w,h,"#005c4b",9);
+const chatTop=(t)=>R(1,1,198,34,"#202c33",16)+T(16,24,"‹",{s:14})+`<circle cx="38" cy="19" r="9" fill="#a9b2c3"/>`+T(54,23,t,{s:10})+R(1,36,198,302,"#0b141a",0);
+const hoja=(y)=>R(1,y,198,338-y,"#2a3754",14)+`<rect x="86" y="${y+6}" width="28" height="3" rx="1.5" fill="#a9b2c3"/>`;
+const apps=(y)=>[["WhatsApp","#25d366"],["Mensajes","#4cc38a"],["Correo","#3b82f6"],["Copiar","#a9b2c3"]].map(([t,c],i)=>`<circle cx="${30+i*47}" cy="${y}" r="14" fill="${c}"/>`+T(30+i*47,y+26,t,{a:"middle",s:7,w:400,c:"#a9b2c3"})).join("");
+const sistema=(boton)=>cab("‹ CUERNOS")+pista(10,38,180)+T(14,214,"2",{s:30,f:"Graduate,serif",c:"#f26b1d"})+T(36,214,"/ 5",{s:11,c:"#a9b2c3"})+boton;
+const gifMini=(x,y,w)=>pista(x,y,w)+R(x+4,y+4,22,11,"#141a26cc",5)+T(x+15,y+12.5,"GIF",{a:"middle",s:7});
+const enviar=R(118,198,72,24,"#f26b1d",8)+T(154,214,"↗ Enviar",{a:"middle",s:9,c:"#141a26"});
+
+// Visor común: lo que abre el enlace.
+document.getElementById("cV").innerHTML=tel(200,340)+T(14,24,"HORNS",{s:10,f:"Graduate,serif",c:"#a9b2c3"})+T(14,48,"CUERNOS",{s:18,f:"Graduate,serif"})+
+  T(186,48,"2/5",{a:"end",s:18,f:"Graduate,serif",c:"#f26b1d"})+pista(10,58,180)+
+  `<path d="M95 128C108 130 124 140 146 150" fill="none" stroke="#fff8ee" stroke-opacity=".6" stroke-width="2" stroke-dasharray="1 3" stroke-linecap="round"/>`+
+  T(100,240,"5 sube a poner bloqueo directo a 1.",{a:"middle",s:9,w:400})+
+  btn(10,254,56,"‹")+btn(72,254,56,"❚❚",true)+btn(134,254,56,"›")+
+  `<rect x="10" y="296" width="180" height="30" rx="8" fill="#141a26" stroke="#a9b2c3" stroke-width="1"/>`+T(100,315,"Guardar en mi Horns",{a:"middle",s:9,c:"#a9b2c3"});
+
+// A: botón Enviar → hoja del iPhone; en el chat, texto con enlace.
+document.getElementById("cA").innerHTML=
+  `<g>${tel(200,340)}${sistema(enviar)}${hoja(236)}${T(100,256,"Cuernos · ábrela animada",{a:"middle",s:8.5})}${apps(284)}</g>`+
+  `<g transform="translate(200 0)">${tel(200,340)}${chatTop("Infantil A")}${burbuja(40,60,150,88)}`+
+  R(46,66,138,36,"#025144",6)+T(54,80,"HORNS",{s:8,f:"Graduate,serif"})+T(54,94,"Cuernos · 5 pasos",{s:7.5,w:400,c:"#a9b2c3"})+
+  T(48,116,"Cuernos · ábrela animada:",{s:7.6,w:400})+T(48,128,enlaceTxt,{s:6.2,w:400,c:"#53bdeb"})+T(184,142,"18:02 ✓✓",{a:"end",s:6,w:400,c:"#a9b2c3"})+
+  dedo(110,126)+T(100,200,"El jugador toca el enlace",{a:"middle",s:8.5,w:400,c:"#a9b2c3"})+T(100,214,"→ se abre el visor",{a:"middle",s:8.5,w:400,c:"#a9b2c3"})+`</g>`;
+
+// B: prepara el GIF y lo manda con el enlace debajo.
+document.getElementById("cB").innerHTML=
+  `<g>${tel(200,340)}${sistema(enviar)}`+
+  R(10,234,180,40,"#2a3754",8)+T(20,250,"Preparando la jugada…",{s:8.5,w:400})+`<rect x="20" y="258" width="160" height="5" rx="2.5" fill="#141a26"/><rect x="20" y="258" width="98" height="5" rx="2.5" fill="#f26b1d"/>`+
+  T(100,298,"Luego se abre WhatsApp",{a:"middle",s:8.5,w:400,c:"#a9b2c3"})+`</g>`+
+  `<g transform="translate(200 0)">${tel(200,340)}${chatTop("Infantil A")}${burbuja(30,52,160,198)}`+gifMini(35,57,150)+
+  T(38,214,"Cuernos · ábrela paso a paso:",{s:7.6,w:400})+T(38,226,enlaceTxt,{s:6.2,w:400,c:"#53bdeb"})+T(184,244,"18:02 ✓✓",{a:"end",s:6,w:400,c:"#a9b2c3"})+
+  T(100,280,"Se mueve ya en el chat;",{a:"middle",s:8.5,w:400,c:"#a9b2c3"})+T(100,294,"el enlace abre el visor",{a:"middle",s:8.5,w:400,c:"#a9b2c3"})+`</g>`;
+
+// C: hoja con cuatro maneras y el QR a pantalla completa (QR de mentira, solo boceto).
+const fila=(y,ico,t,sub,on)=>R(10,y,180,32,on?"#f26b1d":"#141a26",8)+T(24,y+20,ico,{a:"middle",s:11,c:on?"#141a26":"#fff8ee"})+T(38,y+14,t,{s:9,c:on?"#141a26":"#fff8ee"})+T(38,y+25,sub,{s:6.8,w:400,c:on?"#141a26":"#a9b2c3"});
+let qr="";
+for(let i=0;i<25;i++)for(let j=0;j<25;j++){
+  const esq=(a,b)=>i>=a&&i<a+7&&j>=b&&j<b+7, en=[[0,0],[0,18],[18,0]].find(([a,b])=>esq(a,b));
+  let on;
+  if(en){const di=i-en[0],dj=j-en[1];on=di===0||di===6||dj===0||dj===6||(di>=2&&di<=4&&dj>=2&&dj<=4);}
+  else on=(i*7+j*13+i*j)%5<2;
+  if(on)qr+=`<rect x="${j*5.6}" y="${i*5.6}" width="5.7" height="5.7"/>`;
+}
+document.getElementById("cC").innerHTML=
+  `<g>${tel(200,340)}${cab("‹ CUERNOS")}${pista(10,38,180)}${hoja(150)}${T(14,176,"COMPARTIR CUERNOS",{s:11,f:"Graduate,serif"})}`+
+  fila(186,"↗","Enlace animado","Se abre en el móvil del jugador",true)+fila(222,"▶","GIF","Se mueve en el chat")+fila(258,"▣","Imagen del paso 2","Para el vestuario")+fila(294,"▦","QR para el equipo","Lo escanean con la cámara")+`</g>`+
+  `<g transform="translate(200 0)">${tel(200,340)}${T(100,40,"CUERNOS",{a:"middle",s:18,f:"Graduate,serif"})}${T(100,58,"Escanea con la cámara",{a:"middle",s:8.5,w:400,c:"#a9b2c3"})}`+
+  R(22,72,156,156,"#fff8ee",8)+`<g transform="translate(30 80)" fill="#141a26">${qr}</g>`+
+  T(100,252,"Vale para todo el equipo a la vez,",{a:"middle",s:8.5,w:400,c:"#a9b2c3"})+T(100,266,"sin pasar teléfonos",{a:"middle",s:8.5,w:400,c:"#a9b2c3"})+btn(50,286,100,"Copiar enlace")+`</g>`;
 }
 </script>

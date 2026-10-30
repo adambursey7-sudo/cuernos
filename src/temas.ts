@@ -59,7 +59,8 @@ export function leerColores(): Colores {
   return c;
 }
 
-export function aplicarColores(c: Colores) {
+/** `guardar = false` en el visor de un enlace: los colores del que envía no pisan los de quien lo abre. */
+export function aplicarColores(c: Colores, guardar = true) {
   const raiz = document.documentElement.style;
   const texto = textoSobre(c.fondo);
   raiz.setProperty('--principal', c.principal);
@@ -72,6 +73,7 @@ export function aplicarColores(c: Colores) {
   raiz.setProperty('--texto-jugadores', textoSobre(c.jugadores));
   raiz.setProperty('--flechas', textoSobre(c.pista));
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', c.fondo);
+  if (!guardar) return;
   try {
     localStorage.setItem(CLAVE, JSON.stringify({ principal: c.principal, fondo: c.fondo, pista: c.pista, jugadores: c.jugadores }));
   } catch {

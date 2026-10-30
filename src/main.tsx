@@ -6,11 +6,24 @@ import '@fontsource/graduate/400.css';
 import './estilos.css';
 import { aplicarColores, leerColores } from './temas';
 import { App } from './App';
+import { leerEnlace } from './compartir/enlace';
+import { Visor } from './compartir/Visor';
 
 aplicarColores(leerColores());
+const raiz = createRoot(document.getElementById('raiz')!);
 
-createRoot(document.getElementById('raiz')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+// Un enlace de jugada (…#j= o …#p=) abre solo el visor, con los colores de quien la manda y sin guardarlos.
+leerEnlace(location.hash)
+  .then(
+    (compartida) => {
+      if (compartida?.colores) aplicarColores(compartida.colores, false);
+      return compartida ? <Visor datos={compartida} /> : <App />;
+    },
+    () => <Visor datos="roto" />,
+  )
+  .then((pantalla) => raiz.render(<StrictMode>{pantalla}</StrictMode>));
+
+// Si se pega un enlace de jugada con Horns ya abierto, solo cambia lo de detrás de «#»: se vuelve a cargar para leerlo.
+window.addEventListener('hashchange', () => {
+  if (/^#(.*&)?[jp]=/.test(location.hash)) location.reload();
+});

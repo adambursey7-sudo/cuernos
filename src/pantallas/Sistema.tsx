@@ -1,9 +1,12 @@
 // Un sistema en la pizarra: número de paso enorme, pista, explicación y botones grandes para usarlo en la banda.
 import { useEffect, useRef, useState } from 'react';
+import { HojaCompartir } from '../compartir/HojaCompartir';
 import { Pista } from '../pizarra/Pista';
 import { useJugada } from '../pizarra/useJugada';
 import { borrarMio } from '../sistemas/almacen';
 import { NIVELES, type Nivel, type Sistema as SistemaDatos } from '../sistemas/tipos';
+import { Ficha } from '../imprimir/Ficha';
+import { Tarjetas } from '../imprimir/Tarjetas';
 import { guardarUltima } from '../ultima';
 import { Presentacion } from './Presentacion';
 
@@ -37,6 +40,8 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
   useEffect(() => guardarUltima({ id: s.id, paso }), [s.id, paso]);
   const [conDefensa, setConDefensa] = useState(leerDefensa);
   const [presentando, setPresentando] = useState(false);
+  const [imprimiendo, setImprimiendo] = useState(false);
+  const [tarjetas, setTarjetas] = useState(false);
   const inicioDedo = useRef<number | null>(null);
   const cambiarDefensa = () => {
     setConDefensa(!conDefensa);
@@ -45,6 +50,7 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
   const lectura = s.lecturas[nivel];
   // GIF de la jugada: null = nada; número = creándose (0 a 1); Blob = listo para enviar.
   const [gif, setGif] = useState<number | { blob: Blob; url: string } | null>(null);
+  const [compartiendo, setCompartiendo] = useState(false);
   const hacerGif = async () => {
     setGif(0);
     try {
@@ -61,6 +67,8 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
     setGif(null);
   };
 
+  if (imprimiendo) return <Ficha s={s} nivel={nivel} volver={() => setImprimiendo(false)} />;
+  if (tarjetas) return <Tarjetas inicial={s} volver={() => setTarjetas(false)} />;
   if (presentando)
     return <Presentacion sistema={s} jugada={jugada} conDefensa={conDefensa} cambiarDefensa={cambiarDefensa} cerrar={() => setPresentando(false)} />;
 
@@ -90,8 +98,8 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
           <button className={conDefensa ? 'chip defensa on' : 'chip defensa'} aria-pressed={conDefensa} onClick={cambiarDefensa} aria-label="Enseñar u ocultar la defensa">
             ✕
           </button>
-          <button className="chip" onClick={hacerGif} disabled={gif !== null}>GIF</button>
-          <button className="chip" onClick={() => setPresentando(true)}>⛶ Presentar</button>
+          <button className="chip" onClick={() => setCompartiendo(true)} disabled={gif !== null}>↗ Compartir</button>
+          <button className="chip" onClick={() => setPresentando(true)} aria-label="Presentar en pantalla completa">⛶</button>
         </div>
       </div>
       <div
@@ -107,6 +115,9 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
       >
         <Pista sistema={s} t={t} conDefensa={conDefensa} />
       </div>
+      {compartiendo && (
+        <HojaCompartir s={s} conDefensa={conDefensa} paso={paso} cerrar={() => setCompartiendo(false)} hacerGif={() => { setCompartiendo(false); hacerGif(); }} />
+      )}
       {gif !== null && (
         <div className="vista-gif" role="status">
           {typeof gif === 'number' ? (
@@ -148,6 +159,8 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
       </div>
 
       <div className="acciones-jugada">
+        <button onClick={() => setImprimiendo(true)}>⎙ Imprimir ficha</button>
+        <button onClick={() => setTarjetas(true)}>✂ Tarjetas de bolsillo</button>
         {s.propio ? (
           <>
             <button onClick={() => editar(s)}>✎ Editar</button>
