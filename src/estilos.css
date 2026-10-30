@@ -415,3 +415,6 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 .hoja .niveles { flex-wrap: wrap; overflow: visible; }
 @keyframes sube { from { transform: translateY(40px); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .hoja { animation: none; } }
+.asistencia { display: grid; gap: 8px; padding: 0 6px 6px; }
+.asis-chips { flex-wrap: wrap; overflow: visible; }
+.asis-chips .chip { min-height: 44px; }

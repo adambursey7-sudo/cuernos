@@ -3,7 +3,7 @@ import { cuadriculaMes, diaSemana, esFecha, lunesDe, sumarDias, sumarMeses } fro
 import { escribirIcs, leerIcs, leerLista } from './ics';
 import {
   agendaDia, aplicarCandidatas, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporadas, itemsParaIcs, leerTemporadas,
-  limpiarTemporada, marcasDia, nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, quitarFijo, temporadaPorDefecto,
+  limpiarTemporada, marcasDia, nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarFijo, resumenAsistencia, temporadaPorDefecto,
 } from './temporada';
 
 const memoria = () => {
@@ -166,5 +166,22 @@ describe('listas e .ics', () => {
     t = cambiarFijoDia(t, agendaDia(t, '2026-10-12')[0], { cancelado: true });
     const fechas = itemsParaIcs(t).map((i) => i.fecha).filter((f) => f >= '2026-10-12');
     expect(fechas).toEqual(['2026-10-19']);
+  });
+});
+
+describe('asistencia', () => {
+  it('guarda quién vino, la cuenta y se limpia al quitar el entreno', () => {
+    let t = guardarFijo(base(), { id: 'x1', dia: 0, hora: '18:30', minutos: 90 });
+    t = ponerAsistencia(t, 'x1|2026-10-12', ['a', 'b']);
+    t = ponerAsistencia(t, 'x1|2026-10-19', ['a']);
+    expect(resumenAsistencia(t, 'a')).toEqual({ vino: 2, de: 2 });
+    expect(resumenAsistencia(t, 'b')).toEqual({ vino: 1, de: 2 });
+    expect(limpiarTemporada(JSON.parse(JSON.stringify(t)))?.asistencia).toEqual(t.asistencia);
+    expect(quitarFijo(t, 'x1').asistencia).toBeUndefined();
+    expect(ponerAsistencia(t, 'x1|2026-10-12', null).asistencia).toEqual({ 'x1|2026-10-19': ['a'] });
+  });
+  it('una temporada vieja sin asistencia sigue valiendo', () => {
+    expect(limpiarTemporada(base())?.asistencia).toBeUndefined();
+    expect(resumenAsistencia(undefined, 'a')).toEqual({ vino: 0, de: 0 });
   });
 });

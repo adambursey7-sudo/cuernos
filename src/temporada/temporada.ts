@@ -61,6 +61,8 @@ export interface Temporada {
   fijos: EntrenoFijo[];
   eventos: Evento[];
   excepciones: Record<string, Excepcion>;
+  /** Asistencia: por clave de entreno (la de `Item`), ids de las jugadoras que vinieron. Si no hay clave, no se ha pasado lista. */
+  asistencia?: Record<string, string[]>;
 }
 
 export interface Item {
@@ -125,10 +127,15 @@ export function limpiarTemporada(t: unknown): Temporada | null {
     if (!e || typeof e !== 'object' || !/^.+\|\d{4}-\d{2}-\d{2}$/.test(k)) continue;
     ex[k] = { ...(e.cancelado === true ? { cancelado: true } : {}), ...(esHora(e.hora) ? { hora: e.hora } : {}), ...(txt(e.sesionId) ? { sesionId: e.sesionId } : {}) };
   }
+  const asistencia: Record<string, string[]> = {};
+  for (const [k, v] of Object.entries(x.asistencia && typeof x.asistencia === 'object' ? x.asistencia : {})) {
+    if (k && Array.isArray(v)) asistencia[k] = [...new Set(v.filter((id): id is string => txt(id) && id !== ''))];
+  }
   const lista = <T,>(a: unknown, f: (x: unknown) => T | null): T[] => (Array.isArray(a) ? a.map(f).filter((y): y is T => y !== null) : []);
   return {
     equipoId: x.equipoId, inicio: x.inicio, fin: x.fin < x.inicio ? x.inicio : x.fin,
     fases: lista(x.fases, limpiaFase), fijos: lista(x.fijos, limpiaFijo), eventos: lista(x.eventos, limpiaEvento), excepciones: ex,
+    ...(Object.keys(asistencia).length ? { asistencia } : {}),
   };
 }
 
@@ -203,7 +210,28 @@ export function marcasDia(t: Temporada, fecha: string): { partido: boolean; entr
 export const guardarEvento = (t: Temporada, e: Evento): Temporada => ({
   ...t, eventos: t.eventos.some((x) => x.id === e.id) ? t.eventos.map((x) => (x.id === e.id ? e : x)) : [...t.eventos, e],
 });
-export const quitarEvento = (t: Temporada, id: string): Temporada => ({ ...t, eventos: t.eventos.filter((e) => e.id !== id) });
+export const quitarEvento = (t: Temporada, id: string): Temporada => ({ ...t, eventos: t.eventos.filter((e) => e.id !== id), ...sinAsistencia(t, (k) => k === id) });
+
+function sinAsistencia(t: Temporada, quitar: (clave: string) => boolean): Pick<Temporada, 'asistencia'> {
+  if (!t.asistencia) return {};
+  const resto = Object.fromEntries(Object.entries(t.asistencia).filter(([k]) => !quitar(k)));
+  return Object.keys(resto).length ? { asistencia: resto } : { asistencia: undefined };
+}
+
+/** Guarda quién vino a un entreno; `null` borra la lista de ese día. */
+export function ponerAsistencia(t: Temporada, clave: string, ids: string[] | null): Temporada {
+  const { asistencia: _, ...resto } = t;
+  const a = { ...t.asistencia };
+  if (ids) a[clave] = ids;
+  else delete a[clave];
+  return Object.keys(a).length ? { ...resto, asistencia: a } : resto;
+}
+
+/** A cuántos entrenos con lista vino una jugadora. */
+export function resumenAsistencia(t: Temporada | undefined, jugadoraId: string): { vino: number; de: number } {
+  const listas = Object.values(t?.asistencia ?? {});
+  return { vino: listas.filter((l) => l.includes(jugadoraId)).length, de: listas.length };
+}
 
 export const guardarFase = (t: Temporada, f: Fase): Temporada => ({
   ...t, fases: (t.fases.some((x) => x.id === f.id) ? t.fases.map((x) => (x.id === f.id ? f : x)) : [...t.fases, f]).sort((a, b) => a.desde.localeCompare(b.desde)),
@@ -218,6 +246,7 @@ export const quitarFijo = (t: Temporada, id: string): Temporada => ({
   ...t,
   fijos: t.fijos.filter((f) => f.id !== id),
   excepciones: Object.fromEntries(Object.entries(t.excepciones).filter(([k]) => !k.startsWith(`${id}|`))),
+  ...sinAsistencia(t, (k) => k.startsWith(`${id}|`)),
 });
 
 export function cambiarFijoDia(t: Temporada, item: Item, cambio: Excepcion): Temporada {
