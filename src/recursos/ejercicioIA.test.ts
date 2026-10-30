@@ -195,6 +195,10 @@ describe('ejercicio de Claude: reglas de la pista y del balón', () => {
     expect(validarEjercicio(JSON.stringify(bueno()), 'a').ok).toBe(true);
   });
 
+  it('pasar y que quien recibe bote en el mismo paso vale', () => {
+    expect(validarEjercicio(sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'bote', jugador: '2', a: [40, 50] }]; x.pasos[1].movimientos = []; }), 'a').ok).toBe(true);
+  });
+
   it('un pase entre jugadoras pegadas se rechaza', () => {
     expect(motivo(sucio((x) => (x.jugadoras['2'] = [75, 110])))).toMatch(/casi pegadas/);
   });

@@ -118,7 +118,7 @@ function reglasDelBalon(pasos: { movimientos: Movimiento[] }[], inicio: Sistema[
     }
     for (const m of pasos[i].movimientos) {
       if (m.tipo === 'pase') continue;
-      if (m.tipo === 'bote' && m.jugador !== alEmpezar) return `paso ${i + 1}: la jugadora ${m.jugador} bota sin tener el balón`;
+      if (m.tipo === 'bote' && m.jugador !== alEmpezar && m.jugador !== tiene) return `paso ${i + 1}: la jugadora ${m.jugador} bota sin tener el balón`;
       if (m.tipo === 'corte' && m.jugador === alEmpezar && tiene === alEmpezar) return `paso ${i + 1}: la jugadora ${m.jugador} corta con el balón en las manos (debería botar)`;
     }
     for (const m of pasos[i].movimientos) if (m.tipo !== 'pase') pos[m.jugador] = m.a;
