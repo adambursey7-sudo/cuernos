@@ -52,6 +52,145 @@ img{width:100%;max-width:260px;height:auto;border-radius:12px;margin:0 auto;disp
 </header>
 
 
+<section id="vuelta4">
+  <h2>Vuelta 4 · Preparar el encargo para una IA: cuatro cosas por decidir (30/10)</h2>
+  <p class="mute">La idea: respondes unas preguntas, la app monta sola el texto con los datos de tu equipo, lo copias y se lo pegas a la IA que uses (Claude, ChatGPT, Gemini). Lo que la IA te devuelva lo pegas de vuelta y entra como <b>borrador</b>. La app no habla con ninguna IA ni manda nada por su cuenta. Nombres y datos de los dibujos, inventados. Mientras contestas no programo estas pantallas.</p>
+
+  <h3>1 · Cómo se responden las preguntas</h3>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Una pregunta por pantalla</h3>
+      <div class="tel"><span class="tit">Sesión · 2 de 6</span>
+        <div class="fila" style="background:none;padding:0"><span style="font-size:12px"><b>¿Cuánto dura?</b></span></div>
+        <div class="pestanas"><span>60</span><span class="on">75</span><span>90</span><span>otro</span></div>
+        <p class="mini">Así va quedando</p>
+        <pre style="font-size:8px;flex:1;overflow:hidden">Soy entrenador de un equipo cadete femenino. Quiero una sesión de 75 minutos…</pre>
+        <div class="barra"><span>‹ Atrás</span><span class="on">Siguiente ›</span></div></div>
+      <div class="pros"><span><b>＋</b> Cómodo con el pulgar en la pista, sin escribir mucho.</span><span><b>＋</b> Se ve cómo crece el texto.</span><span><i>－</i> Para cambiar algo de atrás hay que retroceder.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Una pantalla con secciones plegables</h3>
+      <div class="tel"><span class="tit">Sesión</span>
+        <div class="fila"><span class="chip v">✓</span><span>Objetivo</span></div>
+        <div class="fila"><span class="chip v">✓</span><span>Tiempo y material</span></div>
+        <div class="fila" style="outline:1px solid var(--acc)"><span class="chip">▾</span><span>Qué quiero y qué no</span></div>
+        <div class="fila"><span class="chip">▸</span><span>Estilo de juego</span></div>
+        <div class="fila"><span class="chip">▸</span><span>Ver el texto</span></div>
+        <div class="barra"><span class="on">Copiar texto</span></div></div>
+      <div class="pros"><span><b>＋</b> Ves todo y saltas a lo que quieras cambiar.</span><span><b>＋</b> Rápido si repites encargos parecidos.</span><span><i>－</i> Se ve más cargado; el texto queda escondido abajo.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>Paso a paso la primera vez, resumen después</h3>
+      <div class="tel"><span class="tit">Tus respuestas</span>
+        <div class="fila"><span class="chip">Pides</span><span>Sesión</span></div>
+        <div class="fila"><span class="chip">Tiempo</span><span>75 min</span></div>
+        <div class="fila"><span class="chip">Objetivo</span><span>Defensa de 2x0</span></div>
+        <p class="mini">Toca una fila para cambiarla</p>
+        <div class="barra"><span>Empezar de nuevo</span><span class="on">Copiar</span></div></div>
+      <div class="pros"><span><b>＋</b> Guía al principio y atajo después.</span><span><i>－</i> Más cosas que construir y probar.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo C</b> (A el primer día, y al volver ves un resumen con todo editable). Si quieres lo más simple, <b>A</b>. En los tres, el texto se puede <b>editar a mano</b> antes de copiarlo.</p>
+
+  <h3>2 · Qué se puede pedir</h3>
+  <p class="mute">Cada petición lleva sus propias preguntas y usa los datos que ya tiene la app (plantilla, virtudes, fase y calendario). Propongo estas seis:</p>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Las seis de siempre</h3>
+      <div class="tel"><span class="tit">¿Qué quieres pedir?</span>
+        <div class="fila"><span>📅</span><span>Plan de temporada</span></div>
+        <div class="fila"><span>🗓</span><span>Plan de un mes</span></div>
+        <div class="fila"><span>🏀</span><span>Una sesión</span></div>
+        <div class="fila"><span>🎯</span><span>Ejercicios para una carencia</span></div>
+        <div class="fila"><span>♟</span><span>Un sistema de juego</span></div>
+        <div class="fila"><span>📋</span><span>Preparar un partido</span></div></div>
+      <div class="pros"><span><b>＋</b> Cubre lo que sueles necesitar.</span><span><b>＋</b> «Sesión» enlaza con las fases y «partido» con el rival del calendario.</span><span><i>－</i> «Informe de una jugadora» queda fuera de esta tanda.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Las seis y el informe de jugadora</h3>
+      <div class="tel"><span class="tit">¿Qué quieres pedir?</span>
+        <div class="mini">…las seis de A…</div>
+        <div class="fila" style="outline:1px solid var(--acc)"><span>👤</span><span>Informe de una jugadora</span></div>
+        <p class="mini">Aviso extra: es una persona concreta y menor de edad</p></div>
+      <div class="pros"><span><b>＋</b> Completo.</span><span><i>－</i> Es lo más delicado con menores: el texto lleva lo que has anotado de ella.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>Una petición libre</h3>
+      <div class="tel"><span class="tit">Pide lo que quieras</span>
+        <div class="fila"><span class="chip">Escribe</span><span>«Dame ideas para el descanso de un partido»</span></div>
+        <p class="mini">Se le añaden solo los datos del equipo</p></div>
+      <div class="pros"><span><b>＋</b> Sirve para lo que no está en la lista.</span><span><i>－</i> Sin preguntas guiadas, el resultado depende de cómo lo escribas, y no tiene formato fijo para volver a la app.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo A</b> ahora y B más adelante, cuando el resto funcione. La libre (C) cabe como una séptima opción sin devolver nada a la app.</p>
+
+  <h3>3 · Nombres de las jugadoras en el texto</h3>
+  <p class="mute">Lo que copies sale de tu móvil hacia una IA de terceros. Son menores.</p>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Sin nombres por defecto</h3>
+      <div class="tel"><span class="tit">Antes de copiar</span>
+        <div class="fila"><span class="chip v">✓</span><span>Quitar nombres</span></div>
+        <pre style="font-size:8px">#4 base, rápida, mano izq.
+#7 alero, buen tiro
+#10 pívot, 1,78 m</pre>
+        <p class="mini">Solo dorsal y posición. Las notas que escribiste, fuera.</p></div>
+      <div class="pros"><span><b>＋</b> Lo seguro: la IA no ve ningún nombre.</span><span><b>＋</b> La respuesta vuelve con dorsales y la app los cambia por nombres.</span><span><i>－</i> Hay que acordarse de que #7 es quien es (la app lo traduce).</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Con nombres y un aviso</h3>
+      <div class="tel"><span class="tit">Antes de copiar</span>
+        <div class="fila"><span class="chip r">!</span><span>Incluye nombres de menores</span></div>
+        <pre style="font-size:8px">Ejemplo A. (#4) base…
+Ejemplo B. (#7) alero…</pre>
+        <div class="barra"><span>Quitar nombres</span><span class="on">Copiar igual</span></div></div>
+      <div class="pros"><span><b>＋</b> Respuestas más personales.</span><span><i>－</i> Si se te pasa el aviso, los nombres salen igual.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>Elegir por jugadora</h3>
+      <div class="tel"><span class="tit">Quién entra</span>
+        <div class="fila"><span class="chip v">✓</span><span>#4 · sin nombre</span></div>
+        <div class="fila"><span class="chip v">✓</span><span>#7 · sin nombre</span></div>
+        <div class="fila"><span class="chip">—</span><span>#10 · no incluir</span></div></div>
+      <div class="pros"><span><b>＋</b> Control total.</span><span><i>－</i> Es una decisión más por cada encargo.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo A</b>: sin nombres y sin tus notas libres, con el botón de ponerlos si quieres, y un aviso antes de copiar que lo diga claro. Los nombres reales nunca salen sin que lo marques.</p>
+
+  <h3>4 · Qué pasa con la respuesta de la IA</h3>
+  <p class="mute">El texto que montamos le pide a la IA que conteste en un formato fijo (un bloque de datos) que la app sabe leer.</p>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Pegar o subir → vista previa → borrador</h3>
+      <div class="tel"><span class="tit">Respuesta de la IA</span>
+        <div class="fila"><span class="chip">Pegar</span><span>{ "sesion": … }</span></div>
+        <p class="mini">Vista previa</p>
+        <div class="fila"><span class="chip v">✓</span><span>Calentamiento 10'</span></div>
+        <div class="fila"><span class="chip v">✓</span><span>2x0 en media pista 15'</span></div>
+        <div class="fila"><span class="chip r">?</span><span>Ejercicio sin dibujo</span></div>
+        <div class="barra"><span class="on">Guardar como borrador</span></div></div>
+      <div class="pros"><span><b>＋</b> No se guarda nada sin que lo veas.</span><span><b>＋</b> Los borradores se marcan aparte hasta que los apruebes.</span><span><i>－</i> Si la IA se equivoca de formato, sale un aviso y se arregla a mano.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Guardarlo como nota de texto</h3>
+      <div class="tel"><span class="tit">Respuesta de la IA</span>
+        <div class="fila"><span class="chip">Pegar</span><span>Texto libre…</span></div>
+        <div class="fila"><span class="chip">Nota</span><span>Sesión 14 (IA)</span></div></div>
+      <div class="pros"><span><b>＋</b> Sin formato fijo, siempre funciona.</span><span><i>－</i> Es un texto muerto: no se convierte en sesión ni en ejercicio.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>Las dos: borrador si se entiende, nota si no</h3>
+      <div class="tel"><span class="tit">Respuesta de la IA</span>
+        <div class="fila"><span class="chip v">✓</span><span>Entendido: 1 sesión</span></div>
+        <div class="fila"><span class="chip r">?</span><span>No lo entiendo: ¿guardar como nota?</span></div></div>
+      <div class="pros"><span><b>＋</b> Nunca pierdes lo que te dio la IA.</span><span><i>－</i> Un poco más de trabajo para mí.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo C</b>: se intenta A y, si el texto no cuadra, se guarda igual como nota. Así no se pierde nada.</p>
+
+  <p class="pie">Sé que sueles contestar «haz todas tus recomendaciones»: con eso monto 1-C, 2-A, 3-A y 4-C. Si quieres cambiar alguna, dime el número y la letra.</p>
+</section>
+
 <section id="vuelta3">
   <h2>Vuelta 3 · Temporada y calendario: cuatro cosas por decidir (30/10)</h2>
   <p class="mute">La forma general ya la elegiste (fases arriba, mes, semana al tocar). Falta decidir <b>dónde vive</b>, <b>cómo se apunta</b> un partido o un entreno, <b>qué pasa al tocar un día</b> y <b>cómo entra un .ics</b>. Fechas, rivales y números inventados. Mientras contestas no programo estas pantallas; lo que no depende de ellas (el modelo de datos y las fechas) sí puede avanzar.</p>
