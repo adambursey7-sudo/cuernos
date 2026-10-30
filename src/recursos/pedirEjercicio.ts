@@ -9,17 +9,17 @@ export type Pedido = Extract<Resultado, { ok: true }> | { ok: false; motivo: str
 
 interface Via {
   enviar: (c: Conexion, prompt: string, modo?: 'ejercicio') => Promise<string>;
-  esperar: (c: Conexion, id: string) => Promise<string>;
+  esperar: (c: Conexion, id: string, parar: () => boolean) => Promise<string>;
 }
 
-const REAL: Via = { enviar, esperar: (c, id) => esperar(c, id) };
+const REAL: Via = { enviar, esperar: (c, id, parar) => esperar(c, id, parar) };
 
-/** Los errores de conexión (Jarvis caído, cupo lleno…) suben como excepción: solo la respuesta mala se reintenta. */
-export async function pedirEjercicio(c: Conexion, cuestionario: Cuestionario, id: string, recurso?: Recurso, via: Via = REAL): Promise<Pedido> {
+/** Los errores de conexión (Jarvis caído, cupo lleno, «Cancelado»…) suben como excepción: solo la respuesta mala se reintenta. */
+export async function pedirEjercicio(c: Conexion, cuestionario: Cuestionario, id: string, recurso?: Recurso, via: Via = REAL, parar: () => boolean = () => false): Promise<Pedido> {
   let motivo = '';
   for (let intento = 1; intento <= 2; intento++) {
     const pedido = await via.enviar(c, construirEncargoEjercicio(cuestionario, recurso, motivo || undefined), 'ejercicio');
-    const r = validarEjercicio(await via.esperar(c, pedido), id);
+    const r = validarEjercicio(await via.esperar(c, pedido, parar), id);
     if (r.ok) return r;
     motivo = r.motivo;
   }

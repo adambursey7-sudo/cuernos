@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { formatos, todosLosEjercicios, type Filtro } from '../ejercicios/ejercicios';
 import { alternarFavorito, leerFavoritos } from '../favoritos';
 import { Marca } from '../Logo';
+import type { Ejercicio as EjercicioIA } from '../recursos/guardarEjercicioIA';
+import type { Cuestionario } from '../recursos/ia';
+import type { Recurso } from '../recursos/recursos';
 import { NIVELES } from '../sistemas/tipos';
 import { Chips, Ejercicios } from './Ejercicios';
 import { Sistemas, type FiltroJugadas } from './Sistemas';
@@ -21,12 +24,13 @@ const TIPOS = [
   { id: 'defensa' as const, nombre: 'Defensa' },
 ];
 
-export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, enlaceInicial }: {
+export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, retocar, enlaceInicial }: {
   rama: Rama;
   cambiar: (r: Rama) => void;
   abrir: (id: string) => void;
   abrirEjercicio: (id: string) => void;
   crear: () => void;
+  retocar: (e: EjercicioIA, c: Cuestionario, recurso?: Recurso) => void;
   enlaceInicial?: string;
 }) {
   const [vista, setVista] = useState<Vista>(enlaceInicial ? 'recursos' : 'lista');
@@ -76,7 +80,7 @@ export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, enlace
       {rama === 'jugadas' ? (
         <Sistemas abrir={abrir} crear={crear} q={q} soloFavoritos={soloFavoritos} filtro={jugadas} favoritos={favoritos} alternarFavorito={alternar} quitarFiltros={quitarFiltros} />
       ) : (
-        <VistasEjercicios vista={vista} cambiar={setVista} enlaceInicial={enlaceInicial} lista={
+        <VistasEjercicios vista={vista} cambiar={setVista} enlaceInicial={enlaceInicial} retocar={retocar} lista={
           <Ejercicios abrir={abrirEjercicio} q={q} soloFavoritos={soloFavoritos} filtro={ejercicios} favoritos={favoritos} alternarFavorito={alternar} quitarFiltros={quitarFiltros} />
         } />
       )}

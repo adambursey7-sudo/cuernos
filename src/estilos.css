@@ -479,3 +479,10 @@ select#fi-sis { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.
 /* Pedir a Claude (tramo 4) */
 .ia-previa { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 0.85rem; background: rgba(0, 0, 0, 0.05); border-radius: 8px; padding: 10px; margin: 6px 0 0; max-height: 40vh; overflow: auto; }
 .enlace { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; font: inherit; cursor: pointer; }
+
+/* Borrador de ejercicio de Claude: pasos bajo la pizarra, el que se está viendo resaltado */
+.pasos-borrador { margin: 0; padding-left: 1.4em; display: grid; gap: 6px; font-size: 1.02rem; }
+.pasos-borrador li { opacity: 0.6; }
+.pasos-borrador li.on { opacity: 1; font-weight: 700; }
+.borrador-ia .fila-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.borrador-ia .fila-chips button { flex: 1 1 140px; }

@@ -10,7 +10,9 @@ import { Equipo } from './pantallas/Equipo';
 import { Inicio } from './pantallas/Inicio';
 import { Sesiones } from './pantallas/Sesiones';
 import { Sistema } from './pantallas/Sistema';
+import { anadirFicha, fichaDeEjercicio } from './recursos/guardarEjercicioIA';
 import { primerEnlace } from './recursos/recursos';
+import type { Ficha } from './recursos/fichas';
 import { buscarSistema } from './sistemas/almacen';
 import type { Sistema as SistemaDatos } from './sistemas/tipos';
 
@@ -36,8 +38,8 @@ const PESTANAS: { id: Pestana; nombre: string; icono: () => React.JSX.Element }[
   { id: 'mas', nombre: 'Más', icono: IconoMas },
 ];
 
-/** En el editor: `null` = no se edita; `{}` = jugada nueva; `{ base }` = editar una propia o duplicar una del libro. */
-type Edicion = { base?: SistemaDatos } | null;
+/** En el editor: `null` = no se edita; `{}` = jugada nueva; `{ base }` = editar una propia o duplicar una del libro; con `ficha`, al guardar se crea también esa ficha enlazada (ejercicio de Claude retocado). */
+type Edicion = { base?: SistemaDatos; ficha?: Ficha } | null;
 
 export function App() {
   const [entrante] = useState(enlaceDeLaDireccion);   // un enlace compartido a la app abre Recursos con ese enlace
@@ -69,7 +71,7 @@ export function App() {
         key={edicion.base?.id ?? 'nueva'}
         base={edicion.base}
         cerrar={() => setEdicion(null)}
-        guardado={(id) => { setEdicion(null); abrir(id); }}
+        guardado={(id) => { if (edicion.ficha) anadirFicha({ ...edicion.ficha, sistemaId: id }); setEdicion(null); abrir(id); }}
       />
     );
   else if (ejercicio)
@@ -92,7 +94,7 @@ export function App() {
         <Inicio verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} />
       </>
     );
-  else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} enlaceInicial={entrante} />;
+  else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} retocar={(e, c, r) => setEdicion({ base: e.sistema, ficha: fichaDeEjercicio(e, c, r) })} enlaceInicial={entrante} />;
 
   // Sin conexión: la app funciona igual, solo se avisa.
   const [enLinea, setEnLinea] = useState(navigator.onLine);

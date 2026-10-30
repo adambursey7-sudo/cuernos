@@ -4,7 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { borradorDeRespuesta, construirPrompt, CUESTIONARIO_VACIO, guardarBase, leerBase, MAX_PROMPT, PROMPT_BASE, type Cuestionario } from '../recursos/ia';
 import { emparejar, enviar, ErrorJarvis, esperar, leerConexion, olvidarConexion, type Conexion } from '../recursos/jarvis';
 import type { Ficha } from '../recursos/fichas';
+import type { Ejercicio } from '../recursos/guardarEjercicioIA';
+import { pedirEjercicio } from '../recursos/pedirEjercicio';
 import { nombreRecurso, type Recurso } from '../recursos/recursos';
+import { nuevoId } from '../sistemas/almacen';
+import { BorradorEjercicio } from './BorradorEjercicio';
 
 const CAMPOS: { k: keyof Cuestionario; nombre: string; ayuda?: string; largo?: boolean }[] = [
   { k: 'objetivo', nombre: '¿Qué quieres trabajar?', ayuda: 'Rebote, pase tras bote, defensa del bloqueo…', largo: true },
@@ -16,12 +20,19 @@ const CAMPOS: { k: keyof Cuestionario; nombre: string; ayuda?: string; largo?: b
   { k: 'notas', nombre: 'Algo más que tenga en cuenta', largo: true },
 ];
 
-export function PedirIA({ recurso, borrador }: { recurso?: Recurso; borrador: (f: Ficha) => void }) {
+export function PedirIA({ recurso, borrador, retocar, guardada }: {
+  recurso?: Recurso;
+  borrador: (f: Ficha) => void;
+  /** Abre el ejercicio dibujado en el editor de la pizarra; la ficha se crea al guardar allí. */
+  retocar: (e: Ejercicio, c: Cuestionario, recurso?: Recurso) => void;
+  guardada: (f: Ficha) => void;
+}) {
   const [con, setCon] = useState<Conexion | undefined>(leerConexion);
   const [c, setC] = useState<Cuestionario>(CUESTIONARIO_VACIO);
   const [base, setBase] = useState(leerBase);
   const [fase, setFase] = useState<'escribir' | 'esperando'>('escribir');
   const [error, setError] = useState('');
+  const [hecho, setHecho] = useState<Ejercicio | undefined>();
   const cancelado = useRef(false);
   useEffect(() => () => { cancelado.current = true; }, []);   // al salir de la pantalla se deja de esperar
 
@@ -29,6 +40,13 @@ export function PedirIA({ recurso, borrador }: { recurso?: Recurso; borrador: (f
   const hayDatos = Object.values(c).some((v) => v.trim()) || !!recurso;
   const largo = prompt.length > MAX_PROMPT;
 
+  const fallo = (e: unknown) => {
+    if (e instanceof ErrorJarvis && e.reemparejar) { olvidarConexion(); setCon(undefined); }
+    setError(e instanceof Error ? e.message : 'Algo falló. Inténtalo otra vez.');
+    setFase('escribir');
+  };
+
+  // Ficha de solo texto (la de siempre): el texto base y su borrador de ficha.
   const mandar = async () => {
     if (!con) return;
     cancelado.current = false;
@@ -40,18 +58,38 @@ export function PedirIA({ recurso, borrador }: { recurso?: Recurso; borrador: (f
       if (cancelado.current) return;
       borrador(borradorDeRespuesta(respuesta, c, recurso));
     } catch (e) {
-      if (e instanceof ErrorJarvis && e.reemparejar) { olvidarConexion(); setCon(undefined); }
-      setError(e instanceof Error ? e.message : 'Algo falló. Inténtalo otra vez.');
+      fallo(e);
+    }
+  };
+
+  // Ejercicio con pizarra: Claude lo dibuja, se comprueba y se enseña como borrador (no se guarda).
+  const dibujar = async () => {
+    if (!con) return;
+    cancelado.current = false;
+    setError('');
+    setFase('esperando');
+    try {
+      const r = await pedirEjercicio(con, c, nuevoId(), recurso, undefined, () => cancelado.current);
+      if (cancelado.current) return;
+      if (!r.ok) {
+        setError(`Claude no ha podido dibujarlo (${r.motivo}). Puedes probar otra vez o pedir la ficha de solo texto.`);
+        return setFase('escribir');
+      }
+      setHecho(r);
       setFase('escribir');
+    } catch (e) {
+      fallo(e);
     }
   };
 
   if (!con) return <Conectar listo={setCon} aviso={error} />;
 
+  if (hecho) return <BorradorEjercicio e={hecho} cuestionario={c} recurso={recurso} retocar={(e) => retocar(e, c, recurso)} otraVez={() => setHecho(undefined)} guardada={guardada} />;
+
   if (fase === 'esperando') {
     return (
       <section className="pantalla" aria-live="polite">
-        <p className="aviso">Claude está escribiendo la ficha… puede tardar un minuto.</p>
+        <p className="aviso">Claude está dibujando el ejercicio… puede tardar un minuto.</p>
         <button className="secundario ancho" onClick={() => { cancelado.current = true; }}>Cancelar</button>
       </section>
     );
@@ -80,7 +118,8 @@ export function PedirIA({ recurso, borrador }: { recurso?: Recurso; borrador: (f
       <p className="aviso">Al enviar, este texto sale de tu móvil hacia tu PC (Jarvis) y de allí a Claude. Revisa que no lleve nombres de jugadoras ni datos personales.</p>
       {largo && <p className="aviso" role="alert">El texto es demasiado largo ({prompt.length} de {MAX_PROMPT} letras): acorta el texto base o tus respuestas.</p>}
       {error && <p className="aviso" role="alert">{error}</p>}
-      <button className="principal ancho" onClick={mandar} disabled={!hayDatos || largo}>Enviar a Claude</button>
+      <button className="principal ancho" onClick={dibujar} disabled={!hayDatos || largo}>Dibujar el ejercicio con Claude</button>
+      <button className="secundario ancho" onClick={mandar} disabled={!hayDatos || largo}>Solo la ficha de texto</button>
       {!hayDatos && <p className="meta">Rellena al menos una cosa del cuestionario.</p>}
       <p className="meta">Lo que conteste Claude llega como borrador: lo revisas y lo guardas tú. <button className="enlace" onClick={() => { olvidarConexion(); setCon(undefined); }}>Desconectar de Jarvis</button></p>
     </>
