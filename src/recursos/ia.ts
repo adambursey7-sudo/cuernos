@@ -75,6 +75,16 @@ export function construirPrompt(base: string, c: Cuestionario, recurso?: Recurso
   return partes.join('\n\n');
 }
 
+/**
+ * Encargo de un ejercicio CON pizarra (modo «ejercicio» de Jarvis, que ya lleva las normas y el formato).
+ * Aquí solo van los datos del entrenador y, en el reintento, por qué falló la respuesta anterior.
+ */
+export function construirEncargoEjercicio(c: Cuestionario, recurso?: Recurso, fallo?: string): string {
+  const partes = [construirPrompt('Design ONE short practice drill for this coach, as the JSON object described.', c, recurso)];
+  if (fallo) partes.push(`Your previous reply was rejected: ${una(fallo, 200)}. Fix that and reply again with ONLY the JSON object.`);
+  return partes.join('\n\n');
+}
+
 const texto = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
 /** Lee lo que contesta Claude. Si no es el JSON esperado, todo el texto pasa a «consejos» para no perderlo. */

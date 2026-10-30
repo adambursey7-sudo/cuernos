@@ -103,9 +103,9 @@ export async function emparejar(direccion: string, codigo: string): Promise<Cone
   return c;
 }
 
-/** Manda el texto a Claude (vía Jarvis). Devuelve el número de la petición. */
-export async function enviar(c: Conexion, prompt: string): Promise<string> {
-  const d = await llamar(c, '/api/horns/ask', { prompt });
+/** Manda el texto a Claude (vía Jarvis). Devuelve el número de la petición. `modo: 'ejercicio'` pide el JSON de un ejercicio con pizarra. */
+export async function enviar(c: Conexion, prompt: string, modo?: 'ejercicio'): Promise<string> {
+  const d = await llamar(c, '/api/horns/ask', modo ? { prompt, modo } : { prompt });
   if (typeof d.id !== 'string' || !d.id) throw new ErrorJarvis('Jarvis no contestó como se esperaba.');
   return d.id;
 }
