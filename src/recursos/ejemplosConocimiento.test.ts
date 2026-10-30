@@ -1,9 +1,9 @@
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ESPACIOS_BASE } from '../sistemas/espacios';
+import ejemplosJson from '../../docs/conocimiento/ejemplos.json';
 import { validarEjercicio } from './ejercicioIA';
 
-const ejemplos: { nombre: string }[] = JSON.parse(readFileSync('docs/conocimiento/ejemplos.json', 'utf8'));
+const ejemplos: { nombre: string }[] = ejemplosJson;
 
 describe('ejercicios de ejemplo del conocimiento de baloncesto', () => {
   it('hay entre 15 y 25', () => {
