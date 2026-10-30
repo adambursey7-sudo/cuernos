@@ -491,3 +491,19 @@ select#fi-sis { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.
 .fi-fila.con-mini { grid-template-columns: 84px 1fr; grid-template-rows: auto auto; column-gap: 12px; }
 .fi-fila.con-mini .fi-mini { grid-row: 1 / span 2; width: 84px; }
 .fi-fila.con-mini .fi-mini svg { display: block; width: 100%; height: auto; }
+
+/* Espacios de la cancha */
+.pista.espacios { touch-action: none; }
+.espacio circle { stroke: #fff; stroke-width: 0.8; cursor: grab; }
+.espacio.fuera circle { fill: var(--defensa); }
+.espacio.dentro circle { fill: var(--principal); }
+.espacio.sel circle { stroke: var(--texto); stroke-width: 1.5; }
+.espacio text { font-size: 3.6px; font-weight: 700; fill: var(--texto); paint-order: stroke; stroke: var(--fondo); stroke-width: 1.2px; pointer-events: none; }
+.fila-espacios { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; }
+.fila-espacio { display: flex; gap: 8px; align-items: center; padding: 4px 10px; border-radius: 10px; border: 1.5px solid transparent; background: var(--superficie); }
+.fila-espacio.sel { border-color: var(--texto); }
+.fila-espacio input { flex: 1; min-width: 0; font: inherit; background: none; color: var(--texto); border: 0; border-bottom: 1px solid var(--tenue); padding: 6px 2px; }
+.fila-espacio small { color: var(--tenue); font-variant-numeric: tabular-nums; }
+.fila-espacio .punto { width: 14px; height: 14px; border-radius: 50%; flex: none; }
+.fila-espacio .punto.fuera { background: var(--defensa); }
+.fila-espacio .punto.dentro { background: var(--principal); }
