@@ -51,7 +51,7 @@ Horns pasa de ser una biblioteca de jugadas a ser el **cuaderno del entrenador**
 - [x] 3.3 Calendario: partidos (rival, casa/fuera, hora, resultado), entrenamientos fijos de la semana, festivos; las sesiones ya hechas se enlazan al día.
 - [x] 3.3b Importar `.ics` (lector hecho a mano, sin librerías) con vista previa, y exportar la temporada a `.ics`.
 - [x] 3.4 Vista mes (Equipo → Temporada) y «Esta semana» en Inicio; cada día enlaza su sesión («Abrir la sesión →»). Falta: que el cronómetro de pista abra solo la sesión del día.
-- [ ] 3.5 Entrada de balance de partido (qué funcionó, a quién mirar) que cuelga de la ficha de la jugadora; revisión; parar.
+- [x] 3.5 Balance de partido (Adam eligió A, 30/10): etiquetas de lo que funcionó y falló, dorsales a mirar, frase corta y «Pasar a las fichas» (una nota con fecha por jugadora, sin repetir). Código en `src/temporada/temporada.ts` y la hoja del día de `Temporada.tsx`.
 
 Decisiones de Adam (30/10, vuelta 3): dónde vive A+C (dentro de Equipo + «Esta semana» en Inicio); apuntar C+B+A (entrenos fijos, lista de jornadas y tocar el día); hoja del día A con «Abrir día»; .ics A (vista previa con casillas) y exportar. Resultado solo con puntos a favor y en contra; sin «Convocadas» (no contestó, supuesto mío). Código en `src/temporada/` y `src/pantallas/Temporada.tsx`, `ImportarCalendario.tsx`.
 

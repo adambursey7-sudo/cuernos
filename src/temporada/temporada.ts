@@ -32,8 +32,14 @@ export interface Evento {
   resultado?: { a: number; c: number };
   /** Sesión de entrenamiento enlazada. */
   sesionId?: string;
-  /** Qué funcionó y a quién mirar. */
+  /** Frase corta del balance: qué funcionó y a quién mirar. */
   balance: string;
+  /** Etiquetas de lo que funcionó y de lo que falló (de ETIQUETAS_BIEN y ETIQUETAS_MAL). */
+  bien?: string[];
+  mal?: string[];
+  /** Jugadoras a mirar (ids) y a cuáles ya se les pasó la nota a su ficha. */
+  mirar?: string[];
+  pasadas?: string[];
   /** «Sin entreno»: un festivo quita los entrenos fijos de ese día. */
   libre?: boolean;
 }
@@ -108,7 +114,26 @@ function limpiaEvento(e: unknown): Evento | null {
     id: x.id, fecha: x.fecha, hora: x.hora, tipo: x.tipo, titulo: x.titulo, lugar: x.lugar, balance: x.balance,
     ...(typeof x.casa === 'boolean' ? { casa: x.casa } : {}), ...(resultado ? { resultado } : {}),
     ...(txt(x.sesionId) ? { sesionId: x.sesionId } : {}), ...(x.libre ? { libre: true } : {}),
+    ...listaTexto('bien', x.bien), ...listaTexto('mal', x.mal), ...listaTexto('mirar', x.mirar), ...listaTexto('pasadas', x.pasadas),
   };
+}
+
+const listaTexto = (clave: 'bien' | 'mal' | 'mirar' | 'pasadas', v: unknown) => {
+  const a = Array.isArray(v) ? [...new Set(v.filter((s): s is string => txt(s) && s !== ''))] : [];
+  return a.length ? { [clave]: a } : {};
+};
+
+export const ETIQUETAS_BIEN = ['Defensa', 'Ataque rápido', 'Rebote', 'Tiro', 'Pase', 'Ritmo'];
+export const ETIQUETAS_MAL = ['Pérdidas', 'Rebote', 'Cierre', 'Tiro libre', 'Defensa', 'Ritmo'];
+
+/** Notas que hay que pasar a las fichas: una por jugadora marcada «a mirar» (de las que existen) a la que aún no se le pasó. */
+export function notasDelBalance(e: Evento, existentes: string[]): { id: string; texto: string }[] {
+  const marcador = e.resultado ? ` ${e.resultado.a}–${e.resultado.c}` : '';
+  const cabecera = `Partido${e.titulo ? ` vs ${e.titulo}` : ''}${marcador}`;
+  const resto = [e.bien?.length && `Funcionó: ${e.bien.join(', ')}`, e.mal?.length && `Falló: ${e.mal.join(', ')}`, e.balance.trim()].filter(Boolean).join('. ');
+  return (e.mirar ?? [])
+    .filter((id) => existentes.includes(id) && !(e.pasadas ?? []).includes(id))
+    .map((id) => ({ id, texto: `${cabecera}. A mirar${resto ? `. ${resto}` : ''}` }));
 }
 
 function limpiaFijo(f: unknown): EntrenoFijo | null {

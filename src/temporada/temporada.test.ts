@@ -3,7 +3,7 @@ import { cuadriculaMes, diaSemana, esFecha, lunesDe, sumarDias, sumarMeses } fro
 import { escribirIcs, leerIcs, leerLista } from './ics';
 import {
   agendaDia, aplicarCandidatas, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporadas, itemsParaIcs, leerTemporadas,
-  limpiarTemporada, marcasDia, nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarFijo, resumenAsistencia, temporadaPorDefecto,
+  limpiarTemporada, marcasDia, notasDelBalance, nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarFijo, resumenAsistencia, temporadaPorDefecto,
 } from './temporada';
 
 const memoria = () => {
@@ -183,5 +183,31 @@ describe('asistencia', () => {
   it('una temporada vieja sin asistencia sigue valiendo', () => {
     expect(limpiarTemporada(base())?.asistencia).toBeUndefined();
     expect(resumenAsistencia(undefined, 'a')).toEqual({ vino: 0, de: 0 });
+  });
+});
+
+describe('balance de partido', () => {
+  const partido = { ...nuevoEvento('2026-10-17', 'partido'), titulo: 'Ejemplo CB', resultado: { a: 54, c: 48 }, bien: ['Defensa'], mal: ['Pérdidas'], balance: 'mejor en defensa', mirar: ['j1', 'j2', 'jx'] };
+
+  it('hace una nota por jugadora marcada que exista', () => {
+    const n = notasDelBalance(partido, ['j1', 'j2', 'j3']);
+    expect(n.map((x) => x.id)).toEqual(['j1', 'j2']);
+    expect(n[0].texto).toBe('Partido vs Ejemplo CB 54–48. A mirar. Funcionó: Defensa. Falló: Pérdidas. mejor en defensa');
+  });
+
+  it('no repite la nota a quien ya la tiene', () => {
+    expect(notasDelBalance({ ...partido, pasadas: ['j1'] }, ['j1', 'j2']).map((x) => x.id)).toEqual(['j2']);
+  });
+
+  it('sin etiquetas ni frase queda una nota corta', () => {
+    const e = { ...nuevoEvento('2026-10-17', 'partido'), mirar: ['j1'] };
+    expect(notasDelBalance(e, ['j1'])[0].texto).toBe('Partido. A mirar');
+  });
+
+  it('se conserva al cargar y se limpia lo raro', () => {
+    const t = limpiarTemporada({ ...base(), eventos: [{ ...partido, bien: ['Defensa', 'Defensa', 3, ''], mirar: 'no' }] })!;
+    expect(t.eventos[0].bien).toEqual(['Defensa']);
+    expect(t.eventos[0].mirar).toBeUndefined();
+    expect(t.eventos[0].mal).toEqual(['Pérdidas']);
   });
 });

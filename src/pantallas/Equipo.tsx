@@ -310,7 +310,11 @@ export function Equipo({ ir, fecha, abrirSesion }: { ir: (t: 'ejercicios' | 'jug
             </div>
           )}
         </section>
-        <Temporada key={equipo.id} equipo={equipo} jugadoras={plantilla(d, equipo.id)} fechaInicial={fecha} abrirSesion={abrirSesion} />
+        <Temporada key={equipo.id} equipo={equipo} jugadoras={plantilla(d, equipo.id)} fechaInicial={fecha} abrirSesion={abrirSesion}
+          anotar={(ns) => setD((cur) => ns.reduce((acc, n) => {
+            const j = acc.jugadoras.find((x) => x.id === n.id);
+            return j ? guardarJugadora(acc, { ...j, notas: [{ fecha: hoy(), texto: n.texto }, ...j.notas] }) : acc;
+          }, cur))} />
       </>
     );
 

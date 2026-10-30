@@ -6,6 +6,7 @@ import { leerSesiones } from '../sesiones/sesiones';
 import { DIAS, DIAS_LARGOS, corta, cuadriculaMes, mesDe, nombreMes, sumarMeses } from '../temporada/fechas';
 import { escribirIcs } from '../temporada/ics';
 import {
+  ETIQUETAS_BIEN, ETIQUETAS_MAL, notasDelBalance,
   agendaDia, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporada, guardarTemporadas, itemsParaIcs, leerTemporadas, marcasDia,
   nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarEvento, quitarFase, quitarFijo, temporadaDe, temporadaPorDefecto,
   type Evento, type Fase, type Item, type Temporada as TemporadaDatos, type TipoEvento,
@@ -77,8 +78,10 @@ function EditorFijos({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: T
   );
 }
 
-function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equipo, jugadoras }: {
-  jugadoras: Jugadora[]; t: TemporadaDatos; fecha: string; completa: boolean; alternar: () => void; cerrar: () => void; cambiar: (t: TemporadaDatos) => void; abrirSesion: (id: string) => void; equipo: Equipo;
+const alternarEn = (lista: string[] | undefined, x: string) => (lista?.includes(x) ? lista.filter((y) => y !== x) : [...(lista ?? []), x]);
+
+function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equipo, jugadoras, anotar }: {
+  anotar: (notas: { id: string; texto: string }[]) => void; jugadoras: Jugadora[]; t: TemporadaDatos; fecha: string; completa: boolean; alternar: () => void; cerrar: () => void; cambiar: (t: TemporadaDatos) => void; abrirSesion: (id: string) => void; equipo: Equipo;
 }) {
   const [edita, setEdita] = useState<string | null>(null);
   const [lista, setLista] = useState<string | null>(null);
@@ -155,9 +158,36 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
               <Entrada etiqueta="Puntos nuestros"><input inputMode="numeric" value={e.resultado?.a ?? ''} onChange={(ev) => poner({ resultado: puntos(ev.target.value, e.resultado?.c) })} /></Entrada>
               <Entrada etiqueta="Puntos rival"><input inputMode="numeric" value={e.resultado?.c ?? ''} onChange={(ev) => poner({ resultado: puntos(e.resultado?.a, ev.target.value) })} /></Entrada>
             </div>
-            <Entrada etiqueta="Balance del partido">
-              <textarea rows={3} value={e.balance} placeholder="Qué funcionó, a quién mirar (sin nombres si compartes la pantalla)" onChange={(ev) => poner({ balance: ev.target.value })} />
+            <Entrada etiqueta="Qué funcionó">
+              <div className="niveles filtro" role="group" aria-label="Qué funcionó">
+                {ETIQUETAS_BIEN.map((x) => { const on = !!e.bien?.includes(x); return <button key={x} className={on ? 'chip on' : 'chip'} aria-pressed={on} onClick={() => poner({ bien: alternarEn(e.bien, x) })}>{x}</button>; })}
+              </div>
             </Entrada>
+            <Entrada etiqueta="Qué falló">
+              <div className="niveles filtro" role="group" aria-label="Qué falló">
+                {ETIQUETAS_MAL.map((x) => { const on = !!e.mal?.includes(x); return <button key={x} className={on ? 'chip on' : 'chip'} aria-pressed={on} onClick={() => poner({ mal: alternarEn(e.mal, x) })}>{x}</button>; })}
+              </div>
+            </Entrada>
+            <Entrada etiqueta="A quién mirar">
+              <div className="niveles filtro asis-chips" role="group" aria-label="A quién mirar">
+                {jugadoras.map((j) => { const on = !!e.mirar?.includes(j.id); return <button key={j.id} className={on ? 'chip on' : 'chip'} aria-pressed={on} onClick={() => poner({ mirar: alternarEn(e.mirar, j.id) })}>{j.numero ? `#${j.numero} ` : ''}{j.nombre || 'Sin nombre'}</button>; })}
+              </div>
+            </Entrada>
+            <Entrada etiqueta="Frase corta (opcional)">
+              <input value={e.balance} maxLength={140} placeholder="Ejemplo: mucho mejor en defensa de balón" onChange={(ev) => poner({ balance: ev.target.value })} />
+            </Entrada>
+            {(() => {
+              const pendientes = notasDelBalance(e, jugadoras.map((j) => j.id));
+              const hechas = (e.mirar ?? []).filter((id) => e.pasadas?.includes(id)).length;
+              return (
+                <>
+                  <button className="principal ancho" disabled={pendientes.length === 0} onClick={() => { anotar(pendientes); poner({ pasadas: [...new Set([...(e.pasadas ?? []), ...pendientes.map((n) => n.id)])] }); }}>
+                    {pendientes.length ? `Pasar a las fichas (${pendientes.length})` : 'Pasar a las fichas'}
+                  </button>
+                  {hechas > 0 && <span className="meta">Ya está en la ficha de {hechas} {hechas === 1 ? 'jugadora' : 'jugadoras'}.</span>}
+                </>
+              );
+            })()}
           </>
         )}
         <div className="dos-botones">
@@ -244,7 +274,7 @@ function puntos(a: string | number | undefined, c: string | number | undefined):
   return { a: Number.isNaN(x) ? 0 : x, c: Number.isNaN(y) ? 0 : y };
 }
 
-export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion }: { equipo: Equipo; jugadoras: Jugadora[]; fechaInicial?: string; abrirSesion: (id: string) => void }) {
+export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion, anotar }: { equipo: Equipo; jugadoras: Jugadora[]; fechaInicial?: string; abrirSesion: (id: string) => void; anotar: (notas: { id: string; texto: string }[]) => void }) {
   const [lista, setLista] = useState<TemporadaDatos[]>(leerTemporadas);
   const [vista, setVista] = useState<Vista>('mes');
   const [mes, setMes] = useState(() => `${mesDe(fechaInicial ?? hoy())}-01`);
@@ -350,6 +380,7 @@ export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion }: { eq
           abrirSesion={abrirSesion}
           equipo={equipo}
           jugadoras={jugadoras}
+          anotar={anotar}
         />
       )}
     </section>
