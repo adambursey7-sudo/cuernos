@@ -364,3 +364,13 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 .intro video { width: 100%; height: 100%; object-fit: contain; }
 .intro-botones { position: absolute; top: max(14px, env(safe-area-inset-top)); right: max(14px, env(safe-area-inset-right)); display: flex; gap: 8px; }
 .intro-botones button { border: none; border-radius: 20px; padding: 8px 14px; background: rgba(0, 0, 0, .55); color: #fff8ee; font: 700 .95rem/1 var(--texto, inherit); }
+
+/* Recursos de internet */
+.rec-vistas { margin-bottom: 4px; }
+.rec-acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.rec-fila { width: 100%; display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; padding: 8px; border: none; border-radius: 14px; background: var(--superficie); text-align: left; }
+.rec-texto { font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+.rec-mini { width: 64px; height: 44px; border-radius: 8px; object-fit: cover; display: grid; place-items: center; background: var(--tenue); color: var(--fondo); font: 800 0.9rem/1 var(--display); }
+.rec-mini.instagram { background: #c58fd0; } .rec-mini.tiktok { background: #6fd3d3; } .rec-mini.web { background: #7fb2d9; } .rec-mini.nota { background: var(--principal); color: var(--sobre-principal); }
+.rec-grande { width: 100%; max-width: 420px; border-radius: 12px; }
+.rec-enlace { color: var(--principal); font-weight: 700; padding: 8px 0; }

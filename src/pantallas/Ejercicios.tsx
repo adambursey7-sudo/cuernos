@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { filtrar, formatos, todosLosEjercicios, type Ejercicio, type Filtro } from '../ejercicios/ejercicios';
 import { Pista } from '../pizarra/Pista';
 import { NIVELES } from '../sistemas/tipos';
+import { Recursos } from './Recursos';
 
 const nombreNivel = (id: string) => NIVELES.find((n) => n.id === id)?.nombre ?? id;
 
@@ -49,7 +50,21 @@ export function TarjetaEjercicio({ e, abrir }: { e: Ejercicio; abrir: () => void
   );
 }
 
-export function Ejercicios({ abrir }: { abrir: (id: string) => void }) {
+/** La pestaña Ejercicios tiene dos vistas: los de la biblioteca y los recursos guardados de internet. */
+export function Ejercicios({ abrir, enlaceInicial }: { abrir: (id: string) => void; enlaceInicial?: string }) {
+  const [vista, setVista] = useState<'ejercicios' | 'recursos'>(enlaceInicial ? 'recursos' : 'ejercicios');
+  return (
+    <>
+      <div className="niveles filtro rec-vistas" role="group" aria-label="Vista">
+        <button className={vista === 'ejercicios' ? 'chip on' : 'chip'} aria-pressed={vista === 'ejercicios'} onClick={() => setVista('ejercicios')}>Ejercicios</button>
+        <button className={vista === 'recursos' ? 'chip on' : 'chip'} aria-pressed={vista === 'recursos'} onClick={() => setVista('recursos')}>Recursos de internet</button>
+      </div>
+      {vista === 'recursos' ? <section className="pantalla"><h1 className="titulo">Recursos</h1><Recursos enlaceInicial={enlaceInicial} /></section> : <Biblioteca abrir={abrir} />}
+    </>
+  );
+}
+
+function Biblioteca({ abrir }: { abrir: (id: string) => void }) {
   const todos = todosLosEjercicios();
   const [f, setF] = useState<Filtro>({});
   const lista = filtrar(todos, f);

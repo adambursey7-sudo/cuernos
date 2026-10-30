@@ -9,6 +9,7 @@ import { Inicio } from './pantallas/Inicio';
 import { Sesiones } from './pantallas/Sesiones';
 import { Sistema } from './pantallas/Sistema';
 import { Sistemas } from './pantallas/Sistemas';
+import { primerEnlace } from './recursos/recursos';
 import { buscarSistema } from './sistemas/almacen';
 import type { Sistema as SistemaDatos } from './sistemas/tipos';
 
@@ -26,8 +27,21 @@ const PESTANAS: { id: Pestana; nombre: string }[] = [
 /** En el editor: `null` = no se edita; `{}` = jugada nueva; `{ base }` = editar una propia o duplicar una del libro. */
 type Edicion = { base?: SistemaDatos } | null;
 
+/** Un enlace que llega por la dirección (?enlace=, ?url= o ?text=: atajo de Atajos o «Compartir» en Android) abre la bandeja con él puesto. */
+function enlaceDeLaDireccion(): string | undefined {
+  try {
+    const q = new URLSearchParams(location.search);
+    const e = primerEnlace(q.get('enlace') ?? q.get('url') ?? q.get('text') ?? '');
+    if (e) history.replaceState(null, '', location.pathname + location.hash);
+    return e;
+  } catch {
+    return undefined;
+  }
+}
+
 export function App() {
-  const [pestana, setPestana] = useState<Pestana>('inicio');
+  const [entrante] = useState(enlaceDeLaDireccion);
+  const [pestana, setPestana] = useState<Pestana>(entrante ? 'ejercicios' : 'inicio');
   // La jugada abierta queda encima de Inicio o de Jugadas; al volver se ve la pestaña desde la que se abrió.
   const [abierto, setAbierto] = useState<{ id: string; paso: number } | null>(null);
   const [edicion, setEdicion] = useState<Edicion>(null);
@@ -73,7 +87,7 @@ export function App() {
     contenido = (
       <Inicio verDia={verDia} abrirSesion={abrirSesion} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => setPestana('jugadas')} verEjercicios={() => setPestana('ejercicios')} />
     );
-  else if (pestana === 'ejercicios') contenido = <Ejercicios abrir={setEjercicioId} />;
+  else if (pestana === 'ejercicios') contenido = <Ejercicios abrir={setEjercicioId} enlaceInicial={entrante} />;
   else contenido = <Sistemas abrir={abrir} crear={() => setEdicion({})} />;
 
   return (

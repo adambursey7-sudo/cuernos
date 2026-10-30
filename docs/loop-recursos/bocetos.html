@@ -1,0 +1,210 @@
+<title>Recursos Horns</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Graduate&display=swap">
+<style>
+/* Estilo Marcador de Horns (una sola cara, oscura, a propósito): tablero de elección con móviles dibujados a mano. */
+:root{--bg:#14110e;--panel:#211c17;--panel2:#2c251e;--fg:#f3ece2;--mute:#a89d8e;--acc:#e8883a;--ok:#7fc58a;--mal:#e5736a;--linea:#3a3128;--yt:#e5736a;--ig:#c58fd0;--web:#7fb2d9;
+--disp:'Graduate','Impact',serif;--txt:'Atkinson Hyperlegible','Segoe UI',sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--txt);font-size:16px;line-height:1.5;margin:0;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--disp);font-weight:400;text-wrap:balance;margin:0}
+h1{font-size:2.2rem;line-height:1.1}h2{font-size:1.5rem;color:var(--acc)}h3{font-size:1.1rem}
+p{margin:0}.mute{color:var(--mute)}
+.etq{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+section{background:var(--panel);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.opciones{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.op{background:var(--panel2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.op.rec{outline:2px solid var(--acc)}
+.letra{font-family:var(--disp);font-size:1.8rem;color:var(--acc);line-height:1}
+.pros{font-size:.9rem;display:grid;gap:4px}
+.pros b{color:var(--ok)}.pros i{color:var(--mal);font-style:normal;font-weight:700}
+.tel{width:100%;max-width:230px;margin:0 auto;aspect-ratio:9/15;background:var(--bg);border:2px solid var(--linea);border-radius:20px;padding:10px;display:flex;flex-direction:column;gap:6px;overflow:hidden;font-size:11px;line-height:1.3}
+.tel .tit{font-family:var(--disp);font-size:13px}
+.fila{display:flex;align-items:center;gap:6px;background:var(--panel);border-radius:8px;padding:5px 6px}
+.fila .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-img{width:34px;height:24px;border-radius:4px;flex:none;background:var(--linea)}
+.mini-img.yt{background:var(--yt)}.mini-img.ig{background:var(--ig)}.mini-img.web{background:var(--web)}
+.chip{background:var(--panel2);border-radius:20px;padding:1px 7px;font-size:10px;color:var(--mute);white-space:nowrap}
+.chip.v{color:var(--ok)}.chip.n{color:var(--acc)}.chip.r{color:var(--mal)}
+.barra{display:flex;gap:4px;margin-top:auto}
+.barra span{flex:1;text-align:center;padding:4px 0;border-radius:6px;background:var(--panel);font-size:9px;color:var(--mute)}
+.barra .on{color:var(--acc)}
+.pestanas{display:flex;gap:4px;flex-wrap:wrap}.pestanas span{padding:2px 7px;border-radius:12px;background:var(--panel);font-size:10px;color:var(--mute)}.pestanas .on{background:var(--acc);color:#14110e}
+.campo{background:var(--panel);border-radius:6px;padding:4px 6px;color:var(--mute);font-size:10px}
+.campo b{color:var(--fg);font-weight:400}
+.btn{background:var(--acc);color:#14110e;text-align:center;border-radius:8px;padding:5px;font-weight:700;font-size:11px}
+.btn.s{background:var(--panel2);color:var(--fg)}
+.col{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.col .fila{flex-direction:column;align-items:flex-start;padding:5px}
+.col .mini-img{width:100%;height:36px}
+.nota{background:var(--panel2);border-left:4px solid var(--acc);padding:10px 12px;border-radius:0 10px 10px 0}
+.nota ul{margin:6px 0 0;padding-left:1.1em}
+.pregunta{background:var(--panel2);border-radius:10px;padding:12px 14px}
+.pregunta b{color:var(--acc)}
+.tramos{display:grid;gap:8px;font-size:.95rem}
+.tramos div{background:var(--panel2);border-radius:10px;padding:10px 12px}
+.tramos b{font-family:var(--disp);font-weight:400;color:var(--acc)}
+pre{margin:0;background:#0d0b09;border-radius:8px;padding:10px;font-size:.78rem;overflow-x:auto;color:var(--mute);white-space:pre-wrap}
+</style>
+<main>
+<header>
+  <p class="etq">Horns · recursos de internet · 30/10/2026</p>
+  <h1>Guardar enlaces y convertirlos en ejercicios</h1>
+  <p class="mute" style="margin-top:8px">Lo que encuentras en internet cae en un sitio, lo revisas y lo conviertes en ejercicio, juego, jugada o nota, listo para una sesión. Todo se queda en tu móvil. Los títulos y datos de los dibujos son inventados.</p>
+</header>
+
+<section>
+  <h2>Antes de elegir: cómo entra un enlace</h2>
+  <div class="nota">
+    <b>Lo que se puede hacer y lo que no</b>
+    <ul>
+      <li><b>iPhone (tu caso):</b> una web instalada en la pantalla de inicio no aparece en el botón «Compartir» de otras apps. Hay dos caminos: <b>copiar el enlace y pegarlo</b> (la app lo detecta al abrir la bandeja y te ofrece «Guardar el enlace copiado»), o un <b>atajo de Atajos</b> que abre Horns con el enlace ya puesto. El atajo se crea una vez en 1 minuto, con instrucciones dentro de la app.</li>
+      <li><b>Android:</b> la app aparece en «Compartir» directamente.</li>
+      <li><b>YouTube:</b> título y miniatura salen solos, con el servicio oficial de YouTube.</li>
+      <li><b>Instagram, TikTok y webs:</b> no se leen. Se guarda el enlace, escribes o pegas el título y una nota. El vídeo no se descarga ni se copia: se abre con su enlace original.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="bandeja">
+  <h2>Decisión 1 · La bandeja de entrada</h2>
+  <p class="mute">Dónde cae todo lo guardado y cómo se ve. Cada recurso lleva enlace, título, origen, miniatura si hay, fecha, etiquetas y estado (Sin revisar, Revisado, Convertido).</p>
+  <div class="opciones">
+
+    <div class="op rec">
+      <span class="letra">A</span><h3>Lista con estado</h3>
+      <div class="tel">
+        <div class="tit">Recursos</div>
+        <div class="pestanas"><span class="on">Sin revisar 4</span><span>Revisados</span><span>Convertidos</span></div>
+        <div class="btn s">+ Pegar enlace copiado</div>
+        <div class="fila"><div class="mini-img yt"></div><div class="t">Tiro tras bloqueo, 3 pasos</div><span class="chip">YouTube</span></div>
+        <div class="fila"><div class="mini-img ig"></div><div class="t">Reel: pie de pivote</div><span class="chip">Instagram</span></div>
+        <div class="fila"><div class="mini-img web"></div><div class="t">Juego 3x2 reducido</div><span class="chip">Web</span></div>
+        <div class="fila"><div class="mini-img"></div><div class="t">Nota: ayuda defensiva</div><span class="chip">Nota</span></div>
+        <div class="barra"><span>Inicio</span><span class="on">Recursos</span><span>Ejercicios</span><span>Sesiones</span></div>
+      </div>
+      <div class="pros"><span><b>+</b> Se ve de golpe qué falta por revisar.</span><span><b>+</b> Parecida al resto de la app.</span><span><b>+</b> Mucha cabida en pantalla.</span><span><i>−</i> Sin miniaturas grandes, menos visual.</span></div>
+    </div>
+
+    <div class="op">
+      <span class="letra">B</span><h3>Tarjetas con miniatura</h3>
+      <div class="tel">
+        <div class="tit">Recursos</div>
+        <div class="pestanas"><span class="on">Todo</span><span>Vídeo</span><span>Web</span><span>Notas</span></div>
+        <div class="col">
+          <div class="fila"><div class="mini-img yt"></div><div>Tiro tras bloqueo</div><span class="chip n">Sin revisar</span></div>
+          <div class="fila"><div class="mini-img ig"></div><div>Pie de pivote</div><span class="chip n">Sin revisar</span></div>
+          <div class="fila"><div class="mini-img web"></div><div>Juego 3x2</div><span class="chip v">Convertido</span></div>
+          <div class="fila"><div class="mini-img yt"></div><div>Calentamiento</div><span class="chip">Revisado</span></div>
+        </div>
+        <div class="btn">+ Añadir</div>
+        <div class="barra"><span>Inicio</span><span class="on">Recursos</span><span>Ejercicios</span><span>Sesiones</span></div>
+      </div>
+      <div class="pros"><span><b>+</b> Muy visual: reconoces el vídeo por la miniatura.</span><span><i>−</i> Instagram, TikTok y webs no tienen miniatura, quedan de color liso.</span><span><i>−</i> Caben pocos a la vez y los títulos se cortan.</span></div>
+    </div>
+
+    <div class="op">
+      <span class="letra">C</span><h3>Tablero de tres columnas</h3>
+      <div class="tel">
+        <div class="tit">Recursos</div>
+        <div class="pestanas"><span class="on">Sin revisar</span><span>Revisado</span><span>Convertido</span></div>
+        <div class="fila"><div class="t">Tiro tras bloqueo</div><span class="chip">→</span></div>
+        <div class="fila"><div class="t">Pie de pivote</div><span class="chip">→</span></div>
+        <div class="campo">Toca → para pasarlo al estado siguiente. Al pasar a «Convertido» se abre la ficha del ejercicio.</div>
+        <div class="btn s">+ Añadir</div>
+        <div class="barra"><span>Inicio</span><span class="on">Recursos</span><span>Ejercicios</span><span>Sesiones</span></div>
+      </div>
+      <div class="pros"><span><b>+</b> Flujo claro: de sin revisar a convertido.</span><span><i>−</i> En móvil son tres pantallas, no un tablero de verdad.</span><span><i>−</i> Más pasos para algo que se hace con prisa.</span></div>
+    </div>
+  </div>
+  <div class="pregunta"><b>Mi recomendación: A.</b> Es rápida, aprovecha el ancho del móvil y la miniatura de YouTube se ve igualmente a la izquierda. Si quieres lo visual de B, puede ser un interruptor «Lista / Tarjetas» más adelante.</div>
+</section>
+
+<section id="ficha">
+  <h2>Decisión 2 · La ficha del ejercicio</h2>
+  <p class="mute">Tiene muchos campos: nombre, objetivo, categoría, nivel y edad, jugadoras, material, espacio, duración, pasos, consejos, variantes y progresión, y la fuente. Hay que decidir cómo se rellena sin que sea un formulario eterno.</p>
+  <div class="opciones">
+
+    <div class="op">
+      <span class="letra">A</span><h3>Una pantalla con secciones plegables</h3>
+      <div class="tel">
+        <div class="tit">Convertir en ejercicio</div>
+        <div class="campo">Nombre <b>Tiro tras bloqueo</b></div>
+        <div class="col"><div class="campo">Categoría <b>Tiro</b></div><div class="campo">Duración <b>10 min</b></div></div>
+        <div class="fila"><div class="t">▸ Cómo se juega (pasos)</div></div>
+        <div class="fila"><div class="t">▸ Consejos de coaching</div></div>
+        <div class="fila"><div class="t">▸ Variantes y progresión</div></div>
+        <div class="campo">Fuente <b>youtube.com/…</b></div>
+        <div class="btn">Guardar</div>
+      </div>
+      <div class="pros"><span><b>+</b> Lo básico arriba, lo demás cuando lo necesitas.</span><span><b>+</b> Se guarda a medias sin esfuerzo.</span><span><i>−</i> Cuesta ver cuánto falta por rellenar.</span></div>
+    </div>
+
+    <div class="op rec">
+      <span class="letra">B</span><h3>Pasos cortos, con el vídeo a mano</h3>
+      <div class="tel">
+        <div class="tit">Ejercicio · paso 2 de 4</div>
+        <div class="pestanas"><span>Básico</span><span class="on">Cómo se juega</span><span>Coaching</span><span>Extras</span></div>
+        <div class="fila"><div class="mini-img yt"></div><div class="t">Ver el vídeo original ↗</div></div>
+        <div class="campo">1. <b>Pase al ala y bloqueo</b></div>
+        <div class="campo">2. <b>Salida al lado contrario</b></div>
+        <div class="campo">+ Añadir paso</div>
+        <div class="btn s">✨ Preparar texto para mi IA</div>
+        <div class="btn">Siguiente</div>
+      </div>
+      <div class="pros"><span><b>+</b> Mientras escribes, el enlace del vídeo está a un toque.</span><span><b>+</b> La ayuda con IA tiene su sitio natural.</span><span><b>+</b> Cada pantalla es pequeña y clara.</span><span><i>−</i> Más toques para una ficha completa.</span></div>
+    </div>
+
+    <div class="op">
+      <span class="letra">C</span><h3>Ficha ya hecha: toca para editar</h3>
+      <div class="tel">
+        <div class="tit">Tiro tras bloqueo</div>
+        <div class="pestanas"><span>Tiro</span><span>Infantil</span><span>10 min</span><span>5 jug.</span></div>
+        <div class="campo"><b>Objetivo</b> Tirar en equilibrio tras el bloqueo.</div>
+        <div class="campo"><b>Material</b> 1 balón por pareja</div>
+        <div class="campo"><b>Pasos</b> 1. Pase al ala… ✎</div>
+        <div class="campo"><b>Consejos</b> toca para añadir ✎</div>
+        <div class="campo"><b>Fuente</b> youtube.com/… ↗</div>
+        <div class="btn">Meter en una sesión</div>
+      </div>
+      <div class="pros"><span><b>+</b> Se lee como una ficha de verdad desde el primer momento.</span><span><b>+</b> Lo vacío se ve y se rellena con un toque.</span><span><i>−</i> Editar en sitio con el teclado de iPhone es más incómodo.</span></div>
+    </div>
+  </div>
+  <div class="pregunta"><b>Mi recomendación: B</b>, con la ficha final en el formato de C para leerla. Se rellena por pasos y se lee ya ordenada. Aceptado también «A» si prefieres rapidez.</div>
+</section>
+
+<section id="ia">
+  <h2>Cómo funciona la ayuda con IA (sin automatismo)</h2>
+  <p class="mute">Igual que el cuestionario del Diario. Horns no habla con ninguna IA: monta un texto editable, lo copias, lo pegas en Claude u otra, y vuelves con la respuesta.</p>
+  <pre>Aquí tienes el título y la descripción de un vídeo de baloncesto.
+Ayúdame a ordenarlos en esta ficha de ejercicio. No inventes
+nada que no esté en el texto; si falta algo, pon «Sin datos».
+
+Título: [título que escribiste]
+Descripción: [lo que pegaste]
+
+Responde con este formato: Nombre / Objetivo / Categoría / Nivel /
+Jugadoras / Material / Espacio / Duración / Pasos / Consejos / Variantes</pre>
+  <p class="mute">Al volver, pegas la respuesta, ves una vista previa con cada campo y decides qué pasa a la ficha. Nada se guarda sin que lo revises.</p>
+</section>
+
+<section>
+  <h2>Los cinco tramos</h2>
+  <div class="tramos">
+    <div><b>1 · Bandeja.</b> Guardar enlaces, YouTube con miniatura, pegar, atajo, notas. Se usa ya.</div>
+    <div><b>2 · Ficha y convertir.</b> «Convertir en ejercicio», varios ejercicios por recurso, pizarra opcional enlazada.</div>
+    <div><b>3 · Colecciones y búsqueda.</b> Colecciones, etiquetas, favoritos, buscar en todo y arrastrar a una sesión.</div>
+    <div><b>4 · Prompt con IA.</b> Texto editable, importar la respuesta con vista previa.</div>
+    <div><b>5 · Copia y compartir.</b> Todo en la copia de seguridad; compartir una colección o un ejercicio como texto (solo lo tuyo y el enlace).</div>
+  </div>
+</section>
+
+<section>
+  <h2>Lo que necesito que elijas</h2>
+  <div class="pregunta"><b>1.</b> La bandeja: A (lista), B (tarjetas) o C (tablero).</div>
+  <div class="pregunta"><b>2.</b> La ficha del ejercicio: A (plegable), B (pasos cortos) o C (ficha lista).</div>
+  <div class="pregunta"><b>3.</b> Los recursos con vídeos de tus jugadoras (menores) no se guardan: solo enlaces. ¿Está bien así?</div>
+  <p class="mute">Hasta que contestes no programo nada.</p>
+</section>
+</main>
