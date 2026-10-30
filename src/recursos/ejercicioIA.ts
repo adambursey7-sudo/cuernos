@@ -131,7 +131,7 @@ const RADIO_ESPACIO = 14;
 
 /**
  * Lógica de baloncesto (conocimiento de baloncesto, 30/10): lo que no es un fallo de reglas pero no tiene sentido.
- * 1) Hueco abandonado: una jugadora sale de un espacio de fuera, nadie lo ocupa antes de acabar el paso siguiente y hay otra
+ * 1) Hueco abandonado: una jugadora sale de un espacio de fuera (y no a otro que otra dejó en ese paso), nadie lo ocupa antes de acabar el paso siguiente y hay otra
  *    jugadora sin balón, de fuera y quieta en ese paso, que podía ocuparlo (pasa y corta... y las demás se quedan mirando).
  * 2) Con tres o más jugadoras, ninguna puede quedarse sin hacer nada (ni mover, ni pasar, ni recibir) en todo el ejercicio.
  * El último paso no exige rellenar (cierra el bucle). Devuelve el motivo, o '' si todo encaja.
@@ -172,6 +172,9 @@ function logicaDelJuego(pasos: { movimientos: Movimiento[] }[], inicio: Sistema[
       for (const e of fuera) {
         const quien = antes.get(e.id);
         if (!quien || ahora.get(e.id) === quien || ahora.has(e.id)) continue;
+        // Un relevo en cadena (sube al sitio que dejó otra en este mismo paso) es rellenar, no abandonar: el último eslabón queda libre.
+        const destino = [...ahora].find(([, k]) => k === quien)?.[0];
+        if (destino && antes.has(destino) && antes.get(destino) !== quien) continue;
         if (siguiente.some((m) => Math.hypot(m.a[0] - e.punto[0], m.a[1] - e.punto[1]) <= RADIO_ESPACIO)) continue;
         const libre = [...ahora.values()].find((k) => k !== quien && k !== tiene && quietas.has(k));
         if (libre) return `paso ${i + 1}: la jugadora ${quien} deja libre ${e.nombre} y nadie lo ocupa mientras la jugadora ${libre} está quieta; que la ${libre} (la más cercana sin balón) lo ocupe`;

@@ -287,4 +287,14 @@ describe('ejercicio de Claude: lógica de baloncesto', () => {
     const r = validarEjercicio(ej(tres, [{ texto: '1 pasa a 2 y corta', movimientos: [pasa, corta] }, { texto: '2 bota', movimientos: [{ tipo: 'bote', jugador: '2', a: [40, 70] }] }]), 'a', mios);
     expect(r.ok ? '' : r.motivo).toMatch(/deja libre Cabeza/);
   });
+
+  it('un relevo en cadena (la del ala sube al frontal y la de la esquina al ala) no es abandonar el último sitio', () => {
+    const cinco = { '1': [75, 85], '2': [22, 60], '3': [128, 60], '4': [8, 12], '5': [142, 12] };
+    const r = validarEjercicio(ej(cinco, [
+      { texto: '1 bota a la derecha; 2 sube al frontal y 4 al ala', movimientos: [{ tipo: 'bote', jugador: '1', a: [95, 45] }, { tipo: 'corte', jugador: '2', a: [75, 85] }, { tipo: 'corte', jugador: '4', a: [22, 60] }] },
+      { texto: '1 pasa a 3', movimientos: [{ tipo: 'pase', de: '1', a: '3' }] },
+      { texto: '3 pasa a 5 en la esquina', movimientos: [{ tipo: 'pase', de: '3', a: '5' }] },
+    ]), 'a');
+    expect(r.ok ? '' : r.motivo).toBe('');
+  });
 });
