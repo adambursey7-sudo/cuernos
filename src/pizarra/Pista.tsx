@@ -1,7 +1,7 @@
 // Media pista con los cinco atacantes y el balón. Se pinta con los colores del tema (variables CSS).
 import type { Punto, Sistema } from '../sistemas/tipos';
 import { numerosActivos, type Numeros } from '../diario/puestos';
-import { Cancha } from './Cancha';
+import { Cancha, Suelo } from './Cancha';
 import { defensa, enCamino, foto, inicios, JUGADORES, pasoDe } from './animar';
 
 /** El jugador acaba encima del final de su flecha: se recorta para que la punta quede a la vista. */
@@ -58,7 +58,7 @@ export function Pista({ sistema, t, alto = 140, conDefensa = false, numeros }: {
 
   return (
     <svg className="pista" viewBox={`0 0 150 ${alto}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={`${sistema.nombre}, paso ${i + 1}`}>
-      <rect className="suelo" width="150" height={alto} />
+      <Suelo alto={alto} />
       <g transform={`translate(0 ${y0})`}>
         <Cancha />
         {sistema.pasos[i].movimientos.map((m, n) => {

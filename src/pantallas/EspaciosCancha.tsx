@@ -1,7 +1,7 @@
 // «Espacios de la cancha» (boceto aprobado por Adam, 30/10): los 9 sitios donde juegan las jugadoras. Se arrastran con el
 // dedo, se renombran y se guardan en este móvil; Claude los recibe con cada encargo. Solo nombres de sitios, nunca de personas.
 import { useRef, useState } from 'react';
-import { Cancha } from '../pizarra/Cancha';
+import { Cancha, Suelo } from '../pizarra/Cancha';
 import { esExterior, espaciosDeSiempre, guardarEspacios, leerEspacios, MAX_NOMBRE, nombreLimpio, sujetarPunto, type Espacio } from '../sistemas/espacios';
 
 const PASO = 2;
@@ -43,7 +43,7 @@ export function EspaciosCancha() {
         <svg ref={svg} className="pista espacios" viewBox="0 0 150 140" role="group" aria-label="Media pista con los espacios"
           onPointerMove={(ev) => { if (arrastrando.current >= 0) poner(arrastrando.current, { punto: enPista(ev) }); }}
           onPointerUp={() => { arrastrando.current = -1; }} onPointerCancel={() => { arrastrando.current = -1; }}>
-          <rect className="suelo" width="150" height="140" />
+          <Suelo />
           <Cancha />
           {lista.map((e, i) => (
             <g key={e.id} className={`espacio ${esExterior(e.punto) ? 'fuera' : 'dentro'}${i === sel ? ' sel' : ''}`}>
