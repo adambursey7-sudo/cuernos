@@ -27,6 +27,11 @@ export const IconoEquipo = () => (
   <Icono><circle cx="9" cy="8.5" r="3" /><path d="M3.5 19.5c.4-3.4 2.6-5 5.5-5s5.1 1.6 5.5 5" /><circle cx="17" cy="9.5" r="2.4" /><path d="M16.5 14.7c2.4-.2 3.8 1.2 4 4" /></Icono>
 );
 
+/** Cronómetro: esfera con aguja y pulsador. */
+export const IconoCronometro = () => (
+  <Icono><circle cx="12" cy="13.5" r="7.5" /><path d="M12 13.5V9.5M9.5 3h5M12 3v3M18.5 6.5l1.2-1.2" /></Icono>
+);
+
 /** Más: tres puntos. */
 export const IconoMas = () => (
   <Icono><circle cx="5.5" cy="12" r="1.2" fill="currentColor" /><circle cx="12" cy="12" r="1.2" fill="currentColor" /><circle cx="18.5" cy="12" r="1.2" fill="currentColor" /></Icono>

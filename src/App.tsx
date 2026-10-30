@@ -74,7 +74,10 @@ export function App() {
     );
   else if (pestana === 'hoy')
     contenido = (
-      <Inicio verDia={verDia} abrirSesion={abrirSesion} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} />
+      <>
+        <header className="cabecera-app"><Marca className="marca-cabecera" /></header>
+        <Inicio verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} />
+      </>
     );
   else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} />;
 
