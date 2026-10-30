@@ -138,7 +138,7 @@ function FichaEquipo({ e, cambiar, borrar, volver, ir }: { e: EquipoDatos; cambi
   );
 }
 
-function Importar({ equipoId, crear, volver }: { equipoId: string; crear: (c: Candidata[]) => void; volver: () => void }) {
+function Importar({ equipoId, existentes, crear, volver }: { equipoId: string; existentes: string[]; crear: (c: Candidata[]) => void; volver: () => void }) {
   const [texto, setTexto] = useState('');
   const [lista, setLista] = useState<(Candidata & { ok: boolean })[] | null>(null);
   const [mensaje, setMensaje] = useState('');
@@ -162,7 +162,8 @@ function Importar({ equipoId, crear, volver }: { equipoId: string; crear: (c: Ca
       setLeyendo(false);
     }
   };
-  const elegidas = lista?.filter((c) => c.ok) ?? [];
+  const yaEsta = (c: Candidata) => existentes.includes(`${c.numero}|${c.nombre.trim().toLowerCase()}`);
+  const elegidas = lista?.filter((c) => c.ok && c.nombre.trim() && !yaEsta(c)) ?? [];
   return (
     <section className="pantalla ficha-jugadora" data-equipo={equipoId}>
       <div className="cabecera">
@@ -186,7 +187,7 @@ function Importar({ equipoId, crear, volver }: { equipoId: string; crear: (c: Ca
                 <input type="checkbox" checked={c.ok} aria-label={`Crear a ${c.nombre}`} onChange={(ev) => setLista(lista.map((x, k) => (k === i ? { ...x, ok: ev.target.checked } : x)))} />
                 <input className="p-num" value={c.numero} inputMode="numeric" maxLength={2} aria-label="Dorsal" onChange={(ev) => setLista(lista.map((x, k) => (k === i ? { ...x, numero: ev.target.value.replace(/\D/g, '') } : x)))} />
                 <input className="p-nom" value={c.nombre} aria-label="Nombre" onChange={(ev) => setLista(lista.map((x, k) => (k === i ? { ...x, nombre: ev.target.value } : x)))} />
-                <span className="meta">{c.posicion}</span>
+                <span className="meta">{yaEsta(c) ? 'Ya está' : c.posicion}</span>
               </li>
             ))}
           </ul>
@@ -241,7 +242,7 @@ export function Equipo({ ir }: { ir: (t: 'ejercicios' | 'jugadas') => void }) {
   if (vista.tipo === 'jugadora') {
     const j = d.jugadoras.find((x) => x.id === vista.id);
     if (j)
-      return <Ficha d={d} j={j} cambiar={(n) => setD(guardarJugadora(d, n))} borrar={() => { setD(quitarJugadora(d, j.id)); setVista({ tipo: 'plantilla' }); }} volver={() => setVista({ tipo: 'plantilla' })} />;
+      return <Ficha d={d} j={j} cambiar={(n) => setD(guardarJugadora(d, n))} borrar={() => { setD(quitarJugadora(d, j.id)); setVista({ tipo: 'plantilla' }); }} volver={() => { if (!j.nombre.trim() && !j.numero && !j.fuertes && !j.mejorar && !j.forma && !j.entrenar && j.notas.length === 0) setD(quitarJugadora(d, j.id)); setVista({ tipo: 'plantilla' }); }} />;
   }
   if (vista.tipo === 'equipo')
     return (
@@ -257,6 +258,7 @@ export function Equipo({ ir }: { ir: (t: 'ejercicios' | 'jugadas') => void }) {
     return (
       <Importar
         equipoId={equipo.id}
+        existentes={plantilla(d, equipo.id).map((j) => `${j.numero}|${j.nombre.trim().toLowerCase()}`)}
         volver={() => setVista({ tipo: 'plantilla' })}
         crear={(cs) => {
           setD(cs.reduce((acc, c) => guardarJugadora(acc, nuevaJugadora(equipo.id, c)), d));

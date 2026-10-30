@@ -37,7 +37,7 @@ export function Ajustes() {
     try {
       const copia = leerCopia(await archivo.text());
       guardarTodosMios(juntar(leerMios(), copia.mios));
-      if (copia.diario) guardarDiario(juntarDiario(leerDiario(), copia.diario));
+      if (copia.diario && !guardarDiario(juntarDiario(leerDiario(), copia.diario))) throw new Error('El móvil no deja guardar la plantilla: libera espacio e inténtalo otra vez.');
       if (copia.colores) poner(copia.colores);
       setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${copia.diario.jugadoras.length} jugadoras` : ''}${copia.colores ? ' y los colores' : ''}.`);
     } catch (err) {
@@ -77,7 +77,7 @@ export function Ajustes() {
       </button>
 
       <h2 className="sub">Copia de seguridad</h2>
-      <p className="vacio">Tus jugadas solo están en este móvil. Descarga una copia para pasarlas a otro o por si se borra Safari.</p>
+      <p className="vacio">Tus jugadas y tu plantilla solo están en este móvil. La copia incluye los nombres de las jugadoras: guárdala donde no la vea nadie más. Descarga una copia para pasarlas a otro o por si se borra Safari.</p>
       <div className="copia">
         <button onClick={descargar}>Descargar copia</button>
         <label className="cargar">

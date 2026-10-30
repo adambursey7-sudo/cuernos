@@ -143,4 +143,7 @@ export function juntarDiario(actual: Diario, copia: Diario): Diario {
   };
 }
 
-export const hoy = () => new Date().toISOString().slice(0, 10);
+export const hoy = () => {
+  const f = new Date();
+  return `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}-${String(f.getDate()).padStart(2, '0')}`;
+};
