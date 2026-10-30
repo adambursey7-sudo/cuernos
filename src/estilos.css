@@ -374,3 +374,6 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 .rec-mini.instagram { background: #c58fd0; } .rec-mini.tiktok { background: #6fd3d3; } .rec-mini.web { background: #7fb2d9; } .rec-mini.nota { background: var(--principal); color: var(--sobre-principal); }
 .rec-grande { width: 100%; max-width: 420px; border-radius: 12px; }
 .rec-enlace { color: var(--principal); font-weight: 700; padding: 8px 0; }
+.fi-fila { grid-template-columns: 1fr; gap: 3px; }
+.fi-texto { white-space: pre-wrap; margin: 0; overflow-wrap: anywhere; }
+select#fi-sis { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--tenue); background: var(--superficie); color: var(--texto); font: inherit; }

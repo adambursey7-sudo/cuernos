@@ -12,7 +12,7 @@ function Miniatura({ r }: { r: Recurso }) {
   return r.miniatura ? <img className="rec-mini" src={r.miniatura} alt="" loading="lazy" referrerPolicy="no-referrer" /> : <span className={`rec-mini ${r.origen}`} aria-hidden="true">{NOMBRE_ORIGEN[r.origen].slice(0, 2)}</span>;
 }
 
-export function Recursos({ enlaceInicial }: { enlaceInicial?: string }) {
+export function Recursos({ enlaceInicial, convertir }: { enlaceInicial?: string; convertir: (r: Recurso) => void }) {
   const [lista, setLista] = useState(leerRecursos);
   const [estado, setEstado] = useState<Estado>('nuevo');
   const [abierto, setAbierto] = useState<Abierto>(enlaceInicial ? { nuevo: true, enlace: enlaceInicial } : null);
@@ -38,7 +38,7 @@ export function Recursos({ enlaceInicial }: { enlaceInicial?: string }) {
   }
   const r = abierto ? lista.find((x) => x.id === abierto.id) : undefined;
   if (r) {
-    return <Detalle r={r} volver={() => setAbierto(null)} cambiar={(n) => poner(lista.map((x) => (x.id === n.id ? n : x)))} borrar={() => { poner(lista.filter((x) => x.id !== r.id)); setAbierto(null); }} />;
+    return <Detalle r={r} convertir={() => convertir(r)} volver={() => setAbierto(null)} cambiar={(n) => poner(lista.map((x) => (x.id === n.id ? n : x)))} borrar={() => { poner(lista.filter((x) => x.id !== r.id)); setAbierto(null); }} />;
   }
 
   const visibles = lista.filter((x) => x.estado === estado);
@@ -107,7 +107,7 @@ function Nuevo({ enlace: inicial, cancelar, guardar }: { enlace: string; cancela
   );
 }
 
-function Detalle({ r, volver, cambiar, borrar }: { r: Recurso; volver: () => void; cambiar: (r: Recurso) => void; borrar: () => void }) {
+function Detalle({ r, convertir, volver, cambiar, borrar }: { r: Recurso; convertir: () => void; volver: () => void; cambiar: (r: Recurso) => void; borrar: () => void }) {
   const [seguro, setSeguro] = useState(false);
   return (
     <section className="pantalla">
@@ -121,6 +121,7 @@ function Detalle({ r, volver, cambiar, borrar }: { r: Recurso; volver: () => voi
       <div className="niveles filtro" role="group" aria-label="Estado">
         {ESTADOS.map((e) => <button key={e.id} className={e.id === r.estado ? 'chip on' : 'chip'} aria-pressed={e.id === r.estado} onClick={() => cambiar({ ...r, estado: e.id })}>{e.nombre}</button>)}
       </div>
+      <button className="principal ancho" onClick={convertir}>Convertir en ejercicio</button>
       <label className="campo-diario"><span>Título</span><input id="rec-d-titulo" value={r.titulo} maxLength={200} onChange={(e) => cambiar({ ...r, titulo: e.target.value })} /></label>
       <label className="campo-diario"><span>Descripción o nota</span><textarea id="rec-d-nota" rows={6} value={r.nota} maxLength={5000} onChange={(e) => cambiar({ ...r, nota: e.target.value })} /></label>
       <label className="campo-diario"><span>Etiquetas (separadas por comas)</span><input id="rec-d-etq" defaultValue={r.etiquetas.join(', ')} onBlur={(e) => cambiar({ ...r, etiquetas: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) })} /></label>

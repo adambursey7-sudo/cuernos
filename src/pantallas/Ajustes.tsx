@@ -3,6 +3,7 @@ import { introActiva, ponerIntroActiva } from '../Intro';
 import { Pista } from '../pizarra/Pista';
 import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
 import { armarCopia, juntar, leerCopia } from '../copia';
+import { guardarFichas, juntarFichas, leerFichas } from '../recursos/fichas';
 import { guardarRecursos, juntarRecursos, leerRecursos } from '../recursos/recursos';
 import { guardarTemporadas, juntarTemporadas, leerTemporadas } from '../temporada/temporada';
 import { guardarTodosMios, leerMios } from '../sistemas/almacen';
@@ -23,7 +24,7 @@ export function Ajustes() {
 
   const descargar = () => {
     const mios = leerMios();
-    const archivo = new Blob([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos())], { type: 'application/json' });
+    const archivo = new Blob([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas())], { type: 'application/json' });
     const enlace = document.createElement('a');
     enlace.href = URL.createObjectURL(archivo);
     enlace.download = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
@@ -44,6 +45,7 @@ export function Ajustes() {
       if (copia.diario && !guardarDiario(juntarDiario(leerDiario(), copia.diario))) throw new Error('El móvil no deja guardar la plantilla: libera espacio e inténtalo otra vez.');
       if (copia.temporadas && !guardarTemporadas(juntarTemporadas(leerTemporadas(), copia.temporadas))) throw new Error('El móvil no deja guardar la temporada: libera espacio e inténtalo otra vez.');
       if (copia.recursos && !guardarRecursos(juntarRecursos(leerRecursos(), copia.recursos))) throw new Error('El móvil no deja guardar los recursos: libera espacio e inténtalo otra vez.');
+      if (copia.fichas && !guardarFichas(juntarFichas(leerFichas(), copia.fichas))) throw new Error('El móvil no deja guardar las fichas: libera espacio e inténtalo otra vez.');
       if (copia.colores) poner(copia.colores);
       setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${copia.diario.jugadoras.length} jugadoras` : ''}${copia.colores ? ' y los colores' : ''}.`);
     } catch (err) {

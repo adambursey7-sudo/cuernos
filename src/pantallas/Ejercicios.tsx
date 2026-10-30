@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { filtrar, formatos, todosLosEjercicios, type Ejercicio, type Filtro } from '../ejercicios/ejercicios';
 import { Pista } from '../pizarra/Pista';
 import { NIVELES } from '../sistemas/tipos';
+import { guardarRecursos, leerRecursos, type Recurso } from '../recursos/recursos';
+import { nuevaFicha, type Ficha } from '../recursos/fichas';
+import { MisFichas } from './Fichas';
 import { Recursos } from './Recursos';
 
 const nombreNivel = (id: string) => NIVELES.find((n) => n.id === id)?.nombre ?? id;
@@ -52,14 +55,24 @@ export function TarjetaEjercicio({ e, abrir }: { e: Ejercicio; abrir: () => void
 
 /** La pestaña Ejercicios tiene dos vistas: los de la biblioteca y los recursos guardados de internet. */
 export function Ejercicios({ abrir, enlaceInicial }: { abrir: (id: string) => void; enlaceInicial?: string }) {
-  const [vista, setVista] = useState<'ejercicios' | 'recursos'>(enlaceInicial ? 'recursos' : 'ejercicios');
+  type Vista = 'ejercicios' | 'fichas' | 'recursos';
+  const [vista, setVista] = useState<Vista>(enlaceInicial ? 'recursos' : 'ejercicios');
+  // Al convertir un recurso se abre la ficha nueva con su título y su fuente; al guardarla el recurso pasa a «Convertido».
+  const [desde, setDesde] = useState<Recurso | undefined>();
+  const convertir = (r: Recurso) => { setDesde(r); setVista('fichas'); };
+  const terminada = (f: Ficha) => {
+    if (!f.recursoId) return;
+    guardarRecursos(leerRecursos().map((r) => (r.id === f.recursoId ? { ...r, estado: 'convertido' as const } : r)));
+  };
+  const VISTAS: [Vista, string][] = [['ejercicios', 'Biblioteca'], ['fichas', 'Mis ejercicios'], ['recursos', 'Recursos']];
   return (
     <>
       <div className="niveles filtro rec-vistas" role="group" aria-label="Vista">
-        <button className={vista === 'ejercicios' ? 'chip on' : 'chip'} aria-pressed={vista === 'ejercicios'} onClick={() => setVista('ejercicios')}>Ejercicios</button>
-        <button className={vista === 'recursos' ? 'chip on' : 'chip'} aria-pressed={vista === 'recursos'} onClick={() => setVista('recursos')}>Recursos de internet</button>
+        {VISTAS.map(([id, nombre]) => <button key={id} className={vista === id ? 'chip on' : 'chip'} aria-pressed={vista === id} onClick={() => { setDesde(undefined); setVista(id); }}>{nombre}</button>)}
       </div>
-      {vista === 'recursos' ? <section className="pantalla"><h1 className="titulo">Recursos</h1><Recursos enlaceInicial={enlaceInicial} /></section> : <Biblioteca abrir={abrir} />}
+      {vista === 'recursos' && <section className="pantalla"><h1 className="titulo">Recursos</h1><Recursos enlaceInicial={enlaceInicial} convertir={convertir} /></section>}
+      {vista === 'fichas' && <section className="pantalla"><h1 className="titulo">Mis ejercicios</h1><MisFichas key={desde?.id ?? 'sin'} nueva={desde ? nuevaFicha(desde) : undefined} alTerminar={terminada} /></section>}
+      {vista === 'ejercicios' && <Biblioteca abrir={abrir} />}
     </>
   );
 }
