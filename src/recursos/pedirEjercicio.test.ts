@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CUESTIONARIO_VACIO } from './ia';
+import { espaciosDeSiempre } from '../sistemas/espacios';
 import { pedirEjercicio } from './pedirEjercicio';
 
 const con = { url: 'https://x.ts.net', token: 't' };
@@ -15,6 +16,15 @@ function via(respuestas: string[]) {
 }
 
 describe('pedir un ejercicio a Claude', () => {
+  it('el encargo lleva los espacios del entrenador con sus nombres, también en el reintento', async () => {
+    const espacios = espaciosDeSiempre();
+    espacios[1].nombre = 'Alero izquierdo';
+    const v = via(['basura', bueno]);
+    await pedirEjercicio(con, CUESTIONARIO_VACIO, 'mio-1', undefined, v, undefined, espacios);
+    expect(v.enviados).toHaveLength(2);
+    for (const e of v.enviados) expect(e.prompt).toContain('Alero izquierdo: [22,60]');
+  });
+
   it('a la primera: un solo encargo, en modo ejercicio', async () => {
     const v = via([bueno]);
     const r = await pedirEjercicio(con, { ...CUESTIONARIO_VACIO, objetivo: 'pase' }, 'mio-1', undefined, v);

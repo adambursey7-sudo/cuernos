@@ -1,7 +1,13 @@
 // Ejercicio hecho por Claude: comprueba el texto que devuelve y lo convierte en un Sistema propio (borrador).
 // Función pura, sin pantalla. Si algo no encaja devuelve el motivo en castellano; el mismo motivo se le repite
 // a Claude en el reintento. Claude solo propone ejercicios (técnica, juegos reducidos): nunca se guarda solo.
+import { espacioMasCercano, pegarAEspacio, type Espacio } from '../sistemas/espacios';
 import type { Jugador, Movimiento, Punto, Sistema } from '../sistemas/tipos';
+
+/** Dos jugadoras a menos de esto (decímetros) al empezar se pisan. */
+const DISTANCIA_MINIMA = 8;
+/** Un pase entre jugadoras a menos de esto no es un pase. */
+const PASE_MINIMO = 12;
 
 /** Jarvis corta la respuesta a este tamaño: si llega entera al tope, casi seguro faltó el final. */
 export const LIMITE_RESPUESTA = 12000;
@@ -94,11 +100,38 @@ function leerMovimiento(m: unknown, salen: Jugador[], dónde: string): Movimient
 }
 
 /**
+ * Las reglas del balón (guía de la pista): solo quien lo tiene pasa y bota; quien lo tiene y sigue con él no «corta»
+ * (sería andar); un pase no puede ser entre dos jugadoras casi pegadas. Los pases de un paso se leen en orden.
+ * Devuelve el motivo, o '' si todo encaja. Se salta si el balón lo tiene alguien que no sale (sinBalon).
+ */
+function reglasDelBalon(pasos: { movimientos: Movimiento[] }[], inicio: Sistema['inicio'], balon: Jugador): string {
+  const pos = { ...inicio };
+  let tiene = balon;
+  for (let i = 0; i < pasos.length; i++) {
+    const alEmpezar = tiene;
+    for (const m of pasos[i].movimientos) {
+      if (m.tipo !== 'pase') continue;
+      if (m.de !== tiene) return `paso ${i + 1}: la jugadora ${m.de} pasa sin tener el balón`;
+      const [x, y] = pos[m.de];
+      if (Math.hypot(x - pos[m.a][0], y - pos[m.a][1]) < PASE_MINIMO) return `paso ${i + 1}: el pase de ${m.de} a ${m.a} es entre jugadoras casi pegadas`;
+      tiene = m.a;
+    }
+    for (const m of pasos[i].movimientos) {
+      if (m.tipo === 'pase') continue;
+      if (m.tipo === 'bote' && m.jugador !== alEmpezar) return `paso ${i + 1}: la jugadora ${m.jugador} bota sin tener el balón`;
+      if (m.tipo === 'corte' && m.jugador === alEmpezar && tiene === alEmpezar) return `paso ${i + 1}: la jugadora ${m.jugador} corta con el balón en las manos (debería botar)`;
+    }
+    for (const m of pasos[i].movimientos) if (m.tipo !== 'pase') pos[m.jugador] = m.a;
+  }
+  return '';
+}
+
+/**
  * Formato que debe devolver Claude (solo JSON):
  * {"nombre","objetivo","minutos","material","jugadoras":{"1":[x,y],…},"balon":"1","pasos":[{"texto","movimientos":[…]}]}
  * Los movimientos son los de un Sistema: {tipo:"corte"|"bote"|"bloqueo",jugador,a:[x,y],por?:[x,y]} o {tipo:"pase",de,a}.
  */
-export function validarEjercicio(crudo: string, id: string): Resultado {
+export function validarEjercicio(crudo: string, id: string, espacios?: Espacio[]): Resultado {
   try {
     if (typeof crudo !== 'string') return fallo('la respuesta no es un texto');
     const x = extraer(crudo);
@@ -122,6 +155,26 @@ export function validarEjercicio(crudo: string, id: string): Resultado {
     const inicio: Sistema['inicio'] = { ...RESERVA };
     for (const j of salen) inicio[j] = punto((x.jugadoras as Record<string, unknown>)[j], `la posición de la jugadora ${j}`);
 
+    // Con los espacios del entrenador, la jugadora que queda a medias se coloca en el espacio más cercano.
+    if (espacios?.length) {
+      for (const j of salen) inicio[j] = pegarAEspacio(inicio[j], espacios);
+      const ocupados = new Map<string, Jugador>();
+      for (const j of salen) {
+        const e = espacioMasCercano(inicio[j], espacios);
+        if (e.punto[0] !== inicio[j][0] || e.punto[1] !== inicio[j][1]) continue;
+        const otra = ocupados.get(e.id);
+        if (otra) return fallo(`las jugadoras ${otra} y ${j} empiezan en el mismo espacio (${e.nombre})`);
+        ocupados.set(e.id, j);
+      }
+    }
+    for (let a = 0; a < salen.length; a++) {
+      for (let b = a + 1; b < salen.length; b++) {
+        const p = inicio[salen[a]];
+        const q = inicio[salen[b]];
+        if (Math.hypot(p[0] - q[0], p[1] - q[1]) < DISTANCIA_MINIMA) return fallo(`las jugadoras ${salen[a]} y ${salen[b]} empiezan demasiado juntas`);
+      }
+    }
+
     let balon: Jugador = salen[0];
     let sinBalon = false;
     if (x.balon === undefined || x.balon === null || x.balon === '') sinBalon = true;
@@ -140,6 +193,14 @@ export function validarEjercicio(crudo: string, id: string): Resultado {
         movimientos: movs.map((m, k) => leerMovimiento(m, salen, `${dónde}, movimiento ${k + 1}`)),
       };
     });
+
+    if (espacios?.length) {
+      for (const p of pasos) {
+        for (const m of p.movimientos) if (m.tipo !== 'pase') m.a = pegarAEspacio(m.a, espacios);
+      }
+    }
+    const roto = !sinBalon && reglasDelBalon(pasos, inicio, balon);
+    if (roto) return fallo(roto);
 
     const sistema: Sistema = {
       id,

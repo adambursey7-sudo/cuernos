@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { esSistemaValido } from '../sistemas/almacen';
+import { ESPACIOS_BASE } from '../sistemas/espacios';
 import { LIMITE_RESPUESTA, validarEjercicio } from './ejercicioIA';
 
 const bueno = () => ({
@@ -67,7 +68,7 @@ describe('ejercicio de Claude: lo que se acepta', () => {
 
   it('admite puestos escritos como número y los movimientos con trayectoria', () => {
     const r = validarEjercicio(
-      sucio((x) => (x.pasos[0].movimientos = [{ tipo: 'bote', jugador: 1, a: [60, 60], por: [70, 80] }])),
+      sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'bote', jugador: 1, a: [60, 60], por: [70, 80] }]; x.pasos[1].movimientos = []; }),
       'a',
     );
     expect(r.ok && r.sistema.pasos[0].movimientos[0]).toEqual({ tipo: 'bote', jugador: '1', a: [60, 60], por: [70, 80] });
@@ -176,3 +177,55 @@ describe('ejercicio de Claude: respuestas malas', () => {
     expect(({} as Record<string, unknown>).propio).toBeUndefined();
   });
 });
+
+describe('ejercicio de Claude: reglas de la pista y del balón', () => {
+  it('pasa quien no tiene el balón: se rechaza con el motivo', () => {
+    expect(motivo(sucio((x) => (x.pasos[0].movimientos = [{ tipo: 'pase', de: '2', a: '3' }])))).toMatch(/pasa sin tener el balón/);
+  });
+
+  it('cortar con el balón en las manos (sería andar) se rechaza', () => {
+    expect(motivo(sucio((x) => (x.pasos[0].movimientos = [{ tipo: 'corte', jugador: '1', a: [75, 40] }])))).toMatch(/corta con el balón/);
+  });
+
+  it('botar sin balón se rechaza', () => {
+    expect(motivo(sucio((x) => (x.pasos[0].movimientos = [{ tipo: 'bote', jugador: '2', a: [40, 60] }])))).toMatch(/bota sin tener el balón/);
+  });
+
+  it('pasar y luego cortar en el mismo paso vale; el balón sigue a quien lo recibe', () => {
+    expect(validarEjercicio(JSON.stringify(bueno()), 'a').ok).toBe(true);
+  });
+
+  it('un pase entre jugadoras pegadas se rechaza', () => {
+    expect(motivo(sucio((x) => (x.jugadoras['2'] = [75, 110])))).toMatch(/casi pegadas/);
+  });
+
+  it('dos jugadoras que empiezan casi encima se rechazan', () => {
+    expect(motivo(sucio((x) => (x.jugadoras['2'] = [75, 104])))).toMatch(/demasiado juntas/);
+  });
+
+  it('sin balón (lo tiene alguien que no sale) no se aplican las reglas del balón', () => {
+    expect(validarEjercicio(sucio((x) => { delete x.balon; x.pasos[0].movimientos = [{ tipo: 'corte', jugador: '1', a: [75, 40] }]; x.pasos[1].movimientos = []; }), 'a').ok).toBe(true);
+  });
+
+  it('con los espacios del entrenador, una jugadora que queda cerca se coloca en su espacio', () => {
+    const r = validarEjercicio(sucio((x) => (x.jugadoras['2'] = [26, 57])), 'a', ESPACIOS_BASE);
+    expect(r.ok && r.sistema.inicio['2']).toEqual([22, 60]);
+  });
+
+  it('el final de un movimiento también se pega al espacio cercano, y lejos se deja como está', () => {
+    const r = validarEjercicio(sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [52, 31] }]; }), 'a', ESPACIOS_BASE);
+    expect(r.ok && r.sistema.pasos[0].movimientos[1]).toMatchObject({ a: [52, 28] });
+    const lejos = validarEjercicio(sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [75, 40] }]; }), 'a', ESPACIOS_BASE);
+    expect(lejos.ok && lejos.sistema.pasos[0].movimientos[1]).toMatchObject({ a: [75, 40] });
+  });
+
+  it('dos jugadoras en el mismo espacio se rechazan', () => {
+    expect(motivo2(sucio((x) => { x.jugadoras['2'] = [24, 59]; x.jugadoras['3'] = [20, 61]; }))).toMatch(/mismo espacio/);
+  });
+});
+
+const motivo2 = (crudo: string) => {
+  const r = validarEjercicio(crudo, 'mio-1', ESPACIOS_BASE);
+  if (r.ok) throw new Error('debía rechazarse');
+  return r.motivo;
+};

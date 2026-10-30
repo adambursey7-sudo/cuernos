@@ -2,6 +2,7 @@
 // vuelve como BORRADOR de ficha para revisar. Nada se envía sin que se vea el texto completo.
 // El texto base va en inglés (así rinde mejor la IA); la ficha que devuelve va en español.
 import { CATEGORIAS, nuevaFicha, type Ficha } from './fichas';
+import { textoEspacios, type Espacio } from '../sistemas/espacios';
 import type { Recurso } from './recursos';
 
 const CLAVE_BASE = 'horns.ia.base';
@@ -81,8 +82,9 @@ export function construirPrompt(base: string, c: Cuestionario, recurso?: Recurso
  * Encargo de un ejercicio CON pizarra (modo «ejercicio» de Jarvis, que ya lleva las normas y el formato).
  * Aquí solo van los datos del entrenador y, en el reintento, por qué falló la respuesta anterior.
  */
-export function construirEncargoEjercicio(c: Cuestionario, recurso?: Recurso, fallo?: string): string {
+export function construirEncargoEjercicio(c: Cuestionario, recurso?: Recurso, fallo?: string, espacios?: Espacio[]): string {
   const partes = [construirPrompt('Design ONE short practice drill for this coach, as the JSON object described.', c, recurso)];
+  if (espacios?.length) partes.push(textoEspacios(espacios));
   if (fallo) partes.push(`Your previous reply was rejected: ${una(fallo, 200)}. Fix that and reply again with ONLY the JSON object.`);
   return partes.join('\n\n');
 }

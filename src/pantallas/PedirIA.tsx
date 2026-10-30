@@ -9,6 +9,7 @@ import { pedirEjercicio } from '../recursos/pedirEjercicio';
 import { CUESTIONARIO_NORMAL, elegir, esOtro, PREGUNTAS, type Pregunta } from '../recursos/opcionesEjercicio';
 import { nombreRecurso, type Recurso } from '../recursos/recursos';
 import { nuevoId } from '../sistemas/almacen';
+import { leerEspacios } from '../sistemas/espacios';
 import { BorradorEjercicio } from './BorradorEjercicio';
 
 export function PedirIA({ recurso, borrador, retocar, guardada }: {
@@ -29,7 +30,7 @@ export function PedirIA({ recurso, borrador, retocar, guardada }: {
   useEffect(() => () => { cancelado.current = true; }, []);   // al salir de la pantalla se deja de esperar
 
   const prompt = construirPrompt(base, c, recurso);
-  const encargo = construirEncargoEjercicio(c, recurso);
+  const encargo = construirEncargoEjercicio(c, recurso, undefined, leerEspacios());
   const largoTexto = prompt.length > MAX_PROMPT;
   const largoDibujo = encargo.length > MAX_PROMPT;
 
