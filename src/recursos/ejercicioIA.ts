@@ -139,11 +139,20 @@ const RADIO_ESPACIO = 14;
 function logicaDelJuego(pasos: { movimientos: Movimiento[] }[], inicio: Sistema['inicio'], salen: Jugador[], balon: Jugador | null, espacios: Espacio[]): string {
   const fuera = espacios.filter((e) => esExterior(e.punto));
   const pos = { ...inicio };
+  // Cada jugadora cuenta solo en el espacio de fuera más cercano (a menos de RADIO_ESPACIO): nadie ocupa dos a la vez.
   const sitios = (): Map<string, Jugador> => {
     const m = new Map<string, Jugador>();
-    for (const e of fuera) {
-      const j = salen.find((k) => Math.hypot(pos[k][0] - e.punto[0], pos[k][1] - e.punto[1]) <= RADIO_ESPACIO);
-      if (j) m.set(e.id, j);
+    for (const j of salen) {
+      let mejor: Espacio | undefined;
+      let d = RADIO_ESPACIO;
+      for (const e of fuera) {
+        const x = Math.hypot(pos[j][0] - e.punto[0], pos[j][1] - e.punto[1]);
+        if (x <= d) {
+          d = x;
+          mejor = e;
+        }
+      }
+      if (mejor && !m.has(mejor.id)) m.set(mejor.id, j);
     }
     return m;
   };

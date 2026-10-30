@@ -297,4 +297,13 @@ describe('ejercicio de Claude: lógica de baloncesto', () => {
     ]), 'a');
     expect(r.ok ? '' : r.motivo).toBe('');
   });
+
+  it('una jugadora entre dos espacios cuenta solo en el más cercano', () => {
+    // La 3 está a unos 10 dm del ala derecha y a unos 13 del frontal: solo ocupa el ala.
+    const m = motivo(ej({ '1': [75, 85], '2': [22, 60], '3': [118, 64] }, [
+      { texto: '1 pasa a 2 y corta', movimientos: [pasa, corta] },
+      { texto: '2 bota', movimientos: [{ tipo: 'bote', jugador: '2', a: [40, 70] }] },
+    ]));
+    expect(m).toMatch(/deja libre Frontal/);
+  });
 });
