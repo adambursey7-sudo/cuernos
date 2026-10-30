@@ -11,7 +11,7 @@ const bueno = () => ({
   jugadoras: { '1': [75, 100], '2': [30, 70], '3': [120, 70] },
   balon: '1',
   pasos: [
-    { texto: '1 pasa a 2 y corta', movimientos: [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [75, 40] }] },
+    { texto: '1 pasa a 2 y corta', movimientos: [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [75, 40] }, { tipo: 'corte', jugador: '3', a: [110, 80] }] },
     { texto: '2 devuelve a 1', movimientos: [{ tipo: 'pase', de: '2', a: '1' }] },
   ],
 });
@@ -46,7 +46,7 @@ describe('ejercicio de Claude: lo que se acepta', () => {
 
   it('con cinco jugadoras no recorta a nadie', () => {
     const r = validarEjercicio(
-      con((x) => Object.assign(x.jugadoras, { '4': [20, 20], '5': [130, 20] })),
+      con((x) => { Object.assign(x.jugadoras, { '4': [20, 20], '5': [130, 20] }); x.pasos[1].movimientos.push({ tipo: 'corte', jugador: '4', a: [30, 30] } as never, { tipo: 'corte', jugador: '5', a: [120, 30] } as never); }),
       'a',
     );
     expect(r.ok && r.sistema.visibles).toBeUndefined();
@@ -68,7 +68,7 @@ describe('ejercicio de Claude: lo que se acepta', () => {
 
   it('admite puestos escritos como número y los movimientos con trayectoria', () => {
     const r = validarEjercicio(
-      sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'bote', jugador: 1, a: [60, 60], por: [70, 80] }]; x.pasos[1].movimientos = []; }),
+      sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'bote', jugador: 1, a: [60, 60], por: [70, 80] }, { tipo: 'corte', jugador: '2', a: [30, 90] }, { tipo: 'corte', jugador: '3', a: [110, 80] }]; x.pasos[1].movimientos = []; }),
       'a',
     );
     expect(r.ok && r.sistema.pasos[0].movimientos[0]).toEqual({ tipo: 'bote', jugador: '1', a: [60, 60], por: [70, 80] });
@@ -196,7 +196,7 @@ describe('ejercicio de Claude: reglas de la pista y del balón', () => {
   });
 
   it('pasar y que quien recibe bote en el mismo paso vale', () => {
-    expect(validarEjercicio(sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'bote', jugador: '2', a: [40, 50] }]; x.pasos[1].movimientos = []; }), 'a').ok).toBe(true);
+    expect(validarEjercicio(sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'bote', jugador: '2', a: [40, 50] }, { tipo: 'corte', jugador: '3', a: [110, 80] }]; x.pasos[1].movimientos = []; }), 'a').ok).toBe(true);
   });
 
   it('un pase entre jugadoras pegadas se rechaza', () => {
@@ -208,7 +208,7 @@ describe('ejercicio de Claude: reglas de la pista y del balón', () => {
   });
 
   it('sin balón (lo tiene alguien que no sale) no se aplican las reglas del balón', () => {
-    expect(validarEjercicio(sucio((x) => { delete x.balon; x.pasos[0].movimientos = [{ tipo: 'corte', jugador: '1', a: [75, 40] }]; x.pasos[1].movimientos = []; }), 'a').ok).toBe(true);
+    expect(validarEjercicio(sucio((x) => { delete x.balon; x.pasos[0].movimientos = [{ tipo: 'corte', jugador: '1', a: [75, 40] }, { tipo: 'corte', jugador: '2', a: [30, 90] }, { tipo: 'corte', jugador: '3', a: [110, 80] }]; x.pasos[1].movimientos = []; }), 'a').ok).toBe(true);
   });
 
   it('con los espacios del entrenador, una jugadora que queda cerca se coloca en su espacio', () => {
@@ -217,9 +217,9 @@ describe('ejercicio de Claude: reglas de la pista y del balón', () => {
   });
 
   it('el final de un movimiento también se pega al espacio cercano, y lejos se deja como está', () => {
-    const r = validarEjercicio(sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [52, 31] }]; }), 'a', ESPACIOS_BASE);
+    const r = validarEjercicio(sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [52, 31] }, { tipo: 'corte', jugador: '3', a: [110, 80] }]; }), 'a', ESPACIOS_BASE);
     expect(r.ok && r.sistema.pasos[0].movimientos[1]).toMatchObject({ a: [52, 28] });
-    const lejos = validarEjercicio(sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [75, 40] }]; }), 'a', ESPACIOS_BASE);
+    const lejos = validarEjercicio(sucio((x) => { x.pasos[0].movimientos = [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [75, 40] }, { tipo: 'corte', jugador: '3', a: [110, 80] }]; }), 'a', ESPACIOS_BASE);
     expect(lejos.ok && lejos.sistema.pasos[0].movimientos[1]).toMatchObject({ a: [75, 40] });
   });
 
@@ -233,3 +233,58 @@ const motivo2 = (crudo: string) => {
   if (r.ok) throw new Error('debía rechazarse');
   return r.motivo;
 };
+
+describe('ejercicio de Claude: lógica de baloncesto', () => {
+  const ej = (jugadoras: Record<string, number[]>, pasos: { texto: string; movimientos: object[] }[], balon = '1') =>
+    JSON.stringify({ nombre: 'Prueba', objetivo: 'x', minutos: 5, material: '1 balón', jugadoras, balon, pasos });
+  const tres = { '1': [75, 85], '2': [22, 60], '3': [128, 60] };
+  const corta = { tipo: 'corte', jugador: '1', a: [142, 12] };
+  const pasa = { tipo: 'pase', de: '1', a: '2' };
+
+  it('quien pasa y corta deja el frontal vacío mientras otra se queda quieta: se rechaza y se dice quién', () => {
+    const m = motivo(ej(tres, [{ texto: '1 pasa a 2 y corta', movimientos: [pasa, corta] }, { texto: '2 bota', movimientos: [{ tipo: 'bote', jugador: '2', a: [40, 70] }] }]));
+    expect(m).toMatch(/paso 1: la jugadora 1 deja libre Frontal/);
+    expect(m).toMatch(/jugadora 3 está quieta/);
+  });
+
+  it('si la compañera sube al frontal en el mismo paso, vale', () => {
+    const r = validarEjercicio(ej(tres, [{ texto: '1 pasa a 2 y corta', movimientos: [pasa, corta, { tipo: 'corte', jugador: '3', a: [75, 85] }] }, { texto: '2 pasa a 3', movimientos: [{ tipo: 'pase', de: '2', a: '3' }] }]), 'a');
+    expect(r.ok).toBe(true);
+  });
+
+  it('si la ocupa en el paso siguiente, también vale', () => {
+    const r = validarEjercicio(ej(tres, [{ texto: '1 pasa a 2 y corta', movimientos: [pasa, corta] }, { texto: '3 sube al frontal', movimientos: [{ tipo: 'corte', jugador: '3', a: [75, 85] }, { tipo: 'bote', jugador: '2', a: [40, 70] }] }]), 'a');
+    expect(r.ok).toBe(true);
+  });
+
+  it('en el último paso no se exige rellenar (el bucle se cierra en el texto)', () => {
+    const r = validarEjercicio(ej(tres, [{ texto: '1 pasa a 2', movimientos: [pasa, { tipo: 'corte', jugador: '3', a: [110, 75] }] }, { texto: '1 corta y 2 pasa', movimientos: [corta, { tipo: 'corte', jugador: '3', a: [128, 60] }] }]), 'a');
+    expect(r.ok).toBe(true);
+  });
+
+  it('con solo dos jugadoras no hay nadie más que pueda rellenar', () => {
+    const r = validarEjercicio(ej({ '1': [75, 85], '2': [128, 60] }, [{ texto: '1 pasa a 2 y corta', movimientos: [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [75, 45] }] }, { texto: '2 devuelve', movimientos: [{ tipo: 'pase', de: '2', a: '1' }] }]), 'a');
+    expect(r.ok).toBe(true);
+  });
+
+  it('quien tiene el balón no cuenta como la que debía rellenar', () => {
+    const r = validarEjercicio(ej({ '1': [75, 85], '2': [128, 60] }, [{ texto: '1 corta a canasta', movimientos: [{ tipo: 'corte', jugador: '1', a: [75, 45] }] }, { texto: '2 pasa a 1', movimientos: [{ tipo: 'pase', de: '2', a: '1' }] }], '2'), 'a');
+    expect(r.ok).toBe(true);
+  });
+
+  it('con tres jugadoras o más, una que no hace nada en todo el ejercicio se rechaza', () => {
+    const m = motivo(ej({ '1': [75, 85], '2': [22, 60], '3': [128, 60] }, [{ texto: '1 pasa a 2', movimientos: [pasa] }, { texto: '2 devuelve', movimientos: [{ tipo: 'pase', de: '2', a: '1' }] }]));
+    expect(m).toMatch(/la jugadora 3 no hace nada/);
+  });
+
+  it('una que solo recibe un pase sí hace algo', () => {
+    const r = validarEjercicio(ej(tres, [{ texto: '1 pasa a 3', movimientos: [{ tipo: 'pase', de: '1', a: '3' }] }, { texto: '3 pasa a 2', movimientos: [{ tipo: 'pase', de: '3', a: '2' }] }]), 'a');
+    expect(r.ok).toBe(true);
+  });
+
+  it('con los espacios del entrenador movidos de sitio, usa sus nombres', () => {
+    const mios = ESPACIOS_BASE.map((e) => (e.id === 'frontal' ? { ...e, nombre: 'Cabeza' } : e));
+    const r = validarEjercicio(ej(tres, [{ texto: '1 pasa a 2 y corta', movimientos: [pasa, corta] }, { texto: '2 bota', movimientos: [{ tipo: 'bote', jugador: '2', a: [40, 70] }] }]), 'a', mios);
+    expect(r.ok ? '' : r.motivo).toMatch(/deja libre Cabeza/);
+  });
+});

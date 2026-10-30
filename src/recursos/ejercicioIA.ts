@@ -1,7 +1,7 @@
 // Ejercicio hecho por Claude: comprueba el texto que devuelve y lo convierte en un Sistema propio (borrador).
 // Función pura, sin pantalla. Si algo no encaja devuelve el motivo en castellano; el mismo motivo se le repite
 // a Claude en el reintento. Claude solo propone ejercicios (técnica, juegos reducidos): nunca se guarda solo.
-import { espacioMasCercano, pegarAEspacio, type Espacio } from '../sistemas/espacios';
+import { ESPACIOS_BASE, esExterior, espacioMasCercano, pegarAEspacio, type Espacio } from '../sistemas/espacios';
 import type { Jugador, Movimiento, Punto, Sistema } from '../sistemas/tipos';
 
 /** Dos jugadoras a menos de esto (decímetros) al empezar se pisan. */
@@ -126,6 +126,66 @@ function reglasDelBalon(pasos: { movimientos: Movimiento[] }[], inicio: Sistema[
   return '';
 }
 
+/** Una jugadora cuenta como «en un espacio» si acaba a menos de esto (decímetros) de su punto. */
+const RADIO_ESPACIO = 14;
+
+/**
+ * Lógica de baloncesto (conocimiento de baloncesto, 30/10): lo que no es un fallo de reglas pero no tiene sentido.
+ * 1) Hueco abandonado: una jugadora sale de un espacio de fuera, nadie lo ocupa antes de acabar el paso siguiente y hay otra
+ *    jugadora sin balón, de fuera y quieta en ese paso, que podía ocuparlo (pasa y corta... y las demás se quedan mirando).
+ * 2) Con tres o más jugadoras, ninguna puede quedarse sin hacer nada (ni mover, ni pasar, ni recibir) en todo el ejercicio.
+ * El último paso no exige rellenar (cierra el bucle). Devuelve el motivo, o '' si todo encaja.
+ */
+function logicaDelJuego(pasos: { movimientos: Movimiento[] }[], inicio: Sistema['inicio'], salen: Jugador[], balon: Jugador | null, espacios: Espacio[]): string {
+  const fuera = espacios.filter((e) => esExterior(e.punto));
+  const pos = { ...inicio };
+  const sitios = (): Map<string, Jugador> => {
+    const m = new Map<string, Jugador>();
+    for (const e of fuera) {
+      const j = salen.find((k) => Math.hypot(pos[k][0] - e.punto[0], pos[k][1] - e.punto[1]) <= RADIO_ESPACIO);
+      if (j) m.set(e.id, j);
+    }
+    return m;
+  };
+  let tiene = balon;
+  const hizo = new Set<Jugador>();
+  let antes = sitios();
+  for (let i = 0; i < pasos.length; i++) {
+    const quietas = new Set<Jugador>(salen);
+    for (const m of pasos[i].movimientos) {
+      if (m.tipo === 'pase') {
+        tiene = m.a;
+        quietas.delete(m.de);
+        quietas.delete(m.a);
+        hizo.add(m.de).add(m.a);
+      }
+    }
+    for (const m of pasos[i].movimientos) {
+      if (m.tipo === 'pase') continue;
+      pos[m.jugador] = m.a;
+      quietas.delete(m.jugador);
+      hizo.add(m.jugador);
+    }
+    const ahora = sitios();
+    if (i < pasos.length - 1) {
+      const siguiente = pasos[i + 1].movimientos.filter((m) => m.tipo !== 'pase') as Extract<Movimiento, { jugador: Jugador }>[];
+      for (const e of fuera) {
+        const quien = antes.get(e.id);
+        if (!quien || ahora.get(e.id) === quien || ahora.has(e.id)) continue;
+        if (siguiente.some((m) => Math.hypot(m.a[0] - e.punto[0], m.a[1] - e.punto[1]) <= RADIO_ESPACIO)) continue;
+        const libre = [...ahora.values()].find((k) => k !== quien && k !== tiene && quietas.has(k));
+        if (libre) return `paso ${i + 1}: la jugadora ${quien} deja libre ${e.nombre} y nadie lo ocupa mientras la jugadora ${libre} está quieta; que la ${libre} (la más cercana sin balón) lo ocupe`;
+      }
+    }
+    antes = ahora;
+  }
+  if (salen.length >= 3) {
+    const parada = salen.find((k) => !hizo.has(k));
+    if (parada) return `la jugadora ${parada} no hace nada en todo el ejercicio (ni se mueve, ni pasa, ni recibe): dale un movimiento con sentido o quítala`;
+  }
+  return '';
+}
+
 /**
  * Formato que debe devolver Claude (solo JSON):
  * {"nombre","objetivo","minutos","material","jugadoras":{"1":[x,y],…},"balon":"1","pasos":[{"texto","movimientos":[…]}]}
@@ -201,6 +261,8 @@ export function validarEjercicio(crudo: string, id: string, espacios?: Espacio[]
     }
     const roto = !sinBalon && reglasDelBalon(pasos, inicio, balon);
     if (roto) return fallo(roto);
+    const sinLogica = logicaDelJuego(pasos, inicio, salen, sinBalon ? null : balon, espacios?.length ? espacios : ESPACIOS_BASE);
+    if (sinLogica) return fallo(sinLogica);
 
     const sistema: Sistema = {
       id,

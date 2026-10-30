@@ -30,7 +30,7 @@ const claude = JSON.stringify({
   jugadoras: { '1': [75, 100], '2': [30, 70], '3': [120, 70] },
   balon: '1',
   pasos: [
-    { texto: '1 pasa a 2 y corta', movimientos: [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [75, 40] }] },
+    { texto: '1 pasa a 2 y corta', movimientos: [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [75, 40] }, { tipo: 'corte', jugador: '3', a: [110, 80] }] },
     { texto: '2 devuelve a 1', movimientos: [{ tipo: 'pase', de: '2', a: '1' }] },
   ],
 });
