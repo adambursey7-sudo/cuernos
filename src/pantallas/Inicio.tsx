@@ -6,6 +6,48 @@ import { todosLosEjercicios } from '../ejercicios/ejercicios';
 import { buscarSistema, todosLosSistemas } from '../sistemas/almacen';
 import type { Sistema } from '../sistemas/tipos';
 import { leerUltima } from '../ultima';
+import { hoy, leerDiario } from '../diario/diario';
+import { leerSesiones } from '../sesiones/sesiones';
+import { DIAS, diaSemana, lunesDe, sumarDias } from '../temporada/fechas';
+import { agendaDia, leerTemporadas, temporadaDe } from '../temporada/temporada';
+
+/** «Esta semana» (lunes a domingo) del primer equipo, con sus partidos y entrenos. Al tocar un día se abre en Equipo → Temporada. */
+function EstaSemana({ verDia, abrirSesion }: { verDia: (fecha: string) => void; abrirSesion: (id: string) => void }) {
+  const equipo = leerDiario().equipos[0];
+  const t = equipo ? temporadaDe(leerTemporadas(), equipo.id) : undefined;
+  if (!equipo || !t) return null;
+  const hoyTexto = hoy();
+  const lunes = lunesDe(hoyTexto);
+  const sesiones = leerSesiones();
+  const dias = Array.from({ length: 7 }, (_, i) => sumarDias(lunes, i)).map((fecha) => ({ fecha, items: agendaDia(t, fecha).filter((i) => !i.cancelado) }));
+  const con = dias.filter((d) => d.items.length);
+  return (
+    <section className="coleccion semana" aria-label="Esta semana">
+      <div className="coleccion-cabeza">
+        <h2 className="sub">Esta semana</h2>
+        <button className="ver-todas" onClick={() => verDia(hoyTexto)}>Ver mes</button>
+      </div>
+      {con.length === 0 && <p className="vacio">No hay nada apuntado esta semana.</p>}
+      <ul className="lista">
+        {con.flatMap((d) => d.items.map((i) => {
+          const s = i.sesionId ? sesiones.find((x) => x.id === i.sesionId) : undefined;
+          return (
+            <li key={i.clave} className={`tp-semana ${i.tipo}${d.fecha < hoyTexto ? ' pasado' : ''}${d.fecha === hoyTexto ? ' hoy' : ''}`}>
+              <button className="tp-item-boton" onClick={() => verDia(d.fecha)}>
+                <span className="chip pequeno">{DIAS[diaSemana(d.fecha)]} {Number(d.fecha.slice(8))}</span>
+                <span className="datos">
+                  <b>{i.tipo === 'partido' ? `Partido · ${i.titulo || 'sin rival'}` : i.titulo || 'Entreno'}</b>
+                  <span className="meta">{i.hora}{i.evento?.tipo === 'partido' ? (i.evento.casa === false ? ' · fuera' : ' · casa') : ''}</span>
+                </span>
+              </button>
+              {s && <button className="chip pequeno" onClick={() => abrirSesion(s.id)}>Abrir sesión: {s.nombre} →</button>}
+            </li>
+          );
+        }))}
+      </ul>
+    </section>
+  );
+}
 
 function Coleccion({ titulo, verTodas, children }: { titulo: string; verTodas?: () => void; children: ReactNode }) {
   return (
@@ -31,7 +73,9 @@ function TarjetaJugada({ s, abrir }: { s: Sistema; abrir: () => void }) {
   );
 }
 
-export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios }: {
+export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, verDia, abrirSesion }: {
+  verDia: (fecha: string) => void;
+  abrirSesion: (id: string) => void;
   abrir: (id: string, paso?: number) => void;
   abrirEjercicio: (id: string) => void;
   crear: () => void;
@@ -54,6 +98,8 @@ export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios }
     <section className="pantalla inicio">
       <Marca className="marca-cabecera" />
       <h1 className="saludo">Hola, entrenador</h1>
+
+      <EstaSemana verDia={verDia} abrirSesion={abrirSesion} />
 
       {sigue && (
         <button className="seguir" onClick={() => abrir(sigue.s.id, sigue.paso)}>

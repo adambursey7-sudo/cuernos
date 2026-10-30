@@ -4,29 +4,32 @@ import { esSistemaValido } from './sistemas/almacen';
 import type { Sistema } from './sistemas/tipos';
 import type { Colores } from './temas';
 import { limpiar, type Diario } from './diario/diario';
+import { limpiarTemporadas, soloDeEquipos, type Temporada } from './temporada/temporada';
 
 // Se queda «cuernos» (nombre antiguo de la app) para que sigan valiendo las copias ya guardadas.
 const MARCA = 'cuernos-copia';
 
-export function armarCopia(mios: Sistema[], colores: Colores, diario?: Diario): string {
-  return JSON.stringify({ app: MARCA, version: 2, fecha: new Date().toISOString(), mios, colores, diario }, null, 1);
+export function armarCopia(mios: Sistema[], colores: Colores, diario?: Diario, temporadas?: Temporada[]): string {
+  return JSON.stringify({ app: MARCA, version: 2, fecha: new Date().toISOString(), mios, colores, diario, temporadas }, null, 1);
 }
 
 /** Lee un archivo de copia. Lanza un error con un mensaje para el entrenador si no vale. */
-export function leerCopia(texto: string): { mios: Sistema[]; colores?: Colores; diario?: Diario } {
+export function leerCopia(texto: string): { mios: Sistema[]; colores?: Colores; diario?: Diario; temporadas?: Temporada[] } {
   let datos: unknown;
   try {
     datos = JSON.parse(texto);
   } catch {
     throw new Error('Ese archivo no es una copia de Horns.');
   }
-  const d = datos as { app?: string; mios?: unknown; colores?: Colores; diario?: unknown };
+  const d = datos as { app?: string; mios?: unknown; colores?: Colores; diario?: unknown; temporadas?: unknown };
   if (d?.app !== MARCA || !Array.isArray(d.mios)) throw new Error('Ese archivo no es una copia de Horns.');
   const mios = d.mios.filter(esSistemaValido);
   const hex = /^#[0-9a-f]{6}$/i;
   const colores = d.colores && ['principal', 'fondo', 'pista', 'jugadores'].every((k) => hex.test(String(d.colores![k as keyof Colores]))) ? d.colores : undefined;
   const diario = d.diario ? limpiar(d.diario) : undefined;
-  return { mios, colores, diario };
+  // Una temporada sin su equipo no sirve: si la copia trae plantilla, solo valen las de esos equipos.
+  const temporadas = d.temporadas ? limpiarTemporadas(d.temporadas) : undefined;
+  return { mios, colores, diario, temporadas: temporadas && diario ? soloDeEquipos(temporadas, diario.equipos.map((e) => e.id)) : temporadas };
 }
 
 /** Junta las jugadas de la copia con las que ya hay: si coinciden, gana la de la copia. */

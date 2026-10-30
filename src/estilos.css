@@ -310,3 +310,50 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 .capa .viva { fill: var(--jugadores); stroke: var(--principal); stroke-width: 1.6; }
 .capa .viva-num { fill: var(--texto-jugadores); font: 700 8px var(--body); text-anchor: middle; dominant-baseline: central; }
 .barra-jugador .chip:disabled { opacity: 0.4; }
+
+/* Temporada y calendario (tramo 3 del diario) */
+.encabezado-equipo { padding-bottom: 0; }
+.tp-fases { display: flex; gap: 3px; min-height: 44px; }
+.tp-fase { flex-basis: 0; min-width: 56px; border: none; border-radius: 8px; padding: 6px 8px; color: #14110e; font: 800 0.72rem/1.1 var(--display); text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; }
+.tp-mes { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tp-mes h3 { margin: 0; font: 800 1.25rem/1 var(--display); text-transform: uppercase; text-align: center; flex: 1; }
+.tp-mes .chip { min-width: 46px; min-height: 44px; font-size: 1.3rem; }
+.tp-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.tp-dia-nombre { text-align: center; font-size: 0.75rem; font-weight: 700; color: var(--tenue); }
+.tp-celda { position: relative; min-height: 46px; border: 1.5px solid transparent; border-radius: 10px; background: var(--superficie); font: 800 1rem/1 var(--display); padding: 0; }
+.tp-celda.fuera { opacity: 0.4; }
+.tp-celda.hoy { border-color: var(--texto); }
+.tp-celda.sel { border-color: var(--principal); box-shadow: 0 0 0 2px var(--principal); }
+.tp-celda.partido { background: var(--principal); color: var(--sobre-principal); }
+.tp-celda.entreno::after, .tp-celda.otro::before { content: ''; position: absolute; bottom: 5px; height: 4px; border-radius: 2px; }
+.tp-celda.entreno::after { left: 22%; right: 22%; background: #4cc26a; }
+.tp-celda.otro::before { top: 5px; right: 6px; width: 6px; height: 6px; bottom: auto; background: var(--aviso); border-radius: 50%; }
+.mini-leyenda { margin: 0; font-size: 0.8rem; color: var(--tenue); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.punto { display: inline-block; width: 12px; height: 12px; border-radius: 4px; }
+.punto.partido { background: var(--principal); }
+.punto.entreno { background: #4cc26a; height: 4px; }
+.punto.otro { background: var(--aviso); border-radius: 50%; width: 8px; height: 8px; }
+.tp-hueco { height: 46vh; }
+.tp-hoja { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; width: 100%; max-width: 560px; margin: 0 auto; max-height: 56vh; overflow-y: auto; display: grid; gap: 12px; align-content: start;
+  background: var(--fondo); border-top: 3px solid var(--principal); border-radius: 18px 18px 0 0; box-shadow: 0 -8px 24px #0009; padding: 14px max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+.tp-hoja.completa { top: 0; max-height: none; border-radius: 0; border-top: none; padding-top: max(14px, env(safe-area-inset-top)); }
+.tp-hoja-cabeza { display: flex; align-items: center; gap: 8px; }
+.tp-hoja-cabeza .nombre-sistema { flex: 1; margin: 0; }
+.tp-item, .tp-semana { display: grid; gap: 6px; background: var(--superficie); border-radius: 14px; padding: 6px; }
+.tp-item.partido, .tp-semana.partido { border-left: 5px solid var(--principal); }
+.tp-item.entreno, .tp-semana.entreno { border-left: 5px solid #4cc26a; }
+.tp-item.cancelado b { text-decoration: line-through; opacity: 0.6; }
+.tp-semana.pasado { opacity: 0.55; }
+.tp-semana.hoy { outline: 2px solid var(--principal); }
+.tp-item-boton { width: 100%; display: flex; align-items: center; gap: 10px; border: none; background: none; text-align: left; padding: 6px; }
+.tp-item-boton .datos { display: grid; flex: 1; min-width: 0; line-height: 1.25; }
+.tp-editor { display: grid; gap: 12px; }
+.tp-editor input[type='time'], .tp-editor input[type='date'], .tp-editor select, .campo-diario input[type='date'], .campo-diario input[type='time'], .campo-diario select, .tp-fijo select, .tp-fijo input { min-height: 44px; padding: 8px 10px; border-radius: 10px; border: 1.5px solid var(--tenue); background: var(--superficie); color: var(--texto); font: inherit; }
+.marca-linea { display: flex; gap: 10px; align-items: center; font-size: 0.95rem; }
+.marca-linea input { width: 22px; height: 22px; accent-color: var(--principal); flex: none; }
+.tp-fijo { display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; gap: 8px; align-items: center; }
+.tp-previa { align-items: flex-start; }
+.tp-previa-cuerpo { display: grid; gap: 6px; flex: 1; min-width: 0; }
+.tp-previa-linea { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.tp-previa-linea input[type='date'], .tp-previa-linea input[type='time'] { padding: 6px; border-radius: 8px; border: 1.5px solid var(--tenue); background: var(--fondo); color: var(--texto); font: inherit; min-width: 0; }
+.semana .tp-semana + .tp-semana { margin-top: 0; }
