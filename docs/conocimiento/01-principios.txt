@@ -1,0 +1,69 @@
+PRINCIPIOS DE MOVIMIENTO SIN BALÓN (resumen con palabras propias; fuentes en indice.txt)
+
+1. EL PASE NUNCA TERMINA LA JUGADA DE QUIEN PASA
+   Quien pasa no se queda mirando. Después de pasar tiene cuatro opciones:
+   a) corta a canasta (pase y corte / "give and go"): si le devuelven el balón, tira;
+   b) pase y sustituye: ocupa el sitio de la compañera que acaba de recibir (que se movió hacia el balón);
+   c) pase y bloqueo lejos del balón ("screen away"): va a bloquear a una compañera del lado contrario;
+   d) corte en V: simula ir a canasta y sale otra vez al arco para recibir.
+   Si no recibe el balón de vuelta, NO se queda en la zona: sale a un espacio libre de fuera (normalmente el que
+   dejó otra) o a la esquina. (coachesclipboard, hoopcoach, thehoopsgeek)
+
+2. OCUPAR EL ESPACIO QUE QUEDA LIBRE
+   Cuando una jugadora corta o bota y deja su espacio vacío, la compañera sin balón MÁS CERCANA lo ocupa en el mismo
+   paso o en el siguiente. Así la pista queda siempre equilibrada: se "rota" un sitio hacia el lado del balón.
+   La que cortó termina en el sitio que quedó libre al final de la cadena (a menudo una esquina o un ala).
+   Cadena típica en 5 fuera: pasa 1 (frontal) al ala; 3 (otra ala) sube al frontal; 5 (esquina de ese lado) sube al ala;
+   la que cortó (1) acaba en la esquina que quedó libre.
+
+3. ESPACIADO (SPACING)
+   Las exteriores se separan unos 3,5–4,5 m entre sí y se quedan fuera de la línea de tres hasta que cortan. Dentro de
+   la línea de tres solo están las interiores o las que cortan. Nunca dos jugadoras en el mismo espacio.
+
+4. LADO DEL BALÓN Y LADO CONTRARIO
+   - Lado del balón (fuerte): ala, esquina y bloque del mismo lado. Ahí se juega el pase y corte, el bloqueo directo.
+   - Lado contrario (débil): ayuda al espaciado. Su ala "sube" al frontal para ser pase de seguridad y su esquina
+     "sube" al ala; una interior vigila el bloque del lado contrario o el poste alto opuesto.
+   - Cuando el balón cruza al otro lado, todo el reparto se refleja (lado fuerte y débil se intercambian).
+
+5. SI HAY PENETRACIÓN (BOTE A CANASTA)
+   Las demás se mueven UN espacio en la dirección del bote ("rotación"). Quien no tiene hueco en esa dirección (por
+   ejemplo una en la esquina) corta por línea de fondo. La compañera libre del lado contrario es el pase de salida
+   (kick-out) hacia fuera. (thehoopsgeek 5-out, coachesclipboard)
+   Regla corta: bote desde el frontal hacia un lado -> el ala del lado contrario baja a la esquina o sube al frontal.
+
+6. POSTES (INTERIORES "4" Y "5")
+   - Poste alto (codo): recibe de espaldas o de frente; las exteriores cortan alrededor de ella (pase al poste y corte).
+   - Pase "alto-bajo" (hi-lo): la del poste alto da el pase a la del bloque que ha sellado.
+   - Cuando el balón sube al frontal o cambia de lado, la interior del lado contrario pasa al otro bloque o al otro
+     poste alto: nunca dos interiores en el mismo lado si el ejercicio no lo pide.
+   - Con balón en la esquina, la interior del lado contrario está en el bloque para recibir el pase por encima.
+
+7. CORTE POR DELANTE Y CORTE DE PUERTA ATRÁS (BACKDOOR)
+   - Si la jugadora que corta está libre: corta por delante, cara al balón.
+   - Si la defensa le niega el pase: corte de puerta atrás -> sale un poco hacia el balón (simula pedirlo), gira y corta
+     por detrás hacia canasta; el pase llega a su paso, con pase de bote si es posible.
+   - Regla: no se corta hacia atrás (alejándose de canasta) salvo que sea para salir a un sitio libre.
+
+8. BLOQUEO Y CONTINUACIÓN
+   - Quien bloquea se queda quieta, a unos 10 dm de la compañera, y luego "rueda" (corte a canasta, de espaldas al balón
+     tras girar) o "se abre" (sale a un espacio exterior libre, "pick and pop").
+   - Quien usa el bloqueo pasa pegada al bloqueo (hombro con hombro) y bota o corta hacia canasta.
+   - El resto de jugadoras se abre, rellena el hueco que dejan y ofrece un pase de salida. Quien sube desde el lado
+     contrario ("weak-side lift") se pone en el frontal o en el ala.
+   - Un bloqueo siempre se usa en el paso siguiente.
+   - Los defensas pasan por delante o cambian (no por detrás). En la pizarra no se dibujan.
+
+9. QUIEN TIENE EL BALÓN
+   Bota solo si va a algún sitio (penetrar, aclarar, cambiar de lado). Si recibe y no tiene tiro, pivota, mira y
+   pasa. Nunca corta con el balón en las manos. Tras botar y parar, pasa o tira.
+
+10. LA DEFENSA (NO SE DIBUJA)
+   El texto del paso puede decir "la defensa presiona", pero no se dibujan defensores. Las consignas que mueven a la
+   atacante: "pie débil" (cortar por el lado hacia donde la defensa no mira), "aclarar" (dejar espacio al bote),
+   "pasar por delante del bloqueo" (defensa).
+
+11. EDADES
+   Mini (8–10): 2x0 y 3x0 con pase y corte; 4x0 y 5x0 solo con rotación sencilla.
+   Pre-infantil/infantil (11–13): puerta atrás, V-cut, pase y sustituye, bloqueo directo sencillo, alto-bajo.
+   Cadete y mayores (14+): bloqueo sin balón, continuidad en 5 fuera, cambio de lado con lecturas (dos opciones).

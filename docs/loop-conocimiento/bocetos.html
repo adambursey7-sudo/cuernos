@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Horns, la IA que sabe de baloncesto</title>
+<style>
+:root{--bg:#14110e;--panel:#211c17;--panel2:#2c251e;--fg:#f3ece2;--mute:#a89d8e;--acc:#e8883a;--ok:#7fc58a;--mal:#e5736a;--linea:#3a3128;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,'Segoe UI',sans-serif;margin:0;padding:20px 16px 56px}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1{font-size:2rem;line-height:1.15;margin:0}h2{font-size:1.35rem;color:var(--acc);margin:0}h3{margin:0;font-size:1.05rem}
+p{margin:0}.mute{color:var(--mute)}
+section{background:var(--panel);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.ops{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.op{background:var(--panel2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:9px}
+.op.rec{outline:2px solid var(--acc)}
+.letra{font-size:1.9rem;font-weight:700;color:var(--acc);line-height:1}
+.pro b{color:var(--ok)}.con b{color:var(--mal)}
+.pro,.con{font-size:.92rem}
+.cajas{display:flex;flex-wrap:wrap;gap:6px;font-size:.8rem}
+.cajas span{background:var(--bg);border:1px solid var(--linea);border-radius:8px;padding:3px 8px}
+.cajas .claude{border-color:var(--acc);color:var(--acc)}
+.cajas .jarvis{border-color:var(--ok);color:var(--ok)}
+.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+svg{width:100%;max-width:300px;height:auto;background:#1b2a1d;border-radius:10px;display:block;margin:0 auto}
+.cap{font-size:.88rem;text-align:center;margin-top:6px}
+table{border-collapse:collapse;width:100%;font-size:.88rem}td,th{border-bottom:1px solid var(--linea);padding:6px 8px;text-align:left;vertical-align:top}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Que la IA de Horns sepa de baloncesto de verdad</h1>
+<p class="mute">30 de octubre. Aquí tienes lo que he reunido y las cuatro formas de dárselo a la IA. Falta que elijas una.</p>
+</header>
+
+<section>
+<h2>El fallo de hoy, dibujado</h2>
+<div class="duo">
+<div>
+<svg viewBox="0 0 150 100" role="img" aria-label="Ejemplo malo">
+<rect x="1" y="1" width="148" height="98" fill="none" stroke="#e9e3d4" stroke-width=".6"/>
+<circle cx="75" cy="12" r="3" fill="none" stroke="#e8883a"/>
+<g fill="#3b4a3d" stroke="#e9e3d4" stroke-width=".4"><circle cx="8" cy="12" r="5"/><circle cx="142" cy="12" r="5"/><circle cx="22" cy="55" r="5"/><circle cx="128" cy="55" r="5"/><circle cx="75" cy="85" r="5" stroke-dasharray="2 2"/></g>
+<g font-size="7" text-anchor="middle" fill="#fff"><text x="22" y="57.5">2</text><text x="128" y="57.5">3</text><text x="142" y="14.5">1</text></g>
+<path d="M75 85 L22 55" stroke="#e8883a" stroke-width="1" stroke-dasharray="2 1.5"/>
+<path d="M75 82 C 110 60 140 40 142 17" stroke="#7fc58a" fill="none" stroke-width="1"/>
+<text x="75" y="95" font-size="6" text-anchor="middle" fill="#e5736a">frontal vacío: nadie lo ocupa; 3 no se mueve</text>
+</svg>
+<p class="cap mute">Hoy: 1 pasa a 2, corta a la esquina… y 3 se queda quieta.</p>
+</div>
+<div>
+<svg viewBox="0 0 150 100" role="img" aria-label="Ejemplo bueno">
+<rect x="1" y="1" width="148" height="98" fill="none" stroke="#e9e3d4" stroke-width=".6"/>
+<circle cx="75" cy="12" r="3" fill="none" stroke="#e8883a"/>
+<g fill="#3b4a3d" stroke="#e9e3d4" stroke-width=".4"><circle cx="8" cy="12" r="5"/><circle cx="142" cy="12" r="5"/><circle cx="22" cy="55" r="5"/><circle cx="128" cy="55" r="5"/><circle cx="75" cy="85" r="5" stroke-dasharray="2 2"/></g>
+<g font-size="7" text-anchor="middle" fill="#fff"><text x="22" y="57.5">2</text><text x="75" y="87.5">3</text><text x="142" y="14.5">1</text></g>
+<path d="M75 82 L22 55" stroke="#e8883a" stroke-width="1" stroke-dasharray="2 1.5"/>
+<path d="M128 55 L75 83" stroke="#7fc58a" stroke-width="1"/>
+<path d="M75 82 C 110 60 140 40 142 17" stroke="#7fc58a" fill="none" stroke-width="1" opacity=".55"/>
+<text x="75" y="95" font-size="6" text-anchor="middle" fill="#7fc58a">3 sube al frontal; 1 acaba en el espacio libre</text>
+</svg>
+<p class="cap mute">Lo que queremos: quien pasa corta, la compañera más cercana rellena el hueco.</p>
+</div>
+</div>
+</section>
+
+<section>
+<h2>Lo que ya tengo guardado</h2>
+<p>En la carpeta de documentos de Horns, en la rama nueva: <b>principios</b> (ocupar el espacio, espaciado, lado del balón y lado contrario, postes, bloqueos), <b>14 patrones con nombre</b>, <b>14 reglas que se pueden comprobar</b>, <b>18 ejercicios completos</b> (2x0, 3x0, 4x0, 5x0, bloqueos, contraataque) y un índice con las fuentes.</p>
+<p class="mute">Los 18 ejercicios ya pasan el validador de hoy. Con una comprobación de «lógica» de prueba, el fallo de arriba salta y los 18 pasan.</p>
+<p class="mute">Ojo: no pude abrir los manuales oficiales (FIBA, FEB, USA Basketball) porque eran PDF cerrados o de pago. Usé webs abiertas de entrenadores y un artículo en español. Conviene que lo repases.</p>
+</section>
+
+<section>
+<h2>Cuatro formas de dárselo a la IA</h2>
+<div class="ops">
+
+<div class="op">
+<div class="letra">A</div>
+<h3>Todo en el texto fijo</h3>
+<div class="cajas"><span class="jarvis">Texto fijo con reglas + patrones</span><span class="claude">Claude dibuja</span></div>
+<p>Meto las reglas y la lista de patrones en la guía que Claude lee siempre.</p>
+<p class="pro"><b>+</b> Lo más simple. Un solo cambio. Se nota en todos los ejercicios.</p>
+<p class="con"><b>−</b> El texto crece (de 5 a unos 11 mil letras) y la IA «lee» pero no siempre aplica. Sin ejemplos, los movimientos pueden seguir raros.</p>
+</div>
+
+<div class="op">
+<div class="letra">B</div>
+<h3>Reglas + ejemplos completos</h3>
+<div class="cajas"><span class="jarvis">Reglas cortas</span><span class="jarvis">2–3 ejemplos según tu petición</span><span class="claude">Claude copia y adapta</span></div>
+<p>Jarvis elige de la lista los 2–3 ejemplos más parecidos a lo que pides («bloqueo», «3x0», «poste») y se los pone a Claude.</p>
+<p class="pro"><b>+</b> Los ejemplos enseñan mejor que las reglas. El texto no crece mucho.</p>
+<p class="con"><b>−</b> Si pides algo raro, copia un ejemplo que no encaja. Hay que mantener los ejemplos al día.</p>
+</div>
+
+<div class="op">
+<div class="letra">C</div>
+<h3>Jarvis elige el patrón, Claude rellena</h3>
+<div class="cajas"><span class="jarvis">Jarvis elige patrón</span><span class="claude">Claude pone nombre, objetivo y detalles</span></div>
+<p>El patrón (con quién se mueve y dónde) viene hecho. Claude solo ajusta número de jugadoras, texto, minutos y variante.</p>
+<p class="pro"><b>+</b> Siempre con lógica; no se puede romper.</p>
+<p class="con"><b>−</b> Menos libre: solo hace lo que está en el catálogo. Más código nuevo. Si pides algo que no está, no sale.</p>
+</div>
+
+<div class="op">
+<div class="letra">D</div>
+<h3>Revisor de lógica</h3>
+<div class="cajas"><span class="claude">Claude dibuja</span><span class="jarvis">Horns revisa y rechaza</span><span class="claude">Claude corrige</span></div>
+<p>Un validador nuevo en Horns rechaza lo que no tiene sentido (espacio abandonado, jugadora parada) y le pide a Claude que lo arregle.</p>
+<p class="pro"><b>+</b> Detecta fallos aunque la IA se despiste. Mensajes claros que se repiten a Claude.</p>
+<p class="con"><b>−</b> No enseña por sí solo: solo avisa tarde. Gasta una llamada más al corregir (cupo de 10 al día).</p>
+</div>
+
+</div>
+</section>
+
+<section>
+<h2>Mi recomendación: B + D</h2>
+<div class="op rec">
+<p><b>B</b> para que acierte a la primera (un par de ejemplos buenos y las reglas en pocas líneas) y <b>D</b> como red: si aun así se le escapa un hueco o una jugadora parada, Horns se lo dice y lo corrige.</p>
+<table>
+<tr><th>Por qué</th><td>Los ejemplos reducen los fallos; el revisor impide que un fallo llegue a tu pizarra. Con solo A el texto se hace largo y no hay garantía; con solo C pierdes libertad.</td></tr>
+<tr><th>Lo que haré</th><td>Texto corto de reglas en la guía; 18 ejemplos en un archivo que Jarvis lee y de los que escoge 2–3 según lo que pidas; validador de lógica nuevo en Horns con pruebas por cada regla; mensajes de error en castellano.</td></tr>
+<tr><th>Cuidado</th><td>El revisor solo rechaza lo claro (huecos, paradas largas): no inventa jugadas. Primero lo pruebo con tus ejemplos y los 18, para que no rechace ejercicios buenos.</td></tr>
+<tr><th>Alternativa</th><td>Si prefieres lo más simple y barato, A + D (sin ejemplos). Si quieres cero sorpresas y menos libertad, C + D.</td></tr>
+</table>
+</div>
+<p class="mute">Dime cuál eliges (o una mezcla) y lo programo. No he tocado Jarvis ni lo publicado.</p>
+</section>
+</main>
+</body>
+</html>

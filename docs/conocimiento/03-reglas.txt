@@ -1,0 +1,24 @@
+REGLAS COMPROBABLES (cada una se puede verificar con el dibujo del ejercicio, sin mirar la intención)
+
+R01 NO DUPLICAR: al final de cada paso, dos jugadoras nunca están en el mismo espacio (ni a menos de 8 dm).
+R02 CORTE SIN HUECO ABANDONADO: si una jugadora SIN balón deja un espacio de los 9 y hay otra jugadora sin balón en un
+    espacio exterior (o interior, según el tipo), ese espacio se ocupa antes de acabar el paso siguiente (por la más cercana)
+    o se vuelve a ocupar al final del ejercicio. Excepción: si ya están todas las plazas del lado del balón ocupadas.
+R03 PASAR ES MOVERSE: quien pasa se mueve en el mismo paso o en el siguiente (corte, sustitución, bloqueo, V). Solo puede
+    quedarse quieta si el paso siguiente es el pase de vuelta o si es una interior que ya está en su espacio.
+R04 NADIE DE PIE TODO EL EJERCICIO: en ejercicios de 3 o más jugadoras, todas hacen al menos un movimiento (o un pase).
+    Excepción permitida: la que no se mueve recibe un pase.
+R05 PASE A LIBRE: el pase va a una jugadora que no está pegada al balón (≥20 dm) y que ha llegado a su sitio al final del
+    paso anterior (o llega en este mismo paso por corte hacia el balón: el pase va a su punto de destino, no al de salida).
+R06 SIN BALÓN NO SE BOTA / CON BALÓN NO SE CORTA (ya validada).
+R07 EL BLOQUEO SE USA: tras un "bloqueo" hay en el paso siguiente un corte o bote de otra jugadora que pasa a ≤ 20 dm de la
+    bloqueadora (ya recomendado en la guía; hoy no se valida).
+R08 EL BALÓN SIEMPRE ESTÁ EN UNA JUGADORA (ya validada) y al final del ejercicio alguien lo tiene (o tira).
+R09 LAS EXTERIORES SALEN DE LA LÍNEA DE TRES SOLO PARA CORTAR: al final de cada paso están en un espacio exterior o en un
+    punto de corte hacia canasta que se resuelve al paso siguiente.
+R10 PENETRACIÓN: si una jugadora bota desde FR/ala hacia canasta, las demás se desplazan un espacio en esa dirección y
+    la del lado contrario queda en una esquina o en FR para el pase de salida.
+R11 LADO CONTRARIO: la jugadora del lado contrario nunca baja a la zona a la vez que otra del lado del balón.
+R12 CIERRE: el último paso devuelve el grupo a una formación equivalente (misma forma, con roles rotados) o lo dice en el texto.
+R13 DISTANCIAS DE MOVIMIENTO: ≤ 90 dm por paso en las categorías pequeñas, ≤ 150 dm en las mayores.
+R14 TEXTO = DIBUJO: cada jugadora nombrada en el texto de un paso hace lo que dice el texto (pase, corte, bloqueo).

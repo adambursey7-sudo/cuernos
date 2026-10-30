@@ -1,0 +1,37 @@
+CONOCIMIENTO DE BALONCESTO PARA LA IA DE HORNS (30/10/2026)
+
+Contenido (todo resumido con palabras propias, sin copiar textos; sin nombres de personas ni equipos):
+  01-principios.txt    ideas de movimiento sin balón: ocupar el espacio, espaciado, lado fuerte y débil, postes, bloqueos
+  02-patrones.txt      catálogo de 14 patrones con nombre (cuándo, quién se mueve, qué espacio queda libre y quién lo ocupa)
+  03-reglas.txt        14 reglas comprobables con el dibujo (base del validador)
+  ejemplos.json        18 ejercicios completos en el formato de Horns (pasan el validador actual; los comprueba una prueba)
+  04-lectura-ejemplos.txt  los mismos ejercicios contados en texto, para leerlos rápido
+
+FUENTES CONSULTADAS (leídas o con resumen verificado)
+  - Coach's Clipboard, "Moving Without the Ball" (youth): https://www.coachesclipboard.net/youth/OffBall.html
+      -> opciones tras pasar (cortar, V-cut, bloquear), quién rellena, espaciado, rotación con bote, puerta atrás.
+  - Hoop Coach, "Simple 5-Out Pass and Cut Offense for Youth Basketball": https://www.hoopcoach.org/simple-five-out-pass-and-cut-offense/
+      -> orden de movimientos de la continuidad en 5 fuera (patrón P12).
+  - The Hoops Geek, "4 Out - Pass, Cut and Fill": https://www.thehoopsgeek.com/basketball-plays/4-out-pass-cut-and-fill/
+  - The Hoops Geek, "5 Out Offense": https://thehoopsgeek.com/5-out-offense
+      -> el que pasa corta a canasta, los demás rellenan; rotación en la dirección del bote; pase y bloqueo lejos.
+  - Hoop Student, "Youth basketball offense": https://hoopstudent.com/youth-basketball-offense/
+      -> pase y corte, puerta atrás, bloqueo directo con rodar/abrirse y subida del lado contrario.
+  - Hoop Student, "Backdoor cut drills": https://hoopstudent.com/?p=20909
+  - EFDeportes nº 166, "Sesión técnico-táctica 2x2 en baloncesto" (Monroy y Sáez, 2012):
+      https://efdeportes.com/efd166/sesion-tecnico-tactica-2-2-en-baloncesto.htm
+      -> 2x2 libre (aclarado, bloqueo directo, pasar y cortar), corte al pie débil, bloquear y cortar a canasta.
+  - Basketball for Coaches, "Shell drill": https://www.basketballforcoaches.com/shell-drill-basketball/ (solo defensa; no usada para ataque)
+  - Coaching Practice Guide (pase y corte, pase y sustituye, pase y bloqueo lejos; como lista de reglas tras pasar):
+      https://cdn3.sportngin.com/attachments/document/3580-2030598/Coaching_Practice_Guide.pdf  (PDF no legible por la herramienta;
+      solo se usó el resumen de los resultados de búsqueda; la información equivalente está confirmada en Coach's Clipboard)
+  - Jr. NBA Curriculum (índice de conceptos: give-and-go, backdoor, pick and roll):
+      https://cdn3.sportngin.com/attachments/document/2ede-3495369/JrNBA22_Curriculum_Overview-3.pdf (solo la lista de conceptos)
+  - FBCV (Federación de Baloncesto de la Comunidad Valenciana), clínics de paso cero y tecnificación:
+      https://www.fbcv.es/blog/wp-content/uploads/2020/01/Tareas-Paso-0-FBCV.pdf (PDF no legible; solo el título)
+
+LO QUE NO SE PUDO LEER (para otra tanda, si hace falta)
+  - Manuales oficiales FIBA y FEB, USA Basketball: la herramienta no abre PDF; algunos están tras registro o en Scribd (no se usan).
+  - Breakthrough Basketball ("Chill before fill"): da error 403.
+  - Para cadete/femenino no hay nada diferente en los patrones; cambian la edad (más cortes y bloqueos) y la intensidad.
+  Todo lo demás (tabla de edades, reglas de comprobación) es criterio propio sobre lo leído. Conviene que Adam lo repase.

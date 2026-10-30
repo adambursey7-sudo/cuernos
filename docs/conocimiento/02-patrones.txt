@@ -1,0 +1,49 @@
+CATÁLOGO DE PATRONES (con nombre). Espacios: EI/ED esquinas, AI/AD alas, FR frontal, PAI/PAD postes altos,
+BI/BD bloques (izquierda/derecha). "Libre" = espacio que queda vacío al terminar el movimiento.
+
+P01 PASE Y CORTE (give and go)
+  Cuándo: 2x0, 3x0, 5x0. Edad: desde mini.
+  Mueve: la que pasa corta a canasta (punto cerca de BI/BD o centro [75,30]); la receptora devuelve si llega.
+  Deja libre: el espacio de la que pasó (p.ej. FR). Lo ocupa: la compañera sin balón MÁS CERCANA (en 3x0: la del ala del
+  otro lado sube a FR). Pasos: 2–3 (pase+corte, devolución, salida a espacio libre).
+P02 PASE Y SUSTITUYE (pass and replace)
+  Cuándo: 3x0 en rotación. Mueve: quien recibe sale a su encuentro (bote hacia FR); la que pasó va al sitio de la receptora.
+  Deja libre: ninguno (intercambio). Pasos: 3 (cada pase rota a las tres).
+P03 PASE Y BLOQUEO LEJOS (screen away)
+  Cuándo: 3x0 desde 12 años. Mueve: la que pasa va a bloquear a la compañera del lado contrario, que corta al bloque
+  usando el bloqueo y recibe. Deja libre: FR (lo ocupa la bloqueadora al abrirse). Pasos: 3.
+P04 CORTE DE PUERTA ATRÁS (backdoor)
+  Cuándo: la defensa niega el pase. Mueve: la receptora sale hacia el balón (finta), gira y corta por detrás al bloque; la
+  pasadora le lanza el pase a su paso; luego la pasadora ocupa el espacio libre. Pasos: 3.
+P05 CORTE EN V (V-cut)
+  Mueve: la receptora baja hacia canasta y sale rápido al ala/frontal para recibir. Deja libre: nada. Pasos: 3.
+P06 ACLARADO (clear out)
+  Mueve: la que no tiene balón se aparta a la esquina del lado contrario; la que lo tiene bota a canasta por el
+  espacio abierto y puede pasar a la esquina. Deja libre: el ala; lo ocupa la de la esquina o la que sube. Pasos: 3.
+P07 PENETRAR Y PASAR (drive and kick)
+  Mueve: la del balón bota hacia un lado desde FR; todas se mueven un espacio en esa dirección; la del lado contrario baja a la
+  esquina (pase de salida). Deja libre: FR (lo ocupa la del ala contraria). Pasos: 2–3.
+P08 BLOQUEO DIRECTO (ball screen / pick and roll)
+  Cuándo: 2x0 y 3x0. Mueve: la interior sale a bloquear a la del balón (a 10 dm, de lado); en el paso siguiente la del balón bota
+  pegada al bloqueo hacia canasta y la bloqueadora rueda al bloque (o se abre al ala). El resto: la del lado contrario sube a FR
+  (pase de seguridad). Pasos: 3.
+P09 BLOQUEO SIN BALÓN (pin-down)
+  Mueve: la interior sube desde el bloque a bloquear a la exterior de la esquina; esta sale al ala usando el bloqueo y
+  recibe; la bloqueadora baja al bloque. Pasos: 3. Desde 13–14 años.
+P10 PASE AL POSTE ALTO Y CORTE
+  Mueve: la exterior pasa a la interior del poste alto y corta a canasta por delante de ella; la del lado contrario sube a FR.
+  La interior puede devolver el pase (alto-bajo). Pasos: 3.
+P11 ALTO-BAJO (hi-lo)
+  Mueve: pase al poste alto; la compañera interior "sella" en el bloque contrario y recibe la bola alta. Pasos: 2–3.
+P12 CONTINUIDAD EN 5 FUERA (pass, cut and fill)
+  Mueve: pasa 1 desde FR al ala y corta; 3 sube a FR; 5 (esquina del lado) sube al ala; 1 cae a la esquina libre; luego el
+  nuevo pasador repite en el otro lado. Pasos: 3 por vuelta. Todas rotan un sitio.
+P13 CAMBIO DE LADO (ball reversal)
+  Mueve: el balón cruza FR de un ala a otra en dos pases; cada pasadora corta o sustituye; lado fuerte y débil se intercambian.
+P14 CONTRAATAQUE (2x0, 3x0 en carriles)
+  Mueve: tres carriles (centro, izquierda, derecha) con el balón en el centro botando; pase al carril y corte del centro a
+  canasta. Espacios libres: ninguno (son puntos de carrera, no de los nueve).
+
+COMBINACIONES DE LECTURA (dos opciones)
+  "Si no está libre": corte de puerta atrás o V-cut; si el pase no llega, la cortadora sale a la esquina libre.
+  "Si el bote entra": rotar un sitio hacia el bote.
