@@ -35,3 +35,6 @@ LO QUE NO SE PUDO LEER (para otra tanda, si hace falta)
   - Breakthrough Basketball ("Chill before fill"): da error 403.
   - Para cadete/femenino no hay nada diferente en los patrones; cambian la edad (más cortes y bloqueos) y la intensidad.
   Todo lo demás (tabla de edades, reglas de comprobación) es criterio propio sobre lo leído. Conviene que Adam lo repase.
+
+COPIA EN JARVIS: ejemplos.json se copia a jeeves-pa\horns_ejemplos.json (rama loop/baloncesto-conocimiento). Si se cambia uno,
+hay que copiarlo al otro (y las reglas de horns_guia_pista.txt van con las de 03-reglas.txt).
