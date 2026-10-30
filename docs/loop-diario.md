@@ -10,7 +10,16 @@ Horns pasa de ser una biblioteca de jugadas a ser el **cuaderno del entrenador**
 3. **Dorsales en las pizarras:** en lugar de 1–5, cada círculo lleva el número de la jugadora que hace ese puesto en ese equipo.
 4. **Sistemas propios** con el editor ya hecho, pero pensando en el equipo (quién es la 1, quién es la 5).
 5. **Temporada:** fases con objetivos, calendario con partidos, entrenamientos y sesiones enlazadas, semana a semana.
-6. **Pasarlo a una IA:** exportar un dosier de texto (plantilla, virtudes, calendario) para pegar en Claude u otra IA y pedirle planificación, sesiones o ejercicios; e importar lo que devuelva.
+6. **Pasarlo a una IA:** un cuestionario que prepara el prompt (con plantilla, virtudes y calendario) para que lo copies y lo actives tú en Claude u otra IA, e importar lo que devuelva. Además, plantilla desde PDF y calendario desde `.ics`.
+
+## Decisiones de Adam (30/10)
+- **Plantilla:** A · lista con dorsal grande y ficha con tres pestañas (Perfil, Entrenar, Notas con fecha).
+- **Números en pizarra:** A · «quién es quién» por equipo, con cambio puntual en una jugada. Sin nombres en la pizarra.
+- **Temporada:** mezcla · fases arriba, calendario del mes y lista de la semana al tocar.
+- **IA:** no automática. Un **cuestionario** dentro de la app va rellenando un prompt preparado (qué quiere, qué no, nivel, objetivos…); la persona lo **copia y lo activa ella** en Claude u otra IA, y lo que vuelva se pega en la app como borrador. Tiene que ser bonito, completo y **editable** (el prompt se puede retocar antes de copiarlo).
+- **Plantilla desde un PDF:** subir el PDF con nombres y números y que las jugadoras se creen solas (se lee en el móvil, no se sube a ningún sitio). También desde texto pegado o CSV.
+- **Calendario:** importar un `.ics` (Google Calendar, Apple, Outlook) para traer partidos y entrenos, y exportar la temporada a `.ics` para meterla en el calendario del móvil.
+- Todo lo posible **automático** al importar (detectar dorsal, nombre y posición; detectar fecha, rival y casa/fuera), siempre con vista previa antes de guardar.
 
 ## Reglas del loop
 1. **Diseño antes de programar:** cada pantalla nueva tiene 2 o 3 formas con boceto, ventajas e inconvenientes en `docs/loop-diario/bocetos.html`. Se pregunta a Adam y esa parte no se programa hasta que conteste; lo que no dependa de ella sí avanza.
@@ -23,30 +32,33 @@ Horns pasa de ser una biblioteca de jugadas a ser el **cuaderno del entrenador**
 8. Servidor de pruebas en el puerto 5314.
 
 ## Tramo 1: plantilla y fichas
-- [ ] 1.1 **Diseño** (bocetos A/B/C de la ficha y de la plantilla) → Adam elige.
+- [x] 1.1 Diseño → Adam eligió A (30/10).
 - [ ] 1.2 Modelo de datos y guardado (`src/diario/`): jugadora (id, nombre, número, posición, puntos fuertes, a mejorar, forma de jugar, cómo entrenarla, notas con fecha) y equipo (nombre, categoría, forma de jugar, virtudes, a trabajar). Varios equipos. Tests de guardado, número repetido y copia de seguridad.
 - [ ] 1.3 Pestaña **Equipo**: lista de la plantilla, alta, edición y baja de jugadora; ficha según lo elegido.
 - [ ] 1.4 Ficha del equipo: forma de jugar, virtudes y cómo entrenarlas, con enlace a ejercicios y sistemas de la biblioteca que las trabajan.
-- [ ] 1.5 Copia de seguridad con plantilla y equipo; revisión y entrada en bocetos; parar.
+- [ ] 1.5 **Importar la plantilla:** desde un PDF (texto del PDF leído en el móvil con pdf.js cargado solo al usarlo), texto pegado o CSV; detecta dorsal, nombre y posición y enseña una vista previa editable antes de crear las fichas.
+- [ ] 1.6 Copia de seguridad con plantilla y equipo; revisión y entrada en bocetos; parar.
 
 ## Tramo 2: dorsales en las pizarras
-- [ ] 2.1 **Diseño** (A/B/C de cómo se asignan los números) → Adam elige.
+- [x] 2.1 Diseño → Adam eligió A (30/10).
 - [ ] 2.2 «Quién es quién» por equipo: la 1, 2, 3, 4 y 5 de cada sistema con su jugadora.
 - [ ] 2.3 Los círculos de la pizarra, el GIF, la hoja de compartir y la ficha A4 enseñan el número elegido (con interruptor 1–5 / dorsales).
 - [ ] 2.4 Editor de sistemas propios con los puestos del equipo; revisión; parar.
 
 ## Tramo 3: temporada y calendario
-- [ ] 3.1 **Diseño** (A/B/C de la planificación) → Adam elige.
+- [x] 3.1 Diseño → Adam eligió la mezcla (30/10).
 - [ ] 3.2 Temporada: fechas de inicio y fin, fases con objetivo (pretemporada, liga, parón…) y qué trabajar en cada una.
 - [ ] 3.3 Calendario: partidos (rival, casa/fuera, hora, resultado), entrenamientos fijos de la semana, festivos; las sesiones ya hechas se enlazan al día.
+- [ ] 3.3b Importar `.ics` (lector hecho a mano, sin librerías) con vista previa, y exportar la temporada a `.ics`.
 - [ ] 3.4 Vista semana y vista mes; hoy; el cronómetro de pista abre la sesión del día.
 - [ ] 3.5 Entrada de balance de partido (qué funcionó, a quién mirar) que cuelga de la ficha de la jugadora; revisión; parar.
 
-## Tramo 4: pasarlo a una IA
-- [ ] 4.1 **Diseño** (A: dosier de texto para pegar y archivo para importar; B: llamar a una API desde la app, con clave y coste) → Adam elige. Recomendación: A, sin coste, sin claves y sin datos viajando solos.
-- [ ] 4.2 Botón «Preparar para la IA»: crea un texto con plantilla, virtudes, calendario y la petición («hazme la planificación de octubre», «sesiones para trabajar el 1x1») y se copia o se guarda como `.txt`. Opción de **quitar los nombres** y dejar solo número y posición.
-- [ ] 4.3 Importar lo que devuelve la IA: formato fijo (JSON) que la propia IA recibe en el dosier; se muestra una vista previa y entra como **borrador** marcado.
-- [ ] 4.4 Aviso claro antes de exportar de que son datos de personas (menores) y que se pegan en una IA externa; revisión de seguridad (`/security-review`) y cierre del loop con el boceto final de Cambios y Mejoras.
+## Tramo 4: cuestionario y prompt para la IA
+- [ ] 4.1 **Diseño** del cuestionario (bocetos) → Adam elige: paso a paso con una pregunta por pantalla, o una sola pantalla con secciones plegables. Con vista previa del prompt que se va rellenando.
+- [ ] 4.2 Qué se puede pedir (cada una con sus preguntas): planificación de la temporada, plan de un mes, una sesión de entrenamiento, ejercicios para una carencia concreta, un sistema nuevo, preparación de un partido, informe de una jugadora. Preguntas sobre objetivos, nivel, tiempo, material, qué quiere y qué no, estilo de juego.
+- [ ] 4.3 El prompt se monta solo con las respuestas y los datos del equipo (plantilla, virtudes, calendario), se puede **editar a mano**, y se copia con un botón. Opción de **quitar los nombres** (solo dorsal y posición) y aviso antes de copiar de que son datos de personas.
+- [ ] 4.4 El prompt le pide a la IA un formato fijo; la app lo **pega o lo sube** (JSON), muestra vista previa y lo guarda como **borrador** (planificación, sesiones, ejercicios).
+- [ ] 4.5 `/security-review` y cierre del loop con el boceto final de Cambios y Mejoras.
 
 ## Después (no entra en este loop)
 Fotos de las jugadoras, estadísticas de partido en directo, asistencia a entrenamientos (existe el script del calendario de Cadete aparte), compartir la plantilla con el staff, datos de salud y confidencialidad por círculos (ver `PLAN.md`).
