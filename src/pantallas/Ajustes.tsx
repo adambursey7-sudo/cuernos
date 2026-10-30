@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { introActiva, ponerIntroActiva } from '../Intro';
 import { Pista } from '../pizarra/Pista';
 import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
 import { armarCopia, juntar, leerCopia } from '../copia';
@@ -13,6 +14,7 @@ const igual = (a: Colores, b: Colores) => CAMPOS.every((k) => a[k].toLowerCase()
 export function Ajustes() {
   const [c, setC] = useState(leerColores);
   const [aviso, setAviso] = useState('');
+  const [intro, setIntro] = useState(introActiva);
   const poner = (n: Colores) => {
     setC(n);
     aplicarColores(n);
@@ -50,6 +52,10 @@ export function Ajustes() {
   return (
     <section className="pantalla">
       <h1 className="titulo">Ajustes</h1>
+      <h2 className="sub">Entrada</h2>
+      <label className="campo-diario">
+        <span><input type="checkbox" checked={intro} onChange={(ev) => { setIntro(ev.target.checked); ponerIntroActiva(ev.target.checked); }} /> Vídeo de entrada al abrir la app (una vez al día)</span>
+      </label>
       <h2 className="sub">Colores</h2>
       <div className="muestra">
         <Pista sistema={SISTEMAS[0]} t={2} />
