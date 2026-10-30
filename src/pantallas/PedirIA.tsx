@@ -1,24 +1,15 @@
 // «Pedir a Claude» (tramo 4): cuestionario corto → texto completo a la vista → envío por Jarvis → borrador de ficha.
 // Nada sale del móvil hasta que se toca «Enviar a Claude», y siempre con el texto completo delante.
 import { useEffect, useRef, useState } from 'react';
-import { borradorDeRespuesta, construirPrompt, CUESTIONARIO_VACIO, guardarBase, leerBase, MAX_PROMPT, PROMPT_BASE, type Cuestionario } from '../recursos/ia';
+import { borradorDeRespuesta, construirPrompt, guardarBase, leerBase, MAX_PROMPT, PROMPT_BASE, type Cuestionario } from '../recursos/ia';
 import { emparejar, enviar, ErrorJarvis, esperar, leerConexion, olvidarConexion, type Conexion } from '../recursos/jarvis';
 import type { Ficha } from '../recursos/fichas';
 import type { Ejercicio } from '../recursos/guardarEjercicioIA';
 import { pedirEjercicio } from '../recursos/pedirEjercicio';
+import { CUESTIONARIO_NORMAL, elegir, esOtro, PREGUNTAS, type Pregunta } from '../recursos/opcionesEjercicio';
 import { nombreRecurso, type Recurso } from '../recursos/recursos';
 import { nuevoId } from '../sistemas/almacen';
 import { BorradorEjercicio } from './BorradorEjercicio';
-
-const CAMPOS: { k: keyof Cuestionario; nombre: string; ayuda?: string; largo?: boolean }[] = [
-  { k: 'objetivo', nombre: '¿Qué quieres trabajar?', ayuda: 'Rebote, pase tras bote, defensa del bloqueo…', largo: true },
-  { k: 'edad', nombre: 'Categoría o edad', ayuda: 'Infantil, 11-12 años' },
-  { k: 'jugadoras', nombre: 'Cuántas jugadoras' },
-  { k: 'minutos', nombre: 'Minutos disponibles' },
-  { k: 'material', nombre: 'Material', ayuda: '2 balones, conos' },
-  { k: 'espacio', nombre: 'Espacio', ayuda: 'Media pista' },
-  { k: 'notas', nombre: 'Algo más que tenga en cuenta', largo: true },
-];
 
 export function PedirIA({ recurso, borrador, retocar, guardada }: {
   recurso?: Recurso;
@@ -28,16 +19,16 @@ export function PedirIA({ recurso, borrador, retocar, guardada }: {
   guardada: (f: Ficha) => void;
 }) {
   const [con, setCon] = useState<Conexion | undefined>(leerConexion);
-  const [c, setC] = useState<Cuestionario>(CUESTIONARIO_VACIO);
+  const [c, setC] = useState<Cuestionario>(CUESTIONARIO_NORMAL);
   const [base, setBase] = useState(leerBase);
   const [fase, setFase] = useState<'escribir' | 'esperando'>('escribir');
   const [error, setError] = useState('');
+  const [abiertas, setAbiertas] = useState<string[]>([]);   // preguntas con «Otro» abierto
   const [hecho, setHecho] = useState<Ejercicio | undefined>();
   const cancelado = useRef(false);
   useEffect(() => () => { cancelado.current = true; }, []);   // al salir de la pantalla se deja de esperar
 
   const prompt = construirPrompt(base, c, recurso);
-  const hayDatos = Object.values(c).some((v) => v.trim()) || !!recurso;
   const largo = prompt.length > MAX_PROMPT;
 
   const fallo = (e: unknown) => {
@@ -98,31 +89,45 @@ export function PedirIA({ recurso, borrador, retocar, guardada }: {
   return (
     <>
       {recurso && <p className="meta">Partiendo de: {nombreRecurso(recurso)}</p>}
-      {CAMPOS.map((f) => (
-        <label key={f.k} className="campo-diario">
-          <span>{f.nombre}</span>
-          {f.largo
-            ? <textarea id={`ia-${f.k}`} rows={3} value={c[f.k]} maxLength={f.k === 'notas' ? 600 : 200} placeholder={f.ayuda} onChange={(e) => setC({ ...c, [f.k]: e.target.value })} />
-            : <input id={`ia-${f.k}`} value={c[f.k]} maxLength={200} placeholder={f.ayuda} onChange={(e) => setC({ ...c, [f.k]: e.target.value })} />}
-        </label>
-      ))}
+      {PREGUNTAS.map((p) => <Fila key={p.k} p={p} valor={c[p.k]} abierta={abiertas.includes(p.k) || esOtro(p, c[p.k])}
+        elegir={(o) => { setAbiertas(abiertas.filter((k) => k !== p.k)); setC(elegir(c, p, o)); }}
+        otro={() => { setAbiertas([...abiertas, p.k]); setC({ ...c, [p.k]: '' }); }}
+        escribir={(v) => setC({ ...c, [p.k]: v })} />)}
+      <label className="campo-diario">
+        <span>Algo más (si quieres)</span>
+        <textarea id="ia-notas" rows={2} value={c.notas} maxLength={600} placeholder="Sin nombres de jugadoras" onChange={(e) => setC({ ...c, notas: e.target.value })} />
+      </label>
       <details className="campo-diario">
         <summary>Texto base (puedes cambiarlo)</summary>
         <textarea id="ia-base" rows={10} value={base} maxLength={4000} onChange={(e) => { setBase(e.target.value); guardarBase(e.target.value); }} />
         <button className="secundario" onClick={() => { setBase(PROMPT_BASE); guardarBase(PROMPT_BASE); }}>Volver al texto original</button>
       </details>
-      <div className="campo-diario">
-        <span>Esto es lo que se enviará, completo</span>
+      <details className="campo-diario">
+        <summary>Ver el texto completo que se enviará</summary>
         <pre className="ia-previa" id="ia-previa">{prompt}</pre>
-      </div>
+      </details>
       <p className="aviso">Al enviar, este texto sale de tu móvil hacia tu PC (Jarvis) y de allí a Claude. Revisa que no lleve nombres de jugadoras ni datos personales.</p>
       {largo && <p className="aviso" role="alert">El texto es demasiado largo ({prompt.length} de {MAX_PROMPT} letras): acorta el texto base o tus respuestas.</p>}
       {error && <p className="aviso" role="alert">{error}</p>}
-      <button className="principal ancho" onClick={dibujar} disabled={!hayDatos || largo}>Dibujar el ejercicio con Claude</button>
-      <button className="secundario ancho" onClick={mandar} disabled={!hayDatos || largo}>Solo la ficha de texto</button>
-      {!hayDatos && <p className="meta">Rellena al menos una cosa del cuestionario.</p>}
+      <button className="principal ancho" onClick={dibujar} disabled={largo}>Dibujar el ejercicio con Claude</button>
+      <button className="secundario ancho" onClick={mandar} disabled={largo}>Solo la ficha de texto</button>
       <p className="meta">Lo que conteste Claude llega como borrador: lo revisas y lo guardas tú. <button className="enlace" onClick={() => { olvidarConexion(); setCon(undefined); }}>Desconectar de Jarvis</button></p>
     </>
+  );
+}
+
+function Fila({ p, valor, abierta, elegir, otro, escribir }: {
+  p: Pregunta; valor: string; abierta: boolean; elegir: (o: string) => void; otro: () => void; escribir: (v: string) => void;
+}) {
+  return (
+    <div className="campo-diario" role="group" aria-label={p.nombre}>
+      <span>{p.nombre}</span>
+      <div className="fila-chips">
+        {p.opciones.map((o) => <button key={o} className={!abierta && valor === o ? 'chip on' : 'chip'} aria-pressed={!abierta && valor === o} onClick={() => elegir(o)}>{o}</button>)}
+        <button className={abierta ? 'chip on' : 'chip'} aria-pressed={abierta} onClick={otro}>Otro</button>
+      </div>
+      {abierta && <input id={`ia-${p.k}`} value={valor} maxLength={200} autoFocus placeholder="Escríbelo aquí" onChange={(e) => escribir(e.target.value)} />}
+    </div>
   );
 }
 

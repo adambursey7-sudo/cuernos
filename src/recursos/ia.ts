@@ -25,10 +25,11 @@ export interface Cuestionario {
   minutos: string;
   material: string;
   espacio: string;
+  nivel: string;
   notas: string;
 }
 
-export const CUESTIONARIO_VACIO: Cuestionario = { objetivo: '', edad: '', jugadoras: '', minutos: '', material: '', espacio: '', notas: '' };
+export const CUESTIONARIO_VACIO: Cuestionario = { objetivo: '', edad: '', jugadoras: '', minutos: '', material: '', espacio: '', nivel: '', notas: '' };
 
 const ETIQUETAS: [keyof Cuestionario, string][] = [
   ['objetivo', 'Goal of the drill'],
@@ -37,6 +38,7 @@ const ETIQUETAS: [keyof Cuestionario, string][] = [
   ['minutos', 'Time available (minutes)'],
   ['material', 'Equipment available'],
   ['espacio', 'Space'],
+  ['nivel', 'Level of the players'],
   ['notas', 'Extra notes'],
 ];
 
