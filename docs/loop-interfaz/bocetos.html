@@ -1,0 +1,282 @@
+<title>Horns, menú y pantalla Hoy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Graduate&display=swap">
+<style>
+/* Marcador de Horns: oscuro, parqué como principal. Bocetos: varias teles por opción, con ventajas e inconvenientes. */
+:root{--bg:#14110e;--panel:#211c17;--panel2:#2c251e;--fg:#f3ece2;--mute:#a89d8e;--acc:#e8883a;--ok:#7fc58a;--mal:#e5736a;--linea:#3a3128;
+--disp:'Graduate','Rockwell',Georgia,serif;--txt:'Atkinson Hyperlegible',system-ui,'Segoe UI',sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 var(--txt);margin:0;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+h1,h2,h3{font-family:var(--disp);font-weight:400;text-wrap:balance;margin:0}
+h1{font-size:2.3rem;line-height:1.1}
+h2{font-size:1.5rem;color:var(--acc)}
+h3{font-size:1.1rem}
+p{margin:0}
+.mute{color:var(--mute)}
+section{background:var(--panel);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.ops{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.op{background:var(--panel2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.op.rec{outline:2px solid var(--acc)}
+.letra{font:1.9rem/1 var(--disp);color:var(--acc)}
+.pros{font-size:.9rem;display:grid;gap:4px}
+.pros b{color:var(--ok)}.pros i{color:var(--mal);font-style:normal;font-weight:700}
+.rect{font-size:.8rem;color:var(--acc);font-weight:700}
+/* tele */
+.tel{width:100%;max-width:236px;margin:0 auto;aspect-ratio:9/17;background:var(--bg);border:2px solid var(--linea);border-radius:22px;display:flex;flex-direction:column;overflow:hidden;font-size:11px;line-height:1.3}
+.cuerpo{flex:1;min-height:0;padding:10px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.tit{font:15px/1 var(--disp);text-transform:uppercase}
+.sub{font:10px/1 var(--disp);color:var(--mute);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.caja{background:var(--panel);border-radius:9px;padding:7px 8px;display:flex;flex-direction:column;gap:3px}
+.caja.grande{background:var(--acc);color:#14110e}
+.caja.grande .m{color:#3b2a18}
+.m{color:var(--mute);font-size:10px}
+.num{font:34px/.85 var(--disp);font-variant-numeric:tabular-nums}
+.btn{background:var(--acc);color:#14110e;border-radius:8px;padding:6px 8px;font:700 11px var(--txt);text-align:center}
+.btn.o{background:none;color:var(--fg);border:1.5px solid var(--mute)}
+.fila{display:flex;gap:6px;align-items:center}
+.fila>*{min-width:0}
+.fila .btn{flex:1}
+.chip{border:1.5px solid var(--mute);border-radius:999px;padding:1px 7px;font-size:10px;white-space:nowrap}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#14110e;font-weight:700}
+.chips{display:flex;gap:4px;overflow:hidden}
+.buscar{background:var(--panel);border-radius:9px;padding:7px 8px;color:var(--mute);display:flex;justify-content:space-between}
+.mini{width:30px;height:24px;border-radius:5px;background:var(--pista,#a8793f);flex:none}
+.pp{display:flex;gap:6px;align-items:center;background:var(--panel);border-radius:8px;padding:5px 6px}
+/* barras inferiores */
+.bar{display:grid;border-top:1px solid var(--linea);background:var(--bg);padding:5px 4px 9px;gap:2px;align-items:end}
+.bar div{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--mute);font:8.5px/1 var(--disp);text-transform:uppercase;padding:4px 0;border-radius:8px}
+.bar div svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bar div.on{color:var(--acc);background:color-mix(in srgb,var(--acc) 16%,transparent)}
+.bar div.cen{background:var(--acc);color:#14110e;border-radius:14px;padding:7px 0;margin-top:-14px;box-shadow:0 0 0 4px var(--bg)}
+.bar div.cen svg{width:24px;height:24px}
+.b5{grid-template-columns:repeat(5,1fr)}.b4{grid-template-columns:repeat(4,1fr)}
+.gr{font:900 22px/1 var(--disp)}
+.gigante{font:44px/.9 var(--disp);color:var(--acc);font-variant-numeric:tabular-nums}
+.tabla{width:100%;border-collapse:collapse;font-size:.92rem}
+.tabla td,.tabla th{border-top:1px solid var(--linea);padding:8px 10px 8px 0;text-align:left;vertical-align:top}
+.tabla th{font:400 .8rem var(--disp);color:var(--mute)}
+.q{background:var(--panel2);border-radius:12px;padding:14px;display:grid;gap:6px}
+.q b{color:var(--acc)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-hoy" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></symbol>
+<symbol id="i-bib" viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></symbol>
+<symbol id="i-ses" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></symbol>
+<symbol id="i-eq" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 14.5c3 0 6 1.6 6 5.5"/></symbol>
+<symbol id="i-mas" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></symbol>
+<symbol id="i-piz" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15l4-5 3 3 3-4"/></symbol>
+<symbol id="i-tem" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+</svg>
+
+<main>
+<header>
+<h1>Horns: menú y pantalla Hoy</h1>
+<p class="mute">Bocetos para elegir. No se programa nada hasta que contestes. Todos los datos son de ejemplo («Ejemplo Uno», «Ejemplo Dos»), sin nombres reales.</p>
+</header>
+
+<section>
+<h2>Lo que hay hoy y lo que molesta</h2>
+<p>Ahora hay seis pestañas abajo (Inicio, Jugadas, Ejercicios, Sesiones, Equipo, Ajustes). Con letra de 10 píxeles y los pulgares en el borde, cuesta acertar. Dentro de Equipo hay otra fila de pestañas (plantilla, temporada…) y el cronómetro solo se encuentra entrando en una sesión.</p>
+<p class="mute">Tamaño actual de la app publicada: unos 540 KB en total. Lo mediré otra vez al terminar cada tramo.</p>
+</section>
+
+<!-- ============ MENÚ ============ -->
+<section>
+<h2>1. Menú de abajo: tres formas</h2>
+<p class="mute">Misma pantalla Hoy en las tres, solo cambia la barra. Pregunta: ¿cuál alcanzas mejor con una mano y prisa?</p>
+<div class="ops">
+
+<div class="op rec">
+<span class="letra">A</span><span class="rect">Mi recomendación</span>
+<h3>Cinco apartados iguales</h3>
+<div class="tel"><div class="cuerpo"><div class="tit">Hoy</div><div class="caja"><b>Entreno de hoy</b><span class="m">18:30 · Ejemplo Uno</span></div><div class="caja"><b>Seguir donde lo dejaste</b><span class="m">Sistema «Cuernos», paso 3</span></div></div>
+<div class="bar b5"><div class="on"><svg><use href="#i-hoy"/></svg>Hoy</div><div><svg><use href="#i-bib"/></svg>Biblioteca</div><div><svg><use href="#i-ses"/></svg>Sesiones</div><div><svg><use href="#i-eq"/></svg>Equipo</div><div><svg><use href="#i-mas"/></svg>Más</div></div></div>
+<div class="pros"><span><b>+</b> Todo a un toque: ninguna sección escondida.</span><span><b>+</b> Es lo que ya conoces; la gente la entiende sin explicar.</span><span><i>−</i> Cinco huecos en 390 px: cada uno de unos 78 px, justo, pero cabe con icono y palabra.</span><span><i>−</i> El cronómetro y la pizarra se entran desde Hoy, no desde la barra.</span></div>
+</div>
+
+<div class="op">
+<span class="letra">B</span>
+<h3>Cuatro apartados y botón Banda en el centro</h3>
+<div class="tel"><div class="cuerpo"><div class="tit">Hoy</div><div class="caja"><b>Entreno de hoy</b><span class="m">18:30 · Ejemplo Uno</span></div><div class="caja"><b>Seguir donde lo dejaste</b><span class="m">Sistema «Cuernos», paso 3</span></div></div>
+<div class="bar b5"><div class="on"><svg><use href="#i-hoy"/></svg>Hoy</div><div><svg><use href="#i-bib"/></svg>Biblioteca</div><div class="cen"><svg><use href="#i-ban"/></svg>Banda</div><div><svg><use href="#i-eq"/></svg>Equipo</div><div><svg><use href="#i-mas"/></svg>Más</div></div></div>
+<div class="pros"><span><b>+</b> El modo banda (pizarra, cronómetro, sesión) está siempre en el pulgar.</span><span><b>+</b> Se ve de lejos qué botón es «el de la pista».</span><span><i>−</i> Sesiones pasa a vivir dentro de Hoy y Biblioteca.</span><span><i>−</i> El botón central es más grande que los demás y se puede pulsar sin querer.</span></div>
+</div>
+
+<div class="op">
+<span class="letra">C</span>
+<h3>Cuatro apartados, más grandes</h3>
+<div class="tel"><div class="cuerpo"><div class="tit">Hoy</div><div class="caja"><b>Entreno de hoy</b><span class="m">18:30 · Ejemplo Uno</span></div><div class="caja"><b>Seguir donde lo dejaste</b><span class="m">Sistema «Cuernos», paso 3</span></div></div>
+<div class="bar b4"><div class="on"><svg><use href="#i-hoy"/></svg>Hoy</div><div><svg><use href="#i-bib"/></svg>Biblioteca</div><div><svg><use href="#i-eq"/></svg>Equipo</div><div><svg><use href="#i-mas"/></svg>Más</div></div></div>
+<div class="pros"><span><b>+</b> Cada botón mide unos 97 px: lo más fácil de acertar.</span><span><b>+</b> Menos cosas que mirar.</span><span><i>−</i> Sesiones se esconde dentro de Biblioteca, y Temporada dentro de Equipo.</span><span><i>−</i> Más pasos para llegar a una sesión desde cualquier sitio.</span></div>
+</div>
+
+</div>
+</section>
+
+<!-- ============ HOY ============ -->
+<section>
+<h2>2. Pantalla Hoy: tres formas</h2>
+<p class="mute">Lo que necesitas al abrir la app: lo siguiente que toca, la sesión lista, seguir donde lo dejaste, cronómetro y pizarra.</p>
+<div class="ops">
+
+<div class="op rec">
+<span class="letra">A</span><span class="rect">Mi recomendación</span>
+<h3>Tarjeta de «lo siguiente»</h3>
+<div class="tel"><div class="cuerpo">
+<div class="tit">Hoy</div><div class="sub">Jueves 5</div>
+<div class="caja grande"><span class="m">Siguiente · en 2 h 10 min</span><b style="font-size:13px">Entreno · Ejemplo Uno</b><span class="m">18:30 · sesión «Bote y pase» · 75 min</span><div class="btn" style="background:#14110e;color:var(--acc);margin-top:3px">Abrir la sesión</div></div>
+<div class="fila"><div class="btn o">Cronómetro</div><div class="btn o">Pizarra</div></div>
+<div class="caja"><span class="m">Seguir donde lo dejaste</span><b>Cuernos · paso 3 de 5</b></div>
+<div class="sub">Esta semana</div>
+<div class="pp"><span class="chip">Sáb</span><span>Partido vs Ejemplo Dos</span></div>
+</div>
+<div class="bar b5"><div class="on"><svg><use href="#i-hoy"/></svg>Hoy</div><div><svg><use href="#i-bib"/></svg>Biblioteca</div><div><svg><use href="#i-ses"/></svg>Sesiones</div><div><svg><use href="#i-eq"/></svg>Equipo</div><div><svg><use href="#i-mas"/></svg>Más</div></div></div>
+<div class="pros"><span><b>+</b> Una sola cosa grande: qué toca ahora y cómo abrirlo.</span><span><b>+</b> Si hoy no hay nada, la tarjeta pasa al siguiente día y avisa.</span><span><i>−</i> Es una pantalla de lectura, no de pista; para la pista está el modo banda.</span></div>
+</div>
+
+<div class="op">
+<span class="letra">B</span>
+<h3>Marcador: cuenta atrás y dos botones enormes</h3>
+<div class="tel"><div class="cuerpo">
+<div class="tit">Hoy</div>
+<div class="caja" style="text-align:center;gap:2px"><span class="m">Entreno · Ejemplo Uno</span><span class="gigante">2:10</span><span class="m">horas para las 18:30</span></div>
+<div class="btn" style="padding:12px;font-size:13px">Empezar la sesión</div>
+<div class="btn o" style="padding:12px;font-size:13px">Pizarra</div>
+<div class="caja"><span class="m">Seguir donde lo dejaste</span><b>Cuernos · paso 3 de 5</b></div>
+</div>
+<div class="bar b5"><div class="on"><svg><use href="#i-hoy"/></svg>Hoy</div><div><svg><use href="#i-bib"/></svg>Biblioteca</div><div><svg><use href="#i-ses"/></svg>Sesiones</div><div><svg><use href="#i-eq"/></svg>Equipo</div><div><svg><use href="#i-mas"/></svg>Más</div></div></div>
+<div class="pros"><span><b>+</b> Es el estilo Marcador puro: número grande, botones para el pulgar.</span><span><b>+</b> Se lee de lejos.</span><span><i>−</i> La semana no se ve; hay que ir a Equipo → Temporada.</span><span><i>−</i> Un día sin entreno queda vacío (se llena con la sesión que más usas).</span></div>
+</div>
+
+<div class="op">
+<span class="letra">C</span>
+<h3>Línea del día</h3>
+<div class="tel"><div class="cuerpo">
+<div class="tit">Hoy</div><div class="sub">Jueves 5</div>
+<div class="fila"><div class="btn o">Cronómetro</div><div class="btn o">Pizarra</div><div class="btn o">Sesión</div></div>
+<div class="pp"><b class="gr">17:00</b><span class="m">Material y pista</span></div>
+<div class="pp" style="outline:1.5px solid var(--acc)"><b class="gr" style="color:var(--acc)">18:30</b><span><b>Entreno</b><br><span class="m">Bote y pase</span></span></div>
+<div class="pp"><b class="gr">20:00</b><span class="m">Revisar el balance del sábado</span></div>
+<div class="caja"><span class="m">Seguir donde lo dejaste</span><b>Cuernos · paso 3</b></div>
+</div>
+<div class="bar b5"><div class="on"><svg><use href="#i-hoy"/></svg>Hoy</div><div><svg><use href="#i-bib"/></svg>Biblioteca</div><div><svg><use href="#i-ses"/></svg>Sesiones</div><div><svg><use href="#i-eq"/></svg>Equipo</div><div><svg><use href="#i-mas"/></svg>Más</div></div></div>
+<div class="pros"><span><b>+</b> Ves el día entero, como una agenda.</span><span><b>+</b> Los tres atajos arriba, siempre en el mismo sitio.</span><span><i>−</i> Más texto pequeño; peor con poca luz.</span><span><i>−</i> Las horas de estudio o material habría que apuntarlas a mano.</span></div>
+</div>
+
+</div>
+</section>
+
+<!-- ============ BIBLIOTECA ============ -->
+<section>
+<h2>3. Biblioteca: dos formas</h2>
+<p class="mute">Jugadas, Ejercicios, Juegos y Recursos (lo que guardes desde enlaces). Buscador siempre visible, filtros por categoría, nivel, edad, jugadoras, material, duración y objetivo, y favoritos.</p>
+<div class="ops">
+
+<div class="op rec">
+<span class="letra">A</span><span class="rect">Mi recomendación</span>
+<h3>Cuatro ramas arriba y filtros en una hoja</h3>
+<div class="tel"><div class="cuerpo">
+<div class="tit">Biblioteca</div>
+<div class="buscar"><span>Buscar…</span><span>Filtros · 2</span></div>
+<div class="chips"><span class="chip on">Ejercicios</span><span class="chip">Jugadas</span><span class="chip">Juegos</span><span class="chip">Recursos</span></div>
+<div class="chips"><span class="chip">Favoritos</span><span class="chip on">Cadete</span><span class="chip on">10 min</span></div>
+<div class="pp"><div class="mini"></div><span><b>2x0 bote y pase</b><br><span class="m">10 min · 4 jugadoras</span></span></div>
+<div class="pp"><div class="mini"></div><span><b>3x3 con bloqueo</b><br><span class="m">12 min · 6 jugadoras</span></span></div>
+<div class="pp"><div class="mini"></div><span><b>Juego de pases</b><br><span class="m">8 min · cualquier número</span></span></div>
+</div>
+<div class="bar b5"><div><svg><use href="#i-hoy"/></svg>Hoy</div><div class="on"><svg><use href="#i-bib"/></svg>Biblioteca</div><div><svg><use href="#i-ses"/></svg>Sesiones</div><div><svg><use href="#i-eq"/></svg>Equipo</div><div><svg><use href="#i-mas"/></svg>Más</div></div></div>
+<div class="pros"><span><b>+</b> Un solo sitio para buscar en todo.</span><span><b>+</b> Los filtros ocupan poco: se abren desde un botón y se ven como chips al aplicarlos.</span><span><i>−</i> Cuatro ramas en una fila se deslizan de lado si no caben.</span></div>
+</div>
+
+<div class="op">
+<span class="letra">B</span>
+<h3>Portada con cuatro cuadros grandes</h3>
+<div class="tel"><div class="cuerpo">
+<div class="tit">Biblioteca</div>
+<div class="buscar"><span>Buscar en todo…</span><span></span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+<div class="caja" style="height:62px"><b>Jugadas</b><span class="m">24</span></div>
+<div class="caja" style="height:62px"><b>Ejercicios</b><span class="m">58</span></div>
+<div class="caja" style="height:62px"><b>Juegos</b><span class="m">12</span></div>
+<div class="caja" style="height:62px"><b>Recursos</b><span class="m">9</span></div>
+</div>
+<div class="sub">Mis colecciones</div>
+<div class="chips"><span class="chip">Favoritos</span><span class="chip">Defensa</span><span class="chip">Cadete</span></div>
+</div>
+<div class="bar b5"><div><svg><use href="#i-hoy"/></svg>Hoy</div><div class="on"><svg><use href="#i-bib"/></svg>Biblioteca</div><div><svg><use href="#i-ses"/></svg>Sesiones</div><div><svg><use href="#i-eq"/></svg>Equipo</div><div><svg><use href="#i-mas"/></svg>Más</div></div></div>
+<div class="pros"><span><b>+</b> Se entiende a la primera y los botones son enormes.</span><span><b>+</b> Las colecciones salen en la portada.</span><span><i>−</i> Un toque más para llegar a una lista; los filtros solo dentro de cada rama.</span></div>
+</div>
+
+</div>
+</section>
+
+<!-- ============ MODO BANDA ============ -->
+<section>
+<h2>4. Modo banda: dos formas</h2>
+<p class="mute">Pantalla simple para usar durante el entreno: letra enorme, sin menús, pantalla siempre encendida. Se entra desde Hoy (o desde el botón Banda si eliges el menú B) y se sale con un deslizamiento hacia abajo.</p>
+<div class="ops">
+
+<div class="op rec">
+<span class="letra">A</span><span class="rect">Mi recomendación</span>
+<h3>Tres paneles que se cambian de lado</h3>
+<div class="tel"><div class="cuerpo" style="gap:8px">
+<div class="chips" style="justify-content:center"><span class="chip on">Cronómetro</span><span class="chip">Sesión</span><span class="chip">Pizarra</span></div>
+<div style="text-align:center;margin-top:18px"><span class="m">Ejercicio 2 de 5 · Bote y pase</span><div class="gigante" style="font-size:62px;margin-top:6px">06:42</div></div>
+<div class="caja" style="margin-top:auto"><span class="m">Siguiente</span><b style="font-size:14px">3x3 con bloqueo · 12 min</b></div>
+<div class="fila"><div class="btn" style="padding:14px;font-size:14px">Pausa</div><div class="btn o" style="padding:14px;font-size:14px">Saltar</div></div>
+</div></div>
+<div class="pros"><span><b>+</b> Un gesto, un panel: no hay botones pequeños.</span><span><b>+</b> Letra de 60 px en el cronómetro.</span><span><i>−</i> Hay que saber que se desliza (se enseña la primera vez con puntos abajo).</span></div>
+</div>
+
+<div class="op">
+<span class="letra">B</span>
+<h3>Una pantalla con tres botones grandes abajo</h3>
+<div class="tel"><div class="cuerpo" style="gap:8px">
+<div style="text-align:center;margin-top:8px"><span class="m">Ejercicio 2 de 5</span><div class="gigante" style="font-size:62px;margin-top:6px">06:42</div><b>Bote y pase</b></div>
+<div class="caja" style="margin-top:auto"><span class="m">Siguiente</span><b style="font-size:14px">3x3 con bloqueo · 12 min</b></div>
+</div>
+<div class="bar b4" style="padding-bottom:12px"><div class="on"><svg><use href="#i-ban"/></svg>Pausa</div><div><svg><use href="#i-ses"/></svg>Sesión</div><div><svg><use href="#i-piz"/></svg>Pizarra</div><div><svg><use href="#i-hoy"/></svg>Salir</div></div></div>
+<div class="pros"><span><b>+</b> Los botones se ven y no hay que adivinar nada.</span><span><b>+</b> Salir está a la vista.</span><span><i>−</i> Es otra barra más abajo: parece un menú, que es lo que queríamos evitar.</span></div>
+</div>
+
+</div>
+</section>
+
+<!-- ============ RESTO ============ -->
+<section>
+<h2>5. Equipo y Temporada, y el acabado</h2>
+<table class="tabla">
+<tr><th>Parte</th><th>Cómo lo haría</th></tr>
+<tr><td>Equipo</td><td>Plantilla, fichas, dorsales, quién es quién, asistencia y diario como una lista de entradas grandes. Temporada dentro de Equipo (calendario del mes y lista de la semana, exportar al calendario del móvil).</td></tr>
+<tr><td>Más</td><td>Ajustes (colores, copia de seguridad), ayuda, y los atajos que no caben en la barra.</td></tr>
+<tr><td>Transiciones</td><td>Cortas (120–180 ms), solo para mostrar de dónde viene una pantalla. Se apagan si el teléfono tiene «reducir movimiento».</td></tr>
+<tr><td>Estados vacíos</td><td>Cada lista vacía explica qué va ahí y tiene un botón con la acción («Añadir la primera jugadora»).</td></tr>
+<tr><td>Carga</td><td>Esqueletos grises en lugar de pantalla en blanco.</td></tr>
+<tr><td>Volver</td><td>Deslizar desde el borde izquierdo, como en el iPhone, además del botón.</td></tr>
+<tr><td>Letra y contraste</td><td>Tamaño de letra ajustable en Más; contraste de los colores del entrenador comprobado solo.</td></tr>
+<tr><td>Sin conexión</td><td>Ya funciona como app instalada; lo compruebo con el avión puesto.</td></tr>
+</table>
+</section>
+
+<section>
+<h2>6. Tramos (cada uno se puede usar solo)</h2>
+<table class="tabla">
+<tr><th>Tramo</th><th>Qué entra</th></tr>
+<tr><td>1. Esqueleto</td><td>La barra nueva, las pantallas actuales colocadas en su sitio nuevo, volver deslizando. Los datos guardados no cambian.</td></tr>
+<tr><td>2. Hoy</td><td>La pantalla Hoy elegida con la siguiente sesión o partido, seguir donde lo dejaste, y cronómetro y pizarra a un toque.</td></tr>
+<tr><td>3. Biblioteca</td><td>Buscador, filtros, favoritos y colecciones. Juegos y Recursos aparecen vacíos y listos para el siguiente trabajo (guardar desde enlaces).</td></tr>
+<tr><td>4. Equipo y Temporada</td><td>Reordenar lo que ya existe con la nueva navegación.</td></tr>
+<tr><td>5. Modo banda</td><td>Pantalla simple, siempre encendida.</td></tr>
+<tr><td>6. Acabado</td><td>Esqueletos, estados vacíos, letra ajustable, revisión sin conexión y de accesibilidad.</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Lo que necesito que elijas</h2>
+<div class="q"><span><b>1.</b> Menú de abajo: A (cinco iguales), B (con botón Banda en el centro) o C (cuatro grandes).</span><span><b>2.</b> Pantalla Hoy: A (tarjeta de lo siguiente), B (marcador) o C (línea del día).</span><span><b>3.</b> Biblioteca: A (filtros en una hoja) o B (portada con cuatro cuadros).</span><span><b>4.</b> Modo banda: A (paneles que se deslizan) o B (botones abajo).</span><span class="mute">Si no contestas alguna, sigo con la que lleva «Mi recomendación». Hasta que contestes no programo nada.</span></div>
+</section>
+</main>

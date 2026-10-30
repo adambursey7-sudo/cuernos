@@ -51,7 +51,7 @@ export function Ajustes() {
 
   return (
     <section className="pantalla">
-      <h1 className="titulo">Ajustes</h1>
+      <h1 className="titulo">Más</h1>
       <h2 className="sub">Entrada</h2>
       <label className="campo-diario">
         <span><input type="checkbox" checked={intro} onChange={(ev) => { setIntro(ev.target.checked); ponerIntroActiva(ev.target.checked); }} /> Vídeo de entrada al abrir la app (una vez al día)</span>
