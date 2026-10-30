@@ -52,6 +52,52 @@ img{width:100%;max-width:260px;height:auto;border-radius:12px;margin:0 auto;disp
 </header>
 
 
+<section id="vuelta2">
+  <h2>Vuelta 2 · La pizarra: moverse con el dedo (30/10)</h2>
+  <p class="mute">Dices que el movimiento en las pizarras no es intuitivo. Lo que veo en el editor de hoy: los jugadores no parecen «agarrables», el movimiento se adivina sin que lo elijas, el balón es un puntito, no hay forma de ver el paso ya hecho ni de ir a un paso anterior, y la explicación es un párrafo largo. Tres formas de arreglarlo (dibujos con números inventados):</p>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Tocar, mover y elegir</h3>
+      <div class="tel"><span class="tit">Mi jugada</span>
+        <div class="pestanas"><span>Colocar</span><span class="on">Paso 1</span><span>Paso 2</span><span>＋</span><span>▶</span></div>
+        <div class="pista">
+          <svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%"><path d="M50 78Q30 70 28 42" stroke="#14110e" stroke-width="1.6" fill="none" stroke-dasharray="3 2"/><path d="M30 48L28 41L35 44" stroke="#14110e" stroke-width="1.6" fill="none"/></svg>
+          <span class="jug" style="left:28%;top:40%;border-color:var(--acc);box-shadow:0 0 0 3px #e8883a66">2</span>
+          <span class="jug" style="left:50%;top:78%;opacity:.45">2</span>
+          <span class="jug" style="left:18%;top:20%">4</span><span class="jug" style="left:82%;top:20%">5</span><span class="jug" style="left:80%;top:50%">3</span><span class="jug" style="left:50%;top:60%">1</span>
+        </div>
+        <div class="pestanas" style="flex-wrap:wrap"><span class="on">Corte</span><span>Bote</span><span>Bloqueo</span><span>Pase a…</span><span>🗑</span></div>
+        <p class="mini">El jugador te sigue el dedo. Al soltar sale la barra con lo que hace.</p></div>
+      <div class="pros"><span><b>＋</b> El jugador se mueve de verdad mientras arrastras, con su sitio de salida en gris.</span><span><b>＋</b> Tocas un jugador y se marca; la barra de abajo elige corte, bote, bloqueo o pase (ya no se adivina a ciegas) y borrar.</span><span><b>＋</b> Tira de pasos arriba: saltas a cualquier paso y ▶ lo reproduce.</span><span><i>－</i> Algo más de pantalla ocupada.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Toca, elige y toca</h3>
+      <div class="tel"><span class="tit">Mi jugada</span>
+        <p class="fase" style="background:var(--acc);color:#14110e;border-radius:8px;padding:5px 7px">① Toca al 2 · ② Elige: Corte · ③ Toca dónde va</p>
+        <div class="pista">
+          <span class="jug" style="left:50%;top:78%;border-color:var(--acc);box-shadow:0 0 0 3px #e8883a66">2</span>
+          <span class="jug" style="left:18%;top:20%">4</span><span class="jug" style="left:82%;top:20%">5</span><span class="jug" style="left:80%;top:50%">3</span><span class="jug" style="left:50%;top:60%">1</span>
+          <span style="position:absolute;left:28%;top:40%;width:14px;height:14px;border:2px dashed #14110e;border-radius:50%;transform:translate(-50%,-50%)"></span>
+        </div>
+        <div class="pestanas"><span class="on">Corte</span><span>Bote</span><span>Bloqueo</span><span>Pase</span></div>
+        <p class="mini">Sin arrastrar: todo con toques</p></div>
+      <div class="pros"><span><b>＋</b> Nada de arrastrar: no se desplaza la pantalla ni se falla el agarre con el dedo grande.</span><span><b>＋</b> Una pista dice siempre qué toca.</span><span><i>－</i> Más toques por movimiento; la curva hay que añadirla con un tercer toque.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>Guiado con una orden grande</h3>
+      <div class="tel"><span class="tit">Mi jugada · Paso 1</span>
+        <p class="fase" style="font-family:var(--disp);font-size:14px;line-height:1.2;padding:4px 0">¿Qué jugador se mueve?</p>
+        <div class="pista">
+          <span class="jug" style="left:50%;top:78%">2</span><span class="jug" style="left:18%;top:20%">4</span><span class="jug" style="left:82%;top:20%">5</span><span class="jug" style="left:80%;top:50%">3</span><span class="jug" style="left:50%;top:60%">1</span>
+        </div>
+        <div class="pestanas"><span>Atrás</span><span class="on">Listo, otro paso</span></div>
+        <p class="mini">La orden cambia sola: elige jugador → arrástralo → qué hace → ¿otro?</p></div>
+      <div class="pros"><span><b>＋</b> Nadie se pierde la primera vez.</span><span><i>－</i> Más lento cuando ya lo dominas; ocupa un banner grande.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo A.</b> Y además lo mismo para <b>ver</b> la jugada: tocar un jugador en la pizarra de ver la jugada resalta su camino. Los números de la pizarra (decisión que ya tomaste, quién es quién) los programo mientras tanto, porque no dependen de esto.</p>
+</section>
+
 <section id="vuelta1">
   <h2>Vuelta 1 · Plantilla y fichas (30/10)</h2>
   <p class="mute">Decisiones tuyas: ficha A, números A, temporada mezcla; IA con cuestionario. Ya está la pestaña <b>Equipo</b>.</p>
