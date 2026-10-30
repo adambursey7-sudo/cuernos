@@ -1,7 +1,7 @@
 // «Pedir a Claude» (tramo 4): cuestionario corto → texto completo a la vista → envío por Jarvis → borrador de ficha.
 // Nada sale del móvil hasta que se toca «Enviar a Claude», y siempre con el texto completo delante.
-import { useRef, useState } from 'react';
-import { borradorDeRespuesta, construirPrompt, CUESTIONARIO_VACIO, guardarBase, leerBase, PROMPT_BASE, type Cuestionario } from '../recursos/ia';
+import { useEffect, useRef, useState } from 'react';
+import { borradorDeRespuesta, construirPrompt, CUESTIONARIO_VACIO, guardarBase, leerBase, MAX_PROMPT, PROMPT_BASE, type Cuestionario } from '../recursos/ia';
 import { emparejar, enviar, ErrorJarvis, esperar, leerConexion, olvidarConexion, type Conexion } from '../recursos/jarvis';
 import type { Ficha } from '../recursos/fichas';
 import { nombreRecurso, type Recurso } from '../recursos/recursos';
@@ -23,9 +23,11 @@ export function PedirIA({ recurso, borrador }: { recurso?: Recurso; borrador: (f
   const [fase, setFase] = useState<'escribir' | 'esperando'>('escribir');
   const [error, setError] = useState('');
   const cancelado = useRef(false);
+  useEffect(() => () => { cancelado.current = true; }, []);   // al salir de la pantalla se deja de esperar
 
   const prompt = construirPrompt(base, c, recurso);
   const hayDatos = Object.values(c).some((v) => v.trim()) || !!recurso;
+  const largo = prompt.length > MAX_PROMPT;
 
   const mandar = async () => {
     if (!con) return;
@@ -35,6 +37,7 @@ export function PedirIA({ recurso, borrador }: { recurso?: Recurso; borrador: (f
     try {
       const id = await enviar(con, prompt);
       const respuesta = await esperar(con, id, () => cancelado.current);
+      if (cancelado.current) return;
       borrador(borradorDeRespuesta(respuesta, c, recurso));
     } catch (e) {
       if (e instanceof ErrorJarvis && e.reemparejar) { olvidarConexion(); setCon(undefined); }
@@ -75,8 +78,9 @@ export function PedirIA({ recurso, borrador }: { recurso?: Recurso; borrador: (f
         <pre className="ia-previa" id="ia-previa">{prompt}</pre>
       </div>
       <p className="aviso">Al enviar, este texto sale de tu móvil hacia tu PC (Jarvis) y de allí a Claude. Revisa que no lleve nombres de jugadoras ni datos personales.</p>
+      {largo && <p className="aviso" role="alert">El texto es demasiado largo ({prompt.length} de {MAX_PROMPT} letras): acorta el texto base o tus respuestas.</p>}
       {error && <p className="aviso" role="alert">{error}</p>}
-      <button className="principal ancho" onClick={mandar} disabled={!hayDatos}>Enviar a Claude</button>
+      <button className="principal ancho" onClick={mandar} disabled={!hayDatos || largo}>Enviar a Claude</button>
       {!hayDatos && <p className="meta">Rellena al menos una cosa del cuestionario.</p>}
       <p className="meta">Lo que conteste Claude llega como borrador: lo revisas y lo guardas tú. <button className="enlace" onClick={() => { olvidarConexion(); setCon(undefined); }}>Desconectar de Jarvis</button></p>
     </>

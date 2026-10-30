@@ -126,4 +126,16 @@ export const fichasDe = (fichas: Ficha[], recursoId: string) => fichas.filter((f
 /** Los bloques de una sesión que vienen de «Mis ejercicios» llevan este prefijo en lugar del id de la biblioteca. */
 export const PREFIJO_FICHA = 'ficha~';
 export const idBloqueFicha = (f: Ficha) => `${PREFIJO_FICHA}${f.id}`;
-export const fichaDeBloque = (id: string): Ficha | undefined => (id.startsWith(PREFIJO_FICHA) ? leerFichas().find((f) => f.id === id.slice(PREFIJO_FICHA.length)) : undefined);
+// Se llama por cada bloque y en cada tic del cronómetro: solo se vuelve a leer la lista si lo guardado ha cambiado.
+let memo: { crudo: string | null; lista: Ficha[] } | undefined;
+function fichasMemo(): Ficha[] {
+  let crudo: string | null = null;
+  try {
+    crudo = localStorage.getItem(CLAVE);
+  } catch {
+    return [];
+  }
+  if (!memo || memo.crudo !== crudo) memo = { crudo, lista: leerFichas() };
+  return memo.lista;
+}
+export const fichaDeBloque = (id: string): Ficha | undefined => (id.startsWith(PREFIJO_FICHA) ? fichasMemo().find((f) => f.id === id.slice(PREFIJO_FICHA.length)) : undefined);

@@ -61,8 +61,9 @@ describe('respuesta de Claude', () => {
 
   it('descarta categoría, minutos y tipos que no valen', () => {
     const r = leerRespuesta('{"nombre":"A","categoria":"Magia","minutos":9999,"pasos":"no es lista","consejos":5}');
-    expect(r.categoria).toBe('');
-    expect(r.minutos).toBe(10);
+    expect(r.categoria).toBeUndefined();
+    expect(r.minutos).toBeUndefined();
+    expect(leerRespuesta('{"minutos":true}').minutos).toBeUndefined();
     expect(r.pasos).toEqual([]);
     expect(r.consejos).toBe('');
   });
@@ -77,6 +78,7 @@ describe('respuesta de Claude', () => {
     expect(f.etiquetas).toEqual(['borrador-claude']);
     expect(f.edad).toBe('Infantil');
     expect(f.pasos).toEqual(['Uno', 'Dos']);
+    expect(borradorDeRespuesta('{"nombre":"A"}', { ...CUESTIONARIO_VACIO, minutos: '25' }).minutos).toBe(25);
     const vacio = borradorDeRespuesta('{}', CUESTIONARIO_VACIO);
     expect(vacio.nombre).toBe('Ejercicio de Claude');
     expect(vacio.pasos).toEqual(['']);

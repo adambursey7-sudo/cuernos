@@ -6,6 +6,9 @@ import type { Recurso } from './recursos';
 
 const CLAVE_BASE = 'horns.ia.base';
 
+/** Tope de letras que acepta Jarvis; el texto de la pantalla nunca se corta por el camino. */
+export const MAX_PROMPT = 8000;
+
 export const PROMPT_BASE = `You are the assistant of a youth basketball coach. Write ONE practice drill sheet from the information below.
 Rules:
 - Do not invent plays, systems or diagrams. If something is unclear, leave that field empty.
@@ -82,12 +85,12 @@ export function leerRespuesta(crudo: string): Partial<Ficha> {
     try {
       const x = JSON.parse(crudo.slice(a, b + 1)) as Record<string, unknown>;
       const pasos = Array.isArray(x.pasos) ? x.pasos.map((p) => texto(p, 300)).filter(Boolean).slice(0, 10) : [];
-      const min = Number(x.minutos);
+      const min = typeof x.minutos === 'number' || typeof x.minutos === 'string' ? Number(x.minutos) : NaN;
       return {
         nombre: texto(x.nombre, 200),
         objetivo: texto(x.objetivo, 600),
-        categoria: (CATEGORIAS as readonly string[]).includes(texto(x.categoria, 40)) ? texto(x.categoria, 40) : '',
-        minutos: Number.isFinite(min) && min >= 1 && min <= 120 ? Math.round(min) : 10,
+        categoria: (CATEGORIAS as readonly string[]).includes(texto(x.categoria, 40)) ? texto(x.categoria, 40) : undefined,
+        minutos: Number.isFinite(min) && min >= 1 && min <= 120 ? Math.round(min) : undefined,
         material: texto(x.material, 300),
         pasos,
         consejos: texto(x.consejos, 1500),
@@ -108,7 +111,7 @@ export function borradorDeRespuesta(crudo: string, c: Cuestionario, recurso?: Re
     ...base,
     nombre: r.nombre || base.nombre || 'Ejercicio de Claude',
     objetivo: r.objetivo || una(c.objetivo, 600),
-    categoria: r.categoria ?? '',
+    categoria: r.categoria || '',
     minutos: r.minutos ?? (Number(c.minutos) > 0 ? Math.min(120, Math.round(Number(c.minutos))) : 10),
     material: r.material || una(c.material, 300),
     edad: una(c.edad, 80),
