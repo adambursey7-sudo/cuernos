@@ -12,7 +12,9 @@
 * { box-sizing: border-box; }
 /* Graduate solo tiene un grosor: sin negrita inventada por el navegador. */
 html { font-synthesis: none; }
-html, body { margin: 0; height: 100%; background: var(--fondo); color: var(--texto); font: 17px/1.5 var(--body); -webkit-tap-highlight-color: transparent; }
+html { font-size: calc(17px * var(--escala, 1)); }
+html, body { margin: 0; height: 100%; background: var(--fondo); color: var(--texto); -webkit-tap-highlight-color: transparent; }
+body { font: 1rem/1.5 var(--body); }
 /* Es una app de dedo: al arrastrar y salirse de la pista no se debe seleccionar texto ni salir el menú de copiar. */
 body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 input, textarea, select { -webkit-user-select: text; user-select: text; }
@@ -437,3 +439,21 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 .ent-puntos { display: flex; justify-content: center; gap: 8px; }
 .ent-puntos button { border: none; border-radius: 999px; background: var(--superficie); color: var(--tenue); font: 800 0.95rem var(--display); min-height: 44px; padding: 0 18px; }
 .ent-puntos button.on { background: var(--tipo, var(--principal)); color: var(--sobre-principal); }
+
+/* Acabado: reducir movimiento (lo elige el entrenador, además de lo que pida el sistema) */
+:root[data-quieto='si'] *, :root[data-quieto='si'] *::before, :root[data-quieto='si'] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+
+/* Sin conexión */
+.sin-red { position: sticky; top: 0; z-index: 20; margin: 0; padding: 6px 16px; background: var(--aviso); color: #1a1205; font: 700 0.9rem/1.3 var(--body); text-align: center; }
+
+/* Tamaño de letra (Más) */
+.letras { display: flex; gap: 8px; }
+.letras button { flex: 1; min-height: 48px; border: 2px solid transparent; border-radius: 12px; background: var(--superficie); font-weight: 700; }
+.letras button.on { border-color: var(--principal); }
+
+/* Carga con esqueleto: lo que se ve mientras arranca la app (está en index.html) */
+.esqueleto { max-width: 560px; margin: 0 auto; padding: 24px 16px; display: grid; gap: 14px; }
+.esqueleto i { display: block; height: 72px; border-radius: 14px; background: color-mix(in srgb, var(--texto, #fff) 9%, var(--fondo, #1e2a44)); animation: late 1.2s ease-in-out infinite; }
+.esqueleto i:first-child { height: 40px; width: 55%; }
+@keyframes late { 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) { .esqueleto i { animation: none; } }

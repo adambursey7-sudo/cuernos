@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Marca } from './Logo';
 import { Editor } from './editor/Editor';
 import { buscarEjercicio } from './ejercicios/ejercicios';
@@ -81,8 +81,29 @@ export function App() {
     );
   else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} />;
 
+  // Sin conexión: la app funciona igual, solo se avisa.
+  const [enLinea, setEnLinea] = useState(navigator.onLine);
+  useEffect(() => {
+    const poner = () => setEnLinea(navigator.onLine);
+    window.addEventListener('online', poner);
+    window.addEventListener('offline', poner);
+    return () => { window.removeEventListener('online', poner); window.removeEventListener('offline', poner); };
+  }, []);
+
+  // Volver deslizando: un dedo que empieza en el borde izquierdo y avanza a la derecha cierra la pantalla abierta.
+  const dedo = useRef<{ x: number; y: number } | null>(null);
+  const atras = edicion ? undefined : ejercicio ? () => setEjercicioId(null) : sistema ? () => setAbierto(null) : pestana === 'sesiones' && sesionId ? () => setSesionId(null) : undefined;
+  const tocar = (e: React.TouchEvent) => { const t = e.touches[0]; dedo.current = t.clientX < 28 ? { x: t.clientX, y: t.clientY } : null; };
+  const soltar = (e: React.TouchEvent) => {
+    const d = dedo.current;
+    dedo.current = null;
+    const t = e.changedTouches[0];
+    if (d && atras && t.clientX - d.x > 80 && Math.abs(t.clientY - d.y) < 60) atras();
+  };
+
   return (
-    <div className="app">
+    <div className="app" onTouchStart={tocar} onTouchEnd={soltar}>
+      {!enLinea && <p className="sin-red" role="status">Sin conexión: todo sigue funcionando, menos abrir enlaces.</p>}
       <main key={pestana} className="entra">{contenido}</main>
       <nav className="pestanas" aria-label="Secciones">
         {PESTANAS.map((p) => (

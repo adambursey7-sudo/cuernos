@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { TIPOS, buscarEjercicio } from '../ejercicios/ejercicios';
 import { inicioDe, posicion, reloj } from '../sesiones/cronometro';
 import { total, type Sesion } from '../sesiones/sesiones';
+import { sinMovimiento } from '../preferencias';
 import { Pista } from '../pizarra/Pista';
 import { useJugada } from '../pizarra/useJugada';
 import type { Sistema } from '../sistemas/tipos';
@@ -117,7 +118,7 @@ export function Entrenando({ s, salir, audio: ctx }: { s: Sesion; salir: () => v
 
   // Los paneles se deslizan de lado; empezamos en el del cronómetro.
   useEffect(() => { const c = pistas.current; if (c) c.scrollLeft = c.clientWidth; }, []);
-  const ver = (n: number) => pistas.current?.scrollTo({ left: n * pistas.current.clientWidth, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  const ver = (n: number) => pistas.current?.scrollTo({ left: n * pistas.current.clientWidth, behavior: sinMovimiento() ? 'auto' : 'smooth' });
   const alDeslizar = () => { const c = pistas.current; if (c) setPanel(Math.round(c.scrollLeft / c.clientWidth)); };
   // Deslizar la barra de arriba hacia abajo cierra el modo banda.
   const abajoIni = (ev: PointerEvent) => { yDedo.current = ev.clientY; };
