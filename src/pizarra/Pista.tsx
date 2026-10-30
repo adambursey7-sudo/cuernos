@@ -1,5 +1,6 @@
 // Media pista con los cinco atacantes y el balón. Se pinta con los colores del tema (variables CSS).
 import type { Punto, Sistema } from '../sistemas/tipos';
+import { numerosActivos, type Numeros } from '../diario/puestos';
 import { defensa, enCamino, foto, inicios, JUGADORES, pasoDe } from './animar';
 
 /** El jugador acaba encima del final de su flecha: se recorta para que la punta quede a la vista. */
@@ -43,7 +44,9 @@ function remate(desde: Punto, a: Punto, bloqueo: boolean) {
   return `M${x1} ${y1}L${a[0]} ${a[1]}L${x2} ${y2}`;
 }
 
-export function Pista({ sistema, t, alto = 140, conDefensa = false }: { sistema: Sistema; t: number; alto?: number; conDefensa?: boolean }) {
+/** `numeros`: lo que sale en cada círculo. Sin él, los dorsales del equipo elegido (salvo en ejercicios, donde 1–5 no son puestos); null = 1–5. */
+export function Pista({ sistema, t, alto = 140, conDefensa = false, numeros }: { sistema: Sistema; t: number; alto?: number; conDefensa?: boolean; numeros?: Numeros | null }) {
+  const etiqueta = (numeros === undefined ? (sistema.visibles ? null : numerosActivos()) : numeros) ?? undefined;
   const f = foto(sistema, t);
   const d = conDefensa ? defensa(sistema, t) : null;
   const i = pasoDe(t, sistema.pasos.length);
@@ -89,7 +92,7 @@ export function Pista({ sistema, t, alto = 140, conDefensa = false }: { sistema:
           return (
             <g key={j} className="jugador" transform={`translate(${x} ${y})`}>
               <circle r="7" />
-              <text>{j}</text>
+              <text style={(etiqueta?.[j] ?? j).length > 1 ? { fontSize: 5.4 } : undefined}>{etiqueta?.[j] ?? j}</text>
             </g>
           );
         })}

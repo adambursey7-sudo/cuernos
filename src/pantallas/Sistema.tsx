@@ -1,7 +1,9 @@
 // Un sistema en la pizarra: número de paso enorme, pista, explicación y botones grandes para usarlo en la banda.
 import { useEffect, useRef, useState } from 'react';
 import { HojaCompartir } from '../compartir/HojaCompartir';
+import { numerosActivos } from '../diario/puestos';
 import { Pista } from '../pizarra/Pista';
+import { SelectorNumeros } from '../pizarra/SelectorNumeros';
 import { useJugada } from '../pizarra/useJugada';
 import { borrarMio } from '../sistemas/almacen';
 import { NIVELES, type Nivel, type Sistema as SistemaDatos } from '../sistemas/tipos';
@@ -43,6 +45,7 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
   const [imprimiendo, setImprimiendo] = useState(false);
   const [tarjetas, setTarjetas] = useState(false);
   const inicioDedo = useRef<number | null>(null);
+  const [, setVersion] = useState(0);
   const cambiarDefensa = () => {
     setConDefensa(!conDefensa);
     guardarDefensa(!conDefensa);
@@ -95,6 +98,7 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
           <button className="chip" onClick={() => jugada.cambiarVelocidad()} aria-label="Cambiar la velocidad">
             {String(jugada.velocidad).replace('.', ',')}×
           </button>
+          <SelectorNumeros cambio={() => setVersion((v) => v + 1)} />
           <button className={conDefensa ? 'chip defensa on' : 'chip defensa'} aria-pressed={conDefensa} onClick={cambiarDefensa} aria-label="Enseñar u ocultar la defensa">
             ✕
           </button>
@@ -140,6 +144,11 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
         {s.pasos[paso].texto}
         {s.pasos[paso].revisar && <span className="aviso"> Por revisar</span>}
       </p>
+      {numerosActivos() && (
+        <p className="meta" aria-label="Qué dorsal hace cada puesto">
+          La explicación usa los puestos: {Object.entries(numerosActivos()!).map(([p, n]) => `${p} = ${n}`).join(' · ')}
+        </p>
+      )}
       <div className="mandos">
         <button onClick={() => jugada.anterior()} disabled={t <= 1}>Atrás</button>
         <button onClick={() => jugada.todo()}>▶ Jugada</button>

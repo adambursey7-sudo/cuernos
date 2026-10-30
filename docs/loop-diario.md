@@ -41,8 +41,8 @@ Horns pasa de ser una biblioteca de jugadas a ser el **cuaderno del entrenador**
 
 ## Tramo 2: dorsales en las pizarras
 - [x] 2.1 Diseño → Adam eligió A (30/10).
-- [ ] 2.2 «Quién es quién» por equipo: la 1, 2, 3, 4 y 5 de cada sistema con su jugadora.
-- [ ] 2.3 Los círculos de la pizarra, el GIF, la hoja de compartir y la ficha A4 enseñan el número elegido (con interruptor 1–5 / dorsales).
+- [x] 2.2 «Quién es quién» por equipo: la 1, 2, 3, 4 y 5 de cada sistema con su jugadora.
+- [x] 2.3 Los círculos de la pizarra, el GIF, la hoja de compartir y la ficha A4 enseñan el número elegido (con interruptor 1–5 / dorsales).
 - [ ] 2.4 Editor de sistemas propios con los puestos del equipo; revisión; parar.
 
 ## Tramo 3: temporada y calendario
@@ -62,3 +62,7 @@ Horns pasa de ser una biblioteca de jugadas a ser el **cuaderno del entrenador**
 
 ## Después (no entra en este loop)
 Fotos de las jugadoras, estadísticas de partido en directo, asistencia a entrenamientos (existe el script del calendario de Cadete aparte), compartir la plantilla con el staff, datos de salud y confidencialidad por círculos (ver `PLAN.md`).
+
+## Vuelta 2 (30/10): pizarra
+- Hecho: «quién es quién» en la ficha del equipo (con «Rellenar según su posición»), interruptor 1–5 / equipo en la pizarra y en pantalla completa, leyenda puesto = dorsal bajo la explicación, el GIF, la hoja y las fichas usan lo elegido; el editor sigue con 1–5. Los ejercicios (2x0, 3x3) no cambian.
+- Pendiente de Adam: boceto «moverse con el dedo» (A recomendado: tocar, mover y elegir; tira de pasos). 2.4 y el editor esperan esa respuesta.

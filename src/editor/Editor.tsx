@@ -138,7 +138,7 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
       </div>
 
       <div className="lienzo">
-        <Pista sistema={vista} t={t} />
+        <Pista sistema={vista} t={t} numeros={null} />
         <svg
           ref={capa}
           className="capa"

@@ -1,5 +1,7 @@
 // Diario del entrenador (opción A, elegida por Adam el 30/10): plantilla con dorsal grande y ficha con tres pestañas.
 // Todo vive solo en este móvil y entra en la copia de seguridad. No hay datos reales en el código.
+import { refrescarNumeros } from './puestos';
+
 const CLAVE = 'horns.diario';
 
 export const POSICIONES = ['Base', 'Escolta', 'Alero', 'Ala-pívot', 'Pívot'] as const;
@@ -36,6 +38,8 @@ export interface Equipo {
   trabajar: string;
   /** Cómo entrenarlo. */
   como: string;
+  /** Quién hace cada puesto de la pizarra (1 a 5): id de la jugadora. */
+  puestos?: Partial<Record<'1' | '2' | '3' | '4' | '5', string>>;
 }
 
 export interface Diario {
@@ -100,6 +104,7 @@ export function leerDiario(): Diario {
 export function guardarDiario(d: Diario): boolean {
   try {
     localStorage.setItem(CLAVE, JSON.stringify(limpiar(d)));
+    refrescarNumeros();
     return true;
   } catch {
     return false;

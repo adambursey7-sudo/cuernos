@@ -5,6 +5,7 @@ import {
   POSICIONES, guardarDiario, guardarEquipo, guardarJugadora, hoy, leerDiario, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, quitarJugadora, repetida,
   type Diario, type Equipo as EquipoDatos, type Jugadora,
 } from '../diario/diario';
+import { NOMBRE_PUESTO, PUESTOS, rellenarPuestos } from '../diario/puestos';
 import { leerTexto, textoDePdf, type Candidata } from '../diario/importar';
 
 type Vista = { tipo: 'plantilla' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
@@ -104,7 +105,7 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
   );
 }
 
-function FichaEquipo({ e, cambiar, borrar, volver, ir }: { e: EquipoDatos; cambiar: (e: EquipoDatos) => void; borrar: () => void; volver: () => void; ir: (t: 'ejercicios' | 'jugadas') => void }) {
+function FichaEquipo({ e, jugadoras, cambiar, borrar, volver, ir }: { e: EquipoDatos; jugadoras: Jugadora[]; cambiar: (e: EquipoDatos) => void; borrar: () => void; volver: () => void; ir: (t: 'ejercicios' | 'jugadas') => void }) {
   const [seguro, setSeguro] = useState(false);
   return (
     <section className="pantalla ficha-jugadora">
@@ -120,6 +121,21 @@ function FichaEquipo({ e, cambiar, borrar, volver, ir }: { e: EquipoDatos; cambi
       <Campo etiqueta="Virtudes del equipo" valor={e.virtudes} cambiar={(virtudes) => cambiar({ ...e, virtudes })} ayuda="En qué es bueno" />
       <Campo etiqueta="A trabajar" valor={e.trabajar} cambiar={(trabajar) => cambiar({ ...e, trabajar })} ayuda="Lo que hay que mejorar" />
       <Campo etiqueta="Cómo entrenarlo" valor={e.como} cambiar={(como) => cambiar({ ...e, como })} ayuda="Qué tipo de ejercicios y sistemas, y cuánto" filas={5} />
+      <div className="puestos">
+        <h2 className="sub">Quién es quién en la pizarra</h2>
+        <p className="meta">Cada puesto de las jugadas (1 a 5) con la jugadora que lo hace. En la pizarra puedes enseñar su dorsal en vez del puesto.</p>
+        {PUESTOS.map((p) => (
+          <label key={p} className="puesto">
+            <span className="dorsal" aria-hidden>{p}</span>
+            <span className="meta">{NOMBRE_PUESTO[p]}</span>
+            <select value={e.puestos?.[p] ?? ''} onChange={(ev) => cambiar({ ...e, puestos: { ...e.puestos, [p]: ev.target.value || undefined } })} aria-label={`Quién hace el puesto ${p}, ${NOMBRE_PUESTO[p]}`}>
+              <option value="">Sin elegir</option>
+              {jugadoras.map((j) => <option key={j.id} value={j.id}>{j.numero ? `#${j.numero}` : '#–'} {j.nombre}</option>)}
+            </select>
+          </label>
+        ))}
+        <button className="secundario" onClick={() => cambiar(rellenarPuestos({ equipos: [e], jugadoras }, e))}>Rellenar según su posición</button>
+      </div>
       <div className="dos-botones">
         <button className="secundario" onClick={() => ir('ejercicios')}>Buscar ejercicios</button>
         <button className="secundario" onClick={() => ir('jugadas')}>Buscar jugadas</button>
@@ -248,6 +264,7 @@ export function Equipo({ ir }: { ir: (t: 'ejercicios' | 'jugadas') => void }) {
     return (
       <FichaEquipo
         e={equipo}
+        jugadoras={plantilla(d, equipo.id)}
         cambiar={(e) => setD(guardarEquipo(d, e))}
         borrar={() => { const resto = d.equipos.filter((e) => e.id !== equipo.id); setD(quitarEquipo(d, equipo.id)); setActivo(resto[0]?.id ?? ''); setVista({ tipo: 'plantilla' }); }}
         volver={() => setVista({ tipo: 'plantilla' })}

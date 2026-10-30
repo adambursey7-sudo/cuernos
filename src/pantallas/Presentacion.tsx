@@ -2,6 +2,7 @@
 // siguiente y a la izquierda vuelve al anterior. Los mandos se esconden a los 2,5 s y vuelven al tocar.
 import { useEffect, useRef, useState } from 'react';
 import { Pista } from '../pizarra/Pista';
+import { SelectorNumeros } from '../pizarra/SelectorNumeros';
 import type { Sistema } from '../sistemas/tipos';
 import type { useJugada } from '../pizarra/useJugada';
 
@@ -15,6 +16,7 @@ export function Presentacion({ sistema, jugada, conDefensa, cambiarDefensa, cerr
   cerrar: () => void;
 }) {
   const [mandos, setMandos] = useState(true);
+  const [, setVersion] = useState(0);
   const reloj = useRef<number>(0);
   const total = sistema.pasos.length;
 
@@ -62,6 +64,7 @@ export function Presentacion({ sistema, jugada, conDefensa, cambiarDefensa, cerr
         <span className="cuenta">{jugada.paso + 1} / {total}</span>
         <button onClick={() => jugada.todo()}>▶ Todo</button>
         <button onClick={() => jugada.cambiarVelocidad()}>{String(jugada.velocidad).replace('.', ',')}×</button>
+        <SelectorNumeros className="" cambio={() => setVersion((v) => v + 1)} />
         <button className={conDefensa ? 'on' : ''} aria-pressed={conDefensa} onClick={cambiarDefensa}>✕ Defensa</button>
       </div>
       <p className="texto-paso">{sistema.pasos[jugada.paso].texto}</p>

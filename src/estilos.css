@@ -294,3 +294,10 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 .fila-previa .p-nom { flex: 1; min-width: 0; }
 .fila-previa input:not([type='checkbox']) { padding: 8px; border-radius: 8px; border: 1.5px solid var(--tenue); background: var(--fondo); color: var(--texto); font: inherit; }
 .ficha-jugadora .niveles[aria-label="Posición"] { flex-wrap: wrap; overflow: visible; }
+
+/* Quién es quién (tramo 2 del diario) */
+.puestos { display: grid; gap: 8px; }
+.puesto { display: flex; align-items: center; gap: 10px; }
+.puesto .dorsal { width: 38px; height: 38px; font-size: 1.2rem; flex: none; }
+.puesto .meta { flex: 1; min-width: 0; }
+.puesto select { flex: 1.4; min-width: 0; min-height: 44px; }
