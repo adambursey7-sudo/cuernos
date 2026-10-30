@@ -24,3 +24,10 @@ describe('quién es quién', () => {
     expect(puestosDe(d, { ...nuevoEquipo('Otro'), puestos: { '1': a.id } })).toEqual({});
   });
 });
+
+it('un puesto con una jugadora borrada se vuelve a rellenar', () => {
+  const e = nuevoEquipo('X');
+  const a = nuevaJugadora(e.id, { numero: '4', posicion: 'Base' });
+  const d = guardarJugadora({ equipos: [e], jugadoras: [] }, a);
+  expect(rellenarPuestos(d, { ...e, puestos: { '1': 'borrada' } }).puestos).toEqual({ '1': a.id });
+});

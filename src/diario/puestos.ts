@@ -20,10 +20,11 @@ export function puestosDe(d: Diario, e: Equipo): Partial<Record<Jugador, Jugador
 
 /** Rellena los puestos que falten con la jugadora cuya posición coincide (una por puesto, la de dorsal más bajo). */
 export function rellenarPuestos(d: Diario, e: Equipo): Equipo {
-  const ocupadas = new Set(Object.values(e.puestos ?? {}));
-  const puestos = { ...e.puestos };
+  const validas = puestosDe(d, e);
+  const puestos: Equipo['puestos'] = Object.fromEntries(PUESTOS.filter((p) => validas[p]).map((p) => [p, validas[p]!.id]));
+  const ocupadas = new Set(Object.values(puestos));
   for (const p of PUESTOS) {
-    if (puestos[p] && ocupadas.has(puestos[p]!)) continue;
+    if (puestos[p]) continue;
     const j = d.jugadoras
       .filter((x) => x.equipoId === e.id && x.posicion === NOMBRE_PUESTO[p] && !ocupadas.has(x.id))
       .sort((a, b) => Number(a.numero || 1000) - Number(b.numero || 1000))[0];
