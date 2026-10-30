@@ -2,6 +2,7 @@
 // Un recurso puede dar varios ejercicios. Todo lo escribe el entrenador; la IA solo ayuda a ordenar su texto.
 import { NIVELES, type Nivel } from '../sistemas/tipos';
 import { enlaceValido, type Recurso } from './recursos';
+import { etiquetasLimpias } from './organizar';
 
 const CLAVE = 'horns.fichas';
 
@@ -25,6 +26,9 @@ export interface Ficha {
   /** Enlace de origen, siempre http/https; se enseña como «Fuente». */
   fuente: string;
   recursoId?: string;
+  etiquetas: string[];
+  coleccion: string;
+  favorita: boolean;
   /** Pizarra opcional: id de una jugada del libro o propia. */
   sistemaId?: string;
 }
@@ -48,6 +52,9 @@ export const nuevaFicha = (recurso?: Recurso): Ficha => ({
   variantes: '',
   fuente: recurso?.enlace ?? '',
   recursoId: recurso?.id,
+  etiquetas: [],
+  coleccion: recurso?.coleccion ?? '',
+  favorita: false,
 });
 
 /** Falta el nombre: es lo único obligatorio. */
@@ -81,6 +88,9 @@ export function limpiarFichas(datos: unknown): Ficha[] {
       consejos: t(x.consejos),
       variantes: t(x.variantes),
       fuente,
+      etiquetas: etiquetasLimpias(x.etiquetas),
+      coleccion: t(x.coleccion, 40).trim(),
+      favorita: x.favorita === true,
       recursoId: typeof x.recursoId === 'string' ? x.recursoId.slice(0, 40) : undefined,
       sistemaId: typeof x.sistemaId === 'string' ? x.sistemaId.slice(0, 80) : undefined,
     });
@@ -112,3 +122,8 @@ export function juntarFichas(actuales: Ficha[], deLaCopia: Ficha[]): Ficha[] {
 
 /** Cuántas fichas salen de cada recurso (para enseñarlo en la bandeja). */
 export const fichasDe = (fichas: Ficha[], recursoId: string) => fichas.filter((f) => f.recursoId === recursoId);
+
+/** Los bloques de una sesión que vienen de «Mis ejercicios» llevan este prefijo en lugar del id de la biblioteca. */
+export const PREFIJO_FICHA = 'ficha~';
+export const idBloqueFicha = (f: Ficha) => `${PREFIJO_FICHA}${f.id}`;
+export const fichaDeBloque = (id: string): Ficha | undefined => (id.startsWith(PREFIJO_FICHA) ? leerFichas().find((f) => f.id === id.slice(PREFIJO_FICHA.length)) : undefined);

@@ -1,6 +1,7 @@
 // Sesiones de entrenamiento (opción B · línea de tiempo, elegida por Adam el 29/10): ejercicios en orden, con sus minutos.
 // Se guardan solo en el móvil del entrenador y por equipo (categoría, sin nombres de jugadores).
 import { TIPOS, buscarEjercicio, type TipoEjercicio } from '../ejercicios/ejercicios';
+import { fichaDeBloque } from '../recursos/fichas';
 
 const CLAVE = 'horns.sesiones';
 
@@ -107,4 +108,12 @@ export function guardarSesiones(lista: Sesion[]): boolean {
 }
 
 /** Bloques cuyo ejercicio ya no existe (una jugada propia borrada): se avisan en vez de romper la pantalla. */
-export const huerfanos = (s: Sesion) => s.bloques.filter((b) => !buscarEjercicio(b.ejercicio)).length;
+export const huerfanos = (s: Sesion) => s.bloques.filter((b) => !tituloBloque(b.ejercicio)).length;
+
+/** Nombre de lo que hay en un bloque: un ejercicio de la biblioteca o uno de «Mis ejercicios». Undefined si ya no existe. */
+export function tituloBloque(id: string): string | undefined {
+  const f = fichaDeBloque(id);
+  if (f) return f.nombre;
+  const e = buscarEjercicio(id);
+  return e ? `${e.formato ? `${e.formato} · ` : ''}${e.nombre}` : undefined;
+}

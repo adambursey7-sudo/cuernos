@@ -4,6 +4,9 @@ import { NIVELES } from '../sistemas/tipos';
 import { todosLosSistemas } from '../sistemas/almacen';
 import { CATEGORIAS, fichaCompleta, guardarFichas, leerFichas, nuevaFicha, pasosDe, type Ficha } from '../recursos/fichas';
 import { leerRecursos } from '../recursos/recursos';
+import { coleccionesDe, etiquetasDeTexto, filtrarOrganizables, type Filtro } from '../recursos/organizar';
+import { BarraFiltro, CampoColeccion, Estrella, FILTRO_VACIO } from './Organizar';
+import { AnadirASesion } from './AnadirASesion';
 
 const PASOS = ['Básico', 'Cómo se juega', 'Coaching', 'Extras'] as const;
 
@@ -12,6 +15,7 @@ export function MisFichas({ nueva, alTerminar }: { nueva?: Ficha; alTerminar?: (
   const [edicion, setEdicion] = useState<Ficha | undefined>(nueva);
   const [abierta, setAbierta] = useState<string | null>(null);
   const [aviso, setAviso] = useState('');
+  const [filtro, setFiltro] = useState<Filtro>(FILTRO_VACIO);
 
   const poner = (n: Ficha[]) => {
     if (guardarFichas(n)) { setLista(n); setAviso(''); return true; }
@@ -23,6 +27,7 @@ export function MisFichas({ nueva, alTerminar }: { nueva?: Ficha; alTerminar?: (
     return (
       <Editor
         f={edicion}
+        colecciones={coleccionesDe(lista)}
         cancelar={() => setEdicion(undefined)}
         guardar={(f) => {
           const existe = lista.some((x) => x.id === f.id);
@@ -35,21 +40,22 @@ export function MisFichas({ nueva, alTerminar }: { nueva?: Ficha; alTerminar?: (
     );
   }
   const f = lista.find((x) => x.id === abierta);
-  if (f) return <Lectura f={f} volver={() => setAbierta(null)} editar={() => setEdicion(f)} borrar={() => { poner(lista.filter((x) => x.id !== f.id)); setAbierta(null); }} />;
+  if (f) return <Lectura f={f} cambiar={(n) => poner(lista.map((x) => (x.id === n.id ? n : x)))} volver={() => setAbierta(null)} editar={() => setEdicion(f)} borrar={() => { poner(lista.filter((x) => x.id !== f.id)); setAbierta(null); }} />;
 
   return (
     <>
       <button className="principal ancho" onClick={() => setEdicion(nuevaFicha())}>Nuevo ejercicio</button>
+      {lista.length > 0 && <BarraFiltro lista={lista} filtro={filtro} cambiar={setFiltro} />}
       {aviso && <p className="aviso" role="status">{aviso}</p>}
       {lista.length === 0 ? (
         <p className="vacio">Aquí estarán tus ejercicios. Crea uno desde cero o abre un recurso guardado y toca «Convertir en ejercicio».</p>
       ) : (
         <ul className="lista">
-          {lista.map((x) => (
+          {filtrarOrganizables(lista, filtro, (x) => [x.nombre, x.objetivo, x.categoria, x.consejos, x.variantes, ...x.pasos]).map((x) => (
             <li key={x.id}>
               <button className="rec-fila fi-fila" onClick={() => setAbierta(x.id)}>
-                <span className="texto-ejercicio">{x.nombre}</span>
-                <span className="meta">{[x.categoria, x.minutos ? `${x.minutos}′` : '', x.jugadoras].filter(Boolean).join(' · ')}</span>
+                <span className="texto-ejercicio">{x.favorita ? '★ ' : ''}{x.nombre}</span>
+                <span className="meta">{[x.coleccion, x.categoria, x.minutos ? `${x.minutos}′` : '', x.jugadoras].filter(Boolean).join(' · ')}</span>
               </button>
             </li>
           ))}
@@ -59,7 +65,7 @@ export function MisFichas({ nueva, alTerminar }: { nueva?: Ficha; alTerminar?: (
   );
 }
 
-function Editor({ f: inicial, cancelar, guardar }: { f: Ficha; cancelar: () => void; guardar: (f: Ficha) => void }) {
+function Editor({ f: inicial, colecciones, cancelar, guardar }: { f: Ficha; colecciones: string[]; cancelar: () => void; guardar: (f: Ficha) => void }) {
   const [f, setF] = useState(inicial);
   const [paso, setPaso] = useState(0);
   const [error, setError] = useState('');
@@ -135,6 +141,10 @@ function Editor({ f: inicial, cancelar, guardar }: { f: Ficha; cancelar: () => v
       )}
 
       {paso === 3 && (
+        <>
+        <Estrella activa={f.favorita} cambiar={() => poner({ favorita: !f.favorita })} />
+        <CampoColeccion valor={f.coleccion} existentes={colecciones} cambiar={(coleccion) => poner({ coleccion })} />
+        <label className="campo-diario"><span>Etiquetas (separadas por comas)</span><input id="fi-etq" defaultValue={f.etiquetas.join(', ')} onBlur={(e) => poner({ etiquetas: etiquetasDeTexto(e.target.value) })} /></label>
         <label className="campo-diario">
           <span>Pizarra (opcional)</span>
           <select id="fi-sis" value={f.sistemaId ?? ''} onChange={(e) => poner({ sistemaId: e.target.value || undefined })}>
@@ -142,6 +152,7 @@ function Editor({ f: inicial, cancelar, guardar }: { f: Ficha; cancelar: () => v
             {todosLosSistemas().map((s) => <option key={s.id} value={s.id}>{s.nombre}</option>)}
           </select>
         </label>
+        </>
       )}
 
       {error && <p className="aviso" role="alert">{error}</p>}
@@ -150,7 +161,7 @@ function Editor({ f: inicial, cancelar, guardar }: { f: Ficha; cancelar: () => v
   );
 }
 
-function Lectura({ f, volver, editar, borrar }: { f: Ficha; volver: () => void; editar: () => void; borrar: () => void }) {
+function Lectura({ f, cambiar, volver, editar, borrar }: { f: Ficha; cambiar: (f: Ficha) => void; volver: () => void; editar: () => void; borrar: () => void }) {
   const [seguro, setSeguro] = useState(false);
   const pasos = pasosDe(f);
   const sistema = f.sistemaId ? todosLosSistemas().find((s) => s.id === f.sistemaId) : undefined;
@@ -162,7 +173,7 @@ function Lectura({ f, volver, editar, borrar }: { f: Ficha; volver: () => void; 
         <button className="atras" onClick={volver} aria-label="Volver">‹</button>
         <h1 className="nombre-sistema">{f.nombre}</h1>
       </div>
-      <p className="meta">{[f.categoria, nivel, f.edad, f.minutos ? `${f.minutos}′` : ''].filter(Boolean).join(' · ')}</p>
+      <p className="meta">{[f.coleccion, f.categoria, nivel, f.edad, f.minutos ? `${f.minutos}′` : ''].filter(Boolean).join(' · ')}</p>
       {f.objetivo && <p><b>Objetivo.</b> {f.objetivo}</p>}
       <dl className="datos">
         {dato('Jugadoras', f.jugadoras)}{dato('Material', f.material)}{dato('Espacio', f.espacio)}{dato('Pizarra', sistema?.nombre ?? '')}
@@ -171,6 +182,9 @@ function Lectura({ f, volver, editar, borrar }: { f: Ficha; volver: () => void; 
       {f.consejos && <><h2 className="sub">Consejos</h2><p className="fi-texto">{f.consejos}</p></>}
       {f.variantes && <><h2 className="sub">Variantes y progresión</h2><p className="fi-texto">{f.variantes}</p></>}
       {f.fuente && <p className="meta">Fuente: <a className="rec-enlace" href={f.fuente} target="_blank" rel="noopener noreferrer">{new URL(f.fuente).hostname.replace(/^www\./, '')} ↗</a></p>}
+      {f.etiquetas.length > 0 && <p className="meta">{f.etiquetas.map((e) => `#${e}`).join(' ')}</p>}
+      <Estrella activa={f.favorita} cambiar={() => cambiar({ ...f, favorita: !f.favorita })} />
+      <AnadirASesion f={f} />
       <div className="rec-acciones">
         <button className="principal" onClick={editar}>Editar</button>
         {seguro ? <button className="secundario" onClick={borrar}>Sí, borrar</button> : <button className="secundario" onClick={() => setSeguro(true)}>Borrar</button>}

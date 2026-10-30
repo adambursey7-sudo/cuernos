@@ -1,9 +1,9 @@
 // Cronómetro de pista (2.4): pantalla grande para mirar de lejos, con aviso de sonido al cambiar de ejercicio
 // y el siguiente a la vista. Cuenta con la hora del reloj, así no se atrasa si el móvil frena la página.
 import { useEffect, useRef, useState } from 'react';
-import { TIPOS, buscarEjercicio } from '../ejercicios/ejercicios';
+import { TIPOS } from '../ejercicios/ejercicios';
 import { inicioDe, posicion, reloj } from '../sesiones/cronometro';
-import { total, type Sesion } from '../sesiones/sesiones';
+import { total, tituloBloque, type Sesion } from '../sesiones/sesiones';
 import { horas } from './Sesiones';
 
 type Audio = AudioContext | null;
@@ -92,8 +92,8 @@ export function Entrenando({ s, salir, audio: ctx }: { s: Sesion; salir: () => v
 
   const actual = p.i >= 0 ? s.bloques[p.i] : undefined;
   const sig = p.i >= 0 ? s.bloques[p.i + 1] : undefined;
-  const e = actual && buscarEjercicio(actual.ejercicio);
-  const eSig = sig && buscarEjercicio(sig.ejercicio);
+  const e = actual && tituloBloque(actual.ejercicio);
+  const eSig = sig && tituloBloque(sig.ejercicio);
   const poco = !p.acabada && p.resto <= 60;
 
   return (
@@ -115,7 +115,7 @@ export function Entrenando({ s, salir, audio: ctx }: { s: Sesion; salir: () => v
         <div className="ent-centro">
           <p className="ent-tipo">{nombreTipo(actual!.tipo)}</p>
           <p className={poco ? 'ent-reloj poco' : 'ent-reloj'} aria-live="off">{reloj(p.resto)}</p>
-          <p className="ent-nombre">{e ? `${e.formato ? `${e.formato} · ` : ''}${e.nombre}` : 'Ejercicio que ya no existe'}</p>
+          <p className="ent-nombre">{e ?? 'Ejercicio que ya no existe'}</p>
         </div>
       )}
 
@@ -123,7 +123,7 @@ export function Entrenando({ s, salir, audio: ctx }: { s: Sesion; salir: () => v
         {sig ? (
           <>
             <span className="meta">Después · {sig.minutos}′ · {nombreTipo(sig.tipo)}</span>
-            <b>{eSig ? `${eSig.formato ? `${eSig.formato} · ` : ''}${eSig.nombre}` : 'Ejercicio que ya no existe'}</b>
+            <b>{eSig ?? 'Ejercicio que ya no existe'}</b>
           </>
         ) : (
           <span className="meta">{p.acabada ? 'Buen trabajo.' : 'Es el último ejercicio.'}</span>

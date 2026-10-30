@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import { TIPOS, buscarEjercicio, filtrar, todosLosEjercicios, type Ejercicio } from '../ejercicios/ejercicios';
 import { Pista } from '../pizarra/Pista';
+import { idBloqueFicha, leerFichas, type Ficha } from '../recursos/fichas';
 import { Entrenando, crearAudio } from './Entrenando';
 import {
   DURACIONES, PASO_MINUTOS, bloqueDe, conMinutos, conTipo, diferencia, guardarSesiones, huerfanos, inicios, leerSesiones, mover, nuevaSesion, quitar,
-  reparto, total, type Sesion,
+  reparto, total, tituloBloque, type Sesion,
 } from '../sesiones/sesiones';
 
 /** «1 h 15 min», «45 min». */
@@ -37,11 +38,13 @@ function Estado({ s }: { s: Sesion }) {
   );
 }
 
-function Selector({ elegir, cerrar }: { elegir: (e: Ejercicio) => void; cerrar: () => void }) {
+function Selector({ elegir, elegirFicha, cerrar }: { elegir: (e: Ejercicio) => void; elegirFicha: (f: Ficha) => void; cerrar: () => void }) {
   const todos = todosLosEjercicios();
+  const fichas = leerFichas();
+  const [propios, setPropios] = useState(false);
   const [sistema, setSistema] = useState<string | undefined>();
   const sistemas = [...new Map(todos.map((e) => [e.sistema.id, e.sistema.nombre])).entries()];
-  const lista = filtrar(todos, { sistema });
+  const lista = propios ? [] : filtrar(todos, { sistema });
   return (
     <div className="selector" role="dialog" aria-label="Añadir un ejercicio">
       <div className="cabecera">
@@ -49,12 +52,24 @@ function Selector({ elegir, cerrar }: { elegir: (e: Ejercicio) => void; cerrar: 
         <h2 className="nombre-sistema">Añadir ejercicio</h2>
       </div>
       <div className="niveles filtro" role="group" aria-label="Sistema">
-        <button className={sistema ? 'chip' : 'chip on'} aria-pressed={!sistema} onClick={() => setSistema(undefined)}>Todos</button>
+        <button className={sistema || propios ? 'chip' : 'chip on'} aria-pressed={!sistema && !propios} onClick={() => { setSistema(undefined); setPropios(false); }}>Todos</button>
+        {fichas.length > 0 && <button className={propios ? 'chip on' : 'chip'} aria-pressed={propios} onClick={() => setPropios(!propios)}>Mis ejercicios</button>}
         {sistemas.map(([id, nombre]) => (
-          <button key={id} className={id === sistema ? 'chip on' : 'chip'} aria-pressed={id === sistema} onClick={() => setSistema(id === sistema ? undefined : id)}>{nombre}</button>
+          <button key={id} className={id === sistema ? 'chip on' : 'chip'} aria-pressed={id === sistema} onClick={() => { setPropios(false); setSistema(id === sistema ? undefined : id); }}>{nombre}</button>
         ))}
       </div>
       <ul className="lista">
+        {(propios || !sistema) && fichas.map((f) => (
+          <li key={f.id}>
+            <button className="tarjeta tarjeta-ejercicio" onClick={() => elegirFicha(f)}>
+              <span className="datos">
+                <span className="formato">Mis ejercicios</span>
+                <span className="texto-ejercicio">{f.nombre}</span>
+                <span className="meta">{[f.coleccion, f.categoria, `${f.minutos || 10}′`].filter(Boolean).join(' · ')}</span>
+              </span>
+            </button>
+          </li>
+        ))}
         {lista.map((e) => (
           <li key={e.id}>
             <button className="tarjeta tarjeta-ejercicio" onClick={() => elegir(e)}>
@@ -85,6 +100,7 @@ function Editor({ s, cambiar, volver, abrirEjercicio }: { s: Sesion; cambiar: (s
       <Selector
         cerrar={() => setAnadiendo(false)}
         elegir={(e) => { cambiar({ ...s, bloques: [...s.bloques, bloqueDe(e.id, e.minutos, e.tipo)] }); setAnadiendo(false); }}
+        elegirFicha={(f) => { cambiar({ ...s, bloques: [...s.bloques, bloqueDe(idBloqueFicha(f), f.minutos || 10, 'tecnica')] }); setAnadiendo(false); }}
       />
     );
 
@@ -110,6 +126,7 @@ function Editor({ s, cambiar, volver, abrirEjercicio }: { s: Sesion; cambiar: (s
         <ol className="linea">
           {s.bloques.map((b, i) => {
             const e = buscarEjercicio(b.ejercicio);
+            const titulo = tituloBloque(b.ejercicio);
             return (
               <li key={i} className={`bloque tipo-${b.tipo}`} style={{ minHeight: `${Math.max(76, b.minutos * 4)}px` }}>
                 <span className="hora">{horas(desde[i])}</span>
@@ -118,6 +135,8 @@ function Editor({ s, cambiar, volver, abrirEjercicio }: { s: Sesion; cambiar: (s
                     <button className="titulo-bloque" onClick={() => abrirEjercicio(e.id)}>
                       {e.formato && <span className="formato">{e.formato}</span>} {e.nombre}
                     </button>
+                  ) : titulo ? (
+                    <span className="titulo-bloque">{titulo}</span>
                   ) : (
                     <span className="titulo-bloque perdido">Ejercicio que ya no existe</span>
                   )}

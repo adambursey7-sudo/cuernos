@@ -1,5 +1,7 @@
 // Bandeja de recursos (opción A, elegida por Adam el 30/10): lista con estado. Aquí cae todo lo que guardas de internet.
 import { useState } from 'react';
+import { coleccionesDe, filtrarOrganizables, etiquetasDeTexto, type Filtro } from '../recursos/organizar';
+import { BarraFiltro, CampoColeccion, Estrella, FILTRO_VACIO } from './Organizar';
 import {
   ESTADOS, NOMBRE_ORIGEN, guardarRecursos, leerRecursos, nombreRecurso, nuevoRecurso, primerEnlace, tituloYoutube,
   type Estado, type Recurso,
@@ -17,6 +19,7 @@ export function Recursos({ enlaceInicial, convertir }: { enlaceInicial?: string;
   const [estado, setEstado] = useState<Estado>('nuevo');
   const [abierto, setAbierto] = useState<Abierto>(enlaceInicial ? { nuevo: true, enlace: enlaceInicial } : null);
   const [aviso, setAviso] = useState('');
+  const [filtro, setFiltro] = useState<Filtro>(FILTRO_VACIO);
 
   const poner = (nueva: Recurso[]) => {
     if (guardarRecursos(nueva)) setLista(nueva);
@@ -38,10 +41,12 @@ export function Recursos({ enlaceInicial, convertir }: { enlaceInicial?: string;
   }
   const r = abierto ? lista.find((x) => x.id === abierto.id) : undefined;
   if (r) {
-    return <Detalle r={r} convertir={() => convertir(r)} volver={() => setAbierto(null)} cambiar={(n) => poner(lista.map((x) => (x.id === n.id ? n : x)))} borrar={() => { poner(lista.filter((x) => x.id !== r.id)); setAbierto(null); }} />;
+    return <Detalle r={r} colecciones={coleccionesDe(lista)} convertir={() => convertir(r)} volver={() => setAbierto(null)} cambiar={(n) => poner(lista.map((x) => (x.id === n.id ? n : x)))} borrar={() => { poner(lista.filter((x) => x.id !== r.id)); setAbierto(null); }} />;
   }
 
-  const visibles = lista.filter((x) => x.estado === estado);
+  // Con una búsqueda o un filtro puesto se mira en todos los estados a la vez.
+  const buscando = filtro.texto.trim() !== '' || filtro.soloFavoritos || filtro.coleccion !== undefined;
+  const visibles = filtrarOrganizables(buscando ? lista : lista.filter((x) => x.estado === estado), filtro, (x) => [x.titulo, x.nota, NOMBRE_ORIGEN[x.origen]]);
   return (
     <>
       <div className="niveles filtro" role="group" aria-label="Estado">
@@ -54,16 +59,17 @@ export function Recursos({ enlaceInicial, convertir }: { enlaceInicial?: string;
         <button className="principal" onClick={pegar}>Pegar enlace copiado</button>
         <button className="secundario" onClick={() => setAbierto({ nuevo: true, enlace: '' })}>Escribir nota</button>
       </div>
+      <BarraFiltro lista={lista} filtro={filtro} cambiar={setFiltro} />
       {aviso && <p className="aviso" role="status">{aviso}</p>}
       {visibles.length === 0 ? (
-        <p className="vacio">{lista.length === 0 ? 'Aquí caerá lo que guardes de internet: vídeos de YouTube, reels, artículos o tus propias notas. Copia un enlace y toca «Pegar enlace copiado».' : 'No hay recursos en este estado.'}</p>
+        <p className="vacio">{lista.length === 0 ? 'Aquí caerá lo que guardes de internet: vídeos de YouTube, reels, artículos o tus propias notas. Copia un enlace y toca «Pegar enlace copiado».' : buscando ? 'Nada coincide con la búsqueda.' : 'No hay recursos en este estado.'}</p>
       ) : (
         <ul className="lista">
           {visibles.map((x) => (
             <li key={x.id}>
               <button className="rec-fila" onClick={() => setAbierto({ id: x.id })}>
                 <Miniatura r={x} />
-                <span className="rec-texto">{nombreRecurso(x)}</span>
+                <span className="rec-texto">{x.favorito ? '★ ' : ''}{nombreRecurso(x)}</span>
                 <span className="chip pequeno">{NOMBRE_ORIGEN[x.origen]}</span>
               </button>
             </li>
@@ -107,7 +113,7 @@ function Nuevo({ enlace: inicial, cancelar, guardar }: { enlace: string; cancela
   );
 }
 
-function Detalle({ r, convertir, volver, cambiar, borrar }: { r: Recurso; convertir: () => void; volver: () => void; cambiar: (r: Recurso) => void; borrar: () => void }) {
+function Detalle({ r, colecciones, convertir, volver, cambiar, borrar }: { r: Recurso; colecciones: string[]; convertir: () => void; volver: () => void; cambiar: (r: Recurso) => void; borrar: () => void }) {
   const [seguro, setSeguro] = useState(false);
   return (
     <section className="pantalla">
@@ -122,9 +128,11 @@ function Detalle({ r, convertir, volver, cambiar, borrar }: { r: Recurso; conver
         {ESTADOS.map((e) => <button key={e.id} className={e.id === r.estado ? 'chip on' : 'chip'} aria-pressed={e.id === r.estado} onClick={() => cambiar({ ...r, estado: e.id })}>{e.nombre}</button>)}
       </div>
       <button className="principal ancho" onClick={convertir}>Convertir en ejercicio</button>
+      <Estrella activa={r.favorito} cambiar={() => cambiar({ ...r, favorito: !r.favorito })} />
+      <CampoColeccion valor={r.coleccion} existentes={colecciones} cambiar={(coleccion) => cambiar({ ...r, coleccion })} />
       <label className="campo-diario"><span>Título</span><input id="rec-d-titulo" value={r.titulo} maxLength={200} onChange={(e) => cambiar({ ...r, titulo: e.target.value })} /></label>
       <label className="campo-diario"><span>Descripción o nota</span><textarea id="rec-d-nota" rows={6} value={r.nota} maxLength={5000} onChange={(e) => cambiar({ ...r, nota: e.target.value })} /></label>
-      <label className="campo-diario"><span>Etiquetas (separadas por comas)</span><input id="rec-d-etq" defaultValue={r.etiquetas.join(', ')} onBlur={(e) => cambiar({ ...r, etiquetas: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) })} /></label>
+      <label className="campo-diario"><span>Etiquetas (separadas por comas)</span><input id="rec-d-etq" defaultValue={r.etiquetas.join(', ')} onBlur={(e) => cambiar({ ...r, etiquetas: etiquetasDeTexto(e.target.value) })} /></label>
       {seguro ? (
         <div className="rec-acciones"><button className="principal" onClick={borrar}>Sí, borrar</button><button className="secundario" onClick={() => setSeguro(false)}>No</button></div>
       ) : (

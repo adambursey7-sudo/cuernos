@@ -1,5 +1,7 @@
 // Recursos de internet (bandeja, opción A elegida por Adam el 30/10): enlaces, vídeos y notas que se guardan para revisar.
 // Todo vive solo en este móvil. Los enlaces se validan (solo http/https) y nunca se ejecuta nada de lo pegado.
+import { etiquetasLimpias } from './organizar';
+
 const CLAVE = 'horns.recursos';
 
 export const ESTADOS = [
@@ -21,6 +23,9 @@ export interface Recurso {
   /** Descripción o notas del entrenador. */
   nota: string;
   etiquetas: string[];
+  /** Colección a la que pertenece («Calentamientos»); vacío si no tiene. */
+  coleccion: string;
+  favorito: boolean;
   estado: Estado;
   /** AAAA-MM-DD */
   fecha: string;
@@ -96,6 +101,8 @@ export function nuevoRecurso(datos: { enlace?: string; titulo?: string; nota?: s
     origen,
     nota: (datos.nota ?? '').slice(0, MAX_TEXTO),
     etiquetas: [],
+    coleccion: '',
+    favorito: false,
     estado: 'nuevo',
     fecha: hoy(),
     miniatura: yt ? miniaturaYoutube(yt) : undefined,
@@ -139,7 +146,9 @@ export function limpiarRecursos(datos: unknown): Recurso[] {
       titulo: texto(x.titulo, 200),
       origen,
       nota: texto(x.nota, MAX_TEXTO),
-      etiquetas: Array.isArray(x.etiquetas) ? x.etiquetas.filter((e): e is string => typeof e === 'string').map((e) => e.trim().slice(0, 30)).filter(Boolean).slice(0, 20) : [],
+      etiquetas: etiquetasLimpias(x.etiquetas),
+      coleccion: texto(x.coleccion, 40).trim(),
+      favorito: x.favorito === true,
       estado: ESTADOS_ID.includes(x.estado as string) ? (x.estado as Estado) : 'nuevo',
       fecha: /^\d{4}-\d{2}-\d{2}$/.test(String(x.fecha)) ? String(x.fecha) : hoy(),
       miniatura: yt ? miniaturaYoutube(yt) : undefined,
