@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: false, // lo registra src/main.tsx, que busca versión nueva al volver a la app
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'] },
+      workbox: { skipWaiting: true, clientsClaim: true, globPatterns: ['**/*.{js,css,html,svg,png,woff2}'] },
       manifest: {
         name: 'Horns',
         short_name: 'Horns',
