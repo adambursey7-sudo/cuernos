@@ -6,6 +6,8 @@ import { inicioDe, posicion, reloj } from '../sesiones/cronometro';
 import { total, tituloBloque, type Sesion } from '../sesiones/sesiones';
 import { sinMovimiento } from '../preferencias';
 import { Pista } from '../pizarra/Pista';
+import { fichaDeBloque } from '../recursos/fichas';
+import { buscarSistema } from '../sistemas/almacen';
 import { useJugada } from '../pizarra/useJugada';
 import type { Sistema } from '../sistemas/tipos';
 import { horas } from './Sesiones';
@@ -127,6 +129,9 @@ export function Entrenando({ s, salir, audio: ctx }: { s: Sesion; salir: () => v
   const actual = p.i >= 0 ? s.bloques[p.i] : undefined;
   const sig = p.i >= 0 ? s.bloques[p.i + 1] : undefined;
   const e = actual && buscarEjercicio(actual.ejercicio);
+  // Un ejercicio propio con pizarra (por ejemplo, el que dibujó Claude) también se ve en el panel de la pizarra.
+  const fichaActual = actual && fichaDeBloque(actual.ejercicio);
+  const pizarraFicha = fichaActual?.sistemaId ? buscarSistema(fichaActual.sistemaId) : undefined;
   const nombreActual = actual && tituloBloque(actual.ejercicio);
   const nombreSig = sig && tituloBloque(sig.ejercicio);
   const poco = !p.acabada && p.resto <= 60;
@@ -184,7 +189,7 @@ export function Entrenando({ s, salir, audio: ctx }: { s: Sesion; salir: () => v
         </div>
 
         <div className="ent-panel" aria-label="Pizarra">
-          {e ? <PanelPizarra key={e.id} pizarra={e.pizarra} defensa={!!e.defensores} /> : <p className="vacio">{nombreActual ? 'Este ejercicio no tiene pizarra.' : 'No hay ejercicio ahora.'}</p>}
+          {e ? <PanelPizarra key={e.id} pizarra={e.pizarra} defensa={!!e.defensores} /> : pizarraFicha ? <PanelPizarra key={actual!.ejercicio} pizarra={pizarraFicha} defensa={false} /> : <p className="vacio">{nombreActual ? 'Este ejercicio no tiene pizarra.' : 'No hay ejercicio ahora.'}</p>}
         </div>
       </div>
 

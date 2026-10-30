@@ -1,7 +1,9 @@
 // Mis ejercicios: lista, ficha leída (como la C de los bocetos) y editor por pasos cortos con el vídeo a mano (la B, elegida por Adam).
 import { useState } from 'react';
 import { NIVELES } from '../sistemas/tipos';
-import { todosLosSistemas } from '../sistemas/almacen';
+import { buscarSistema, todosLosSistemas } from '../sistemas/almacen';
+import { MiniPizarra } from '../pizarra/MiniPizarra';
+import { PizarraGrande } from '../pizarra/PizarraGrande';
 import { CATEGORIAS, fichaCompleta, guardarFichas, leerFichas, nuevaFicha, pasosDe, type Ficha } from '../recursos/fichas';
 import { leerRecursos } from '../recursos/recursos';
 import { coleccionesDe, etiquetasDeTexto, filtrarOrganizables, type Filtro } from '../recursos/organizar';
@@ -10,6 +12,9 @@ import { AnadirASesion } from './AnadirASesion';
 import { enviarTexto, textoColeccion, textoFicha } from '../recursos/compartirTexto';
 
 const AVISO_ENVIO = { enviado: '', copiado: 'Texto copiado. Pégalo donde quieras.', nada: '' } as const;
+
+/** La pizarra de una ficha, si la tiene y todavía existe. */
+const pizarraDe = (f: Ficha) => (f.sistemaId ? buscarSistema(f.sistemaId) : undefined);
 
 const PASOS = ['Básico', 'Cómo se juega', 'Coaching', 'Extras'] as const;
 
@@ -58,7 +63,8 @@ export function MisFichas({ nueva, alTerminar }: { nueva?: Ficha; alTerminar?: (
         <ul className="lista">
           {filtrarOrganizables(lista, filtro, (x) => [x.nombre, x.objetivo, x.categoria, x.consejos, x.variantes, ...x.pasos]).map((x) => (
             <li key={x.id}>
-              <button className="rec-fila fi-fila" onClick={() => setAbierta(x.id)}>
+              <button className={pizarraDe(x) ? 'rec-fila fi-fila con-mini' : 'rec-fila fi-fila'} onClick={() => setAbierta(x.id)}>
+                {pizarraDe(x) && <MiniPizarra sistema={pizarraDe(x)!} className="mini fi-mini" />}
                 <span className="texto-ejercicio">{x.favorita ? '★ ' : ''}{x.nombre}</span>
                 <span className="meta">{[x.coleccion, x.categoria, x.minutos ? `${x.minutos}′` : '', x.jugadoras].filter(Boolean).join(' · ')}</span>
               </button>
@@ -184,6 +190,7 @@ function Lectura({ f, cambiar, volver, editar, borrar }: { f: Ficha; cambiar: (f
       <dl className="datos">
         {dato('Jugadoras', f.jugadoras)}{dato('Material', f.material)}{dato('Espacio', f.espacio)}{dato('Pizarra', sistema?.nombre ?? '')}
       </dl>
+      {sistema && <PizarraGrande key={sistema.id} sistema={sistema} />}
       {pasos.length > 0 && <><h2 className="sub">Cómo se juega</h2><ol>{pasos.map((p, i) => <li key={i}>{p}</li>)}</ol></>}
       {f.consejos && <><h2 className="sub">Consejos</h2><p className="fi-texto">{f.consejos}</p></>}
       {f.variantes && <><h2 className="sub">Variantes y progresión</h2><p className="fi-texto">{f.variantes}</p></>}

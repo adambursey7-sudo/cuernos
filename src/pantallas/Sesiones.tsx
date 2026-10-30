@@ -2,7 +2,9 @@
 // y una altura que sigue a sus minutos. Se guardan por equipo (categoría, sin nombres) solo en este móvil.
 import { useState } from 'react';
 import { TIPOS, buscarEjercicio, filtrar, todosLosEjercicios, type Ejercicio } from '../ejercicios/ejercicios';
+import { MiniPizarra } from '../pizarra/MiniPizarra';
 import { Pista } from '../pizarra/Pista';
+import { buscarSistema } from '../sistemas/almacen';
 import { idBloqueFicha, leerFichas, type Ficha } from '../recursos/fichas';
 import { Entrenando, crearAudio } from './Entrenando';
 import {
@@ -62,6 +64,7 @@ function Selector({ elegir, elegirFicha, cerrar }: { elegir: (e: Ejercicio) => v
         {(propios || !sistema) && fichas.map((f) => (
           <li key={f.id}>
             <button className="tarjeta tarjeta-ejercicio" onClick={() => elegirFicha(f)}>
+              {f.sistemaId && buscarSistema(f.sistemaId) && <MiniPizarra sistema={buscarSistema(f.sistemaId)!} />}
               <span className="datos">
                 <span className="formato">Mis ejercicios</span>
                 <span className="texto-ejercicio">{f.nombre}</span>

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { leerMios } from '../sistemas/almacen';
+import { armarCopia, leerCopia } from '../copia';
+import { guardarTodosMios, leerMios } from '../sistemas/almacen';
 import { CUESTIONARIO_VACIO } from './ia';
 import { validarEjercicio } from './ejercicioIA';
 import { leerFichas } from './fichas';
@@ -82,5 +83,18 @@ describe('guardar el ejercicio de Claude', () => {
     anadirFicha({ ...f, sistemaId: 'mio-otro' });
     expect(leerFichas()).toHaveLength(1);
     expect(leerFichas()[0].sistemaId).toBe('mio-otro');
+  });
+
+  it('copia de seguridad: la pizarra y la ficha vuelven enlazadas, con sus jugadoras y sin balón', () => {
+    const e = ejercicio();
+    e.sistema.sinBalon = true;
+    guardarEjercicio(e, CUESTIONARIO_VACIO);
+    const copia = leerCopia(armarCopia(leerMios(), {} as never, undefined, undefined, undefined, leerFichas()));
+    expect(copia.mios[0]).toMatchObject({ id: 'mio-test', visibles: ['1', '2', '3'], sinBalon: true });
+    expect(copia.fichas?.[0].sistemaId).toBe('mio-test');
+    // pegar la copia en un móvil vacío
+    datos.clear();
+    guardarTodosMios(copia.mios);
+    expect(leerMios()[0].pasos).toHaveLength(2);
   });
 });
