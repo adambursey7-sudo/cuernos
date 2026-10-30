@@ -1,7 +1,7 @@
 // «Pedir a Claude» (tramo 4): cuestionario corto → texto completo a la vista → envío por Jarvis → borrador de ficha.
 // Nada sale del móvil hasta que se toca «Enviar a Claude», y siempre con el texto completo delante.
 import { useEffect, useRef, useState } from 'react';
-import { borradorDeRespuesta, construirPrompt, guardarBase, leerBase, MAX_PROMPT, PROMPT_BASE, type Cuestionario } from '../recursos/ia';
+import { borradorDeRespuesta, construirEncargoEjercicio, construirPrompt, guardarBase, leerBase, MAX_PROMPT, PROMPT_BASE, type Cuestionario } from '../recursos/ia';
 import { emparejar, enviar, ErrorJarvis, esperar, leerConexion, olvidarConexion, type Conexion } from '../recursos/jarvis';
 import type { Ficha } from '../recursos/fichas';
 import type { Ejercicio } from '../recursos/guardarEjercicioIA';
@@ -29,7 +29,9 @@ export function PedirIA({ recurso, borrador, retocar, guardada }: {
   useEffect(() => () => { cancelado.current = true; }, []);   // al salir de la pantalla se deja de esperar
 
   const prompt = construirPrompt(base, c, recurso);
-  const largo = prompt.length > MAX_PROMPT;
+  const encargo = construirEncargoEjercicio(c, recurso);
+  const largoTexto = prompt.length > MAX_PROMPT;
+  const largoDibujo = encargo.length > MAX_PROMPT;
 
   const fallo = (e: unknown) => {
     if (e instanceof ErrorJarvis && e.reemparejar) { olvidarConexion(); setCon(undefined); }
@@ -98,19 +100,20 @@ export function PedirIA({ recurso, borrador, retocar, guardada }: {
         <textarea id="ia-notas" rows={2} value={c.notas} maxLength={600} placeholder="Sin nombres de jugadoras" onChange={(e) => setC({ ...c, notas: e.target.value })} />
       </label>
       <details className="campo-diario">
-        <summary>Texto base (puedes cambiarlo)</summary>
+        <summary>Texto base de la ficha de texto (puedes cambiarlo)</summary>
         <textarea id="ia-base" rows={10} value={base} maxLength={4000} onChange={(e) => { setBase(e.target.value); guardarBase(e.target.value); }} />
         <button className="secundario" onClick={() => { setBase(PROMPT_BASE); guardarBase(PROMPT_BASE); }}>Volver al texto original</button>
       </details>
       <details className="campo-diario">
         <summary>Ver el texto completo que se enviará</summary>
-        <pre className="ia-previa" id="ia-previa">{prompt}</pre>
+        <pre className="ia-previa" id="ia-previa">{encargo}</pre>
       </details>
       <p className="aviso">Al enviar, este texto sale de tu móvil hacia tu PC (Jarvis) y de allí a Claude. Revisa que no lleve nombres de jugadoras ni datos personales.</p>
-      {largo && <p className="aviso" role="alert">El texto es demasiado largo ({prompt.length} de {MAX_PROMPT} letras): acorta el texto base o tus respuestas.</p>}
+      {largoDibujo && <p className="aviso" role="alert">El texto es demasiado largo ({encargo.length} de {MAX_PROMPT} letras): acorta tus respuestas.</p>}
+      {!largoDibujo && largoTexto && <p className="aviso" role="alert">Para la ficha de texto, el texto base es demasiado largo ({prompt.length} de {MAX_PROMPT} letras).</p>}
       {error && <p className="aviso" role="alert">{error}</p>}
-      <button className="principal ancho" onClick={dibujar} disabled={largo}>Dibujar el ejercicio con Claude</button>
-      <button className="secundario ancho" onClick={mandar} disabled={largo}>Solo la ficha de texto</button>
+      <button className="principal ancho" onClick={dibujar} disabled={largoDibujo}>Dibujar el ejercicio con Claude</button>
+      <button className="secundario ancho" onClick={mandar} disabled={largoTexto}>Solo la ficha de texto</button>
       <p className="meta">Lo que conteste Claude llega como borrador: lo revisas y lo guardas tú. <button className="enlace" onClick={() => { olvidarConexion(); setCon(undefined); }}>Desconectar de Jarvis</button></p>
     </>
   );

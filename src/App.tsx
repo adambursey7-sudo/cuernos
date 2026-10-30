@@ -71,7 +71,12 @@ export function App() {
         key={edicion.base?.id ?? 'nueva'}
         base={edicion.base}
         cerrar={() => setEdicion(null)}
-        guardado={(id) => { if (edicion.ficha) anadirFicha({ ...edicion.ficha, sistemaId: id }); setEdicion(null); abrir(id); }}
+        guardado={(id) => {
+          const s = buscarSistema(id);
+          if (edicion.ficha) anadirFicha({ ...edicion.ficha, sistemaId: id, ...(s ? { nombre: s.nombre, pasos: s.pasos.map((p) => p.texto) } : {}) });
+          setEdicion(null);
+          abrir(id);
+        }}
       />
     );
   else if (ejercicio)

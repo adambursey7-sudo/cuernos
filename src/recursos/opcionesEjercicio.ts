@@ -14,7 +14,7 @@ export interface Pregunta {
 
 export const PREGUNTAS: Pregunta[] = [
   { k: 'objetivo', nombre: '¿Qué trabajar?', opciones: ['Pase', 'Bote', 'Tiro', 'Defensa', 'Rebote', 'Contraataque', 'Calentamiento', 'Juego reducido'] },
-  { k: 'jugadoras', nombre: 'Jugadoras', opciones: ['3', '4', '5', '6', '8', '10', '12'] },
+  { k: 'jugadoras', nombre: 'Jugadoras', opciones: ['3', '4', '5'] },
   { k: 'material', nombre: 'Material', opciones: ['1 balón', 'Un balón por pareja', 'Un balón cada una', 'Conos', 'Sin material'] },
   { k: 'minutos', nombre: 'Minutos', opciones: ['5', '8', '10', '15', '20'] },
   { k: 'nivel', nombre: 'Nivel', opciones: ['Iniciación', 'Medio', 'Avanzado'] },
