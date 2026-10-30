@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { armarCopia, juntar, leerCopia } from './copia';
 import { nuevoBorrador, mover } from './editor/editar';
 import { PALETAS } from './temas';
+import { nuevaJugadora, nuevoEquipo } from './diario/diario';
 
 const jugada = () => {
   const b = nuevoBorrador();
@@ -32,5 +33,15 @@ describe('copia de seguridad', () => {
     const b = { ...a, nombre: 'Cambiada' };
     const otra = jugada();
     expect(juntar([a, otra], [b]).map((s) => s.nombre)).toEqual(['Mi jugada', 'Cambiada']);
+  });
+});
+
+describe('copia con diario', () => {
+  it('guarda y recupera la plantilla, y descarta lo roto', () => {
+    const e = nuevoEquipo('Cadete');
+    const diario = { equipos: [e], jugadoras: [nuevaJugadora(e.id, { numero: '4', nombre: 'Ejemplo' })] };
+    const r = leerCopia(armarCopia([], { principal: '#e8883a', fondo: '#14110e', pista: '#c98f55', jugadores: '#f3ece2' }, diario));
+    expect(r.diario?.jugadoras[0].nombre).toBe('Ejemplo');
+    expect(leerCopia(JSON.stringify({ app: 'cuernos-copia', mios: [], diario: { equipos: 3 } })).diario).toEqual({ equipos: [], jugadoras: [] });
   });
 });

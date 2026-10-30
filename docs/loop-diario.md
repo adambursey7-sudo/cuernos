@@ -33,10 +33,10 @@ Horns pasa de ser una biblioteca de jugadas a ser el **cuaderno del entrenador**
 
 ## Tramo 1: plantilla y fichas
 - [x] 1.1 Diseño → Adam eligió A (30/10).
-- [ ] 1.2 Modelo de datos y guardado (`src/diario/`): jugadora (id, nombre, número, posición, puntos fuertes, a mejorar, forma de jugar, cómo entrenarla, notas con fecha) y equipo (nombre, categoría, forma de jugar, virtudes, a trabajar). Varios equipos. Tests de guardado, número repetido y copia de seguridad.
-- [ ] 1.3 Pestaña **Equipo**: lista de la plantilla, alta, edición y baja de jugadora; ficha según lo elegido.
+- [x] 1.2 Modelo de datos y guardado (`src/diario/`): jugadora (id, nombre, número, posición, puntos fuertes, a mejorar, forma de jugar, cómo entrenarla, notas con fecha) y equipo (nombre, categoría, forma de jugar, virtudes, a trabajar). Varios equipos. Tests de guardado, número repetido y copia de seguridad.
+- [x] 1.3 Pestaña **Equipo**: lista de la plantilla, alta, edición y baja de jugadora; ficha según lo elegido.
 - [ ] 1.4 Ficha del equipo: forma de jugar, virtudes y cómo entrenarlas, con enlace a ejercicios y sistemas de la biblioteca que las trabajan.
-- [ ] 1.5 **Importar la plantilla:** desde un PDF (texto del PDF leído en el móvil con pdf.js cargado solo al usarlo), texto pegado o CSV; detecta dorsal, nombre y posición y enseña una vista previa editable antes de crear las fichas.
+- [x] 1.5 **Importar la plantilla:** desde un PDF (texto del PDF leído en el móvil con pdf.js cargado solo al usarlo), texto pegado o CSV; detecta dorsal, nombre y posición y enseña una vista previa editable antes de crear las fichas.
 - [ ] 1.6 Copia de seguridad con plantilla y equipo; revisión y entrada en bocetos; parar.
 
 ## Tramo 2: dorsales en las pizarras

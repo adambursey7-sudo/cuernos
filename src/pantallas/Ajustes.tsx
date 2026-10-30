@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Pista } from '../pizarra/Pista';
+import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
 import { armarCopia, juntar, leerCopia } from '../copia';
 import { guardarTodosMios, leerMios } from '../sistemas/almacen';
 import { SISTEMAS } from '../sistemas/datos';
@@ -18,7 +19,7 @@ export function Ajustes() {
 
   const descargar = () => {
     const mios = leerMios();
-    const archivo = new Blob([armarCopia(mios, c)], { type: 'application/json' });
+    const archivo = new Blob([armarCopia(mios, c, leerDiario())], { type: 'application/json' });
     const enlace = document.createElement('a');
     enlace.href = URL.createObjectURL(archivo);
     enlace.download = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
@@ -35,6 +36,7 @@ export function Ajustes() {
     try {
       const copia = leerCopia(await archivo.text());
       guardarTodosMios(juntar(leerMios(), copia.mios));
+      if (copia.diario) guardarDiario(juntarDiario(leerDiario(), copia.diario));
       if (copia.colores) poner(copia.colores);
       setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.colores ? ' y los colores' : ''}.`);
     } catch (err) {

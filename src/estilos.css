@@ -101,8 +101,8 @@ main { flex: 1; width: 100%; max-width: 560px; margin: 0 auto; }
 .restaurar { justify-self: start; border: 1.5px solid var(--tenue); background: none; border-radius: 999px; padding: 9px 16px; }
 
 /* pestañas de abajo */
-.pestanas { position: sticky; bottom: 0; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--fondo); border-top: 1px solid var(--superficie); padding: 6px max(8px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
-.pestanas button { border: none; background: none; padding: 10px 0; color: var(--tenue); font: 800 0.74rem/1 var(--display); text-transform: uppercase; }
+.pestanas { position: sticky; bottom: 0; display: grid; grid-template-columns: repeat(6, 1fr); background: var(--fondo); border-top: 1px solid var(--superficie); padding: 6px max(8px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
+.pestanas button { border: none; background: none; padding: 10px 0; min-width: 0; letter-spacing: -0.01em; color: var(--tenue); font: 800 0.66rem/1 var(--display); text-transform: uppercase; }
 .pestanas button.on { color: var(--principal); }
 
 /* pizarra */
@@ -261,3 +261,36 @@ button.principal.ancho { border: none; border-radius: 12px; padding: 16px 10px; 
 .ent-mandos button:disabled { opacity: 0.4; }
 .ent-mandos .grande { background: var(--principal); color: var(--sobre-principal); font-size: 2rem; min-height: 72px; }
 .empezar { margin-top: 4px; }
+
+/* Equipo (tramo 1 del loop Diario) */
+.dorsal { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--principal); color: var(--sobre-principal); font: 900 1.7rem/1 var(--display); }
+.grande-dorsal { width: 46px; height: 46px; font-size: 1.5rem; }
+.fila-jugadora { width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 12px 8px 8px; border: none; border-radius: 14px; background: var(--superficie); text-align: left; }
+.fila-jugadora .datos { display: grid; flex: 1; min-width: 0; line-height: 1.25; }
+.fila-jugadora .datos b { font-size: 1.1rem; overflow-wrap: anywhere; }
+.etiquetas { display: grid; gap: 3px; justify-items: end; }
+.et { padding: 2px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
+.et.bien { background: color-mix(in srgb, #4cc26a 28%, var(--fondo)); color: #9fe3b0; }
+.et.mal { background: color-mix(in srgb, var(--defensa) 30%, var(--fondo)); color: #ffb3ab; }
+.resumen-equipo .nombre { font: 800 1.3rem/1.1 var(--display); text-transform: uppercase; }
+.campo-diario { display: grid; gap: 4px; }
+.campo-diario > span { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tenue); }
+.campo-diario input, .campo-diario textarea { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--tenue); background: var(--superficie); color: var(--texto); font: inherit; font-size: 1rem; resize: vertical; }
+.fila-campos { display: grid; grid-template-columns: 1fr 84px; gap: 10px; }
+.fila-campos .num input { text-align: center; font: 900 1.4rem/1 var(--display); }
+.dos-botones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+button.principal, button.secundario { border: none; border-radius: 12px; padding: 14px 10px; font: 800 1rem/1.1 var(--display); text-transform: uppercase; }
+button.principal { background: var(--principal); color: var(--sobre-principal); }
+button.secundario { background: var(--superficie); color: var(--texto); }
+.nota-jugadora { display: grid; gap: 4px; background: var(--superficie); border-left: 5px solid var(--principal); border-radius: 10px; padding: 10px 12px; }
+.nota-jugadora p { margin: 0; overflow-wrap: anywhere; }
+.nota-jugadora .chip { justify-self: start; }
+.peligro { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.subir-archivo { display: grid; place-items: center; padding: 18px; border: 2px dashed var(--tenue); border-radius: 14px; font-weight: 700; cursor: pointer; }
+.subir-archivo input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.fila-previa { display: flex; align-items: center; gap: 8px; background: var(--superficie); border-radius: 10px; padding: 6px 10px; }
+.fila-previa input[type='checkbox'] { width: 22px; height: 22px; flex: none; accent-color: var(--principal); }
+.fila-previa .p-num { width: 48px; flex: none; text-align: center; }
+.fila-previa .p-nom { flex: 1; min-width: 0; }
+.fila-previa input:not([type='checkbox']) { padding: 8px; border-radius: 8px; border: 1.5px solid var(--tenue); background: var(--fondo); color: var(--texto); font: inherit; }
+.ficha-jugadora .niveles[aria-label="Posición"] { flex-wrap: wrap; overflow: visible; }

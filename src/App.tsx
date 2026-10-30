@@ -4,6 +4,7 @@ import { buscarEjercicio } from './ejercicios/ejercicios';
 import { Ajustes } from './pantallas/Ajustes';
 import { Ejercicio } from './pantallas/Ejercicio';
 import { Ejercicios } from './pantallas/Ejercicios';
+import { Equipo } from './pantallas/Equipo';
 import { Inicio } from './pantallas/Inicio';
 import { Sesiones } from './pantallas/Sesiones';
 import { Sistema } from './pantallas/Sistema';
@@ -11,13 +12,14 @@ import { Sistemas } from './pantallas/Sistemas';
 import { buscarSistema } from './sistemas/almacen';
 import type { Sistema as SistemaDatos } from './sistemas/tipos';
 
-type Pestana = 'inicio' | 'jugadas' | 'ejercicios' | 'sesiones' | 'ajustes';
+type Pestana = 'inicio' | 'jugadas' | 'ejercicios' | 'sesiones' | 'equipo' | 'ajustes';
 
 const PESTANAS: { id: Pestana; nombre: string }[] = [
   { id: 'inicio', nombre: 'Inicio' },
   { id: 'jugadas', nombre: 'Jugadas' },
   { id: 'ejercicios', nombre: 'Ejercicios' },
   { id: 'sesiones', nombre: 'Sesiones' },
+  { id: 'equipo', nombre: 'Equipo' },
   { id: 'ajustes', nombre: 'Ajustes' },
 ];
 
@@ -39,6 +41,7 @@ export function App() {
 
   let contenido;
   if (pestana === 'sesiones' && !ejercicio) contenido = <Sesiones abrirEjercicio={setEjercicioId} abierta={sesionId} abrir={setSesionId} />;
+  else if (pestana === 'equipo') contenido = <Equipo />;
   else if (pestana === 'ajustes') contenido = <Ajustes />;
   else if (edicion)
     contenido = (

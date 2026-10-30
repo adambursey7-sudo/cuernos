@@ -1,0 +1,146 @@
+// Diario del entrenador (opción A, elegida por Adam el 30/10): plantilla con dorsal grande y ficha con tres pestañas.
+// Todo vive solo en este móvil y entra en la copia de seguridad. No hay datos reales en el código.
+const CLAVE = 'horns.diario';
+
+export const POSICIONES = ['Base', 'Escolta', 'Alero', 'Ala-pívot', 'Pívot'] as const;
+export type Posicion = (typeof POSICIONES)[number];
+
+export interface Nota {
+  /** AAAA-MM-DD */
+  fecha: string;
+  texto: string;
+}
+
+export interface Jugadora {
+  id: string;
+  equipoId: string;
+  nombre: string;
+  /** Texto: hay dorsales como «00». */
+  numero: string;
+  posicion: Posicion | '';
+  fuertes: string;
+  mejorar: string;
+  /** Cómo juega. */
+  forma: string;
+  /** Cómo entrenarla. */
+  entrenar: string;
+  notas: Nota[];
+}
+
+export interface Equipo {
+  id: string;
+  /** Categoría: «Cadete femenino». */
+  nombre: string;
+  forma: string;
+  virtudes: string;
+  trabajar: string;
+  /** Cómo entrenarlo. */
+  como: string;
+}
+
+export interface Diario {
+  equipos: Equipo[];
+  jugadoras: Jugadora[];
+}
+
+const nuevoId = (p: string) => `${p}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
+export const nuevoEquipo = (nombre: string): Equipo => ({ id: nuevoId('e'), nombre, forma: '', virtudes: '', trabajar: '', como: '' });
+
+export const nuevaJugadora = (equipoId: string, datos: Partial<Jugadora> = {}): Jugadora => ({
+  id: nuevoId('j'),
+  equipoId,
+  nombre: '',
+  numero: '',
+  posicion: '',
+  fuertes: '',
+  mejorar: '',
+  forma: '',
+  entrenar: '',
+  notas: [],
+  ...datos,
+});
+
+const esTexto = (x: unknown) => typeof x === 'string';
+
+export function esEquipo(e: unknown): e is Equipo {
+  const x = e as Equipo;
+  return !!x && ['id', 'nombre', 'forma', 'virtudes', 'trabajar', 'como'].every((k) => esTexto(x[k as keyof Equipo]));
+}
+
+export function esJugadora(j: unknown): j is Jugadora {
+  const x = j as Jugadora;
+  return (
+    !!x &&
+    ['id', 'equipoId', 'nombre', 'numero', 'fuertes', 'mejorar', 'forma', 'entrenar'].every((k) => esTexto(x[k as keyof Jugadora])) &&
+    (x.posicion === '' || (POSICIONES as readonly string[]).includes(x.posicion)) &&
+    Array.isArray(x.notas) &&
+    x.notas.every((n) => esTexto(n?.fecha) && esTexto(n?.texto))
+  );
+}
+
+/** Deja solo lo válido (también al cargar una copia): sin equipo no hay jugadoras. */
+export function limpiar(d: unknown): Diario {
+  const x = d as Partial<Diario> | null;
+  const equipos = Array.isArray(x?.equipos) ? x!.equipos.filter(esEquipo) : [];
+  const ids = new Set(equipos.map((e) => e.id));
+  const jugadoras = Array.isArray(x?.jugadoras) ? x!.jugadoras.filter((j) => esJugadora(j) && ids.has(j.equipoId)) : [];
+  return { equipos, jugadoras };
+}
+
+export function leerDiario(): Diario {
+  try {
+    return limpiar(JSON.parse(localStorage.getItem(CLAVE) ?? '{}'));
+  } catch {
+    return { equipos: [], jugadoras: [] };
+  }
+}
+
+/** Devuelve false si el móvil no deja guardar. */
+export function guardarDiario(d: Diario): boolean {
+  try {
+    localStorage.setItem(CLAVE, JSON.stringify(limpiar(d)));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Plantilla ordenada por dorsal (los sin número, al final). */
+export function plantilla(d: Diario, equipoId: string): Jugadora[] {
+  const n = (j: Jugadora) => (/^\d+$/.test(j.numero) ? Number(j.numero) : 1000);
+  return d.jugadoras.filter((j) => j.equipoId === equipoId).sort((a, b) => n(a) - n(b) || a.nombre.localeCompare(b.nombre, 'es'));
+}
+
+/** Otra jugadora del mismo equipo con ese dorsal (para avisar, no para impedirlo). */
+export const repetida = (d: Diario, j: Jugadora): Jugadora | undefined =>
+  j.numero ? d.jugadoras.find((x) => x.equipoId === j.equipoId && x.id !== j.id && x.numero === j.numero) : undefined;
+
+export const guardarJugadora = (d: Diario, j: Jugadora): Diario => ({
+  ...d,
+  jugadoras: d.jugadoras.some((x) => x.id === j.id) ? d.jugadoras.map((x) => (x.id === j.id ? j : x)) : [...d.jugadoras, j],
+});
+
+export const guardarEquipo = (d: Diario, e: Equipo): Diario => ({
+  ...d,
+  equipos: d.equipos.some((x) => x.id === e.id) ? d.equipos.map((x) => (x.id === e.id ? e : x)) : [...d.equipos, e],
+});
+
+export const quitarJugadora = (d: Diario, id: string): Diario => ({ ...d, jugadoras: d.jugadoras.filter((j) => j.id !== id) });
+
+export const quitarEquipo = (d: Diario, id: string): Diario => ({
+  equipos: d.equipos.filter((e) => e.id !== id),
+  jugadoras: d.jugadoras.filter((j) => j.equipoId !== id),
+});
+
+/** Junta lo de una copia con lo actual: si coincide el id, gana la copia. */
+export function juntarDiario(actual: Diario, copia: Diario): Diario {
+  const eq = new Set(copia.equipos.map((e) => e.id));
+  const ju = new Set(copia.jugadoras.map((j) => j.id));
+  return {
+    equipos: [...actual.equipos.filter((e) => !eq.has(e.id)), ...copia.equipos],
+    jugadoras: [...actual.jugadoras.filter((j) => !ju.has(j.id)), ...copia.jugadoras],
+  };
+}
+
+export const hoy = () => new Date().toISOString().slice(0, 10);
