@@ -110,6 +110,13 @@ export async function enviar(c: Conexion, prompt: string, modo?: 'ejercicio'): P
   return d.id;
 }
 
+/** Manda unas imágenes sueltas de un vídeo (JPEG en data URL) para que Claude dibuje la jugada. Devuelve el número de la petición. */
+export async function enviarVideo(c: Conexion, frames: string[]): Promise<string> {
+  const d = await llamar(c, '/api/horns/video', { frames }, 60000);
+  if (typeof d.id !== 'string' || !d.id) throw new ErrorJarvis('Jarvis no contestó como se esperaba.');
+  return d.id;
+}
+
 const dormir = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** Espera la respuesta (mira cada pocos segundos, hasta 6 minutos). `parar()` true corta la espera. */

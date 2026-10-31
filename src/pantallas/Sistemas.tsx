@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import { Pista } from '../pizarra/Pista';
+import { JugadaVideo } from './JugadaVideo';
 import { coincide } from '../favoritos';
 import { todosLosSistemas } from '../sistemas/almacen';
 import { alternarSemana, leerSemana } from '../sistemas/libro';
 import { type Familia, type Nivel, NIVELES } from '../sistemas/tipos';
-import { useState } from 'react';
 
 const nombreNivel = (id: string) => NIVELES.find((n) => n.id === id)?.nombre ?? id;
 const orden = (n: Nivel) => NIVELES.findIndex((x) => x.id === n);
@@ -45,6 +46,8 @@ export function Sistemas({ abrir, crear, q, soloFavoritos, filtro, favoritos, al
   quitarFiltros: () => void;
 }) {
   const [semana, setSemana] = useState(leerSemana);
+  const [video, setVideo] = useState(false);
+  const [version, setVersion] = useState(0);
   const lista = todosLosSistemas().filter(
     (s) =>
       coincide(q, s.nombre, s.idea, s.contra) &&
@@ -54,12 +57,14 @@ export function Sistemas({ abrir, crear, q, soloFavoritos, filtro, favoritos, al
       (!filtro.semana || semana.includes(s.id)) &&
       (!filtro.nivel || orden(s.nivelMinimo) <= orden(filtro.nivel)),
   );
+  if (video) return <JugadaVideo volver={() => setVideo(false)} guardada={() => setVersion(version + 1)} />;
   return (
-    <section className="pantalla">
+    <section className="pantalla" data-v={version}>
       <div className="titulo-fila">
         <h1 className="titulo">Jugadas</h1>
         <button className="nueva" onClick={crear}>+ Nueva jugada</button>
       </div>
+      <button className="chip" onClick={() => setVideo(true)}>▶ Jugada desde un vídeo</button>
       <p className="meta" aria-live="polite">{lista.length} {lista.length === 1 ? 'jugada' : 'jugadas'}</p>
       {lista.length === 0 ? (
         <SinResultados favoritos={soloFavoritos && !q} que="jugada" quitarFiltros={quitarFiltros} />
