@@ -3,6 +3,7 @@ import { cerrarSesion, usuarioActual } from '../Acceso';
 import { introActiva, ponerIntroActiva } from '../Intro';
 import { Pista } from '../pizarra/Pista';
 import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
+import { anotarCopia } from '../copiaFecha';
 import { armarCopia, juntar, leerCopia } from '../copia';
 import { guardarReflexiones, juntarReflexiones, leerReflexiones } from '../diario/reflexion';
 import { guardarEtiquetas, leerEtiquetas } from '../habilidades/habilidades';
@@ -29,17 +30,29 @@ export function Ajustes() {
     aplicarColores(n);
   };
 
-  const descargar = () => {
+  const descargar = async () => {
     const mios = leerMios();
-    const archivo = new Blob([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones())], { type: 'application/json' });
+    const nombre = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
+    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones())], nombre, { type: 'application/json' });
+    const njug = leerDiario().jugadoras.length;
+    const resumen = `${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'}, ${njug} ${njug === 1 ? 'jugadora' : 'jugadoras'} y tus colores`;
+    // En el móvil se abre el menú de compartir (Drive, Archivos, AirDrop…); si no hay, se descarga.
+    if (navigator.canShare?.({ files: [archivo] })) {
+      try {
+        await navigator.share({ files: [archivo], title: 'Copia de Horns' });
+        anotarCopia();
+        setAviso(`Copia guardada: ${resumen}.`);
+      } catch { /* cerró el menú sin guardar: no se anota */ }
+      return;
+    }
     const enlace = document.createElement('a');
     enlace.href = URL.createObjectURL(archivo);
-    enlace.download = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
+    enlace.download = nombre;
     enlace.click();
     // Safari empieza la descarga más tarde: si se suelta el archivo enseguida, la copia sale vacía.
     setTimeout(() => URL.revokeObjectURL(enlace.href), 60_000);
-    const njug = leerDiario().jugadoras.length;
-    setAviso(`Copia descargada: ${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'}, ${njug} ${njug === 1 ? 'jugadora' : 'jugadoras'} y tus colores.`);
+    anotarCopia();
+    setAviso(`Copia descargada: ${resumen}.`);
   };
 
   const cargar = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,13 +122,13 @@ export function Ajustes() {
       </button>
 
       <h2 className="sub">Copia de seguridad</h2>
-      <p className="vacio">Tus jugadas y tu plantilla solo están en este móvil. La copia incluye los nombres de las jugadoras: guárdala donde no la vea nadie más. Descarga una copia para pasarlas a otro o por si se borra Safari.</p>
+      <p className="vacio">Tus jugadas y tu plantilla solo están en este móvil. La copia incluye los nombres de las jugadoras: guárdala donde no la vea nadie más. Guarda una copia (en Drive, Archivos…) para pasarlas a otro móvil o por si se borra Safari.</p>
       <label className="salud-copia">
         <input type="checkbox" checked={conSalud} onChange={(ev) => setConSalud(ev.target.checked)} />
         Incluir las lesiones (dato de salud)
       </label>
       <div className="copia">
-        <button onClick={descargar}>Descargar copia</button>
+        <button onClick={() => void descargar()}>Guardar copia</button>
         <label className="cargar">
           Cargar copia
           <input id="cargar-copia" type="file" accept="application/json,.json" onChange={cargar} />

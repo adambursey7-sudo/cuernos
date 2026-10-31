@@ -1,11 +1,12 @@
 // Inicio de club (interfaz C, elegida por Adam el 29/10): «Seguir donde lo dejaste» y colecciones que se deslizan de lado.
 import type { ReactNode } from 'react';
 import { usuarioActual } from '../Acceso';
+import { diasSinCopia } from '../copiaFecha';
 import { IconoBiblioteca, IconoCronometro } from '../Iconos';
 import { Pista } from '../pizarra/Pista';
 import { crearAudio } from './Entrenando';
 import { todosLosEjercicios } from '../ejercicios/ejercicios';
-import { buscarSistema, todosLosSistemas } from '../sistemas/almacen';
+import { buscarSistema, leerMios, todosLosSistemas } from '../sistemas/almacen';
 import type { Sistema } from '../sistemas/tipos';
 import { leerUltima } from '../ultima';
 import { hoy, leerDiario } from '../diario/diario';
@@ -149,6 +150,10 @@ export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, 
   return (
     <section className="pantalla inicio">
       <h1 className="saludo">Coach {usuarioActual() ?? "Adam"}</h1>
+      {(() => {
+        const dias = leerDiario().jugadoras.length || leerMios().length ? diasSinCopia() : null;
+        return dias === null ? null : <p className="aviso-copia">{Number.isFinite(dias) ? `Hace ${dias} días que no guardas copia.` : 'Todavía no has guardado copia.'} Hazla en Más → Ajustes.</p>;
+      })()}
 
       {leerDiario().equipos[0] ? <Tele verDia={verDia} abrirSesion={abrirSesion} /> : <LoSiguiente verDia={verDia} abrirSesion={abrirSesion} />}
 
