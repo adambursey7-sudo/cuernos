@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import type { Equipo } from '../diario/diario';
 import { ejerciciosDeHabilidad, loMasFlojo, sesionDeLoFlojo, sistemasDeHabilidad } from '../habilidades/biblioteca';
+import { categoriaDeEquipo, guardarFiltroEdad, leerFiltroEdad, porEdad, tocaPriorizar } from '../habilidades/edad';
 import { Radar } from './Radar';
 import {
-  CATALOGO, ESTADOS, alternarEtiqueta, etiquetasDe, guardarEtiquetas, leerEtiquetas, nuevaHabilidad, type Estado, type HabilidadEquipo,
+  CATALOGO, ESTADOS, alternarEtiqueta, etiquetasDe, guardarEtiquetas, leerEtiquetas, nombreDeHabilidad, nuevaHabilidad, type Estado, type HabilidadEquipo,
 } from '../habilidades/habilidades';
 import { bloqueDe, guardarSesiones, leerSesiones } from '../sesiones/sesiones';
 import type { Ejercicio } from '../ejercicios/ejercicios';
@@ -123,7 +124,10 @@ export function Habilidades({ e, cambiar, abrirEjercicio, abrirSistema, abrirSes
   const [todas, setTodas] = useState(false);
   const [nueva, setNueva] = useState('');
   const [aviso, setAviso] = useState('');
+  const [filtroEdad, setFiltroEdad] = useState(leerFiltroEdad);
+  const categoria = categoriaDeEquipo(e.nombre);
   const poner = (habilidades: HabilidadEquipo[]) => cambiar({ ...e, habilidades });
+  const alternarFiltro = () => { guardarFiltroEdad(!filtroEdad); setFiltroEdad(!filtroEdad); };
   const h = hs.find((x) => x.id === abierta);
 
   if (h)
@@ -140,14 +144,14 @@ export function Habilidades({ e, cambiar, abrirEjercicio, abrirSistema, abrirSes
     return (
       <li key={x.id}>
         <button className="hab-fila" onClick={() => setAbierta(x.id)}>
-          <span className="rec-texto">{x.nombre}</span>
+          <span className="rec-texto">{x.nombre}{tocaPriorizar(categoria, x.id) && <span title={`Toca priorizar en ${categoria?.nombre}`} aria-label={`Toca priorizar en ${categoria?.nombre}`}> ★</span>}</span>
           <span className={`chip pequeno estado-${x.estado}`}>{n} {n === 1 ? 'ejercicio' : 'ejercicios'}</span>
         </button>
       </li>
     );
   };
   const normales = grupo('normal');
-  const flojas = loMasFlojo(hs);
+  const { flojos: flojas, quitadas } = porEdad(loMasFlojo(hs), categoria, filtroEdad);
   const montar = () => {
     const sesion = sesionDeLoFlojo(e.nombre, flojas);
     if (!sesion) return;
@@ -157,6 +161,17 @@ export function Habilidades({ e, cambiar, abrirEjercicio, abrirSistema, abrirSes
 
   return (
     <div className="habilidades">
+      {categoria ? (
+        <div className="guia-edad">
+          <p className="meta">{categoria.nombre}: toca priorizar {categoria.prioridad.map((id) => nombreDeHabilidad(hs, id)).join(', ')} (★).</p>
+          {categoria.masAdelante.length > 0 && (
+            <button className="chip" aria-pressed={filtroEdad} onClick={alternarFiltro}>{filtroEdad ? '✓ ' : ''}Dejar fuera de las sesiones lo que viene más adelante</button>
+          )}
+          {quitadas.length > 0 && <p className="meta">Fuera por edad: {quitadas.join(', ')}.</p>}
+        </div>
+      ) : (
+        <p className="meta">Si pones la categoría en el nombre del equipo (Premini, Mini, Infantil, Cadete, Júnior), aquí aparece qué toca priorizar a esa edad.</p>
+      )}
       {flojas.length > 0 && (
         <div className="lo-flojo">
           <h2 className="sub">Para esta semana</h2>

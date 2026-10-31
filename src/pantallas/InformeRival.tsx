@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { nombreDeHabilidad, nuevaHabilidad } from '../habilidades/habilidades';
 import { ejerciciosDeHabilidad, sesionDeLoFlojo } from '../habilidades/biblioteca';
+import { categoriaDeEquipo, leerFiltroEdad, porEdad } from '../habilidades/edad';
 import { guardarSesiones, leerSesiones } from '../sesiones/sesiones';
 import { habilidadesContra, informeAnterior, informeVacio, RASGOS_RIVAL, type InformeRival } from '../temporada/rival';
 import type { Evento } from '../temporada/temporada';
@@ -21,7 +22,10 @@ export function InformeRivalEditor({ e, eventos, equipo, poner, enlazar }: Props
   const cambiar = (c: Partial<InformeRival>) => poner({ rival: { ...r, ...c } });
   const anterior = e.rival ? undefined : informeAnterior(eventos, e);
   const contra = habilidadesContra(r.rasgos);
-  const flojos = contra.map((id) => ({ h: nuevaHabilidad(nombreDeHabilidad([], id), id), ejercicios: ejerciciosDeHabilidad(id) }));
+  const { flojos, quitadas } = porEdad(
+    contra.map((id) => ({ h: nuevaHabilidad(nombreDeHabilidad([], id), id), ejercicios: ejerciciosDeHabilidad(id) })),
+    categoriaDeEquipo(equipo), leerFiltroEdad(),
+  );
   const hay = flojos.reduce((n, f) => n + f.ejercicios.length, 0);
 
   const pasarASesion = () => {
@@ -49,7 +53,7 @@ export function InformeRivalEditor({ e, eventos, equipo, poner, enlazar }: Props
         <textarea rows={2} value={r.haremos} maxLength={300} placeholder="Cerrar el rebote…" onChange={(ev) => cambiar({ haremos: ev.target.value })} /></label>
       {r.rasgos.length > 0 && (
         <>
-          <span className="meta">Para esto conviene trabajar: {contra.map((id) => nombreDeHabilidad([], id)).join(', ')} ({hay} {hay === 1 ? 'ejercicio' : 'ejercicios'} en la biblioteca).</span>
+          <span className="meta">Para esto conviene trabajar: {contra.map((id) => nombreDeHabilidad([], id)).join(', ')} ({hay} {hay === 1 ? 'ejercicio' : 'ejercicios'} en la biblioteca).{quitadas.length > 0 && ` Fuera por edad: ${quitadas.join(', ')}.`}</span>
           <button className="principal ancho" disabled={hay === 0} onClick={pasarASesion}>Pasar a sesión</button>
         </>
       )}
