@@ -4,6 +4,16 @@ export type Punto = [number, number];
 export type Jugador = '1' | '2' | '3' | '4' | '5';
 export type Nivel = 'minibasket' | 'infantil' | 'cadete' | 'junior' | 'senior';
 
+export type Familia = 'ataque' | 'parado' | 'final' | 'presion' | 'defensa';
+
+export const FAMILIAS: { id: Familia; nombre: string }[] = [
+  { id: 'ataque', nombre: 'Ataque' },
+  { id: 'parado', nombre: 'Balón parado' },
+  { id: 'final', nombre: 'Final de partido' },
+  { id: 'presion', nombre: 'Salida de presión' },
+  { id: 'defensa', nombre: 'Defensa' },
+];
+
 export type Movimiento =
   | { tipo: 'corte' | 'bote' | 'bloqueo'; jugador: Jugador; a: Punto; por?: Punto }
   | { tipo: 'pase'; de: Jugador; a: Jugador };
@@ -29,6 +39,8 @@ export interface Sistema {
   errores: string[];
   ejercicios: string[];
   borrador?: boolean;
+  /** Para agrupar en el libro de jugadas. */
+  familia?: Familia;
   /** Creado por el entrenador en el editor (se guarda en su móvil). */
   propio?: boolean;
   /** Solo se dibujan estos jugadores (la pizarra de un ejercicio 2x0 o 3x3). Sin él, los cinco. */

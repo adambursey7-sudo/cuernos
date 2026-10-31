@@ -1,7 +1,9 @@
 import { Pista } from '../pizarra/Pista';
 import { coincide } from '../favoritos';
 import { todosLosSistemas } from '../sistemas/almacen';
-import { NIVELES, type Nivel } from '../sistemas/tipos';
+import { alternarSemana, leerSemana } from '../sistemas/libro';
+import { type Familia, type Nivel, NIVELES } from '../sistemas/tipos';
+import { useState } from 'react';
 
 const nombreNivel = (id: string) => NIVELES.find((n) => n.id === id)?.nombre ?? id;
 const orden = (n: Nivel) => NIVELES.findIndex((x) => x.id === n);
@@ -9,6 +11,8 @@ const orden = (n: Nivel) => NIVELES.findIndex((x) => x.id === n);
 export interface FiltroJugadas {
   nivel?: Nivel;
   tipo?: 'ataque' | 'defensa';
+  familia?: Familia;
+  semana?: boolean;
 }
 
 export function Estrella({ puesta, alternar, nombre }: { puesta: boolean; alternar: () => void; nombre: string }) {
@@ -40,11 +44,14 @@ export function Sistemas({ abrir, crear, q, soloFavoritos, filtro, favoritos, al
   alternarFavorito: (id: string) => void;
   quitarFiltros: () => void;
 }) {
+  const [semana, setSemana] = useState(leerSemana);
   const lista = todosLosSistemas().filter(
     (s) =>
       coincide(q, s.nombre, s.idea, s.contra) &&
       (!soloFavoritos || favoritos.includes(`j:${s.id}`)) &&
       (!filtro.tipo || s.tipo === filtro.tipo) &&
+      (!filtro.familia || s.familia === filtro.familia) &&
+      (!filtro.semana || semana.includes(s.id)) &&
       (!filtro.nivel || orden(s.nivelMinimo) <= orden(filtro.nivel)),
   );
   return (
@@ -70,10 +77,12 @@ export function Sistemas({ abrir, crear, q, soloFavoritos, filtro, favoritos, al
                     Desde {nombreNivel(s.nivelMinimo).toLowerCase()} · {s.pasos.length} {s.pasos.length === 1 ? 'paso' : 'pasos'}
                   </span>
                   {s.propio && <span className="mia">Mía</span>}
+                  {semana.includes(s.id) && <span className="mia">Esta semana</span>}
                   {s.borrador && <span className="aviso">Borrador por revisar</span>}
                 </span>
               </button>
               <Estrella puesta={favoritos.includes(`j:${s.id}`)} alternar={() => alternarFavorito(`j:${s.id}`)} nombre={s.nombre} />
+              <button className={semana.includes(s.id) ? 'boton-filtro on' : 'boton-filtro'} aria-pressed={semana.includes(s.id)} aria-label={`Esta semana: ${s.nombre}`} onClick={() => setSemana((l) => alternarSemana(l, s.id))}>Semana</button>
             </li>
           ))}
         </ul>
