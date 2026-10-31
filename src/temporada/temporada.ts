@@ -3,6 +3,7 @@
 import type { Candidata, ItemIcs } from './ics';
 import { diaSemana, diasEntre, esFecha, esHora, sumarDias } from './fechas';
 import { limpiarInforme, type InformeRival } from './rival';
+import { limpiarDirecto, type Directo } from './directo';
 
 const CLAVE = 'horns.temporada';
 
@@ -49,6 +50,10 @@ export interface Evento {
   jornada?: number;
   /** Hora de salida del viaje (solo en un partido fuera). */
   salida?: string;
+  /** Plan de partido (senior): defensa, jugadas y a quién buscar. */
+  plan?: string;
+  /** Puntos y faltas por jugador, apuntados en directo (senior). */
+  directo?: Directo;
 }
 
 export interface EntrenoFijo {
@@ -140,6 +145,8 @@ function limpiaEvento(e: unknown): Evento | null {
     ...(txt(x.sesionId) ? { sesionId: x.sesionId } : {}), ...(x.libre ? { libre: true } : {}),
     ...(x.tipo === 'partido' && Number.isInteger(x.jornada) && x.jornada! >= 1 && x.jornada! <= 99 ? { jornada: x.jornada } : {}),
     ...(x.tipo === 'partido' && esHora(x.salida) ? { salida: x.salida } : {}),
+    ...(x.tipo === 'partido' && txt(x.plan) && x.plan.trim() ? { plan: x.plan.slice(0, 600) } : {}),
+    ...(x.tipo === 'partido' && limpiarDirecto(x.directo) ? { directo: limpiarDirecto(x.directo) } : {}),
     ...listaTexto('bien', x.bien), ...listaTexto('mal', x.mal), ...listaTexto('mirar', x.mirar), ...listaTexto('pasadas', x.pasadas),
   };
 }
