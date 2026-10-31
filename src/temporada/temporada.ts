@@ -2,6 +2,7 @@
 // Fechas AAAA-MM-DD, horas HH:MM. Los entrenos fijos de la semana se calculan: no se guardan día a día.
 import type { Candidata, ItemIcs } from './ics';
 import { diaSemana, diasEntre, esFecha, esHora, sumarDias } from './fechas';
+import { limpiarInforme, type InformeRival } from './rival';
 
 const CLAVE = 'horns.temporada';
 
@@ -42,6 +43,8 @@ export interface Evento {
   pasadas?: string[];
   /** «Sin entreno»: un festivo quita los entrenos fijos de ese día. */
   libre?: boolean;
+  /** Informe del rival (solo en un partido). */
+  rival?: InformeRival;
 }
 
 export interface EntrenoFijo {
@@ -110,7 +113,9 @@ function limpiaEvento(e: unknown): Evento | null {
   if (!x || !txt(x.id) || !esFecha(x.fecha) || !esHora(x.hora) || !TIPOS.includes(x.tipo) || !txt(x.titulo) || !txt(x.lugar) || !txt(x.balance)) return null;
   const r = x.resultado;
   const resultado = r && Number.isInteger(r.a) && Number.isInteger(r.c) && r.a >= 0 && r.c >= 0 ? { a: r.a, c: r.c } : undefined;
+  const rival = x.tipo === 'partido' ? limpiarInforme(x.rival) : undefined;
   return {
+    ...(rival ? { rival } : {}),
     id: x.id, fecha: x.fecha, hora: x.hora, tipo: x.tipo, titulo: x.titulo, lugar: x.lugar, balance: x.balance,
     ...(typeof x.casa === 'boolean' ? { casa: x.casa } : {}), ...(resultado ? { resultado } : {}),
     ...(txt(x.sesionId) ? { sesionId: x.sesionId } : {}), ...(x.libre ? { libre: true } : {}),

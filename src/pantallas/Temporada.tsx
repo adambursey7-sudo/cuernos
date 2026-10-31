@@ -12,6 +12,7 @@ import {
   type Evento, type Fase, type Item, type Temporada as TemporadaDatos, type TipoEvento,
 } from '../temporada/temporada';
 import { ImportarCalendario } from './ImportarCalendario';
+import { InformeRivalEditor } from './InformeRival';
 
 const TIPOS: { id: TipoEvento; nombre: string }[] = [{ id: 'partido', nombre: 'Partido' }, { id: 'entreno', nombre: 'Entreno' }, { id: 'otro', nombre: 'Otro' }];
 const NOMBRES_FASE = ['Pretemporada', 'Liga', 'Parón', 'Fase final'];
@@ -152,6 +153,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
         <Entrada etiqueta="Pabellón o lugar"><input value={e.lugar} maxLength={60} placeholder="(opcional)" onChange={(ev) => poner({ lugar: ev.target.value })} /></Entrada>
         {e.tipo === 'otro' && <label className="marca-linea"><input type="checkbox" checked={!!e.libre} onChange={(ev) => poner({ libre: ev.target.checked || undefined })} /> Sin entreno ese día (festivo)</label>}
         {e.tipo !== 'otro' && selector(e.sesionId, (id) => poner({ sesionId: id }))}
+        {e.tipo === 'partido' && <InformeRivalEditor e={e} eventos={t.eventos} equipo={equipo.nombre} poner={poner} enlazar={(id) => poner({ sesionId: id })} />}
         {e.tipo === 'partido' && (
           <>
             <div className="dos-botones">
