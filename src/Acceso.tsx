@@ -1,17 +1,16 @@
-// Pantalla de acceso (falsa por ahora: solo existe el usuario de Adam y nada sale del móvil).
+// Pantalla de acceso (falsa por ahora: solo existen Adam y Benja y nada sale del móvil).
 // Al entrar suena una pequeña animación (los cuernos se abren y sale el saludo) y la app aparece por detrás.
 import { useState } from 'react';
 import { GlifoO } from './Logo';
 
 const CLAVE = 'horns.acceso';
-const USUARIO = 'Adam';
-const CONTRASENA = '8520';
+const USUARIOS: Record<string, string> = { Adam: '8520', Benja: '1234' };
 
 const leer = () => { try { return localStorage.getItem(CLAVE); } catch { return null; } };
 const poner = (v: string | null) => { try { if (v === null) localStorage.removeItem(CLAVE); else localStorage.setItem(CLAVE, v); } catch { /* sin almacenamiento: pedirá entrar cada vez */ } };
 
 /** Usuario con la sesión abierta, o null. */
-export const usuarioActual = () => (leer() === USUARIO ? USUARIO : null);
+export const usuarioActual = () => { const u = leer(); return u !== null && u in USUARIOS ? u : null; };
 export const cerrarSesion = () => { poner(null); location.reload(); };
 
 export function ConAcceso({ children }: { children: React.ReactNode }) {
@@ -19,14 +18,17 @@ export function ConAcceso({ children }: { children: React.ReactNode }) {
   const [usuario, setUsuario] = useState('');
   const [clave, setClave] = useState('');
   const [fallo, setFallo] = useState(false);
+  const [nombre, setNombre] = useState('');
   const [fase, setFase] = useState<'pide' | 'entra' | 'fuera'>('pide');
 
   if (dentro) return <>{children}</>;
 
   const entrar = (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (usuario.trim().toLowerCase() !== USUARIO.toLowerCase() || clave !== CONTRASENA) { setFallo(true); return; }
-    poner(USUARIO);
+    const quien = Object.keys(USUARIOS).find((u) => u.toLowerCase() === usuario.trim().toLowerCase());
+    if (!quien || clave !== USUARIOS[quien]) { setFallo(true); return; }
+    poner(quien);
+    setNombre(quien);
     setFase('entra');
     setTimeout(() => setFase('fuera'), 3500);
     setTimeout(() => setDentro(true), 3900);
@@ -50,7 +52,7 @@ export function ConAcceso({ children }: { children: React.ReactNode }) {
             <button type="submit">Entrar</button>
           </form>
         ) : (
-          <p className="acceso-hola" role="status">Hola Coach {USUARIO}</p>
+          <p className="acceso-hola" role="status">Coach {nombre}</p>
         )}
       </div>
     </>

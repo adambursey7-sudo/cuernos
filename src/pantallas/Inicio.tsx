@@ -148,7 +148,7 @@ export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, 
 
   return (
     <section className="pantalla inicio">
-      <h1 className="saludo">Hola Coach {usuarioActual() ?? "Adam"}</h1>
+      <h1 className="saludo">Coach {usuarioActual() ?? "Adam"}</h1>
 
       {leerDiario().equipos[0] ? <Tele verDia={verDia} abrirSesion={abrirSesion} /> : <LoSiguiente verDia={verDia} abrirSesion={abrirSesion} />}
 
