@@ -2,6 +2,7 @@
 // hoja del día desde abajo (con «Abrir día» a pantalla completa), entrenos fijos de la semana, partidos sueltos o en lista y .ics.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { hoy, type Equipo, type Jugadora } from '../diario/diario';
+import { palabras } from '../diario/tipo';
 import { leerSesiones } from '../sesiones/sesiones';
 import { DIAS, DIAS_LARGOS, corta, cuadriculaMes, mesDe, nombreMes, sumarMeses } from '../temporada/fechas';
 import { escribirIcs } from '../temporada/ics';
@@ -84,6 +85,7 @@ const alternarEn = (lista: string[] | undefined, x: string) => (lista?.includes(
 function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equipo, jugadoras, anotar }: {
   anotar: (notas: { id: string; texto: string }[]) => void; jugadoras: Jugadora[]; t: TemporadaDatos; fecha: string; completa: boolean; alternar: () => void; cerrar: () => void; cambiar: (t: TemporadaDatos) => void; abrirSesion: (id: string) => void; equipo: Equipo;
 }) {
+  const pal = palabras(equipo);
   const [edita, setEdita] = useState<string | null>(null);
   const [lista, setLista] = useState<string | null>(null);
   const items = agendaDia(t, fecha);
@@ -186,7 +188,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
                   <button className="principal ancho" disabled={pendientes.length === 0} onClick={() => { anotar(pendientes); poner({ pasadas: [...new Set([...(e.pasadas ?? []), ...pendientes.map((n) => n.id)])] }); }}>
                     {pendientes.length ? `Pasar a las fichas (${pendientes.length})` : 'Pasar a las fichas'}
                   </button>
-                  {hechas > 0 && <span className="meta">Ya está en la ficha de {hechas} {hechas === 1 ? 'jugadora' : 'jugadoras'}.</span>}
+                  {hechas > 0 && <span className="meta">Ya está en la ficha de {hechas} {hechas === 1 ? pal.jugadora : pal.jugadoras}.</span>}
                 </>
               );
             })()}
@@ -246,7 +248,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
                               })}
                             </div>
                             <div className="dos-botones">
-                              <button className="chip" onClick={() => poner(jugadoras.map((j) => j.id))}>Han venido todas</button>
+                              <button className="chip" onClick={() => poner(jugadoras.map((j) => j.id))}>{pal.todas}</button>
                               <button className="chip" onClick={() => poner(null)}>Borrar lista</button>
                             </div>
                           </>

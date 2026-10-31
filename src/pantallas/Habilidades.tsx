@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { Equipo } from '../diario/diario';
 import { ejerciciosDeHabilidad, loMasFlojo, sesionDeLoFlojo, sistemasDeHabilidad } from '../habilidades/biblioteca';
+import { esSenior } from '../diario/tipo';
 import { categoriaDeEquipo, guardarFiltroEdad, leerFiltroEdad, porEdad, tocaPriorizar } from '../habilidades/edad';
 import { Radar } from './Radar';
 import {
@@ -170,7 +171,7 @@ export function Habilidades({ e, cambiar, abrirEjercicio, abrirSistema, abrirSes
           {quitadas.length > 0 && <p className="meta">Fuera por edad: {quitadas.join(', ')}.</p>}
         </div>
       ) : (
-        <p className="meta">Si pones la categoría en el nombre del equipo (Premini, Mini, Infantil, Cadete, Júnior), aquí aparece qué toca priorizar a esa edad.</p>
+        <p className="meta">{esSenior(e) ? 'En un equipo senior la guía por edad no se aplica: las habilidades se ordenan por lo que toca trabajar.' : 'Si pones la categoría en el nombre del equipo (Premini, Mini, Infantil, Cadete, Júnior), aquí aparece qué toca priorizar a esa edad.'}</p>
       )}
       {flojas.length > 0 && (
         <div className="lo-flojo">

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { disponibles, guardarJugadora, juntarDiario, sinSalud, limpiar, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, repetida } from './diario';
+import { disponibles, estaFuera, guardarJugadora, juntarDiario, sinSalud, limpiar, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, repetida } from './diario';
 import { leerLinea, leerTexto } from './importar';
+import { esSenior, palabras } from './tipo';
 
 describe('diario', () => {
   const e = nuevoEquipo('Cadete femenino');
@@ -88,5 +89,54 @@ describe('importar plantilla', () => {
     const otras = [{ id: 'pase', nombre: 'Pase', estado: 'fuerte' as const, como: '' }];
     expect(juntarDiario({ equipos: [mio], jugadoras: [] }, { equipos: [{ ...mio, habilidades: otras }], jugadoras: [] }).equipos[0].habilidades).toEqual(otras);
   });
-});
 
+  describe('equipo senior', () => {
+    it('un equipo nuevo es de formación y no guarda el tipo; el senior sí', () => {
+      expect(nuevoEquipo('Ejemplo').tipo).toBeUndefined();
+      expect('tipo' in nuevoEquipo('Ejemplo', 'formacion')).toBe(false);
+      expect(nuevoEquipo('Senior A', 'senior').tipo).toBe('senior');
+    });
+
+    it('limpiar conserva el tipo senior y descarta valores raros; los equipos viejos siguen valiendo', () => {
+      const s = nuevoEquipo('Senior A', 'senior');
+      expect(limpiar({ equipos: [s], jugadoras: [] }).equipos[0].tipo).toBe('senior');
+      expect(limpiar({ equipos: [{ ...s, tipo: 'otro' }], jugadoras: [] }).equipos[0].tipo).toBeUndefined();
+      const viejo = { id: 'e1', nombre: 'Cadete femenino', forma: '', virtudes: '', trabajar: '', como: '' };
+      expect(limpiar({ equipos: [viejo], jugadoras: [] }).equipos).toEqual([viejo]);
+    });
+
+    it('las palabras cambian solo en senior', () => {
+      expect(esSenior(nuevoEquipo('Ejemplo'))).toBe(false);
+      expect(esSenior(nuevoEquipo('Senior A', 'senior'))).toBe(true);
+      expect(palabras(nuevoEquipo('Ejemplo')).jugadoras).toBe('jugadoras');
+      expect(palabras(nuevoEquipo('Senior A', 'senior')).jugadoras).toBe('jugadores');
+      expect(palabras(undefined).Jugadora).toBe('Jugadora');
+    });
+
+    it('el rol solo vale si es titular, rotación o especialista', () => {
+      const s = nuevoEquipo('Senior A', 'senior');
+      const ok = nuevaJugadora(s.id, { rol: 'titular' });
+      const raro = { ...nuevaJugadora(s.id), rol: 'capitan' };
+      const d = limpiar({ equipos: [s], jugadoras: [ok, raro] });
+      expect(d.jugadoras.map((j) => j.rol)).toEqual(['titular']);
+    });
+
+    it('en duda cuenta como disponible; lesionado, no; y la copia sin salud no lleva ninguno de los dos', () => {
+      const s = nuevoEquipo('Senior A', 'senior');
+      const duda = nuevaJugadora(s.id, { lesion: { desde: '2026-10-01', nota: '', duda: true } });
+      const baja = nuevaJugadora(s.id, { lesion: { desde: '2026-10-01', nota: '' } });
+      const sana = nuevaJugadora(s.id, { rol: 'rotacion' });
+      expect([estaFuera(duda), estaFuera(baja), estaFuera(sana)]).toEqual([false, true, false]);
+      expect(disponibles([duda, baja, sana])).toBe(2);
+      const limpio = sinSalud({ equipos: [s], jugadoras: [duda, baja, sana] });
+      expect(limpio.jugadoras.every((j) => !j.lesion)).toBe(true);
+      expect(limpio.jugadoras.find((j) => j.id === sana.id)?.rol).toBe('rotacion');
+    });
+
+    it('una copia sin tipo no cambia el equipo de este móvil, y si la copia trae senior gana la copia', () => {
+      const mio = nuevoEquipo('Senior A', 'senior');
+      const { tipo: _t, ...sinTipo } = mio;
+      expect(juntarDiario({ equipos: [mio], jugadoras: [] }, { equipos: [sinTipo], jugadoras: [] }).equipos[0].tipo).toBe('senior');
+    });
+  });
+});

@@ -2,9 +2,10 @@
 // Los datos viven solo en este móvil. La ficha se guarda sola al escribir.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  POSICIONES, disponibles, guardarDiario, guardarEquipo, guardarJugadora, hoy, leerDiario, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, quitarJugadora, repetida,
-  type Diario, type Equipo as EquipoDatos, type Jugadora,
+  POSICIONES, ROLES, disponibles, guardarDiario, guardarEquipo, guardarJugadora, hoy, leerDiario, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, quitarJugadora, repetida,
+  type Diario, type Equipo as EquipoDatos, type Jugadora, type TipoEquipo,
 } from '../diario/diario';
+import { esSenior, palabras } from '../diario/tipo';
 import { NOMBRE_PUESTO, PUESTOS, rellenarPuestos } from '../diario/puestos';
 import { leerTexto, textoDePdf, type Candidata } from '../diario/importar';
 import { leerTemporadas, resumenAsistencia, temporadaDe } from '../temporada/temporada';
@@ -24,11 +25,24 @@ function Campo({ etiqueta, valor, cambiar, filas = 3, ayuda }: { etiqueta: strin
   );
 }
 
+function ElegirTipo({ tipo, cambiar }: { tipo: TipoEquipo; cambiar: (t: TipoEquipo) => void }) {
+  return (
+    <div className="niveles filtro" role="group" aria-label="Tipo de equipo">
+      {([['formacion', 'Formación'], ['senior', 'Senior masculino']] as const).map(([id, nombre]) => (
+        <button key={id} className={tipo === id ? 'chip on' : 'chip'} aria-pressed={tipo === id} onClick={() => cambiar(id)}>{nombre}</button>
+      ))}
+    </div>
+  );
+}
+
 function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; cambiar: (j: Jugadora) => void; borrar: () => void; volver: () => void }) {
   const [pestana, setPestana] = useState<'perfil' | 'entrenar' | 'notas'>('perfil');
   const [seguro, setSeguro] = useState(false);
   const [nota, setNota] = useState('');
   const otra = repetida(d, j);
+  const eq = d.equipos.find((x) => x.id === j.equipoId);
+  const w = palabras(eq);
+  const sen = esSenior(eq);
   const asis = useMemo(() => resumenAsistencia(temporadaDe(leerTemporadas(), j.equipoId), j.id), [j.equipoId, j.id]);
   const poner = (c: Partial<Jugadora>) => cambiar({ ...j, ...c });
   return (
@@ -36,7 +50,7 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
       <div className="cabecera">
         <button className="atras" onClick={volver} aria-label="Volver a la plantilla">‹</button>
         <span className="dorsal grande-dorsal" aria-hidden>{j.numero || '–'}</span>
-        <h2 className="nombre-sistema">{j.nombre || 'Jugadora nueva'}</h2>
+        <h2 className="nombre-sistema">{j.nombre || w.nueva}</h2>
       </div>
       <div className="niveles filtro" role="tablist" aria-label="Apartados de la ficha">
         {([['perfil', 'Perfil'], ['entrenar', 'Entrenar'], ['notas', `Notas${j.notas.length ? ` (${j.notas.length})` : ''}`]] as const).map(([id, nombre]) => (
@@ -57,19 +71,38 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
             </label>
           </div>
           {asis.de > 0 && <p className="meta">Asistencia: ha venido a <b>{asis.vino} de {asis.de}</b> entrenos con lista.</p>}
-          {otra && <p className="aviso">El {j.numero} ya lo lleva {otra.nombre || 'otra jugadora'}.</p>}
+          {otra && <p className="aviso">El {j.numero} ya lo lleva {otra.nombre || (sen ? 'otro jugador' : 'otra jugadora')}.</p>}
           <div className="niveles filtro" role="group" aria-label="Posición">
             {POSICIONES.map((p) => (
               <button key={p} className={j.posicion === p ? 'chip on' : 'chip'} aria-pressed={j.posicion === p} onClick={() => poner({ posicion: j.posicion === p ? '' : p })}>{p}</button>
             ))}
           </div>
+          {sen && (
+            <div className="niveles filtro" role="group" aria-label="Rol en el equipo">
+              {ROLES.map(([id, nombre]) => (
+                <button key={id} className={j.rol === id ? 'chip on' : 'chip'} aria-pressed={j.rol === id} onClick={() => poner({ rol: j.rol === id ? undefined : id })}>{nombre}</button>
+              ))}
+            </div>
+          )}
           <div className="lesion">
-            <button className={j.lesion ? 'chip on estado-trabajar' : 'chip'} aria-pressed={!!j.lesion} onClick={() => poner({ lesion: j.lesion ? undefined : { desde: hoy(), nota: '' } })}>{j.lesion ? 'Lesionada' : 'Marcar lesión'}</button>
+            {sen ? (
+              <div className="niveles filtro" role="group" aria-label="Estado">
+                {([['ok', 'Disponible'], ['duda', 'Duda'], ['lesion', 'Lesionado']] as const).map(([id, nombre]) => {
+                  const actual = !j.lesion ? 'ok' : j.lesion.duda ? 'duda' : 'lesion';
+                  return (
+                    <button key={id} className={actual === id ? 'chip on' : 'chip'} aria-pressed={actual === id}
+                      onClick={() => poner({ lesion: id === 'ok' ? undefined : { desde: j.lesion?.desde ?? hoy(), nota: j.lesion?.nota ?? '', ...(id === 'duda' ? { duda: true } : {}) } })}>{nombre}</button>
+                  );
+                })}
+              </div>
+            ) : (
+              <button className={j.lesion ? 'chip on estado-trabajar' : 'chip'} aria-pressed={!!j.lesion} onClick={() => poner({ lesion: j.lesion ? undefined : { desde: hoy(), nota: '' } })}>{j.lesion ? 'Lesionada' : 'Marcar lesión'}</button>
+            )}
             {j.lesion && (
               <>
                 <label className="campo-diario">
                   <span>Lesión · desde el {j.lesion.desde.split('-').reverse().join('/')}</span>
-                  <textarea value={j.lesion.nota} rows={2} onChange={(ev) => poner({ lesion: { desde: j.lesion!.desde, nota: ev.target.value } })} placeholder="Qué le pasa y cuándo vuelve" />
+                  <textarea value={j.lesion.nota} rows={2} onChange={(ev) => poner({ lesion: { ...j.lesion!, nota: ev.target.value } })} placeholder="Qué le pasa y cuándo vuelve" />
                 </label>
                 <p className="meta">Dato de salud: solo está en este móvil. La copia de seguridad no lo incluye salvo que lo marques en Más.</p>
               </>
@@ -83,7 +116,7 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
 
       {pestana === 'entrenar' && (
         <>
-          <Campo etiqueta="Cómo entrenarla" valor={j.entrenar} cambiar={(entrenar) => poner({ entrenar })} ayuda="Qué trabajar con ella y cómo" filas={7} />
+          <Campo etiqueta={w.entrenarla} valor={j.entrenar} cambiar={(entrenar) => poner({ entrenar })} ayuda="Qué trabajar con ella y cómo" filas={7} />
           {j.mejorar && (
             <p className="meta">Lo que quieres mejorar: <b>{j.mejorar}</b></p>
           )}
@@ -117,7 +150,7 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
             <button className="chip on" onClick={borrar}>Sí, borrar esta ficha</button>
           </>
         ) : (
-          <button className="chip" onClick={() => setSeguro(true)}>Borrar jugadora</button>
+          <button className="chip" onClick={() => setSeguro(true)}>Borrar {w.jugadora}</button>
         )}
       </div>
     </section>
@@ -136,13 +169,14 @@ function FichaEquipo({ e, jugadoras, cambiar, borrar, volver, ir }: { e: EquipoD
         <span>Nombre del equipo</span>
         <input value={e.nombre} maxLength={40} onChange={(ev) => cambiar({ ...e, nombre: ev.target.value })} />
       </label>
+      <ElegirTipo tipo={e.tipo ?? 'formacion'} cambiar={(tipo) => { const { tipo: _antes, ...resto } = e; cambiar(tipo === 'senior' ? { ...resto, tipo } : resto); }} />
       <Campo etiqueta="Forma de jugar" valor={e.forma} cambiar={(forma) => cambiar({ ...e, forma })} ayuda="Cómo quieres que juegue el equipo" filas={4} />
       <Campo etiqueta="Virtudes del equipo" valor={e.virtudes} cambiar={(virtudes) => cambiar({ ...e, virtudes })} ayuda="En qué es bueno" />
       <Campo etiqueta="A trabajar" valor={e.trabajar} cambiar={(trabajar) => cambiar({ ...e, trabajar })} ayuda="Lo que hay que mejorar" />
       <Campo etiqueta="Cómo entrenarlo" valor={e.como} cambiar={(como) => cambiar({ ...e, como })} ayuda="Qué tipo de ejercicios y sistemas, y cuánto" filas={5} />
       <div className="puestos">
         <h2 className="sub">Quién es quién en la pizarra</h2>
-        <p className="meta">Cada puesto de las jugadas (1 a 5) con la jugadora que lo hace. En la pizarra puedes enseñar su dorsal en vez del puesto.</p>
+        <p className="meta">Cada puesto de las jugadas (1 a 5) con {esSenior(e) ? 'el jugador' : 'la jugadora'} que lo hace. En la pizarra puedes enseñar su dorsal en vez del puesto.</p>
         {PUESTOS.map((p) => (
           <label key={p} className="puesto">
             <span className="dorsal" aria-hidden>{p}</span>
@@ -173,7 +207,7 @@ function FichaEquipo({ e, jugadoras, cambiar, borrar, volver, ir }: { e: EquipoD
   );
 }
 
-function Importar({ equipoId, existentes, crear, volver }: { equipoId: string; existentes: string[]; crear: (c: Candidata[]) => void; volver: () => void }) {
+function Importar({ equipoId, w, existentes, crear, volver }: { equipoId: string; w: ReturnType<typeof palabras>; existentes: string[]; crear: (c: Candidata[]) => void; volver: () => void }) {
   const [texto, setTexto] = useState('');
   const [lista, setLista] = useState<(Candidata & { ok: boolean })[] | null>(null);
   const [mensaje, setMensaje] = useState('');
@@ -181,7 +215,7 @@ function Importar({ equipoId, existentes, crear, volver }: { equipoId: string; e
   const leer = (t: string) => {
     const r = leerTexto(t);
     setLista(r.map((c) => ({ ...c, ok: true })));
-    setMensaje(r.length ? '' : 'No he encontrado jugadoras. Hace falta un dorsal y un nombre en cada línea.');
+    setMensaje(r.length ? '' : `No he encontrado ${w.jugadoras}. Hace falta un dorsal y un nombre en cada línea.`);
   };
   const subir = async (archivo: File | undefined) => {
     if (!archivo) return;
@@ -205,7 +239,7 @@ function Importar({ equipoId, existentes, crear, volver }: { equipoId: string; e
         <button className="atras" onClick={volver} aria-label="Volver a la plantilla">‹</button>
         <h2 className="nombre-sistema">Importar plantilla</h2>
       </div>
-      <p className="meta">Sube un PDF, un CSV o un texto con el dorsal y el nombre de cada jugadora. Se lee en tu móvil; no se manda a ningún sitio.</p>
+      <p className="meta">Sube un PDF, un CSV o un texto con el dorsal y el nombre de cada {w.jugadora}. Se lee en tu móvil; no se manda a ningún sitio.</p>
       <label className="subir-archivo">
         <input type="file" accept=".pdf,.csv,.txt,text/plain,text/csv,application/pdf" onChange={(ev) => { void subir(ev.target.files?.[0]); ev.target.value = ''; }} />
         {leyendo ? 'Leyendo…' : 'Elegir PDF o archivo'}
@@ -227,7 +261,7 @@ function Importar({ equipoId, existentes, crear, volver }: { equipoId: string; e
             ))}
           </ul>
           <button className="principal ancho" disabled={elegidas.length === 0} onClick={() => crear(elegidas)}>
-            Crear {elegidas.length} {elegidas.length === 1 ? 'jugadora' : 'jugadoras'}
+            Crear {elegidas.length} {elegidas.length === 1 ? w.jugadora : w.jugadoras}
           </button>
         </>
       )}
@@ -250,6 +284,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
   const [activo, setActivo] = useState<string>(() => leerDiario().equipos[0]?.id ?? '');
   const [vista, setVista] = useState<Vista>(() => (fecha ? { tipo: 'temporada' } : { tipo: 'plantilla' }));
   const [nombre, setNombre] = useState('');
+  const [tipoNuevo, setTipoNuevo] = useState<TipoEquipo>('formacion');
   const [fallo, setFallo] = useState(false);
   const primera = useRef(true);
 
@@ -263,22 +298,24 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
   const crearEquipo = () => {
     const n = nombre.trim();
     if (!n) return;
-    const e = nuevoEquipo(n);
+    const e = nuevoEquipo(n, tipoNuevo);
     setD(guardarEquipo(d, e));
     setActivo(e.id);
     setNombre('');
+    setTipoNuevo('formacion');
   };
 
   if (!equipo)
     return (
       <section className="pantalla">
         <h1 className="titulo">Equipo</h1>
-        <p className="vacio">Aquí vive tu cuaderno: la plantilla, la ficha de cada jugadora y cómo juega y entrena tu equipo. Se guarda solo en este móvil.</p>
+        <p className="vacio">Aquí vive tu cuaderno: la plantilla, la ficha de cada jugador o jugadora y cómo juega y entrena tu equipo. Se guarda solo en este móvil.</p>
         <div className="nuevo-equipo">
           <label className="campo-diario">
             <span>¿Cómo se llama tu equipo?</span>
-            <input value={nombre} maxLength={40} placeholder="Cadete femenino" onChange={(ev) => setNombre(ev.target.value)} onKeyDown={(ev) => ev.key === 'Enter' && crearEquipo()} />
+            <input value={nombre} maxLength={40} placeholder={tipoNuevo === 'senior' ? 'Senior A' : 'Cadete femenino'} onChange={(ev) => setNombre(ev.target.value)} onKeyDown={(ev) => ev.key === 'Enter' && crearEquipo()} />
           </label>
+          <ElegirTipo tipo={tipoNuevo} cambiar={setTipoNuevo} />
           <button className="principal ancho" disabled={!nombre.trim()} onClick={crearEquipo}>Crear equipo</button>
         </div>
       </section>
@@ -304,6 +341,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
     return (
       <Importar
         equipoId={equipo.id}
+        w={palabras(equipo)}
         existentes={plantilla(d, equipo.id).map((j) => `${j.numero}|${j.nombre.trim().toLowerCase()}`)}
         volver={() => setVista({ tipo: 'plantilla' })}
         crear={(cs) => {
@@ -378,6 +416,8 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
     );
 
   const jugadoras = plantilla(d, equipo.id);
+  const w = palabras(equipo);
+  const sen = esSenior(equipo);
   return (
     <section className="pantalla">
       <h1 className="titulo">Equipo</h1>
@@ -395,7 +435,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
       </button>
       <h2 className="sub">Plantilla · {jugadoras.length}{jugadoras.some((j) => j.lesion) ? ` · ${disponibles(jugadoras)} disponibles` : ''}</h2>
       {fallo && <p className="aviso">El móvil no deja guardar: libera espacio o haz una copia.</p>}
-      {jugadoras.length === 0 && <p className="vacio">Todavía no hay jugadoras. Añádelas una a una o importa la lista desde un PDF.</p>}
+      {jugadoras.length === 0 && <p className="vacio">Todavía no hay {w.jugadoras}. {sen ? 'Añádelos' : 'Añádelas'} una a una o importa la lista desde un PDF.</p>}
       <ul className="lista">
         {jugadoras.map((j) => (
           <li key={j.id}>
@@ -403,9 +443,9 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
               <span className="dorsal" aria-hidden>{j.numero || '–'}</span>
               <span className="datos">
                 <b>{j.nombre || 'Sin nombre'}</b>
-                <span className="meta">{j.posicion || 'Sin posición'}</span>
+                <span className="meta">{[j.posicion || 'Sin posición', sen ? ROLES.find(([id]) => id === j.rol)?.[1] : ''].filter(Boolean).join(' · ')}</span>
               </span>
-              {j.lesion && <span className="et mal">lesión</span>}
+              {j.lesion && <span className="et mal">{j.lesion.duda ? 'duda' : 'lesión'}</span>}
               {(j.fuertes || j.mejorar) && (
                 <span className="etiquetas">
                   {j.fuertes && <span className="et bien">{j.fuertes.split(/[,\n.;]/)[0].trim()}</span>}
@@ -417,14 +457,15 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
         ))}
       </ul>
       <div className="dos-botones">
-        <button className="principal" onClick={() => { const j = nuevaJugadora(equipo.id); setD(guardarJugadora(d, j)); setVista({ tipo: 'jugadora', id: j.id }); }}>＋ Jugadora</button>
+        <button className="principal" onClick={() => { const j = nuevaJugadora(equipo.id); setD(guardarJugadora(d, j)); setVista({ tipo: 'jugadora', id: j.id }); }}>＋ {w.Jugadora}</button>
         <button className="secundario" onClick={() => setVista({ tipo: 'importar' })}>Importar PDF o lista</button>
       </div>
       <div className="nuevo-equipo">
         <label className="campo-diario">
           <span>Otro equipo</span>
-          <input value={nombre} maxLength={40} placeholder="Infantil, Mini…" onChange={(ev) => setNombre(ev.target.value)} onKeyDown={(ev) => ev.key === 'Enter' && crearEquipo()} />
+          <input value={nombre} maxLength={40} placeholder={tipoNuevo === 'senior' ? 'Senior B' : 'Infantil, Mini…'} onChange={(ev) => setNombre(ev.target.value)} onKeyDown={(ev) => ev.key === 'Enter' && crearEquipo()} />
         </label>
+        <ElegirTipo tipo={tipoNuevo} cambiar={setTipoNuevo} />
         <button className="secundario" disabled={!nombre.trim()} onClick={crearEquipo}>Añadir equipo</button>
       </div>
     </section>
