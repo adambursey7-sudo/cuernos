@@ -28,8 +28,8 @@ export function ConAcceso({ children }: { children: React.ReactNode }) {
     if (usuario.trim().toLowerCase() !== USUARIO.toLowerCase() || clave !== CONTRASENA) { setFallo(true); return; }
     poner(USUARIO);
     setFase('entra');
-    setTimeout(() => setFase('fuera'), 1500);
-    setTimeout(() => setDentro(true), 1900);
+    setTimeout(() => setFase('fuera'), 3500);
+    setTimeout(() => setDentro(true), 3900);
   };
 
   return (

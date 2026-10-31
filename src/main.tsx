@@ -33,7 +33,7 @@ leerEnlace(location.hash)
   .then(
     (compartida) => {
       if (compartida?.colores) aplicarColores(compartida.colores, false);
-      return compartida ? <Visor datos={compartida} /> : <ConAcceso><ConIntro><App /></ConIntro></ConAcceso>;
+      return compartida ? <Visor datos={compartida} /> : <ConIntro><ConAcceso><App /></ConAcceso></ConIntro>;
     },
     () => <Visor datos="roto" />,
   )
