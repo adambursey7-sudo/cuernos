@@ -1,0 +1,50 @@
+REVISIÓN DEL CÓDIGO DE HORNS (tramo 4, solo lectura) - 31/10
+
+COMPRUEBAS
+  Compila sin errores · 249 pruebas bien · build bien.
+  No hay botones vacíos ni marcas de «pendiente» en el código.
+
+--- GRAVES (pierden datos) ---
+
+1. La copia de seguridad NO incluye las sesiones.
+   Si se borra Safari o cambias de móvil, pierdes todas las sesiones de entrenamiento.
+   Tampoco entran los espacios de la cancha ni los favoritos.
+   Arreglo: meter sesiones, espacios y favoritos en la copia, y que al cargarla se junten con lo que ya hay.
+
+2. Borrar una sesión es un solo toque (la ✕ de la lista de Sesiones) y no pregunta.
+   Un toque sin querer borra una sesión entera, con todos sus ejercicios y minutos.
+   Arreglo: pedir confirmación como ya se hace en recursos, jugadas y fichas («Sí, borrar»).
+
+--- MEDIANOS ---
+
+3. Borrar una nota del diario de sesión (botón «Borrar») tampoco pregunta. Mismo arreglo.
+
+4. Quitar un ejercicio de una sesión (✕ dentro de la sesión) tampoco pregunta. Es menos grave
+   (se vuelve a añadir), pero al lado hay botones de subir y bajar y es fácil tocarlo sin querer.
+   Propuesta: dejarlo sin pregunta y añadir «Deshacer» durante unos segundos. LO DISCUTIMOS.
+
+5. Al cargar una copia, si algo falla a mitad (por ejemplo falta espacio), lo anterior ya se
+   guardó y lo siguiente no. El mensaje dice qué falló, pero no que la copia quedó a medias.
+   Arreglo: avisar «se cargó a medias: …» en el mensaje.
+
+--- LEVES ---
+
+6. Hoy dice «Hazla en Más → Ajustes», pero no hay nada que se llame Ajustes: es la pestaña Más.
+   Arreglo: «Hazla en la pestaña Más».
+
+7. Si falla crear el GIF de una jugada, sale una ventana del sistema (alert) en lugar de un
+   aviso dentro de la app. Arreglo: aviso dentro de la pantalla.
+
+8. El título de la pantalla Más es «Más» y los apartados salen todos seguidos en una página
+   larga (Entrada, Lectura, Colores, Espacios, Copia, Sesión). Con Espacios de la cancha dentro
+   es aún más larga. Propuesta: dejarlo así y mirarlo en el tramo 5 con capturas.
+
+--- BIEN ---
+  - Los datos guardados se leen con protección: si algo está roto, la app no se cae.
+  - Si el móvil no deja guardar, casi todas las pantallas lo avisan.
+  - Los enlaces solo aceptan http y https.
+  - La copia no lleva las lesiones salvo que lo marques, y la clave de Jarvis no sale del móvil.
+
+SIGUIENTE
+  Tramo 5: recorrer la app funcionando en tamaño móvil. Los hallazgos de aquí se arreglan en el tramo 6.
+  Lo discutible (el 4 y el 8) te lo pregunto entonces.
