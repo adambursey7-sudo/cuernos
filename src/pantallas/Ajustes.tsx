@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { cerrarSesion, usuarioActual } from '../Acceso';
 import { introActiva, ponerIntroActiva } from '../Intro';
+import { EspaciosCancha } from './EspaciosCancha';
 import { Pista } from '../pizarra/Pista';
 import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
 import { anotarCopia } from '../copiaFecha';
@@ -120,6 +121,9 @@ export function Ajustes() {
       <button className="restaurar" onClick={() => poner({ ...PALETAS[0] })} disabled={igual(PALETAS[0], c)}>
         Volver a Parqué
       </button>
+
+      <h2 className="sub">Espacios de la cancha</h2>
+      <EspaciosCancha />
 
       <h2 className="sub">Copia de seguridad</h2>
       <p className="vacio">Tus jugadas y tu plantilla solo están en este móvil. La copia incluye los nombres de las jugadoras: guárdala donde no la vea nadie más. Guarda una copia (en Drive, Archivos…) para pasarlas a otro móvil o por si se borra Safari.</p>

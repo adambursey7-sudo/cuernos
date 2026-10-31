@@ -2,7 +2,7 @@
 import type { ReactNode } from 'react';
 import { usuarioActual } from '../Acceso';
 import { diasSinCopia } from '../copiaFecha';
-import { IconoBiblioteca, IconoCronometro } from '../Iconos';
+import { IconoBiblioteca, IconoCronometro, IconoEnlace } from '../Iconos';
 import { Pista } from '../pizarra/Pista';
 import { crearAudio } from './Entrenando';
 import { todosLosEjercicios } from '../ejercicios/ejercicios';
@@ -124,8 +124,9 @@ function sesionDeHoy(): string | undefined {
   return agendaDia(t, hoy()).find((i) => !i.cancelado && i.sesionId && sesiones.some((s) => s.id === i.sesionId && s.bloques.length > 0))?.sesionId;
 }
 
-export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, verDia, abrirSesion, verSesiones, empezarHoy }: {
+export function Inicio({ verRecursos, abrir, abrirEjercicio, crear, verTodas, verEjercicios, verDia, abrirSesion, verSesiones, empezarHoy }: {
   verSesiones: () => void;
+  verRecursos: () => void;
   empezarHoy: (id: string, audio: ReturnType<typeof crearAudio>) => void;
   verDia: (fecha: string) => void;
   abrirSesion: (id: string) => void;
@@ -160,6 +161,7 @@ export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, 
       <div className="atajos">
         <button onClick={() => { const hoyId = sesionDeHoy(); if (hoyId) empezarHoy(hoyId, crearAudio()); else verSesiones(); }}><span className="burbuja-atajo"><IconoCronometro /></span>Cronómetro</button>
         <button onClick={crear}><span className="burbuja-atajo"><IconoBiblioteca /></span>Pizarra</button>
+        <button className="atajo-ancho" onClick={verRecursos}><span className="burbuja-atajo"><IconoEnlace /></span>Guardar enlace de un reel</button>
       </div>
 
       {sigue && (

@@ -1,5 +1,5 @@
 // Biblioteca (opción A de Adam, 30/10): ramas arriba, buscador siempre a la vista, favoritos y los filtros en una hoja.
-// Hoy: Jugadas y Ejercicios (con Mis ejercicios, Recursos y Pedir a Claude dentro); Juegos se añade en su tramo.
+// Tres ramas a la vista (Jugadas, Ejercicios, Recursos); Mis ejercicios y Pedir a Claude son botones dentro de Ejercicios.
 import { useState } from 'react';
 import { formatos, todosLosEjercicios, type Filtro } from '../ejercicios/ejercicios';
 import { alternarFavorito, leerFavoritos } from '../favoritos';
@@ -12,11 +12,12 @@ import { Chips, Ejercicios } from './Ejercicios';
 import { Sistemas, type FiltroJugadas } from './Sistemas';
 import { VistasEjercicios, type Vista } from './VistasEjercicios';
 
-export type Rama = 'jugadas' | 'ejercicios';
+export type Rama = 'jugadas' | 'ejercicios' | 'recursos';
 
 const RAMAS: { id: Rama; nombre: string }[] = [
   { id: 'jugadas', nombre: 'Jugadas' },
   { id: 'ejercicios', nombre: 'Ejercicios' },
+  { id: 'recursos', nombre: 'Recursos' },
 ];
 
 const TIPOS = [
@@ -33,7 +34,9 @@ export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, retoca
   retocar: (e: EjercicioIA, c: Cuestionario, recurso?: Recurso) => void;
   enlaceInicial?: string;
 }) {
-  const [vista, setVista] = useState<Vista>(enlaceInicial ? 'recursos' : 'lista');
+  const [vista, setVista] = useState<Vista>(enlaceInicial || rama === 'recursos' ? 'recursos' : 'lista');
+  // Al cambiar de rama la vista se coloca sola: Recursos enseña sus enlaces y Ejercicios, su lista.
+  const elegirRama = (r: Rama) => { if (r === 'recursos') setVista('recursos'); else if (r === 'ejercicios' && vista === 'recursos') setVista('lista'); cambiar(r); };
   const [q, setQ] = useState('');
   const [soloFavoritos, setSoloFavoritos] = useState(false);
   const [hoja, setHoja] = useState(false);
@@ -54,12 +57,12 @@ export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, retoca
         <Marca className="marca-cabecera" />
         <div className="ramas" role="tablist" aria-label="Biblioteca">
           {RAMAS.map((r) => (
-            <button key={r.id} role="tab" aria-selected={r.id === rama} className={r.id === rama ? 'on' : ''} onClick={() => cambiar(r.id)}>
+            <button key={r.id} role="tab" aria-selected={r.id === rama} className={r.id === rama ? 'on' : ''} onClick={() => elegirRama(r.id)}>
               {r.nombre}
             </button>
           ))}
         </div>
-        {(rama === 'jugadas' || vista === 'lista') && <div className="busqueda">
+        {(rama === 'jugadas' || (rama === 'ejercicios' && vista === 'lista')) && <div className="busqueda">
           <input
             type="search"
             value={q}
@@ -80,7 +83,7 @@ export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, retoca
       {rama === 'jugadas' ? (
         <Sistemas abrir={abrir} crear={crear} q={q} soloFavoritos={soloFavoritos} filtro={jugadas} favoritos={favoritos} alternarFavorito={alternar} quitarFiltros={quitarFiltros} />
       ) : (
-        <VistasEjercicios vista={vista} cambiar={setVista} enlaceInicial={enlaceInicial} retocar={retocar} lista={
+        <VistasEjercicios rama={rama} cambiarRama={cambiar} vista={vista} cambiar={setVista} enlaceInicial={enlaceInicial} retocar={retocar} lista={
           <Ejercicios abrir={abrirEjercicio} q={q} soloFavoritos={soloFavoritos} filtro={ejercicios} favoritos={favoritos} alternarFavorito={alternar} quitarFiltros={quitarFiltros} />
         } />
       )}

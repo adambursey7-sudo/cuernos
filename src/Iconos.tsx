@@ -32,6 +32,11 @@ export const IconoCronometro = () => (
   <Icono><circle cx="12" cy="13.5" r="7.5" /><path d="M12 13.5V9.5M9.5 3h5M12 3v3M18.5 6.5l1.2-1.2" /></Icono>
 );
 
+/** Enlace: dos eslabones. */
+export const IconoEnlace = () => (
+  <Icono><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></Icono>
+);
+
 /** Más: tres puntos. */
 export const IconoMas = () => (
   <Icono><circle cx="5.5" cy="12" r="1.2" fill="currentColor" /><circle cx="12" cy="12" r="1.2" fill="currentColor" /><circle cx="18.5" cy="12" r="1.2" fill="currentColor" /></Icono>

@@ -45,7 +45,7 @@ type Edicion = { base?: SistemaDatos; ficha?: Ficha } | null;
 export function App() {
   const [entrante] = useState(enlaceDeLaDireccion);   // un enlace compartido a la app abre Recursos con ese enlace
   const [pestana, setPestana] = useState<Pestana>(entrante ? 'biblioteca' : 'hoy');
-  const [rama, setRama] = useState<Rama>(entrante ? 'ejercicios' : 'jugadas');
+  const [rama, setRama] = useState<Rama>(entrante ? 'recursos' : 'jugadas');
   // La jugada abierta queda encima de Hoy o de la Biblioteca; al volver se ve la pestaña desde la que se abrió.
   const [abierto, setAbierto] = useState<{ id: string; paso: number } | null>(null);
   const [edicion, setEdicion] = useState<Edicion>(null);
@@ -103,7 +103,7 @@ export function App() {
     contenido = (
       <>
         <header className="cabecera-app"><Marca className="marca-cabecera" /></header>
-        <Inicio empezarHoy={empezarHoy} verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} />
+        <Inicio empezarHoy={empezarHoy} verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} verRecursos={() => irABiblioteca('recursos')} />
       </>
     );
   else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} retocar={(e, c, r) => setEdicion({ base: e.sistema, ficha: fichaDeEjercicio(e, c, r) })} enlaceInicial={entrante} />;

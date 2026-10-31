@@ -5,16 +5,18 @@ import { nuevaFicha, type Ficha } from '../recursos/fichas';
 import type { Ejercicio } from '../recursos/guardarEjercicioIA';
 import type { Cuestionario } from '../recursos/ia';
 import { guardarRecursos, leerRecursos, type Recurso } from '../recursos/recursos';
-import { EspaciosCancha } from './EspaciosCancha';
 import { MisFichas } from './Fichas';
 import { PedirIA } from './PedirIA';
+import type { Rama } from './Biblioteca';
 import { Recursos } from './Recursos';
 
-export type Vista = 'lista' | 'fichas' | 'recursos' | 'ia' | 'espacios';
+export type Vista = 'lista' | 'fichas' | 'recursos' | 'ia';
 
-const VISTAS: [Vista, string][] = [['lista', 'Biblioteca'], ['fichas', 'Mis ejercicios'], ['recursos', 'Recursos'], ['ia', 'Pedir a Claude'], ['espacios', 'Espacios de la cancha']];
+const VISTAS: [Vista, string][] = [['lista', 'Lista'], ['fichas', 'Mis ejercicios'], ['ia', 'Pedir a Claude']];
 
-export function VistasEjercicios({ vista, cambiar, enlaceInicial, lista, retocar }: {
+export function VistasEjercicios({ rama, cambiarRama, vista, cambiar, enlaceInicial, lista, retocar }: {
+  rama: Rama;
+  cambiarRama: (r: Rama) => void;
   vista: Vista;
   cambiar: (v: Vista) => void;
   enlaceInicial?: string;
@@ -26,24 +28,23 @@ export function VistasEjercicios({ vista, cambiar, enlaceInicial, lista, retocar
   // «Pedir a Claude» (con o sin recurso de partida) devuelve un borrador de ficha que se abre en el editor para revisarlo.
   const [iaDe, setIaDe] = useState<Recurso | undefined>();
   const [borrador, setBorrador] = useState<Ficha | undefined>();
-  const convertir = (r: Recurso) => { setDesde(r); setBorrador(undefined); cambiar('fichas'); };
-  const pedirIA = (r: Recurso) => { setIaDe(r); cambiar('ia'); };
+  const convertir = (r: Recurso) => { setDesde(r); setBorrador(undefined); cambiarRama('ejercicios'); cambiar('fichas'); };
+  const pedirIA = (r: Recurso) => { setIaDe(r); cambiarRama('ejercicios'); cambiar('ia'); };
   const terminada = (f: Ficha) => {
     if (!f.recursoId) return;
     guardarRecursos(leerRecursos().map((r) => (r.id === f.recursoId ? { ...r, estado: 'convertido' as const } : r)));
   };
   return (
     <>
-      <div className="niveles filtro rec-vistas" role="group" aria-label="Vista">
+      {rama === 'ejercicios' && <div className="niveles filtro rec-vistas" role="group" aria-label="Vista">
         {VISTAS.map(([id, nombre]) => (
           <button key={id} className={vista === id ? 'chip on' : 'chip'} aria-pressed={vista === id}
             onClick={() => { setDesde(undefined); setBorrador(undefined); if (id !== 'ia') setIaDe(undefined); cambiar(id); }}>{nombre}</button>
         ))}
-      </div>
+      </div>}
       {vista === 'recursos' && <section className="pantalla"><h1 className="titulo">Recursos</h1><Recursos enlaceInicial={enlaceInicial} convertir={convertir} pedirIA={pedirIA} /></section>}
       {vista === 'fichas' && <section className="pantalla"><h1 className="titulo">Mis ejercicios</h1><MisFichas key={borrador?.id ?? desde?.id ?? 'sin'} nueva={borrador ?? (desde ? nuevaFicha(desde) : undefined)} alTerminar={terminada} /></section>}
       {vista === 'ia' && <section className="pantalla"><h1 className="titulo">Pedir a Claude</h1><PedirIA key={iaDe?.id ?? 'sin'} recurso={iaDe} borrador={(f) => { setBorrador(f); cambiar('fichas'); }} retocar={retocar} guardada={terminada} /></section>}
-      {vista === 'espacios' && <section className="pantalla"><h1 className="titulo">Espacios de la cancha</h1><EspaciosCancha /></section>}
       {vista === 'lista' && lista}
     </>
   );
