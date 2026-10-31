@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { limpiarReglas, reglasDe, REGLAS_FIBA, resumenReglas, sonFiba } from './reglas';
+import { limpiarReglas, reglasDeTexto, reglasDe, REGLAS_FIBA, resumenReglas, sonFiba } from './reglas';
 
 describe('reglas de la competición', () => {
   it('sin reglas, las de FIBA', () => {
@@ -16,5 +16,10 @@ describe('reglas de la competición', () => {
     expect(resumenReglas({ periodos: 3, minutos: 8, faltas: 5 })).toBe('3 × 8 min · 5 faltas');
     expect(sonFiba(REGLAS_FIBA)).toBe(true);
     expect(sonFiba({ ...REGLAS_FIBA, notas: 'x' })).toBe(false);
+  });
+  it('encuentra periodos y minutos en el texto de unas normas', () => {
+    expect(reglasDeTexto('El partido tendrá 3 periodos de 8 minutos con descanso de 2 min.')).toEqual({ periodos: 3, minutos: 8, faltas: 5 });
+    expect(reglasDeTexto('Duración: 4 x 10 min. Un jugador con 5 faltas personales queda excluido.')).toEqual({ periodos: 4, minutos: 10, faltas: 5 });
+    expect(reglasDeTexto('Cuatro cuartos')).toBeUndefined();
   });
 });

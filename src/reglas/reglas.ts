@@ -39,3 +39,14 @@ export const reglasDe = (e?: { reglas?: Reglas }): Reglas => limpiarReglas(e?.re
 export const resumenReglas = (r: Reglas) => `${r.periodos} × ${r.minutos} min · ${r.faltas} faltas`;
 
 export const sonFiba = (r: Reglas) => r.periodos === REGLAS_FIBA.periodos && r.minutos === REGLAS_FIBA.minutos && r.faltas === REGLAS_FIBA.faltas && !r.notas;
+
+/** Busca en el texto de unas normas (un PDF, por ejemplo) los periodos y minutos de juego. Devuelve unas reglas para que el entrenador las confirme. */
+export function reglasDeTexto(texto: string): Reglas | undefined {
+  const t = texto.replace(/\s+/g, ' ');
+  const a = /(\d)\s*(?:periodos?|tiempos?|cuartos?|partes?)\s*(?:de)?\s*(\d{1,2})\s*(?:min|minutos|')/i.exec(t);
+  const b = /\b(\d)\s*[x×]\s*(\d{1,2})\s*(?:min|minutos|')/i.exec(t);
+  const m = a ?? b;
+  if (!m) return undefined;
+  const f = /(?:(\d)\s*faltas\s*(?:personales|para|y|=)|(?:eliminad[oa]|quedar\s+fuera|excluid[oa])[^.]{0,40}?(\d)\s*faltas)/i.exec(t);
+  return limpiarReglas({ periodos: Number(m[1]), minutos: Number(m[2]), faltas: Number(f?.[1] ?? f?.[2] ?? 5) });
+}

@@ -1,4 +1,5 @@
 import { ReglasEquipo } from './ReglasEquipo';
+import { reglasDeTexto, resumenReglas, type Reglas } from '../reglas/reglas';
 // Equipo (tramo 1 del loop Diario): plantilla con dorsal grande y ficha de cada jugadora con tres pestañas (opción A, Adam 30/10).
 // Los datos viven solo en este móvil. La ficha se guarda sola al escribir.
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -209,13 +210,15 @@ function FichaEquipo({ e, jugadoras, cambiar, borrar, volver, ir }: { e: EquipoD
   );
 }
 
-function Importar({ equipoId, w, existentes, crear, volver }: { equipoId: string; w: ReturnType<typeof palabras>; existentes: string[]; crear: (c: Candidata[]) => void; volver: () => void }) {
+function Importar({ equipoId, w, existentes, crear, volver, usarReglas }: { usarReglas: (r: Reglas) => void; equipoId: string; w: ReturnType<typeof palabras>; existentes: string[]; crear: (c: Candidata[]) => void; volver: () => void }) {
   const [texto, setTexto] = useState('');
   const [lista, setLista] = useState<(Candidata & { ok: boolean })[] | null>(null);
   const [mensaje, setMensaje] = useState('');
   const [leyendo, setLeyendo] = useState(false);
+  const [reglasHalladas, setReglasHalladas] = useState<Reglas | undefined>();
   const leer = (t: string) => {
     const r = leerTexto(t);
+    setReglasHalladas(reglasDeTexto(t));
     setLista(r.map((c) => ({ ...c, ok: true })));
     setMensaje(r.length ? '' : `No he encontrado ${w.jugadoras}. Hace falta un dorsal y un nombre en cada línea.`);
   };
@@ -249,6 +252,13 @@ function Importar({ equipoId, w, existentes, crear, volver }: { equipoId: string
       <Campo etiqueta="O pega aquí la lista" valor={texto} cambiar={setTexto} filas={5} ayuda={'4 Ejemplo Uno Base\n7 Ejemplo Dos Alero'} />
       <button className="principal ancho" disabled={!texto.trim()} onClick={() => leer(texto)}>Leer lista</button>
       {mensaje && <p className="aviso">{mensaje}</p>}
+      {reglasHalladas && (
+        <div className="siguiente">
+          <b className="titulo-sig">Normas encontradas: {resumenReglas(reglasHalladas)}</b>
+          <span className="meta">Revisa que sean las de tu competición antes de usarlas.</span>
+          <button className="accion-sig suave" onClick={() => { usarReglas(reglasHalladas); setReglasHalladas(undefined); }}>Usar estas reglas en el equipo</button>
+        </div>
+      )}
       {lista && lista.length > 0 && (
         <>
           <h3 className="sub">Vista previa</h3>
@@ -346,6 +356,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
         w={palabras(equipo)}
         existentes={plantilla(d, equipo.id).map((j) => `${j.numero}|${j.nombre.trim().toLowerCase()}`)}
         volver={() => setVista({ tipo: 'plantilla' })}
+        usarReglas={(r) => setD(guardarEquipo(d, { ...equipo, reglas: r }))}
         crear={(cs) => {
           setD(cs.reduce((acc, c) => guardarJugadora(acc, nuevaJugadora(equipo.id, c)), d));
           setVista({ tipo: 'plantilla' });
