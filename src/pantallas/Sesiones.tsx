@@ -1,5 +1,6 @@
 // Sesiones, opción B · Línea de tiempo (elegida por Adam el 29/10): los ejercicios en orden, cada uno con su color por tipo
 // y una altura que sigue a sus minutos. Se guardan por equipo (categoría, sin nombres) solo en este móvil.
+import { PLANTILLAS, desdePlantilla, type Plantilla } from '../sesiones/plantillas';
 import { useEffect, useState } from 'react';
 import { TIPOS, buscarEjercicio, filtrar, todosLosEjercicios, type Ejercicio } from '../ejercicios/ejercicios';
 import { MiniPizarra } from '../pizarra/MiniPizarra';
@@ -202,8 +203,8 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
       />
     );
 
-  const crear = (nombreEquipo: string) => {
-    const s = nuevaSesion(nombreEquipo);
+  const crear = (nombreEquipo: string, plantilla?: Plantilla) => {
+    const s = plantilla ? desdePlantilla(plantilla, nombreEquipo) : nuevaSesion(nombreEquipo);
     poner([...todas, s]);
     setEquipo(nombreEquipo);
     setAbierta(s.id);
@@ -243,6 +244,11 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
             </ul>
           )}
           <button className="principal ancho" onClick={() => crear(equipo)}>+ Nueva sesión de {equipo}</button>
+          <div className="niveles filtro" role="group" aria-label="Plantillas">
+            {PLANTILLAS.map((p) => (
+              <button key={p.id} className="chip" title={p.idea} onClick={() => crear(equipo, p)}>+ {p.nombre}</button>
+            ))}
+          </div>
         </>
       )}
 
