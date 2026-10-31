@@ -152,12 +152,18 @@ export const quitarEquipo = (d: Diario, id: string): Diario => ({
   jugadoras: d.jugadoras.filter((j) => j.equipoId !== id),
 });
 
-/** Junta lo de una copia con lo actual: si coincide el id, gana la copia (salvo la lesión: si la copia no la trae, se conserva la de este móvil). */
+/** Junta lo de una copia con lo actual: si coincide el id, gana la copia (salvo la lesión y las habilidades: si la copia no las trae, se conservan las de este móvil). */
 export function juntarDiario(actual: Diario, copia: Diario): Diario {
   const eq = new Set(copia.equipos.map((e) => e.id));
   const ju = new Set(copia.jugadoras.map((j) => j.id));
   return {
-    equipos: [...actual.equipos.filter((e) => !eq.has(e.id)), ...copia.equipos],
+    equipos: [
+      ...actual.equipos.filter((e) => !eq.has(e.id)),
+      ...copia.equipos.map((e) => {
+        const mio = actual.equipos.find((x) => x.id === e.id);
+        return e.habilidades || !mio?.habilidades ? e : { ...e, habilidades: mio.habilidades };
+      }),
+    ],
     jugadoras: [
       ...actual.jugadoras.filter((j) => !ju.has(j.id)),
       ...copia.jugadoras.map((j) => {
