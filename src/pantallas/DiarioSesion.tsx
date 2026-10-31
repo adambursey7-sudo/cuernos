@@ -9,6 +9,7 @@ export function DiarioSesion({ equipo }: { equipo: Equipo }) {
   const [todas, setTodas] = useState(leerReflexiones);
   const [borrador, setBorrador] = useState<Reflexion>(() => nuevaReflexion(equipo.id, hoy()));
   const [fallo, setFallo] = useState(false);
+  const [seguro, setSeguro] = useState<string | null>(null);
   const lista = recientes(todas, equipo.id);
 
   const guardar = () => {
@@ -17,7 +18,7 @@ export function DiarioSesion({ equipo }: { equipo: Equipo }) {
     if (guardarReflexiones(n)) { setTodas(n); setBorrador(nuevaReflexion(equipo.id, hoy())); setFallo(false); }
     else setFallo(true);
   };
-  const borrar = (id: string) => { const n = todas.filter((r) => r.id !== id); if (guardarReflexiones(n)) setTodas(n); else setFallo(true); };
+  const borrar = (id: string) => { setSeguro(null); const n = todas.filter((r) => r.id !== id); if (guardarReflexiones(n)) setTodas(n); else setFallo(true); };
   const campo = (k: 'funciono' | 'no' | 'proximo', etiqueta: string, ayuda: string) => (
     <label className="campo-diario">
       <span>{etiqueta}</span>
@@ -47,7 +48,14 @@ export function DiarioSesion({ equipo }: { equipo: Equipo }) {
             {r.funciono && <p><b>Funcionó:</b> {r.funciono}</p>}
             {r.no && <p><b>No:</b> {r.no}</p>}
             {r.proximo && <p><b>Próximo:</b> {r.proximo}</p>}
-            <button className="chip pequeno" onClick={() => borrar(r.id)}>Borrar</button>
+            {seguro === r.id ? (
+              <span className="fila-chips">
+                <button className="chip pequeno on" onClick={() => borrar(r.id)}>Sí, borrar</button>
+                <button className="chip pequeno" onClick={() => setSeguro(null)}>No</button>
+              </span>
+            ) : (
+              <button className="chip pequeno" onClick={() => setSeguro(r.id)}>Borrar</button>
+            )}
           </li>
         ))}
       </ul>

@@ -12,6 +12,9 @@ import { guardarFichas, juntarFichas, leerFichas } from '../recursos/fichas';
 import { guardarRecursos, juntarRecursos, leerRecursos } from '../recursos/recursos';
 import { guardarTemporadas, juntarTemporadas, leerTemporadas } from '../temporada/temporada';
 import { guardarTodosMios, leerMios } from '../sistemas/almacen';
+import { guardarSesiones, juntarSesiones, leerSesiones } from '../sesiones/sesiones';
+import { guardarEspacios, leerEspacios } from '../sistemas/espacios';
+import { guardarFavoritos, leerFavoritos } from '../favoritos';
 import { SISTEMAS } from '../sistemas/datos';
 import { aplicarLectura, ESCALAS, leerLectura, NOMBRES_LETRA, type Letra } from '../preferencias';
 import { aplicarColores, leerColores, NOMBRES_COLOR, PALETAS, type Colores } from '../temas';
@@ -24,6 +27,7 @@ export function Ajustes() {
   const [aviso, setAviso] = useState('');
   const [intro, setIntro] = useState(introActiva);
   const [conSalud, setConSalud] = useState(false);
+  const [verEspacios, setVerEspacios] = useState(false);
   const [lectura, setLectura] = useState(leerLectura);
   const leer = (n: typeof lectura) => { setLectura(n); aplicarLectura(n); };
   const poner = (n: Colores) => {
@@ -34,7 +38,7 @@ export function Ajustes() {
   const descargar = async () => {
     const mios = leerMios();
     const nombre = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
-    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones())], nombre, { type: 'application/json' });
+    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones(), leerSesiones(), leerEspacios(), leerFavoritos())], nombre, { type: 'application/json' });
     const njug = leerDiario().jugadoras.length;
     const resumen = `${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'}, ${njug} ${njug === 1 ? 'jugadora' : 'jugadoras'} y tus colores`;
     // En el móvil se abre el menú de compartir (Drive, Archivos, AirDrop…); si no hay, se descarga.
@@ -60,21 +64,50 @@ export function Ajustes() {
     const archivo = e.target.files?.[0];
     e.target.value = '';
     if (!archivo) return;
+    let copia: ReturnType<typeof leerCopia>;
     try {
-      const copia = leerCopia(await archivo.text());
-      guardarTodosMios(juntar(leerMios(), copia.mios));
-      if (copia.diario && !guardarDiario(juntarDiario(leerDiario(), copia.diario))) throw new Error('El móvil no deja guardar la plantilla: libera espacio e inténtalo otra vez.');
-      if (copia.temporadas && !guardarTemporadas(juntarTemporadas(leerTemporadas(), copia.temporadas))) throw new Error('El móvil no deja guardar la temporada: libera espacio e inténtalo otra vez.');
-      if (copia.recursos && !guardarRecursos(juntarRecursos(leerRecursos(), copia.recursos))) throw new Error('El móvil no deja guardar los recursos: libera espacio e inténtalo otra vez.');
-      if (copia.fichas && !guardarFichas(juntarFichas(leerFichas(), copia.fichas))) throw new Error('El móvil no deja guardar las fichas: libera espacio e inténtalo otra vez.');
-      if (copia.etiquetas && !guardarEtiquetas({ ...leerEtiquetas(), ...copia.etiquetas })) throw new Error('El móvil no deja guardar las etiquetas: libera espacio e inténtalo otra vez.');
-      if (copia.reflexiones && !guardarReflexiones(juntarReflexiones(leerReflexiones(), copia.reflexiones))) throw new Error('El móvil no deja guardar el diario: libera espacio e inténtalo otra vez.');
-      if (copia.colores) poner(copia.colores);
-      setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${copia.diario.jugadoras.length} jugadoras` : ''}${copia.colores ? ' y los colores' : ''}.`);
+      copia = leerCopia(await archivo.text());
     } catch (err) {
       setAviso(err instanceof Error ? err.message : 'No se ha podido cargar la copia.');
+      return;
     }
+    // Cada trozo se guarda por separado: si uno falla, se dice qué entró y qué no.
+    const pasos: [string, () => boolean][] = [
+      ['las jugadas', () => { guardarTodosMios(juntar(leerMios(), copia.mios)); return true; }],
+      ['la plantilla', () => !copia.diario || guardarDiario(juntarDiario(leerDiario(), copia.diario))],
+      ['la temporada', () => !copia.temporadas || guardarTemporadas(juntarTemporadas(leerTemporadas(), copia.temporadas))],
+      ['los recursos', () => !copia.recursos || guardarRecursos(juntarRecursos(leerRecursos(), copia.recursos))],
+      ['las fichas', () => !copia.fichas || guardarFichas(juntarFichas(leerFichas(), copia.fichas))],
+      ['las etiquetas', () => !copia.etiquetas || guardarEtiquetas({ ...leerEtiquetas(), ...copia.etiquetas })],
+      ['el diario', () => !copia.reflexiones || guardarReflexiones(juntarReflexiones(leerReflexiones(), copia.reflexiones))],
+      ['las sesiones', () => !copia.sesiones || guardarSesiones(juntarSesiones(leerSesiones(), copia.sesiones))],
+      ['los espacios de la cancha', () => !copia.espacios || guardarEspacios(copia.espacios)],
+      ['los favoritos', () => !copia.favoritos || guardarFavoritos([...leerFavoritos(), ...copia.favoritos])],
+    ];
+    const hechos: string[] = [];
+    for (const [nombre, paso] of pasos) {
+      let bien = false;
+      try { bien = paso(); } catch { /* cuenta como fallo */ }
+      if (!bien) {
+        setAviso(`Se cargó a medias. No pude guardar ${nombre}: libera espacio en el móvil y vuelve a cargar la copia.${hechos.length ? ` Sí entraron: ${hechos.join(', ')}.` : ''}`);
+        return;
+      }
+      hechos.push(nombre);
+    }
+    if (copia.colores) poner(copia.colores);
+    setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${copia.diario.jugadoras.length} jugadoras` : ''}${copia.sesiones ? `, ${copia.sesiones.length} ${copia.sesiones.length === 1 ? 'sesión' : 'sesiones'}` : ''}${copia.colores ? ' y los colores' : ''}.`);
   };
+
+  if (verEspacios)
+    return (
+      <section className="pantalla">
+        <div className="cabecera">
+          <button className="atras" onClick={() => { setVerEspacios(false); window.scrollTo(0, 0); }} aria-label="Volver a Más">‹</button>
+          <h1 className="titulo">Espacios de la cancha</h1>
+        </div>
+        <EspaciosCancha />
+      </section>
+    );
 
   return (
     <section className="pantalla">
@@ -123,7 +156,8 @@ export function Ajustes() {
       </button>
 
       <h2 className="sub">Espacios de la cancha</h2>
-      <EspaciosCancha />
+      <p className="meta">Los 9 sitios donde juegan tus jugadoras. Claude los usa al dibujar tus ejercicios.</p>
+      <button className="secundario ancho" onClick={() => { setVerEspacios(true); window.scrollTo(0, 0); }}>Ver y cambiar los espacios ›</button>
 
       <h2 className="sub">Copia de seguridad</h2>
       <p className="vacio">Tus jugadas y tu plantilla solo están en este móvil. La copia incluye los nombres de las jugadoras: guárdala donde no la vea nadie más. Guarda una copia (en Drive, Archivos…) para pasarlas a otro móvil o por si se borra Safari.</p>

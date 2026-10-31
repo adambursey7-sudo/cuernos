@@ -48,3 +48,15 @@ COMPRUEBAS
 SIGUIENTE
   Tramo 5: recorrer la app funcionando en tamaño móvil. Los hallazgos de aquí se arreglan en el tramo 6.
   Lo discutible (el 4 y el 8) te lo pregunto entonces.
+
+TRAMO 6 - ARREGLADO (31/10)
+  1. La copia ahora lleva sesiones, espacios de la cancha y favoritos, y los junta al cargar.
+  2. Borrar una sesión pide «Sí, borrar».
+  3. Borrar una nota del diario pide «Sí, borrar».
+  4. Quitar un ejercicio de una sesión: sale «Deshacer» 8 segundos.
+  5. Si la copia se carga a medias, lo dice y cuenta qué entró y qué no.
+  6. Hoy dice «Hazla en la pestaña Más».
+  7. Si falla el GIF, el aviso sale dentro de la app.
+  8. Espacios de la cancha tiene su propia pantalla, con un botón desde Más.
+  9. Sesiones ofrece los equipos que ya creaste en Equipo.
+  10. Los nombres de las esquinas ya no se cortan.

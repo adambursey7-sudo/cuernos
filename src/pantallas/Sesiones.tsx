@@ -5,6 +5,7 @@ import { TIPOS, buscarEjercicio, filtrar, todosLosEjercicios, type Ejercicio } f
 import { MiniPizarra } from '../pizarra/MiniPizarra';
 import { Pista } from '../pizarra/Pista';
 import { buscarSistema } from '../sistemas/almacen';
+import { leerDiario } from '../diario/diario';
 import { idBloqueFicha, leerFichas, type Ficha } from '../recursos/fichas';
 import { Entrenando, crearAudio } from './Entrenando';
 import {
@@ -98,6 +99,13 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
   // Si llega un audio ya creado (botón Cronómetro de Inicio), el cronómetro arranca directamente.
   const [cronometro, setCronometro] = useState<ReturnType<typeof crearAudio> | false>(arranque ?? false);
   useEffect(() => { if (arranque) gastado(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Al quitar un ejercicio se guarda cómo estaba la sesión unos segundos, por si fue sin querer.
+  const [antes, setAntes] = useState<Sesion | null>(null);
+  useEffect(() => {
+    if (!antes) return;
+    const t = setTimeout(() => setAntes(null), 8000);
+    return () => clearTimeout(t);
+  }, [antes]);
   const desde = inicios(s);
   const perdidos = huerfanos(s);
 
@@ -154,7 +162,7 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
                     <button className="chip" onClick={() => cambiar(conMinutos(s, i, b.minutos + PASO_MINUTOS))} aria-label="Cinco minutos más">+5</button>
                     <button className="chip" onClick={() => cambiar(mover(s, i, -1))} disabled={i === 0} aria-label="Subir">▲</button>
                     <button className="chip" onClick={() => cambiar(mover(s, i, 1))} disabled={i === s.bloques.length - 1} aria-label="Bajar">▼</button>
-                    <button className="chip" onClick={() => cambiar(quitar(s, i))} aria-label="Quitar de la sesión">✕</button>
+                    <button className="chip" onClick={() => { setAntes(s); cambiar(quitar(s, i)); }} aria-label="Quitar de la sesión">✕</button>
                   </div>
                   <div className="fila-chips tipos" role="group" aria-label="Tipo de ejercicio">
                     {TIPOS.map((t) => (
@@ -167,6 +175,12 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
           })}
         </ol>
       )}
+      {antes && (
+        <p className="aviso" role="status">
+          Ejercicio quitado.{' '}
+          <button className="chip on" onClick={() => { cambiar(antes); setAntes(null); }}>Deshacer</button>
+        </p>
+      )}
       <button className="principal ancho" onClick={() => setAnadiendo(true)}>+ Añadir ejercicio</button>
       {s.bloques.length > 0 && <button className="principal ancho empezar" onClick={() => setCronometro(crearAudio())}>▶ Empezar el entrenamiento</button>}
     </section>
@@ -178,7 +192,10 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
   arranque?: ReturnType<typeof crearAudio> | null; gastado?: () => void;
 }) {
   const [todas, setTodas] = useState<Sesion[]>(() => leerSesiones());
-  const [equipo, setEquipo] = useState<string | undefined>(() => leerSesiones()[0]?.equipo);
+  // Los equipos son los de Equipo (los que ya creaste) más los que tengan sesiones.
+  const nombresEquipos = () => [...new Set([...leerSesiones().map((x) => x.equipo), ...leerDiario().equipos.map((e) => e.nombre)])];
+  const [equipo, setEquipo] = useState<string | undefined>(() => nombresEquipos()[0]);
+  const [borrando, setBorrando] = useState<string | null>(null);
   const [nuevoEquipo, setNuevoEquipo] = useState('');
   const [fallo, setFallo] = useState(false);
 
@@ -186,7 +203,7 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
     setTodas(lista);
     setFallo(!guardarSesiones(lista));
   };
-  const equipos = [...new Set(todas.map((s) => s.equipo))];
+  const equipos = [...new Set([...todas.map((s) => s.equipo), ...leerDiario().equipos.map((e) => e.nombre)])];
   const sesion = todas.find((s) => s.id === abierta);
 
   if (sesion)
@@ -237,7 +254,14 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
                     <span className="meta">{s.bloques.length} {s.bloques.length === 1 ? 'ejercicio' : 'ejercicios'} · {horas(total(s))} de {horas(s.duracion)}</span>
                     <Reparto s={s} />
                   </button>
-                  <button className="chip borrar" aria-label={`Borrar ${s.nombre}`} onClick={() => poner(todas.filter((x) => x.id !== s.id))}>✕</button>
+                  {borrando === s.id ? (
+                    <span className="fila-chips">
+                      <button className="chip on" onClick={() => { poner(todas.filter((x) => x.id !== s.id)); setBorrando(null); }}>Sí, borrar</button>
+                      <button className="chip" onClick={() => setBorrando(null)}>No</button>
+                    </span>
+                  ) : (
+                    <button className="chip borrar" aria-label={`Borrar ${s.nombre}`} onClick={() => setBorrando(s.id)}>✕</button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -253,7 +277,7 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
           if (nombreLimpio) { crear(nombreLimpio); setNuevoEquipo(''); }
         }}
       >
-        <label htmlFor="equipo">{equipos.length ? 'Otro equipo' : 'Primero, ¿qué equipo entrenas?'}</label>
+        <label htmlFor="equipo">{equipos.length ? 'Otro equipo' : 'Primero, ¿qué equipo entrenas? (o créalo en Equipo)'}</label>
         <div className="fila-chips">
           <input id="equipo" value={nuevoEquipo} maxLength={30} placeholder="Cadete femenino" onChange={(ev) => setNuevoEquipo(ev.target.value)} />
           <button className="chip on" disabled={!nombreLimpio}>Crear</button>

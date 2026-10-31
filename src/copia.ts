@@ -8,25 +8,27 @@ import { limpiarReflexiones, type Reflexion } from './diario/reflexion';
 import { limpiarEtiquetas, type Etiquetas } from './habilidades/habilidades';
 import { limpiarFichas, type Ficha } from './recursos/fichas';
 import { limpiarRecursos, type Recurso } from './recursos/recursos';
+import { limpiarSesiones, type Sesion } from './sesiones/sesiones';
+import { validarEspacios, type Espacio } from './sistemas/espacios';
 import { limpiarTemporadas, soloDeEquipos, type Temporada } from './temporada/temporada';
 
 // Se queda «cuernos» (nombre antiguo de la app) para que sigan valiendo las copias ya guardadas.
 const MARCA = 'cuernos-copia';
 
 /** Las lesiones (dato de salud) solo entran en la copia si se piden (`conSalud`). */
-export function armarCopia(mios: Sistema[], colores: Colores, diario?: Diario, temporadas?: Temporada[], recursos?: Recurso[], fichas?: Ficha[], conSalud = false, etiquetas?: Etiquetas, reflexiones?: Reflexion[]): string {
-  return JSON.stringify({ app: MARCA, version: 2, fecha: new Date().toISOString(), mios, colores, diario: diario && !conSalud ? sinSalud(diario) : diario, temporadas, recursos, fichas, etiquetas, reflexiones }, null, 1);
+export function armarCopia(mios: Sistema[], colores: Colores, diario?: Diario, temporadas?: Temporada[], recursos?: Recurso[], fichas?: Ficha[], conSalud = false, etiquetas?: Etiquetas, reflexiones?: Reflexion[], sesiones?: Sesion[], espacios?: Espacio[], favoritos?: string[]): string {
+  return JSON.stringify({ app: MARCA, version: 2, fecha: new Date().toISOString(), mios, colores, diario: diario && !conSalud ? sinSalud(diario) : diario, temporadas, recursos, fichas, etiquetas, reflexiones, sesiones, espacios, favoritos }, null, 1);
 }
 
 /** Lee un archivo de copia. Lanza un error con un mensaje para el entrenador si no vale. */
-export function leerCopia(texto: string): { mios: Sistema[]; colores?: Colores; diario?: Diario; temporadas?: Temporada[]; recursos?: Recurso[]; fichas?: Ficha[]; etiquetas?: Etiquetas; reflexiones?: Reflexion[] } {
+export function leerCopia(texto: string): { mios: Sistema[]; colores?: Colores; diario?: Diario; temporadas?: Temporada[]; recursos?: Recurso[]; fichas?: Ficha[]; etiquetas?: Etiquetas; reflexiones?: Reflexion[]; sesiones?: Sesion[]; espacios?: Espacio[]; favoritos?: string[] } {
   let datos: unknown;
   try {
     datos = JSON.parse(texto);
   } catch {
     throw new Error('Ese archivo no es una copia de Horns.');
   }
-  const d = datos as { app?: string; mios?: unknown; colores?: Colores; diario?: unknown; temporadas?: unknown; recursos?: unknown; fichas?: unknown; etiquetas?: unknown; reflexiones?: unknown };
+  const d = datos as { app?: string; mios?: unknown; colores?: Colores; diario?: unknown; temporadas?: unknown; recursos?: unknown; fichas?: unknown; etiquetas?: unknown; reflexiones?: unknown; sesiones?: unknown; espacios?: unknown; favoritos?: unknown };
   if (d?.app !== MARCA || !Array.isArray(d.mios)) throw new Error('Ese archivo no es una copia de Horns.');
   const mios = d.mios.filter(esSistemaValido);
   const hex = /^#[0-9a-f]{6}$/i;
@@ -38,7 +40,10 @@ export function leerCopia(texto: string): { mios: Sistema[]; colores?: Colores; 
   const fichas = d.fichas ? limpiarFichas(d.fichas) : undefined;
   const etiquetas = d.etiquetas ? limpiarEtiquetas(d.etiquetas) : undefined;
   const reflexiones = d.reflexiones ? limpiarReflexiones(d.reflexiones) : undefined;
-  return { mios, colores, diario, recursos, fichas, etiquetas, reflexiones, temporadas: temporadas && diario ? soloDeEquipos(temporadas, diario.equipos.map((e) => e.id)) : temporadas };
+  const sesiones = d.sesiones ? limpiarSesiones(d.sesiones) : undefined;
+  const espacios = Array.isArray(d.espacios) ? validarEspacios(d.espacios) : undefined;
+  const favoritos = Array.isArray(d.favoritos) ? d.favoritos.filter((x): x is string => typeof x === 'string') : undefined;
+  return { mios, colores, diario, recursos, fichas, etiquetas, reflexiones, sesiones, espacios, favoritos, temporadas: temporadas && diario ? soloDeEquipos(temporadas, diario.equipos.map((e) => e.id)) : temporadas };
 }
 
 /** Junta las jugadas de la copia con las que ya hay: si coinciden, gana la de la copia. */

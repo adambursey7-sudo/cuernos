@@ -28,3 +28,13 @@ export const coincide = (q: string, ...textos: (string | undefined)[]) => {
   const buscado = plano(q.trim());
   return !buscado || plano(textos.filter(Boolean).join(' ')).includes(buscado);
 };
+
+/** Junta los favoritos de una copia con los que ya hay y los guarda. Falso si el móvil no deja. */
+export function guardarFavoritos(lista: string[]): boolean {
+  try {
+    localStorage.setItem(CLAVE, JSON.stringify([...new Set(lista)]));
+    return true;
+  } catch {
+    return false;
+  }
+}

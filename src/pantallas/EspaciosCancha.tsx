@@ -48,7 +48,8 @@ export function EspaciosCancha() {
           {lista.map((e, i) => (
             <g key={e.id} className={`espacio ${esExterior(e.punto) ? 'fuera' : 'dentro'}${i === sel ? ' sel' : ''}`}>
               <circle cx={e.punto[0]} cy={e.punto[1]} r="4" onPointerDown={(ev) => agarrar(ev, i)} />
-              <text x={e.punto[0]} y={e.punto[1] - 6} textAnchor="middle">{e.nombre}</text>
+              {/* Cerca de un borde el nombre se alinea hacia dentro para que no se corte. */}
+              <text x={e.punto[0]} y={Math.max(e.punto[1] - 6, 8)} textAnchor={e.punto[0] < 40 ? 'start' : e.punto[0] > 110 ? 'end' : 'middle'}>{e.nombre}</text>
             </g>
           ))}
         </svg>

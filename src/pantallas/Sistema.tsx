@@ -54,15 +54,17 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
   // GIF de la jugada: null = nada; número = creándose (0 a 1); Blob = listo para enviar.
   const [gif, setGif] = useState<number | { blob: Blob; url: string } | null>(null);
   const [compartiendo, setCompartiendo] = useState(false);
+  const [falloGif, setFalloGif] = useState(false);
   const hacerGif = async () => {
     setGif(0);
+    setFalloGif(false);
     try {
       const { crearGif } = await import('../pizarra/gif');
       const blob = await crearGif(s, conDefensa, setGif);
       setGif({ blob, url: URL.createObjectURL(blob) });
     } catch {
       setGif(null);
-      alert('No se ha podido crear el GIF.');
+      setFalloGif(true);
     }
   };
   const cerrarGif = () => {
@@ -122,6 +124,7 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
       {compartiendo && (
         <HojaCompartir s={s} conDefensa={conDefensa} paso={paso} cerrar={() => setCompartiendo(false)} hacerGif={() => { setCompartiendo(false); hacerGif(); }} />
       )}
+      {falloGif && <p className="aviso" role="alert">No se ha podido crear el GIF. Inténtalo otra vez.</p>}
       {gif !== null && (
         <div className="vista-gif" role="status">
           {typeof gif === 'number' ? (

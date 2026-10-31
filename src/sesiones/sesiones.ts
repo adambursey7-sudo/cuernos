@@ -88,6 +88,15 @@ function esSesion(s: unknown): s is Sesion {
   );
 }
 
+/** Se queda con las sesiones bien formadas de lo que venga (una copia, por ejemplo). */
+export const limpiarSesiones = (crudo: unknown): Sesion[] => (Array.isArray(crudo) ? crudo.filter(esSesion) : []);
+
+/** Junta las sesiones de una copia con las que ya hay: si coinciden, gana la copia. */
+export function juntarSesiones(actuales: Sesion[], deLaCopia: Sesion[]): Sesion[] {
+  const ids = new Set(deLaCopia.map((x) => x.id));
+  return [...actuales.filter((x) => !ids.has(x.id)), ...deLaCopia];
+}
+
 export function leerSesiones(): Sesion[] {
   try {
     const lista = JSON.parse(localStorage.getItem(CLAVE) ?? '[]');

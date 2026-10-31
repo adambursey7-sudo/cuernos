@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { armarCopia, juntar, leerCopia } from './copia';
 import { nuevoBorrador, mover } from './editor/editar';
+import { nuevaSesion, juntarSesiones } from './sesiones/sesiones';
+import { ESPACIOS_BASE } from './sistemas/espacios';
 import { PALETAS } from './temas';
 import { nuevaJugadora, nuevoEquipo } from './diario/diario';
 import { guardarEvento, guardarFijo, nuevaTemporada, nuevoEvento, nuevoFijo } from './temporada/temporada';
@@ -58,5 +60,32 @@ describe('copia con temporada', () => {
   });
   it('una copia antigua sin temporada sigue valiendo', () => {
     expect(leerCopia(armarCopia([], PALETAS[0])).temporadas).toBeUndefined();
+  });
+});
+
+describe('copia con sesiones, espacios y favoritos', () => {
+  it('las sesiones, los espacios y los favoritos vuelven al cargar', () => {
+    const ses = nuevaSesion('Cadete femenino');
+    const espacios = ESPACIOS_BASE.map((e) => ({ ...e, nombre: e.id === ESPACIOS_BASE[0].id ? 'Mi esquina' : e.nombre }));
+    const leida = leerCopia(armarCopia([], PALETAS[1], undefined, undefined, undefined, undefined, false, undefined, undefined, [ses], espacios, ['j:a', 'e:b']));
+    expect(leida.sesiones).toEqual([ses]);
+    expect(leida.espacios?.[0].nombre).toBe('Mi esquina');
+    expect(leida.favoritos).toEqual(['j:a', 'e:b']);
+  });
+
+  it('una copia antigua sin esos datos sigue valiendo', () => {
+    const leida = leerCopia(armarCopia([], PALETAS[1]));
+    expect(leida.sesiones).toBeUndefined();
+    expect(leida.espacios).toBeUndefined();
+    expect(leida.favoritos).toBeUndefined();
+  });
+
+  it('las sesiones rotas se ignoran y las demás se juntan sin duplicar', () => {
+    const a = nuevaSesion('Cadete femenino');
+    const b = { ...a, nombre: 'Cambiada' };
+    const texto = JSON.stringify({ app: 'cuernos-copia', mios: [], sesiones: [{ id: 'x' }, b] });
+    const leida = leerCopia(texto);
+    expect(leida.sesiones).toEqual([b]);
+    expect(juntarSesiones([a], leida.sesiones!).map((x) => x.nombre)).toEqual(['Cambiada']);
   });
 });

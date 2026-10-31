@@ -153,7 +153,7 @@ export function Inicio({ verRecursos, abrir, abrirEjercicio, crear, verTodas, ve
       <h1 className="saludo">Coach {usuarioActual() ?? "Adam"}</h1>
       {(() => {
         const dias = leerDiario().jugadoras.length || leerMios().length ? diasSinCopia() : null;
-        return dias === null ? null : <p className="aviso-copia">{Number.isFinite(dias) ? `Hace ${dias} días que no guardas copia.` : 'Todavía no has guardado copia.'} Hazla en Más → Ajustes.</p>;
+        return dias === null ? null : <p className="aviso-copia">{Number.isFinite(dias) ? `Hace ${dias} días que no guardas copia.` : 'Todavía no has guardado copia.'} Hazla en la pestaña Más.</p>;
       })()}
 
       {leerDiario().equipos[0] ? <Tele verDia={verDia} abrirSesion={abrirSesion} /> : <LoSiguiente verDia={verDia} abrirSesion={abrirSesion} />}
