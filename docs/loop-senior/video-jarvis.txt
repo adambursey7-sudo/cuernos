@@ -1,0 +1,19 @@
+JUGADA DESDE UN VÍDEO (reel de Instagram o TikTok) - PLAN PENDIENTE DE TU SÍ
+
+Qué se hará (opción recomendada: subir un vídeo del móvil)
+1. En Horns, en Jugadas: botón «Jugada desde vídeo». Eliges el vídeo (grabación de pantalla del reel).
+2. El móvil saca unas 8 a 12 imágenes repartidas por el vídeo. Todo en el móvil, sin servidor.
+3. Se mandan a tu Jarvis por la misma conexión de «Pedir a Claude». Solo imágenes, nada de nombres.
+4. Jarvis se las pasa a Claude con las reglas de siempre: no inventar nada, si algo no se ve, dejarlo vacío.
+5. Claude devuelve la jugada con la misma forma que las del libro. Horns la comprueba y la enseña
+   como BORRADOR por revisar en la pizarra. Tú corriges y guardas como «mía».
+
+Lo que falta para hacerlo
+- Un punto nuevo en Jarvis (el servidor) que acepte imágenes. Hoy solo acepta texto.
+- Eso toca Jarvis y exige reiniciarlo. Según tus reglas, no lo hago sin tu sí.
+- Después, la parte de Horns (botón, sacar imágenes, vista de borrador) y pruebas.
+
+Límites que conviene saber
+- Claude ve imágenes sueltas, no el vídeo entero. Una jugada rápida puede salir incompleta.
+- Siempre sale como borrador. Nunca se guarda sola.
+- Enlace directo del reel: queda descartado por ahora (Instagram y TikTok lo bloquean).
