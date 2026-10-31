@@ -1,0 +1,21 @@
+RECORRIDO DE LA APP EN TAMAÑO MÓVIL (tramo 5) - 31/10
+Probado en un navegador con pantalla de móvil (390 de ancho). Sin errores de la app. Nada se sale de la pantalla.
+
+PANTALLAS VISTAS
+  Hoy ........... bien. El botón «Guardar enlace de un reel» se ve claro bajo Cronómetro y Pizarra.
+  Biblioteca .... Jugadas, Ejercicios y Recursos a la vista. Dentro de Ejercicios: Lista, Mis ejercicios, Pedir a Claude. Bien.
+  Recursos ...... vacío con ayuda clara; pegar enlace y escribir nota arriba. Bien.
+  Jugada abierta  bien (pasos, categorías, compartir).
+  Sesiones ...... ver hallazgo 9.
+  Equipo ........ Plantilla, Habilidades, Rotación, Diario, Temporada. Con equipo vacío cada una explica qué falta. Bien.
+  Más ........... larga (ver hallazgo 8 y 10).
+
+HALLAZGOS NUEVOS (se suman a los del tramo 4)
+  8 (confirmado). Más mide unas 4 pantallas. Espacios de la cancha ocupa la mitad.
+  9. Sesiones pide «¿qué equipo entrenas?» aunque ya creaste el equipo en Equipo. Son dos listas distintas
+     y parece que debería salir el mismo. Se rellena a mano. (medio)
+  10. En el dibujo de Espacios de la cancha, los nombres de las esquinas se cortan por el borde («Esquina izquierda»). (leve)
+
+LO QUE NO SE PUDO VER AQUÍ
+  Editor de jugadas, pizarra y cargar copia: tocan el dedo y archivos; los reviso en el móvil tras el arreglo.
+  El enlace del iPhone: solo se confirma en el móvil real, tras publicar.
