@@ -1,0 +1,15 @@
+SISTEMAS Y DEFENSAS DE SENIOR (resumen propio, 31/10/2026)
+ATAQUE: bloqueo directo y continuación (rodar, abrirse/pick and pop), horns (dos bloqueadores en los codos), flex, motion, 5 fuera, jugadas de balón parado (ATO), finales de partido, salida de presión.
+DEFENSA: individual, zonas 2-3 / 3-2 / 1-3-1, presión a toda pista.
+DEFENSA DEL BLOQUEO DIRECTO (ideas):
+ - Drop (fondo): el interior se queda cerca del aro; el exterior pasa por encima/detrás. Protege el aro.
+ - Hedge (show): el interior sale un momento para frenar al base y recupera. Riesgo: quedar en 4 contra 3.
+ - ICE: el defensor del balón niega el bloqueo y empuja hacia la línea de fondo; el interior se hunde.
+ - Switch (cambio): se intercambian los pares; funciona si hay tamaños parecidos.
+ - Mezclar según el rival y los jugadores; el lugar del bloqueo (lateral o centro) cambia la elección.
+PARA LA APP: la IA no inventa jugadas; los sistemas se pasan a mano desde fichas que revisa Adam.
+FUENTES
+ - AEEB, defensa del bloqueo directo: https://www.aeeb.es/images/stories/Contenidos/fondobibliograficos/defensabd20200609/duskoivanovicdefensabd.pdf
+ - Hoop Student, ball screen defense: https://hoopstudent.com/ball-screen-defense-basketball
+ - Breakthrough Basketball, Ice/Drop/Switch: https://www.breakthroughbasketball.com/defense/3-ball-screen-logalbo
+ - Análisis liga española: https://revistas.um.es/cpd/article/view/86021

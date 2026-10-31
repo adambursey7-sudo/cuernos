@@ -1,0 +1,24 @@
+AUDITORÍA HORNS PARA SENIOR MASCULINO (31/10/2026)
+Hecha leyendo el código y pasando pruebas. NO se ha recorrido aún la app a mano (se hará en el paso 6).
+
+A) ERRORES
+ - Pruebas: 244 pasan, 29 archivos. tsc sin errores. No hay fallos conocidos.
+ - Pendiente: recorrer la app en el móvil para ver pantallas rotas o textos raros.
+
+B) PENSADO SOLO PARA FORMACIÓN
+ 1. Texto en femenino: unas 156 frases dicen «jugadora/jugadoras» (plantilla, ficha, rotación, asistencia, lesiones).
+ 2. Habilidades por edad: solo hay Premini, Mini, Infantil, Cadete y Júnior. Un equipo senior no tiene guía y el filtro no hace nada.
+ 3. La lista de habilidades «de partida» sale de contenidos de formación (Cadete).
+ 4. Rotación: siempre 4 cuartos de 10 min y «Repartir» busca minutos parejos. En senior los minutos no son iguales; no cuenta faltas ni cansancio.
+ 5. Ejemplo de nombre de equipo «Cadete femenino»; las sesiones se enlazan por nombre de equipo.
+ 6. Ejercicios y niveles pensados para iniciación; solo hay 3 sistemas (Cuernos, Cuernos Flex, Flex).
+ 7. Posiciones y puestos 1–5 valen para senior; no hay roles (titular, rotación, especialista).
+
+C) HUECOS PARA UN SENIOR
+ 1. No existe «tipo de equipo» (formación / senior).
+ 2. Calendario: no hay jornada, clasificación, viaje y hora de salida, amistosos de pretemporada ni playoffs. Sí hay casa/fuera, resultado e importar .ics.
+ 3. Biblioteca de sistemas muy corta para senior (falta bloqueo directo, horns, motion, balón parado, finales, zonas, presión).
+ 4. Sin estadística en directo ni balance por jugador.
+ 5. Sin plan de partido en PDF ni mensaje a la plantilla (sí hay informe del rival).
+ 6. Entrenos fijos sí hay (día, hora, minutos) pero sin pista/vestuario ni objetivo por entreno.
+ 7. Sin planificación semanal ligada al partido del fin de semana ni pretemporada.

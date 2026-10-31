@@ -1,0 +1,5 @@
+Investigación senior masculino (31/10/2026). Todo resumido con palabras propias; las fuentes están al final de cada archivo.
+01-reglamento.txt            reglas del partido (algunas cifras por confirmar)
+02-ligas-y-temporada.txt     ligas FEB y autonómicas, pretemporada, carga
+03-sistemas-y-defensas.txt   ataque, defensa, defensa del bloqueo directo
+04-gestion-scouting.txt      rotación, estadística, scouting, semana tipo
