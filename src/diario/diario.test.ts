@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { guardarJugadora, juntarDiario, limpiar, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, repetida } from './diario';
+import { disponibles, guardarJugadora, juntarDiario, sinSalud, limpiar, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, repetida } from './diario';
 import { leerLinea, leerTexto } from './importar';
 
 describe('diario', () => {
@@ -58,4 +58,16 @@ describe('importar plantilla', () => {
     const r = leerTexto('Dorsal ; Nombre ; Posición\n4 Ejemplo Uno\nsolo texto\n4 Ejemplo Uno\n\n7 Ejemplo Dos');
     expect(r.map((c) => c.numero)).toEqual(['4', '7']);
   });
+
+  it('las lesiones no salen en la copia por defecto y se conservan al restaurar una copia sin ellas', () => {
+    const e = nuevoEquipo('Ejemplo');
+    const base = { equipos: [e], jugadoras: [] as ReturnType<typeof nuevaJugadora>[] };
+    const j = nuevaJugadora(e.id, { numero: '5', lesion: { desde: '2026-10-30', nota: 'Tobillo' } });
+    const d = guardarJugadora(base, j);
+    expect(sinSalud(d).jugadoras[0].lesion).toBeUndefined();
+    expect(juntarDiario(d, sinSalud(d)).jugadoras[0].lesion?.nota).toBe('Tobillo');
+    expect(disponibles([j, nuevaJugadora(e.id)])).toBe(1);
+    expect(limpiar({ equipos: [e], jugadoras: [{ ...j, lesion: { desde: 3 } }] }).jugadoras).toHaveLength(0);
+  });
 });
+

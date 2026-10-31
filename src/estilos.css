@@ -511,3 +511,50 @@ select#fi-sis { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.
 .fila-espacio .punto { width: 14px; height: 14px; border-radius: 50%; flex: none; }
 .fila-espacio .punto.fuera { background: var(--defensa); }
 .fila-espacio .punto.dentro { background: var(--principal); }
+
+/* Habilidades del equipo (vuelta 5) */
+.hab-fila { width: 100%; display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 12px; border: none; border-radius: 14px; background: var(--superficie); text-align: left; color: inherit; font: inherit; }
+.hab-fila:disabled { opacity: 0.4; }
+.hab-fila input[type="checkbox"] { flex: none; width: 22px; height: 22px; }
+.hab-fila .rec-texto { flex: 1; }
+.habilidades { display: grid; gap: 12px; }
+.niveles.envuelto { flex-wrap: wrap; overflow: visible; }
+.chip.pequeno.estado-fuerte, .chip.on.estado-fuerte { background: color-mix(in srgb, #4cc26a 28%, var(--fondo)); border-color: #4cc26a; color: #9fe3b0; }
+.chip.pequeno.estado-trabajar, .chip.on.estado-trabajar { background: color-mix(in srgb, var(--defensa) 30%, var(--fondo)); border-color: var(--defensa); color: #ffb3ab; }
+.etiquetas-habilidad { display: grid; gap: 8px; margin-block: 12px; }
+.radar { margin: 0; color: var(--texto); max-width: 340px; margin-inline: auto; }
+.radar svg { width: 100%; height: auto; display: block; }
+.lo-flojo { display: grid; gap: 10px; }
+.lesion { display: grid; gap: 8px; justify-items: start; }
+.lesion .campo-diario { width: 100%; }
+.salud-copia { display: flex; gap: 10px; align-items: center; font-size: 0.95rem; }
+.salud-copia input { width: 22px; height: 22px; }
+
+/* Tele de equipo (vuelta 5, estilo 1) */
+.tele { display: grid; gap: 8px; padding: 16px; border-radius: 20px; background: #0d0b09; border: 1.5px solid var(--tenue); border-left: 6px solid var(--principal); }
+.tele.entreno { border-left-color: #4cc26a; }
+.tele-cabeza { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tele .rotulo { font: 800 0.78rem/1 var(--display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--principal); }
+.tele .cuando { display: flex; align-items: baseline; gap: 12px; }
+.tele .cuando b { font: 900 2.6rem/1 var(--display); text-transform: uppercase; }
+.tele .hora { font: 900 1.9rem/1 var(--display); color: var(--principal); }
+.tele .titulo-sig { font-size: 1.25rem; }
+.tele-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.tele-botones { display: flex; flex-wrap: wrap; gap: 8px; }
+.modo-tele { position: fixed; inset: 0; z-index: 50; overflow: auto; background: #0d0b09; color: var(--texto); display: grid; align-content: start; justify-items: center; gap: 22px; padding: max(28px, env(safe-area-inset-top)) 24px 40px; text-align: center; }
+.cerrar-tele { position: absolute; top: max(14px, env(safe-area-inset-top)); right: 16px; min-width: 48px; min-height: 48px; border-radius: 999px; border: 1.5px solid var(--tenue); background: none; color: inherit; font-size: 1.3rem; }
+.marca-tele { font-size: clamp(3rem, 12vw, 7rem); }
+.tele-equipo { font: 900 clamp(1.2rem, 4vw, 2.2rem)/1.1 var(--display); letter-spacing: 0.2em; text-transform: uppercase; margin: 0; }
+.tele-marcador { display: grid; gap: 6px; justify-items: center; }
+.tele-cuando { font: 900 clamp(3.5rem, 16vw, 9rem)/1 var(--display); text-transform: uppercase; color: var(--principal); }
+.tele-hora { font: 900 clamp(2rem, 8vw, 4.5rem)/1 var(--display); }
+.tele-titulo { font-size: clamp(1.2rem, 4vw, 2.2rem); }
+.tele-semana { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: clamp(1rem, 3vw, 1.6rem); }
+.tele-semana span { font-weight: 800; color: var(--principal); margin-right: 8px; }
+.tele-semana i { font-style: normal; opacity: 0.7; margin-left: 8px; }
+.tele-columnas { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: min(900px, 100%); }
+.tele-columnas h2 { font: 800 0.9rem/1 var(--display); letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7; }
+.tele-columnas ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; font-size: clamp(1.1rem, 3.5vw, 2rem); }
+.tele-columnas .bien { color: #9fe3b0; }
+.tele-columnas .mal { color: #ffb3ab; }
+.tele-radar { width: min(420px, 100%); }

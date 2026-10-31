@@ -1,6 +1,6 @@
 // Sesiones, opción B · Línea de tiempo (elegida por Adam el 29/10): los ejercicios en orden, cada uno con su color por tipo
 // y una altura que sigue a sus minutos. Se guardan por equipo (categoría, sin nombres) solo en este móvil.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TIPOS, buscarEjercicio, filtrar, todosLosEjercicios, type Ejercicio } from '../ejercicios/ejercicios';
 import { MiniPizarra } from '../pizarra/MiniPizarra';
 import { Pista } from '../pizarra/Pista';
@@ -90,9 +90,14 @@ function Selector({ elegir, elegirFicha, cerrar }: { elegir: (e: Ejercicio) => v
   );
 }
 
-function Editor({ s, cambiar, volver, abrirEjercicio }: { s: Sesion; cambiar: (s: Sesion) => void; volver: () => void; abrirEjercicio: (id: string) => void }) {
+function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
+  s: Sesion; cambiar: (s: Sesion) => void; volver: () => void; abrirEjercicio: (id: string) => void;
+  arranque: ReturnType<typeof crearAudio> | null; gastado: () => void;
+}) {
   const [anadiendo, setAnadiendo] = useState(false);
-  const [cronometro, setCronometro] = useState<ReturnType<typeof crearAudio> | false>(false);
+  // Si llega un audio ya creado (botón Cronómetro de Inicio), el cronómetro arranca directamente.
+  const [cronometro, setCronometro] = useState<ReturnType<typeof crearAudio> | false>(arranque ?? false);
+  useEffect(() => { if (arranque) gastado(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const desde = inicios(s);
   const perdidos = huerfanos(s);
 
@@ -168,7 +173,10 @@ function Editor({ s, cambiar, volver, abrirEjercicio }: { s: Sesion; cambiar: (s
   );
 }
 
-export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta }: { abrirEjercicio: (id: string) => void; abierta: string | null; abrir: (id: string | null) => void }) {
+export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque = null, gastado = () => {} }: {
+  abrirEjercicio: (id: string) => void; abierta: string | null; abrir: (id: string | null) => void;
+  arranque?: ReturnType<typeof crearAudio> | null; gastado?: () => void;
+}) {
   const [todas, setTodas] = useState<Sesion[]>(() => leerSesiones());
   const [equipo, setEquipo] = useState<string | undefined>(() => leerSesiones()[0]?.equipo);
   const [nuevoEquipo, setNuevoEquipo] = useState('');
@@ -188,6 +196,8 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta }: { abrir
         s={sesion}
         volver={() => setAbierta(null)}
         abrirEjercicio={abrirEjercicio}
+        arranque={arranque}
+        gastado={gastado}
         cambiar={(n) => poner(todas.map((x) => (x.id === n.id ? n : x)))}
       />
     );

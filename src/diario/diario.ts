@@ -1,5 +1,6 @@
 // Diario del entrenador (opción A, elegida por Adam el 30/10): plantilla con dorsal grande y ficha con tres pestañas.
 // Todo vive solo en este móvil y entra en la copia de seguridad. No hay datos reales en el código.
+import { limpiarHabilidades, type HabilidadEquipo } from '../habilidades/habilidades';
 import { refrescarNumeros } from './puestos';
 
 const CLAVE = 'horns.diario';
@@ -27,6 +28,14 @@ export interface Jugadora {
   /** Cómo entrenarla. */
   entrenar: string;
   notas: Nota[];
+  /** Lesión en curso (dato de salud: solo en este móvil; la copia de seguridad la deja fuera salvo que se pida). */
+  lesion?: Lesion;
+}
+
+export interface Lesion {
+  /** AAAA-MM-DD */
+  desde: string;
+  nota: string;
 }
 
 export interface Equipo {
@@ -40,6 +49,8 @@ export interface Equipo {
   como: string;
   /** Quién hace cada puesto de la pizarra (1 a 5): id de la jugadora. */
   puestos?: Partial<Record<'1' | '2' | '3' | '4' | '5', string>>;
+  /** Habilidades del equipo con su estado (fuerte, normal, a trabajar). */
+  habilidades?: HabilidadEquipo[];
 }
 
 export interface Diario {
@@ -79,14 +90,17 @@ export function esJugadora(j: unknown): j is Jugadora {
     ['id', 'equipoId', 'nombre', 'numero', 'fuertes', 'mejorar', 'forma', 'entrenar'].every((k) => esTexto(x[k as keyof Jugadora])) &&
     (x.posicion === '' || (POSICIONES as readonly string[]).includes(x.posicion)) &&
     Array.isArray(x.notas) &&
-    x.notas.every((n) => esTexto(n?.fecha) && esTexto(n?.texto))
+    x.notas.every((n) => esTexto(n?.fecha) && esTexto(n?.texto)) &&
+    (x.lesion === undefined || (!!x.lesion && esTexto(x.lesion.desde) && esTexto(x.lesion.nota)))
   );
 }
 
 /** Deja solo lo válido (también al cargar una copia): sin equipo no hay jugadoras. */
 export function limpiar(d: unknown): Diario {
   const x = d as Partial<Diario> | null;
-  const equipos = Array.isArray(x?.equipos) ? x!.equipos.filter(esEquipo) : [];
+  const equipos = Array.isArray(x?.equipos)
+    ? x!.equipos.filter(esEquipo).map((e) => (e.habilidades === undefined ? e : { ...e, habilidades: limpiarHabilidades(e.habilidades) }))
+    : [];
   const ids = new Set(equipos.map((e) => e.id));
   const jugadoras = Array.isArray(x?.jugadoras) ? x!.jugadoras.filter((j) => esJugadora(j) && ids.has(j.equipoId)) : [];
   return { equipos, jugadoras };
@@ -138,15 +152,27 @@ export const quitarEquipo = (d: Diario, id: string): Diario => ({
   jugadoras: d.jugadoras.filter((j) => j.equipoId !== id),
 });
 
-/** Junta lo de una copia con lo actual: si coincide el id, gana la copia. */
+/** Junta lo de una copia con lo actual: si coincide el id, gana la copia (salvo la lesión: si la copia no la trae, se conserva la de este móvil). */
 export function juntarDiario(actual: Diario, copia: Diario): Diario {
   const eq = new Set(copia.equipos.map((e) => e.id));
   const ju = new Set(copia.jugadoras.map((j) => j.id));
   return {
     equipos: [...actual.equipos.filter((e) => !eq.has(e.id)), ...copia.equipos],
-    jugadoras: [...actual.jugadoras.filter((j) => !ju.has(j.id)), ...copia.jugadoras],
+    jugadoras: [
+      ...actual.jugadoras.filter((j) => !ju.has(j.id)),
+      ...copia.jugadoras.map((j) => {
+        const mia = actual.jugadoras.find((x) => x.id === j.id);
+        return j.lesion || !mia?.lesion ? j : { ...j, lesion: mia.lesion };
+      }),
+    ],
   };
 }
+
+/** El diario sin datos de salud (para la copia de seguridad por defecto). */
+export const sinSalud = (d: Diario): Diario => ({ ...d, jugadoras: d.jugadoras.map(({ lesion: _quitada, ...resto }) => resto) });
+
+/** Cuántas jugadoras de la plantilla pueden jugar (sin lesión en curso). */
+export const disponibles = (js: Jugadora[]) => js.filter((j) => !j.lesion).length;
 
 export const hoy = () => {
   const f = new Date();

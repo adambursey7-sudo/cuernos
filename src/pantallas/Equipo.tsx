@@ -2,15 +2,17 @@
 // Los datos viven solo en este móvil. La ficha se guarda sola al escribir.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  POSICIONES, guardarDiario, guardarEquipo, guardarJugadora, hoy, leerDiario, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, quitarJugadora, repetida,
+  POSICIONES, disponibles, guardarDiario, guardarEquipo, guardarJugadora, hoy, leerDiario, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, quitarJugadora, repetida,
   type Diario, type Equipo as EquipoDatos, type Jugadora,
 } from '../diario/diario';
 import { NOMBRE_PUESTO, PUESTOS, rellenarPuestos } from '../diario/puestos';
 import { leerTexto, textoDePdf, type Candidata } from '../diario/importar';
 import { leerTemporadas, resumenAsistencia, temporadaDe } from '../temporada/temporada';
+import { DiarioSesion } from './DiarioSesion';
+import { Habilidades } from './Habilidades';
 import { Temporada } from './Temporada';
 
-type Vista = { tipo: 'plantilla' } | { tipo: 'temporada' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
+type Vista = { tipo: 'plantilla' } | { tipo: 'temporada' } | { tipo: 'habilidades' } | { tipo: 'diario' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
 
 function Campo({ etiqueta, valor, cambiar, filas = 3, ayuda }: { etiqueta: string; valor: string; cambiar: (v: string) => void; filas?: number; ayuda?: string }) {
   return (
@@ -59,6 +61,18 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
             {POSICIONES.map((p) => (
               <button key={p} className={j.posicion === p ? 'chip on' : 'chip'} aria-pressed={j.posicion === p} onClick={() => poner({ posicion: j.posicion === p ? '' : p })}>{p}</button>
             ))}
+          </div>
+          <div className="lesion">
+            <button className={j.lesion ? 'chip on estado-trabajar' : 'chip'} aria-pressed={!!j.lesion} onClick={() => poner({ lesion: j.lesion ? undefined : { desde: hoy(), nota: '' } })}>{j.lesion ? 'Lesionada' : 'Marcar lesión'}</button>
+            {j.lesion && (
+              <>
+                <label className="campo-diario">
+                  <span>Lesión · desde el {j.lesion.desde.split('-').reverse().join('/')}</span>
+                  <textarea value={j.lesion.nota} rows={2} onChange={(ev) => poner({ lesion: { desde: j.lesion!.desde, nota: ev.target.value } })} placeholder="Qué le pasa y cuándo vuelve" />
+                </label>
+                <p className="meta">Dato de salud: solo está en este móvil. La copia de seguridad no lo incluye salvo que lo marques en Más.</p>
+              </>
+            )}
           </div>
           <Campo etiqueta="Puntos fuertes" valor={j.fuertes} cambiar={(fuertes) => poner({ fuertes })} ayuda="Lo que hace bien" />
           <Campo etiqueta="A mejorar" valor={j.mejorar} cambiar={(mejorar) => poner({ mejorar })} ayuda="Lo que le falta" />
@@ -220,17 +234,17 @@ function Importar({ equipoId, existentes, crear, volver }: { equipoId: string; e
   );
 }
 
-function Apartados({ ver, vista }: { ver: (v: 'plantilla' | 'temporada') => void; vista: 'plantilla' | 'temporada' }) {
+function Apartados({ ver, vista }: { ver: (v: 'plantilla' | 'habilidades' | 'diario' | 'temporada') => void; vista: 'plantilla' | 'habilidades' | 'diario' | 'temporada' }) {
   return (
     <div className="niveles filtro" role="tablist" aria-label="Apartados del equipo">
-      {([['plantilla', 'Plantilla'], ['temporada', 'Temporada']] as const).map(([id, nombre]) => (
+      {([['plantilla', 'Plantilla'], ['habilidades', 'Habilidades'], ['diario', 'Diario'], ['temporada', 'Temporada']] as const).map(([id, nombre]) => (
         <button key={id} role="tab" aria-selected={vista === id} className={vista === id ? 'chip on' : 'chip'} onClick={() => ver(id)}>{nombre}</button>
       ))}
     </div>
   );
 }
 
-export function Equipo({ ir, fecha, abrirSesion }: { ir: (t: 'ejercicios' | 'jugadas') => void; fecha?: string; abrirSesion: (id: string) => void }) {
+export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }: { ir: (t: 'ejercicios' | 'jugadas') => void; fecha?: string; abrirSesion: (id: string) => void; abrirEjercicio: (id: string) => void; abrirSistema: (id: string) => void }) {
   const [d, setD] = useState<Diario>(leerDiario);
   const [activo, setActivo] = useState<string>(() => leerDiario().equipos[0]?.id ?? '');
   const [vista, setVista] = useState<Vista>(() => (fecha ? { tipo: 'temporada' } : { tipo: 'plantilla' }));
@@ -298,6 +312,35 @@ export function Equipo({ ir, fecha, abrirSesion }: { ir: (t: 'ejercicios' | 'jug
       />
     );
 
+  if (vista.tipo === 'habilidades')
+    return (
+      <section className="pantalla encabezado-equipo">
+        <h1 className="titulo">Equipo</h1>
+        <Apartados vista="habilidades" ver={(v) => setVista({ tipo: v })} />
+        {d.equipos.length > 1 && (
+          <div className="niveles filtro" role="group" aria-label="Equipo">
+            {d.equipos.map((x) => <button key={x.id} className={x.id === equipo.id ? 'chip on' : 'chip'} aria-pressed={x.id === equipo.id} onClick={() => setActivo(x.id)}>{x.nombre}</button>)}
+          </div>
+        )}
+        {fallo && <p className="aviso">El móvil no deja guardar: libera espacio o haz una copia.</p>}
+        <Habilidades key={equipo.id} e={equipo} cambiar={(n) => setD(guardarEquipo(d, n))} abrirEjercicio={abrirEjercicio} abrirSistema={abrirSistema} abrirSesion={abrirSesion} />
+      </section>
+    );
+
+  if (vista.tipo === 'diario')
+    return (
+      <section className="pantalla encabezado-equipo">
+        <h1 className="titulo">Equipo</h1>
+        <Apartados vista="diario" ver={(v) => setVista({ tipo: v })} />
+        {d.equipos.length > 1 && (
+          <div className="niveles filtro" role="group" aria-label="Equipo">
+            {d.equipos.map((x) => <button key={x.id} className={x.id === equipo.id ? 'chip on' : 'chip'} aria-pressed={x.id === equipo.id} onClick={() => setActivo(x.id)}>{x.nombre}</button>)}
+          </div>
+        )}
+        <DiarioSesion key={equipo.id} equipo={equipo} />
+      </section>
+    );
+
   if (vista.tipo === 'temporada')
     return (
       <>
@@ -334,7 +377,7 @@ export function Equipo({ ir, fecha, abrirSesion }: { ir: (t: 'ejercicios' | 'jug
         <span className="nombre">{equipo.nombre}</span>
         <span className="meta">{equipo.forma || equipo.virtudes || 'Toca para escribir su forma de jugar, sus virtudes y cómo entrenarlo'}</span>
       </button>
-      <h2 className="sub">Plantilla · {jugadoras.length}</h2>
+      <h2 className="sub">Plantilla · {jugadoras.length}{jugadoras.some((j) => j.lesion) ? ` · ${disponibles(jugadoras)} disponibles` : ''}</h2>
       {fallo && <p className="aviso">El móvil no deja guardar: libera espacio o haz una copia.</p>}
       {jugadoras.length === 0 && <p className="vacio">Todavía no hay jugadoras. Añádelas una a una o importa la lista desde un PDF.</p>}
       <ul className="lista">
@@ -346,6 +389,7 @@ export function Equipo({ ir, fecha, abrirSesion }: { ir: (t: 'ejercicios' | 'jug
                 <b>{j.nombre || 'Sin nombre'}</b>
                 <span className="meta">{j.posicion || 'Sin posición'}</span>
               </span>
+              {j.lesion && <span className="et mal">lesión</span>}
               {(j.fuertes || j.mejorar) && (
                 <span className="etiquetas">
                   {j.fuertes && <span className="et bien">{j.fuertes.split(/[,\n.;]/)[0].trim()}</span>}

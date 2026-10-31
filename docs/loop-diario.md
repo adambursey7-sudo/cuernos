@@ -35,9 +35,9 @@ Horns pasa de ser una biblioteca de jugadas a ser el **cuaderno del entrenador**
 - [x] 1.1 Diseño → Adam eligió A (30/10).
 - [x] 1.2 Modelo de datos y guardado (`src/diario/`): jugadora (id, nombre, número, posición, puntos fuertes, a mejorar, forma de jugar, cómo entrenarla, notas con fecha) y equipo (nombre, categoría, forma de jugar, virtudes, a trabajar). Varios equipos. Tests de guardado, número repetido y copia de seguridad.
 - [x] 1.3 Pestaña **Equipo**: lista de la plantilla, alta, edición y baja de jugadora; ficha según lo elegido.
-- [ ] 1.4 Ficha del equipo: forma de jugar, virtudes y cómo entrenarlas, con enlace a ejercicios y sistemas de la biblioteca que las trabajan.
+- [x] 1.4 Ficha del equipo (31/10, vuelta 5): pestaña Equipo → Habilidades (virtudes / a trabajar con semáforo, «cómo la entrenamos», nivel 1–5 y radar), etiquetas de habilidad en ejercicios y jugadas, «Añadir a una sesión» y «Montar sesión con lo más flojo». Código en `src/habilidades/` y `src/pantallas/Habilidades.tsx`, `Radar.tsx`.
 - [x] 1.5 **Importar la plantilla:** desde un PDF (texto del PDF leído en el móvil con pdf.js cargado solo al usarlo), texto pegado o CSV; detecta dorsal, nombre y posición y enseña una vista previa editable antes de crear las fichas.
-- [ ] 1.6 Copia de seguridad con plantilla y equipo; revisión y entrada en bocetos; parar.
+- [x] 1.6 Copia de seguridad con plantilla, equipo, etiquetas y diario; las lesiones solo entran si se marca «Incluir las lesiones» (31/10). Falta: revisión y entrada de cierre en bocetos.
 
 ## Tramo 2: dorsales en las pizarras
 - [x] 2.1 Diseño → Adam eligió A (30/10).
@@ -50,7 +50,7 @@ Horns pasa de ser una biblioteca de jugadas a ser el **cuaderno del entrenador**
 - [x] 3.2 Temporada: fechas de inicio y fin, fases con objetivo (pretemporada, liga, parón…) y qué trabajar en cada una.
 - [x] 3.3 Calendario: partidos (rival, casa/fuera, hora, resultado), entrenamientos fijos de la semana, festivos; las sesiones ya hechas se enlazan al día.
 - [x] 3.3b Importar `.ics` (lector hecho a mano, sin librerías) con vista previa, y exportar la temporada a `.ics`.
-- [x] 3.4 Vista mes (Equipo → Temporada) y «Esta semana» en Inicio; cada día enlaza su sesión («Abrir la sesión →»). Falta: que el cronómetro de pista abra solo la sesión del día.
+- [x] 3.4 Vista mes (Equipo → Temporada) y «Esta semana» en Inicio; cada día enlaza su sesión («Abrir la sesión →»). El botón «Cronómetro» de Inicio abre y arranca solo la sesión de hoy (31/10); si hoy no hay sesión con ejercicios, abre la lista.
 - [x] 3.5 Balance de partido (Adam eligió A, 30/10): etiquetas de lo que funcionó y falló, dorsales a mirar, frase corta y «Pasar a las fichas» (una nota con fecha por jugadora, sin repetir). Código en `src/temporada/temporada.ts` y la hoja del día de `Temporada.tsx`.
 
 Decisiones de Adam (30/10, vuelta 3): dónde vive A+C (dentro de Equipo + «Esta semana» en Inicio); apuntar C+B+A (entrenos fijos, lista de jornadas y tocar el día); hoja del día A con «Abrir día»; .ics A (vista previa con casillas) y exportar. Resultado solo con puntos a favor y en contra; sin «Convocadas» (no contestó, supuesto mío). Código en `src/temporada/` y `src/pantallas/Temporada.tsx`, `ImportarCalendario.tsx`.
@@ -68,3 +68,6 @@ Fotos de las jugadoras, estadísticas de partido en directo, asistencia a entren
 ## Vuelta 2 (30/10): pizarra
 - Hecho: «quién es quién» en la ficha del equipo (con «Rellenar según su posición»), interruptor 1–5 / equipo en la pizarra y en pantalla completa, leyenda puesto = dorsal bajo la explicación, el GIF, la hoja y las fichas usan lo elegido; el editor sigue con 1–5. Los ejercicios (2x0, 3x3) no cambian.
 - Editor con la opción A de Adam: el jugador sigue al dedo, un toque lo marca, barra con corte/bote/bloqueo/pase/borrar, tira de pasos (se puede volver a cualquiera) y ▶ Ver. Falta: resaltar el camino al tocar un jugador en la pizarra de ver.
+
+## Vuelta 5 (31/10): mezcla 2 de Adam («me gusta todo»)
+Hecho: habilidades + semáforo + radar, «lo más flojo» → sesión, lesiones y disponibles (solo en el dispositivo; fuera de la copia salvo que se pida), diario de dos minutos (Equipo → Diario) e inicio «Tele de equipo» con logo y «Modo tele» a pantalla completa. Sin hacer (mezcla 3): rotación y minutos, informe del rival, habilidades por edad, compartir en PDF. Sin commit ni publicar; falta probar en iPhone y /code-review medium (datos de salud).

@@ -9,6 +9,7 @@ import { Ejercicio } from './pantallas/Ejercicio';
 import { Equipo } from './pantallas/Equipo';
 import { Inicio } from './pantallas/Inicio';
 import { Sesiones } from './pantallas/Sesiones';
+import type { crearAudio } from './pantallas/Entrenando';
 import { Sistema } from './pantallas/Sistema';
 import { anadirFicha, fichaDeEjercicio } from './recursos/guardarEjercicioIA';
 import { primerEnlace } from './recursos/recursos';
@@ -58,12 +59,18 @@ export function App() {
   // Un día de la temporada abierto desde Inicio («Esta semana»): lleva a Equipo → Temporada en ese día.
   const [fechaAbrir, setFechaAbrir] = useState<string | undefined>();
   const abrirSesion = (id: string) => { setPestana('sesiones'); setSesionId(id); setEjercicioId(null); };
+  // Audio ya creado con el toque del botón de Inicio: la sesión de hoy arranca el cronómetro sola al abrirse.
+  const [arranque, setArranque] = useState<ReturnType<typeof crearAudio> | null>(null);
+  const empezarHoy = (id: string, audio: ReturnType<typeof crearAudio>) => { setArranque(audio); abrirSesion(id); };
+  // Desde una habilidad del equipo se abre un ejercicio o una jugada de la biblioteca.
+  const verEjercicio = (id: string) => { setPestana('biblioteca'); setEjercicioId(id); };
+  const verSistema = (id: string) => { setPestana('biblioteca'); setEjercicioId(null); abrir(id); };
   const irABiblioteca = (r: Rama) => { setRama(r); setPestana('biblioteca'); };
   const verDia = (fecha: string) => { setFechaAbrir(fecha); setPestana('equipo'); };
 
   let contenido;
-  if (pestana === 'sesiones' && !ejercicio) contenido = <Sesiones abrirEjercicio={setEjercicioId} abierta={sesionId} abrir={setSesionId} />;
-  else if (pestana === 'equipo') contenido = <Equipo key={fechaAbrir ?? 'sin-fecha'} ir={irABiblioteca} fecha={fechaAbrir} abrirSesion={abrirSesion} />;
+  if (pestana === 'sesiones' && !ejercicio) contenido = <Sesiones abrirEjercicio={setEjercicioId} abierta={sesionId} abrir={setSesionId} arranque={arranque} gastado={() => setArranque(null)} />;
+  else if (pestana === 'equipo') contenido = <Equipo key={fechaAbrir ?? 'sin-fecha'} ir={irABiblioteca} fecha={fechaAbrir} abrirSesion={abrirSesion} abrirEjercicio={verEjercicio} abrirSistema={verSistema} />;
   else if (pestana === 'mas') contenido = <><header className="cabecera-app"><Marca className="marca-cabecera" /></header><Ajustes /></>;
   else if (edicion)
     contenido = (
@@ -96,7 +103,7 @@ export function App() {
     contenido = (
       <>
         <header className="cabecera-app"><Marca className="marca-cabecera" /></header>
-        <Inicio verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} />
+        <Inicio empezarHoy={empezarHoy} verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} />
       </>
     );
   else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} retocar={(e, c, r) => setEdicion({ base: e.sistema, ficha: fichaDeEjercicio(e, c, r) })} enlaceInicial={entrante} />;

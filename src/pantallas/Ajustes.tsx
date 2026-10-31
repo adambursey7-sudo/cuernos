@@ -3,6 +3,8 @@ import { introActiva, ponerIntroActiva } from '../Intro';
 import { Pista } from '../pizarra/Pista';
 import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
 import { armarCopia, juntar, leerCopia } from '../copia';
+import { guardarReflexiones, juntarReflexiones, leerReflexiones } from '../diario/reflexion';
+import { guardarEtiquetas, leerEtiquetas } from '../habilidades/habilidades';
 import { guardarFichas, juntarFichas, leerFichas } from '../recursos/fichas';
 import { guardarRecursos, juntarRecursos, leerRecursos } from '../recursos/recursos';
 import { guardarTemporadas, juntarTemporadas, leerTemporadas } from '../temporada/temporada';
@@ -18,6 +20,7 @@ export function Ajustes() {
   const [c, setC] = useState(leerColores);
   const [aviso, setAviso] = useState('');
   const [intro, setIntro] = useState(introActiva);
+  const [conSalud, setConSalud] = useState(false);
   const [lectura, setLectura] = useState(leerLectura);
   const leer = (n: typeof lectura) => { setLectura(n); aplicarLectura(n); };
   const poner = (n: Colores) => {
@@ -27,7 +30,7 @@ export function Ajustes() {
 
   const descargar = () => {
     const mios = leerMios();
-    const archivo = new Blob([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas())], { type: 'application/json' });
+    const archivo = new Blob([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones())], { type: 'application/json' });
     const enlace = document.createElement('a');
     enlace.href = URL.createObjectURL(archivo);
     enlace.download = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
@@ -49,6 +52,8 @@ export function Ajustes() {
       if (copia.temporadas && !guardarTemporadas(juntarTemporadas(leerTemporadas(), copia.temporadas))) throw new Error('El móvil no deja guardar la temporada: libera espacio e inténtalo otra vez.');
       if (copia.recursos && !guardarRecursos(juntarRecursos(leerRecursos(), copia.recursos))) throw new Error('El móvil no deja guardar los recursos: libera espacio e inténtalo otra vez.');
       if (copia.fichas && !guardarFichas(juntarFichas(leerFichas(), copia.fichas))) throw new Error('El móvil no deja guardar las fichas: libera espacio e inténtalo otra vez.');
+      if (copia.etiquetas && !guardarEtiquetas({ ...leerEtiquetas(), ...copia.etiquetas })) throw new Error('El móvil no deja guardar las etiquetas: libera espacio e inténtalo otra vez.');
+      if (copia.reflexiones && !guardarReflexiones(juntarReflexiones(leerReflexiones(), copia.reflexiones))) throw new Error('El móvil no deja guardar el diario: libera espacio e inténtalo otra vez.');
       if (copia.colores) poner(copia.colores);
       setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${copia.diario.jugadoras.length} jugadoras` : ''}${copia.colores ? ' y los colores' : ''}.`);
     } catch (err) {
@@ -104,6 +109,10 @@ export function Ajustes() {
 
       <h2 className="sub">Copia de seguridad</h2>
       <p className="vacio">Tus jugadas y tu plantilla solo están en este móvil. La copia incluye los nombres de las jugadoras: guárdala donde no la vea nadie más. Descarga una copia para pasarlas a otro o por si se borra Safari.</p>
+      <label className="salud-copia">
+        <input type="checkbox" checked={conSalud} onChange={(ev) => setConSalud(ev.target.checked)} />
+        Incluir las lesiones (dato de salud)
+      </label>
       <div className="copia">
         <button onClick={descargar}>Descargar copia</button>
         <label className="cargar">

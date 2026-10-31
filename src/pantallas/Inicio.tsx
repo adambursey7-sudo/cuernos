@@ -2,6 +2,7 @@
 import type { ReactNode } from 'react';
 import { IconoBiblioteca, IconoCronometro } from '../Iconos';
 import { Pista } from '../pizarra/Pista';
+import { crearAudio } from './Entrenando';
 import { todosLosEjercicios } from '../ejercicios/ejercicios';
 import { buscarSistema, todosLosSistemas } from '../sistemas/almacen';
 import type { Sistema } from '../sistemas/tipos';
@@ -11,6 +12,7 @@ import { leerSesiones } from '../sesiones/sesiones';
 import { DIAS, diaSemana, lunesDe, sumarDias } from '../temporada/fechas';
 import { cuando, siguiente } from '../temporada/siguiente';
 import { agendaDia, leerTemporadas, temporadaDe } from '../temporada/temporada';
+import { Tele } from './Tele';
 
 /** «Esta semana» (lunes a domingo) del primer equipo, con sus partidos y entrenos. Al tocar un día se abre en Equipo → Temporada. */
 function EstaSemana({ verDia, abrirSesion }: { verDia: (fecha: string) => void; abrirSesion: (id: string) => void }) {
@@ -111,8 +113,18 @@ function TarjetaJugada({ s, abrir }: { s: Sistema; abrir: () => void }) {
   );
 }
 
-export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, verDia, abrirSesion, verSesiones }: {
+/** La sesión con ejercicios que toca hoy en el primer equipo (si la hay): el cronómetro de pista la abre sin pasar por la lista. */
+function sesionDeHoy(): string | undefined {
+  const equipo = leerDiario().equipos[0];
+  const t = equipo ? temporadaDe(leerTemporadas(), equipo.id) : undefined;
+  if (!t) return undefined;
+  const sesiones = leerSesiones();
+  return agendaDia(t, hoy()).find((i) => !i.cancelado && i.sesionId && sesiones.some((s) => s.id === i.sesionId && s.bloques.length > 0))?.sesionId;
+}
+
+export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, verDia, abrirSesion, verSesiones, empezarHoy }: {
   verSesiones: () => void;
+  empezarHoy: (id: string, audio: ReturnType<typeof crearAudio>) => void;
   verDia: (fecha: string) => void;
   abrirSesion: (id: string) => void;
   abrir: (id: string, paso?: number) => void;
@@ -137,10 +149,10 @@ export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, 
     <section className="pantalla inicio">
       <h1 className="saludo">Hola, entrenador</h1>
 
-      <LoSiguiente verDia={verDia} abrirSesion={abrirSesion} />
+      {leerDiario().equipos[0] ? <Tele verDia={verDia} abrirSesion={abrirSesion} /> : <LoSiguiente verDia={verDia} abrirSesion={abrirSesion} />}
 
       <div className="atajos">
-        <button onClick={verSesiones}><span className="burbuja-atajo"><IconoCronometro /></span>Cronómetro</button>
+        <button onClick={() => { const hoyId = sesionDeHoy(); if (hoyId) empezarHoy(hoyId, crearAudio()); else verSesiones(); }}><span className="burbuja-atajo"><IconoCronometro /></span>Cronómetro</button>
         <button onClick={crear}><span className="burbuja-atajo"><IconoBiblioteca /></span>Pizarra</button>
       </div>
 
