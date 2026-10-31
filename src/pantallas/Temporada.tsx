@@ -90,6 +90,7 @@ function EditorFijos({ t, senior, cambiar, volver }: { t: TemporadaDatos; senior
 function Liga({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: TemporadaDatos) => void; volver: () => void }) {
   const b = balanceLiga(t);
   const filas = t.clasificacion ?? [];
+  const puesto = new Map(ordenarClasificacion(filas).map((f, i) => [f.id, i + 1]));
   const num = (v: string) => Math.min(99, Number(v.replace(/\D/g, '')) || 0);
   return (
     <section className="pantalla">
@@ -99,9 +100,9 @@ function Liga({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: Temporad
       <p className="meta">La apuntas tú tras cada jornada. Cuenta 2 puntos por victoria y 1 por derrota.</p>
       {filas.length === 0 && <p className="vacio">Todavía no hay equipos apuntados.</p>}
       <ul className="lista">
-        {ordenarClasificacion(filas).map((f, i) => (
+        {filas.map((f) => (
           <li key={f.id} className="tp-fila-clas">
-            <span className="dorsal" aria-hidden>{i + 1}</span>
+            <span className="dorsal" aria-hidden>{puesto.get(f.id)}</span>
             <input aria-label="Equipo" value={f.equipo} maxLength={40} placeholder="Ejemplo Uno" onChange={(ev) => cambiar(guardarFila(t, { ...f, equipo: ev.target.value }))} />
             <input aria-label="Ganados" inputMode="numeric" value={f.g} onChange={(ev) => cambiar(guardarFila(t, { ...f, g: num(ev.target.value) }))} />
             <input aria-label="Perdidos" inputMode="numeric" value={f.p} onChange={(ev) => cambiar(guardarFila(t, { ...f, p: num(ev.target.value) }))} />
@@ -111,7 +112,10 @@ function Liga({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: Temporad
         ))}
       </ul>
       {filas.length > 0 && <p className="meta">Equipo · ganados · perdidos · puntos</p>}
-      <button className="principal ancho" onClick={() => cambiar(guardarFila(t, nuevaFila()))}>＋ Equipo</button>
+      <div className="dos-botones">
+        <button className="principal" onClick={() => cambiar(guardarFila(t, nuevaFila()))}>＋ Equipo</button>
+        {filas.length > 1 && <button className="secundario" onClick={() => cambiar({ ...t, clasificacion: ordenarClasificacion(filas) })}>Ordenar por puntos</button>}
+      </div>
     </section>
   );
 }
@@ -191,7 +195,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
         )}
         {sen && e.tipo === 'partido' && (
           <div className="dos-botones">
-            <Entrada etiqueta="Jornada"><input inputMode="numeric" value={e.jornada ?? ''} placeholder="5" onChange={(ev) => { const n = Number(ev.target.value.replace(/\D/g, '')); poner({ jornada: n >= 1 && n <= 99 ? n : undefined }); }} /></Entrada>
+            <Entrada etiqueta="Jornada"><input inputMode="numeric" value={e.jornada ?? ''} placeholder="5" onChange={(ev) => { const n = Number(ev.target.value.replace(/\D/g, '')); poner({ jornada: n ? Math.min(99, n) : undefined }); }} /></Entrada>
             {e.casa === false && <Entrada etiqueta="Salida del viaje"><input type="time" value={e.salida ?? ''} onChange={(ev) => poner({ salida: ev.target.value || undefined })} /></Entrada>}
           </div>
         )}
