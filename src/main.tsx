@@ -9,6 +9,7 @@ import { aplicarLectura, leerLectura } from './preferencias';
 import { registerSW } from 'virtual:pwa-register';
 import { App } from './App';
 import { ConIntro } from './Intro';
+import { ConAcceso } from './Acceso';
 import { leerEnlace } from './compartir/enlace';
 import { Visor } from './compartir/Visor';
 
@@ -32,7 +33,7 @@ leerEnlace(location.hash)
   .then(
     (compartida) => {
       if (compartida?.colores) aplicarColores(compartida.colores, false);
-      return compartida ? <Visor datos={compartida} /> : <ConIntro><App /></ConIntro>;
+      return compartida ? <Visor datos={compartida} /> : <ConAcceso><ConIntro><App /></ConIntro></ConAcceso>;
     },
     () => <Visor datos="roto" />,
   )

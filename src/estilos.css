@@ -571,3 +571,19 @@ select#fi-sis { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.
 .rot-pie { font-size: 0.85rem; }
 .rot-ok { color: #9fe3b0; }
 .rot-mal { color: #ffb3ab; font-weight: 700; }
+
+/* Acceso (falso por ahora): al entrar, los cuernos giran, sale el saludo y la pantalla se abre en fundido. */
+.acceso { position: fixed; inset: 0; z-index: 120; background: var(--fondo); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 24px; transition: opacity .4s; }
+.acceso.fuera { opacity: 0; pointer-events: none; }
+.acceso-logo { width: 96px; transition: transform .5s; }
+.acceso-o { display: block; width: 100%; height: auto; }
+.acceso.entra .acceso-logo { animation: acceso-gira 1.2s cubic-bezier(.6, 0, .2, 1) forwards; }
+.acceso-titulo { font: 900 2.4rem/1 var(--display); margin: 0 0 6px; text-transform: uppercase; text-align: center; }
+.acceso-form { width: min(340px, 100%); display: grid; gap: 14px; }
+.acceso-form label { display: grid; gap: 6px; font-weight: 700; color: var(--tenue); }
+.acceso-form input { font: inherit; font-size: 1.1rem; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--tenue); background: var(--superficie); color: var(--texto); }
+.acceso-form button { font: 900 1.1rem/1 var(--display); text-transform: uppercase; padding: 15px; border: none; border-radius: 14px; background: var(--principal); color: var(--sobre-principal); }
+.acceso-fallo { margin: 0; color: #ff7a6b; font-weight: 700; }
+.acceso-hola { font: 900 2rem/1.05 var(--display); text-transform: uppercase; text-align: center; margin: 0; animation: acceso-sube .7s .35s both; }
+@keyframes acceso-gira { 0% { transform: scale(1) rotate(0); } 55% { transform: scale(1.5) rotate(360deg); } 100% { transform: scale(1.15) rotate(360deg); } }
+@keyframes acceso-sube { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }

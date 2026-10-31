@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { cerrarSesion, usuarioActual } from '../Acceso';
 import { introActiva, ponerIntroActiva } from '../Intro';
 import { Pista } from '../pizarra/Pista';
 import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
@@ -121,6 +122,10 @@ export function Ajustes() {
         </label>
       </div>
       {aviso && <p className="aviso-copia" role="status">{aviso}</p>}
+
+      <h2 className="sub">Sesión</h2>
+      <p className="vacio">Entraste como {usuarioActual() ?? 'Adam'}.</p>
+      <button className="restaurar" onClick={cerrarSesion}>Cerrar sesión</button>
     </section>
   );
 }

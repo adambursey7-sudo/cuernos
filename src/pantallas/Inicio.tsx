@@ -1,5 +1,6 @@
 // Inicio de club (interfaz C, elegida por Adam el 29/10): «Seguir donde lo dejaste» y colecciones que se deslizan de lado.
 import type { ReactNode } from 'react';
+import { usuarioActual } from '../Acceso';
 import { IconoBiblioteca, IconoCronometro } from '../Iconos';
 import { Pista } from '../pizarra/Pista';
 import { crearAudio } from './Entrenando';
@@ -147,7 +148,7 @@ export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, 
 
   return (
     <section className="pantalla inicio">
-      <h1 className="saludo">Hola, entrenador</h1>
+      <h1 className="saludo">Hola Coach {usuarioActual() ?? "Adam"}</h1>
 
       {leerDiario().equipos[0] ? <Tele verDia={verDia} abrirSesion={abrirSesion} /> : <LoSiguiente verDia={verDia} abrirSesion={abrirSesion} />}
 
