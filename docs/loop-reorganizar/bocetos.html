@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Horns, reorganizar</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Graduate&display=swap">
+<style>
+:root{--bg:#14110e;--panel:#211c17;--panel2:#2c251e;--fg:#f3ece2;--mute:#a89d8e;--acc:#e8883a;--ok:#7fc58a;--mal:#e5736a;--linea:#3a3128;--disp:'Graduate',Georgia,serif;--txt:'Atkinson Hyperlegible',system-ui,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 var(--txt);margin:0;padding:20px max(16px,env(safe-area-inset-left)) 56px}
+main{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+h1,h2,h3{font-family:var(--disp);font-weight:400;margin:0;text-wrap:balance}
+h1{font-size:2.2rem;line-height:1.1}h2{font-size:1.4rem;color:var(--acc)}h3{font-size:1.05rem}
+p{margin:0}.mute{color:var(--mute)}
+section{background:var(--panel);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.ops{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.op{background:var(--panel2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.op.rec{outline:2px solid var(--acc)}
+.letra{font:1.9rem/1 var(--disp);color:var(--acc)}
+.pros{font-size:.9rem;display:grid;gap:4px}.pros b{color:var(--ok)}.pros i{color:var(--mal);font-style:normal;font-weight:700}
+.rect{font-size:.8rem;color:var(--acc);font-weight:700}
+.pantallas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.tel{width:150px;aspect-ratio:9/17;background:var(--bg);border:2px solid var(--linea);border-radius:18px;display:flex;flex-direction:column;overflow:hidden;font-size:9px;line-height:1.25}
+.cuerpo{flex:1;min-height:0;padding:7px;display:flex;flex-direction:column;gap:4px;overflow:hidden;position:relative}
+.tit{font:11px/1 var(--disp);text-transform:uppercase}
+.caja{background:var(--panel);border-radius:6px;padding:5px 6px}
+.caja.hi{background:var(--acc);color:#14110e;font-weight:700}
+.chip{border:1px solid var(--mute);border-radius:99px;padding:0 5px;white-space:nowrap}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#14110e;font-weight:700}
+.chips{display:flex;gap:3px;flex-wrap:wrap}
+.mas{position:absolute;right:8px;bottom:8px;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#14110e;font:700 16px/26px var(--txt);text-align:center}
+.bar{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border-top:1px solid var(--linea);padding:4px 0;text-align:center;color:var(--mute);font-size:8px}
+.bar b{color:var(--acc)}
+.cap{text-align:center;color:var(--mute);font-size:11px;margin-top:3px;width:150px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}td,th{border-bottom:1px solid var(--linea);padding:6px;text-align:left}th{color:var(--mute);font-weight:400}
+</style></head><body><main>
+<header><h1>Horns, reorganizar</h1><p class="mute">Tramo 1 · Mapa y 4 formas de ordenarla. Elige una y sigo.</p></header>
+
+<section><h2>Cómo está hoy</h2>
+<p>Lo importante: <b>Recursos está a 3 toques</b> (Biblioteca, Ejercicios, Recursos) entre cinco botones seguidos. Y «Espacios de la cancha» está ahí aunque no es un ejercicio.</p>
+<table><tr><th>Cosa</th><th>Dónde está hoy</th><th>Toques</th></tr>
+<tr><td>Jugadas</td><td>Biblioteca</td><td>1</td></tr>
+<tr><td>Ejercicios (lista)</td><td>Biblioteca › Ejercicios</td><td>2</td></tr>
+<tr><td><b>Recursos (reels y enlaces)</b></td><td>Biblioteca › Ejercicios › Recursos</td><td><b>3</b></td></tr>
+<tr><td>Mis ejercicios</td><td>Biblioteca › Ejercicios › Mis ejercicios</td><td>3</td></tr>
+<tr><td>Pedir a Claude</td><td>Biblioteca › Ejercicios › Pedir a Claude</td><td>3</td></tr>
+<tr><td>Espacios de la cancha</td><td>Biblioteca › Ejercicios › Espacios</td><td>3</td></tr>
+<tr><td>Sesiones</td><td>Pestaña Sesiones</td><td>1</td></tr>
+<tr><td>Plantilla, Habilidades, Rotación, Diario, Temporada</td><td>Pestaña Equipo</td><td>2</td></tr>
+<tr><td>Colores, copia de seguridad</td><td>Pestaña Más</td><td>1</td></tr></table>
+<p class="mute">El mapa completo está en mapa.txt, en esta misma carpeta.</p></section>
+
+<section><h2>Las opciones</h2><div class="ops" id="ops"></div></section>
+
+<section><h2>Mi recomendación</h2>
+<p><b>Opción D.</b> Es la A que tú querías, más un botón «Guardar enlace» en Hoy. Así un reel son 2 toques desde que abres la app, sin tocar la barra de abajo. La «+» flotante de la C tapa botones de cada pantalla y casi no la usarías.</p>
+<p class="mute">Si prefieres la A sola, también vale. La B cambia demasiado de sitio todo lo que ya conoces.</p></section>
+
+<script>
+const tel=(cuerpo,activa,cap,barra=['Hoy','Biblioteca','Sesiones','Equipo','Más'])=>
+`<div><div class="tel"><div class="cuerpo">${cuerpo}</div><div class="bar">${barra.map(b=>b===activa?`<b>${b}</b>`:`<span>${b}</span>`).join('')}</div></div><div class="cap">${cap}</div></div>`;
+const chips=(l,on)=>`<div class="chips">${l.map(x=>`<span class="chip${x===on?' on':''}">${x}</span>`).join('')}</div>`;
+const caja=(t,h)=>`<div class="caja${h?' hi':''}">${t}</div>`;
+const B5=['Hoy','Entrenar','Guardado','Equipo','Más'];
+const biblio3=tel(`<div class="tit">Biblioteca</div>${chips(['Jugadas','Ejercicios','Recursos'],'Recursos')}${caja('Pegar enlace copiado',1)}${caja('Escribir nota')}${caja('Reel de pívots · Por ver')}${caja('Defensa 1-3-1 · Por ver')}`,'Biblioteca','Recursos: 2 toques');
+const ejer=tel(`<div class="tit">Biblioteca</div>${chips(['Jugadas','Ejercicios','Recursos'],'Ejercicios')}${chips(['Lista','Mis ejercicios'],'Lista')}${caja('Pedir a Claude',1)}${caja('Rueda de tiro · 10′')}${caja('Dos contra uno · 8′')}`,'Biblioteca','Ejercicios: lista, Mis ejercicios y Pedir a Claude a la vista');
+const masA=tel(`<div class="tit">Más</div>${caja('Colores')}${caja('Copia de seguridad')}${caja('Espacios de la cancha',1)}${caja('Cerrar sesión')}`,'Más','Espacios de la cancha pasa aquí');
+const hoy=tel(`<div class="tit">Coach Adam</div>${caja('▶ Empezar entreno',1)}${caja('Guardar enlace de un reel',1)}${caja('Esta semana')}${caja('Jugadas')}`,'Hoy','Hoy con «Guardar enlace»');
+const ops=[
+{l:'A',t:'Biblioteca con 3 ramas',p:[biblio3,ejer,masA],
+ pros:['Recursos a 2 toques y a la vista','Ejercicios queda limpio','Mismas 5 pestañas: no se pierde nadie'],
+ con:['Para guardar un reel hay que ir a Biblioteca','Biblioteca se llena si luego añadimos más']},
+{l:'B',t:'Pestañas por lo que haces',p:[
+ tel(`<div class="tit">Entrenar</div>${chips(['Sesiones','Ejercicios','Jugadas'],'Sesiones')}${caja('Sesión del martes')}${caja('Sesión del jueves')}`,'Entrenar','Entrenar junta sesiones, ejercicios y jugadas',B5),
+ tel(`<div class="tit">Guardado</div>${chips(['Recursos','Mis ejercicios','Claude'],'Recursos')}${caja('Pegar enlace copiado',1)}${caja('Reel de pívots · Por ver')}`,'Guardado','Todo lo que guardas, en un sitio',B5)],
+ pros:['Pensada por lo que haces: entrenar o guardar','Recursos a 1 toque'],
+ con:['Cambia todo de sitio: tendrías que reaprender','Jugadas y ejercicios de la biblioteca se mezclan con las sesiones','Más trabajo y más riesgo de romper cosas']},
+{l:'C',t:'A + botón «+» siempre visible',p:[
+ tel(`<div class="tit">Equipo</div>${caja('Plantilla')}${caja('Rotación')}${caja('Diario')}<div class="mas">+</div>`,'Equipo','«+» en todas las pantallas'),
+ tel(`<div class="tit">Guardar</div>${caja('Enlace de un reel',1)}${caja('Nota')}${caja('Jugada')}${caja('Ejercicio')}`,'Equipo','Un toque en «+» y eliges qué guardar')],
+ pros:['Guardas desde cualquier pantalla','Sirve para enlace, nota, jugada y ejercicio'],
+ con:['Tapa botones de abajo a la derecha (con prisa, mal)','Es otra forma más de hacer lo que ya hace Biblioteca','Hay que decidir qué hace en cada pantalla']},
+{l:'D',t:'A + «Guardar enlace» en Hoy (mi propuesta)',rec:1,p:[hoy,biblio3,masA],
+ pros:['Todo lo bueno de A','Un reel son 2 toques: abrir la app y «Guardar enlace»','Sin botón flotante: no tapa nada','Con el atajo del iPhone entra directo'],
+ con:['Hoy tiene un botón más (pequeño)']}
+];
+document.getElementById('ops').innerHTML=ops.map(o=>`<div class="op${o.rec?' rec':''}" style="${o.p.length>2?'grid-column:1/-1':''}"><div class="letra">${o.l}${o.rec?' <span class="rect">RECOMENDADA</span>':''}</div><h3>${o.t}</h3><div class="pantallas">${o.p.join('')}</div><div class="pros">${o.pros.map(x=>`<span><b>＋</b> ${x}</span>`).join('')}${o.con.map(x=>`<span><i>－</i> ${x}</span>`).join('')}</div></div>`).join('');
+</script></main></body></html>

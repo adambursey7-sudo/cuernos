@@ -1,0 +1,32 @@
+MAPA DE HORNS (como está hoy, 31/10)
+Toques = desde que abres la app hasta llegar.
+
+HOY (pestaña 1) - 0 toques
+  Seguir donde lo dejaste · Empezar el entreno de hoy · Pizarra (jugada nueva)
+  Esta semana (lleva a Equipo > Temporada) · Jugadas · Ejercicios
+
+BIBLIOTECA (pestaña 2) - 1 toque
+  Jugadas ............................ 1 toque (buscador, favoritos, filtros, + nueva)
+  Ejercicios ......................... 2 toques
+     Biblioteca (lista) .............. 2
+     Mis ejercicios .................. 3   <- fichas propias
+     Recursos ........................ 3   <- AQUÍ están tus reels y enlaces
+     Pedir a Claude .................. 3
+     Espacios de la cancha ........... 3   <- no tiene que ver con ejercicios
+
+SESIONES (pestaña 3) - 1 toque
+  Lista por equipo · Nueva sesión · Añadir ejercicio · Empezar entrenamiento (cronómetro)
+
+EQUIPO (pestaña 4) - 1 toque
+  Plantilla ... Habilidades ... Rotación ... Diario ... Temporada (2 toques cada una)
+  Ficha de jugadora (3) · Importar PDF o lista (3) · Datos del equipo (2)
+
+MÁS (pestaña 5) - 1 toque
+  Entrada · Lectura · Colores y paletas · Copia de seguridad · Cerrar sesión
+
+PROBLEMAS QUE SE VEN
+  1. Recursos está a 3 toques, dentro de Ejercicios, entre botones que no se parecen.
+  2. Hay 5 botones seguidos dentro de Ejercicios y solo uno es «la lista de ejercicios».
+  3. Espacios de la cancha está en Ejercicios, pero es un ajuste del club.
+  4. Guardar un reel desde Instagram: Atajos -> abre la app -> hay que tener la pantalla bien puesta.
+  5. Guardar un enlace «a mano» (sin atajo) exige buscar Recursos primero.
