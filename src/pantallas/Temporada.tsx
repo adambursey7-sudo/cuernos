@@ -15,6 +15,7 @@ import {
 import { ImportarCalendario } from './ImportarCalendario';
 import { InformeRivalEditor } from './InformeRival';
 import { EnDirecto } from './EnDirecto';
+import { CompartirPlan } from './CompartirPlan';
 
 const TIPOS: { id: TipoEvento; nombre: string }[] = [{ id: 'partido', nombre: 'Partido' }, { id: 'entreno', nombre: 'Entreno' }, { id: 'otro', nombre: 'Otro' }];
 const NOMBRES_FASE = ['Pretemporada', 'Liga', 'Parón', 'Fase final'];
@@ -208,6 +209,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
             <textarea rows={3} maxLength={600} value={e.plan ?? ''} placeholder="Defensa, jugadas y a quién buscar" onChange={(ev) => poner({ plan: ev.target.value || undefined })} />
           </Entrada>
         )}
+        {sen && e.tipo === 'partido' && <CompartirPlan e={e} equipo={equipo.nombre} />}
         {sen && e.tipo === 'partido' && <EnDirecto e={e} jugadoras={jugadoras} poner={poner} />}
         {e.tipo === 'partido' && <InformeRivalEditor e={e} eventos={t.eventos} equipo={equipo.nombre} poner={poner} enlazar={(id) => poner({ sesionId: id })} />}
         {e.tipo === 'partido' && (

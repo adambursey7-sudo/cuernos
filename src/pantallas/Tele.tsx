@@ -53,6 +53,9 @@ function ModoTele({ equipo, cerrar }: { equipo: Equipo; cerrar: () => void }) {
       ) : (
         <p className="tele-titulo">Aún no hay nada apuntado</p>
       )}
+      {proximo?.tipo === 'partido' && proximo.evento?.plan && (
+        <div className="tele-columnas"><div><h2>Plan de partido</h2><p>{proximo.evento.plan}</p></div></div>
+      )}
       {semana.length > 0 && (
         <ul className="tele-semana">
           {semana.map((i) => <li key={i.clave}><span>{DIAS[diaSemana(i.fecha)]} {Number(i.fecha.slice(8))}</span> {titulo(i)} <i>{i.hora}</i></li>)}
