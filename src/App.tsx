@@ -12,23 +12,12 @@ import { Sesiones } from './pantallas/Sesiones';
 import type { crearAudio } from './pantallas/Entrenando';
 import { Sistema } from './pantallas/Sistema';
 import { anadirFicha, fichaDeEjercicio } from './recursos/guardarEjercicioIA';
-import { primerEnlace } from './recursos/recursos';
+import { enlacePendiente, olvidarEnlacePendiente, recogerEnlaceDeLaDireccion } from './enlaceEntrante';
 import type { Ficha } from './recursos/fichas';
 import { buscarSistema } from './sistemas/almacen';
 import type { Sistema as SistemaDatos } from './sistemas/tipos';
 
 // Menú de abajo (opción A de Adam, 30/10): cinco apartados iguales.
-function enlaceDeLaDireccion(): string | undefined {
-  try {
-    const q = new URLSearchParams(location.search);
-    const e = primerEnlace(q.get('enlace') ?? q.get('url') ?? q.get('text') ?? '');
-    if (e) history.replaceState(null, '', location.pathname + location.hash);
-    return e;
-  } catch {
-    return undefined;
-  }
-}
-
 type Pestana = 'hoy' | 'biblioteca' | 'sesiones' | 'equipo' | 'mas';
 
 const PESTANAS: { id: Pestana; nombre: string; icono: () => React.JSX.Element }[] = [
@@ -43,7 +32,8 @@ const PESTANAS: { id: Pestana; nombre: string; icono: () => React.JSX.Element }[
 type Edicion = { base?: SistemaDatos; ficha?: Ficha } | null;
 
 export function App() {
-  const [entrante] = useState(enlaceDeLaDireccion);   // un enlace compartido a la app abre Recursos con ese enlace
+  // Un enlace que llega de fuera (atajo del iPhone) abre Recursos con ese enlace puesto, también si la app ya estaba abierta.
+  const [entrante, setEntrante] = useState<{ enlace: string; n: number } | undefined>(() => { const e = enlacePendiente(); return e ? { enlace: e, n: 0 } : undefined; });
   const [pestana, setPestana] = useState<Pestana>(entrante ? 'biblioteca' : 'hoy');
   const [rama, setRama] = useState<Rama>(entrante ? 'recursos' : 'jugadas');
   // La jugada abierta queda encima de Hoy o de la Biblioteca; al volver se ve la pestaña desde la que se abrió.
@@ -106,7 +96,26 @@ export function App() {
         <Inicio empezarHoy={empezarHoy} verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} verRecursos={() => irABiblioteca('recursos')} />
       </>
     );
-  else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} retocar={(e, c, r) => setEdicion({ base: e.sistema, ficha: fichaDeEjercicio(e, c, r) })} enlaceInicial={entrante} />;
+  else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} retocar={(e, c, r) => setEdicion({ base: e.sistema, ficha: fichaDeEjercicio(e, c, r) })} enlaceInicial={entrante?.enlace} key={entrante?.n ?? 'sin'} />;
+
+  useEffect(() => {
+    const mirar = () => {
+      if (document.visibilityState === 'hidden') return;
+      recogerEnlaceDeLaDireccion();
+      const e = enlacePendiente();
+      if (!e) return;
+      setEntrante((previo) => {
+        if (previo?.enlace === e) return previo;
+        setPestana('biblioteca'); setRama('recursos');
+        setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null);
+        return { enlace: e, n: (previo?.n ?? 0) + 1 };
+      });
+    };
+    document.addEventListener('visibilitychange', mirar);
+    window.addEventListener('pageshow', mirar);
+    window.addEventListener('popstate', mirar);
+    return () => { document.removeEventListener('visibilitychange', mirar); window.removeEventListener('pageshow', mirar); window.removeEventListener('popstate', mirar); };
+  }, []);
 
   // Sin conexión: la app funciona igual, solo se avisa.
   const [enLinea, setEnLinea] = useState(navigator.onLine);
@@ -134,7 +143,7 @@ export function App() {
       <main key={pestana} className="entra">{contenido}</main>
       <nav className="pestanas" aria-label="Secciones">
         {PESTANAS.map((p) => (
-          <button key={p.id} className={p.id === pestana ? 'on' : ''} aria-current={p.id === pestana ? 'page' : undefined} onClick={() => { setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>
+          <button key={p.id} className={p.id === pestana ? 'on' : ''} aria-current={p.id === pestana ? 'page' : undefined} onClick={() => { olvidarEnlacePendiente(); setEntrante(undefined); setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>
             <span className="burbuja"><p.icono /></span>
             <span className="rotulo-pestana">{p.nombre}</span>
           </button>

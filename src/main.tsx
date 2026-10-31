@@ -10,6 +10,7 @@ import { registerSW } from 'virtual:pwa-register';
 import { App } from './App';
 import { ConIntro } from './Intro';
 import { ConAcceso } from './Acceso';
+import { recogerEnlaceDeLaDireccion } from './enlaceEntrante';
 import { leerEnlace } from './compartir/enlace';
 import { Visor } from './compartir/Visor';
 
@@ -24,6 +25,7 @@ registerSW({
   },
 });
 
+recogerEnlaceDeLaDireccion();
 aplicarColores(leerColores());
 aplicarLectura(leerLectura(), false);
 const raiz = createRoot(document.getElementById('raiz')!);

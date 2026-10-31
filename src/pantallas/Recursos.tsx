@@ -1,5 +1,6 @@
 // Bandeja de recursos (opción A, elegida por Adam el 30/10): lista con estado. Aquí cae todo lo que guardas de internet.
 import { useState } from 'react';
+import { olvidarEnlacePendiente } from '../enlaceEntrante';
 import { coleccionesDe, filtrarOrganizables, etiquetasDeTexto, type Filtro } from '../recursos/organizar';
 import { BarraFiltro, CampoColeccion, Estrella, FILTRO_VACIO } from './Organizar';
 import {
@@ -37,7 +38,7 @@ export function Recursos({ enlaceInicial, convertir, pedirIA }: { enlaceInicial?
   };
 
   if (abierto && 'nuevo' in abierto) {
-    return <Nuevo enlace={abierto.enlace} cancelar={() => setAbierto(null)} guardar={(r) => { poner([r, ...lista]); setEstado('nuevo'); setAbierto(null); }} />;
+    return <Nuevo enlace={abierto.enlace} cancelar={() => { olvidarEnlacePendiente(); setAbierto(null); }} guardar={(r) => { olvidarEnlacePendiente(); poner([r, ...lista]); setEstado('nuevo'); setAbierto(null); }} />;
   }
   const r = abierto ? lista.find((x) => x.id === abierto.id) : undefined;
   if (r) {
