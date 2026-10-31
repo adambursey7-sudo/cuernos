@@ -37,7 +37,7 @@ export function Rotacion({ e, js, cambiar }: { e: Equipo; js: Jugadora[]; cambia
                     className={juega ? 'rot-casilla on' : 'rot-casilla'}
                     aria-pressed={juega}
                     aria-label={`${j.numero ? `Dorsal ${j.numero}` : 'Jugadora'}, cuarto ${q + 1}: ${juega ? 'juega' : 'banquillo'}`}
-                    disabled={baja}
+                    disabled={baja && !juega}
                     onClick={() => poner(alternar(r, q, j.id))}
                   >{juega ? '■' : '□'}</button>
                 );
