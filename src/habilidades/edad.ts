@@ -17,7 +17,7 @@ export interface CategoriaEdad {
 /** De pequeñas a mayores; «premini» va antes que «mini» porque lo contiene. */
 export const CATEGORIAS_EDAD: CategoriaEdad[] = [
   { id: 'premini', nombre: 'Premini', palabras: ['premini'], prioridad: ['fundamentos', 'pase', 'finalizacion'], masAdelante: ['zona', 'presion', 'ayudas', 'bloqueos', 'reb-of', 'reb-def'] },
-  { id: 'mini', nombre: 'Mini', palabras: ['mini'], prioridad: ['fundamentos', 'uno', 'pase', 'finalizacion'], masAdelante: ['zona', 'presion', 'ayudas', 'bloqueos'] },
+  { id: 'mini', nombre: 'Mini', palabras: ['mini', 'minibasket'], prioridad: ['fundamentos', 'uno', 'pase', 'finalizacion'], masAdelante: ['zona', 'presion', 'ayudas', 'bloqueos'] },
   { id: 'infantil', nombre: 'Infantil', palabras: ['infantil'], prioridad: ['fundamentos', 'uno', 'tiro', 'transicion'], masAdelante: ['bloqueos'] },
   { id: 'cadete', nombre: 'Cadete', palabras: ['cadete'], prioridad: ['uno', 'tiro', 'ayudas', 'transicion'], masAdelante: [] },
   { id: 'junior', nombre: 'Júnior', palabras: ['junior'], prioridad: ['bloqueos', 'ayudas', 'reb-of', 'tiro'], masAdelante: [] },
@@ -27,8 +27,8 @@ const sinTildes = (t: string) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLo
 
 /** La categoría que dice el nombre del equipo, o ninguna si no se reconoce. */
 export function categoriaDeEquipo(nombre: string): CategoriaEdad | undefined {
-  const t = sinTildes(nombre);
-  return CATEGORIAS_EDAD.find((c) => c.palabras.some((p) => t.includes(p)));
+  const palabras = sinTildes(nombre).split(/[^a-z0-9]+/);
+  return CATEGORIAS_EDAD.find((c) => c.palabras.some((p) => palabras.some((w) => w === p || w === `${p}s` || w === `${p}es`)));
 }
 
 export const tocaPriorizar = (c: CategoriaEdad | undefined, habilidad: string) => !!c && c.prioridad.includes(habilidad);

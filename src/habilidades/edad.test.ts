@@ -9,6 +9,7 @@ describe('habilidades por edad', () => {
     expect(categoriaDeEquipo('Minibasket')?.id).toBe('mini');
     expect(categoriaDeEquipo('Infantil B')?.id).toBe('infantil');
     expect(categoriaDeEquipo('Equipo de los martes')).toBeUndefined();
+    expect(categoriaDeEquipo('Gemini Minimal')).toBeUndefined();
   });
 
   it('marca lo que toca priorizar solo si hay categoría', () => {

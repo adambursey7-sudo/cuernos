@@ -53,7 +53,7 @@ export function InformeRivalEditor({ e, eventos, equipo, poner, enlazar }: Props
         <textarea rows={2} value={r.haremos} maxLength={300} placeholder="Cerrar el rebote…" onChange={(ev) => cambiar({ haremos: ev.target.value })} /></label>
       {r.rasgos.length > 0 && (
         <>
-          <span className="meta">Para esto conviene trabajar: {contra.map((id) => nombreDeHabilidad([], id)).join(', ')} ({hay} {hay === 1 ? 'ejercicio' : 'ejercicios'} en la biblioteca).{quitadas.length > 0 && ` Fuera por edad: ${quitadas.join(', ')}.`}</span>
+          <span className="meta">Para esto conviene trabajar: {flojos.map((f) => f.h.nombre).join(', ') || 'nada por ahora'} ({hay} {hay === 1 ? 'ejercicio' : 'ejercicios'} en la biblioteca).{quitadas.length > 0 && ` Fuera por edad: ${quitadas.join(', ')}.`}</span>
           <button className="principal ancho" disabled={hay === 0} onClick={pasarASesion}>Pasar a sesión</button>
         </>
       )}
