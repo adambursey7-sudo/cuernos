@@ -71,6 +71,7 @@ export function Ajustes() {
       setAviso(err instanceof Error ? err.message : 'No se ha podido cargar la copia.');
       return;
     }
+    if (copia.colores) poner(copia.colores);
     // Cada trozo se guarda por separado: si uno falla, se dice qué entró y qué no.
     const pasos: [string, () => boolean][] = [
       ['las jugadas', () => { guardarTodosMios(juntar(leerMios(), copia.mios)); return true; }],
@@ -94,7 +95,6 @@ export function Ajustes() {
       }
       hechos.push(nombre);
     }
-    if (copia.colores) poner(copia.colores);
     setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${copia.diario.jugadoras.length} jugadoras` : ''}${copia.sesiones ? `, ${copia.sesiones.length} ${copia.sesiones.length === 1 ? 'sesión' : 'sesiones'}` : ''}${copia.colores ? ' y los colores' : ''}.`);
   };
 

@@ -3,6 +3,8 @@
 import { primerEnlace } from './recursos/recursos';
 
 const CLAVE = 'horns.enlace-pendiente';
+/** Se lanza cuando el enlace pendiente se guarda o se descarta. */
+export const EVENTO_OLVIDADO = 'horns-enlace-olvidado';
 const CADUCA_MS = 10 * 60 * 1000;
 
 /** El enlace de una dirección tipo «?enlace=…» (también vale «url» o «text», como comparte el móvil). */
@@ -36,4 +38,6 @@ export function enlacePendiente(ahora = Date.now()): string | undefined {
 export function olvidarEnlacePendiente(): void {
   memoria = null;
   try { localStorage.removeItem(CLAVE); } catch { /* nada */ }
+  // La app avisa a quien tenga el enlace en pantalla de que ya no hace falta.
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(EVENTO_OLVIDADO));
 }

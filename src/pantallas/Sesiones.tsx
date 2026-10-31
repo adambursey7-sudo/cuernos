@@ -100,12 +100,12 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
   const [cronometro, setCronometro] = useState<ReturnType<typeof crearAudio> | false>(arranque ?? false);
   useEffect(() => { if (arranque) gastado(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // Al quitar un ejercicio se guarda cómo estaba la sesión unos segundos, por si fue sin querer.
-  const [antes, setAntes] = useState<Sesion | null>(null);
+  const [quitado, setQuitado] = useState<{ bloque: Sesion['bloques'][number]; i: number } | null>(null);
   useEffect(() => {
-    if (!antes) return;
-    const t = setTimeout(() => setAntes(null), 8000);
+    if (!quitado) return;
+    const t = setTimeout(() => setQuitado(null), 8000);
     return () => clearTimeout(t);
-  }, [antes]);
+  }, [quitado]);
   const desde = inicios(s);
   const perdidos = huerfanos(s);
 
@@ -162,7 +162,7 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
                     <button className="chip" onClick={() => cambiar(conMinutos(s, i, b.minutos + PASO_MINUTOS))} aria-label="Cinco minutos más">+5</button>
                     <button className="chip" onClick={() => cambiar(mover(s, i, -1))} disabled={i === 0} aria-label="Subir">▲</button>
                     <button className="chip" onClick={() => cambiar(mover(s, i, 1))} disabled={i === s.bloques.length - 1} aria-label="Bajar">▼</button>
-                    <button className="chip" onClick={() => { setAntes(s); cambiar(quitar(s, i)); }} aria-label="Quitar de la sesión">✕</button>
+                    <button className="chip" onClick={() => { setQuitado({ bloque: b, i }); cambiar(quitar(s, i)); }} aria-label="Quitar de la sesión">✕</button>
                   </div>
                   <div className="fila-chips tipos" role="group" aria-label="Tipo de ejercicio">
                     {TIPOS.map((t) => (
@@ -175,10 +175,10 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
           })}
         </ol>
       )}
-      {antes && (
+      {quitado && (
         <p className="aviso" role="status">
           Ejercicio quitado.{' '}
-          <button className="chip on" onClick={() => { cambiar(antes); setAntes(null); }}>Deshacer</button>
+          <button className="chip on" onClick={() => { const bl = [...s.bloques]; bl.splice(Math.min(quitado.i, bl.length), 0, quitado.bloque); cambiar({ ...s, bloques: bl }); setQuitado(null); }}>Deshacer</button>
         </p>
       )}
       <button className="principal ancho" onClick={() => setAnadiendo(true)}>+ Añadir ejercicio</button>
@@ -187,14 +187,16 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
   );
 }
 
+/** Los equipos con sesiones más los creados en Equipo. */
+const nombresEquipos = (sesiones: Sesion[]) => [...new Set([...sesiones.map((x) => x.equipo), ...leerDiario().equipos.map((e) => e.nombre)])];
+
 export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque = null, gastado = () => {} }: {
   abrirEjercicio: (id: string) => void; abierta: string | null; abrir: (id: string | null) => void;
   arranque?: ReturnType<typeof crearAudio> | null; gastado?: () => void;
 }) {
   const [todas, setTodas] = useState<Sesion[]>(() => leerSesiones());
   // Los equipos son los de Equipo (los que ya creaste) más los que tengan sesiones.
-  const nombresEquipos = () => [...new Set([...leerSesiones().map((x) => x.equipo), ...leerDiario().equipos.map((e) => e.nombre)])];
-  const [equipo, setEquipo] = useState<string | undefined>(() => nombresEquipos()[0]);
+  const [equipo, setEquipo] = useState<string | undefined>(() => nombresEquipos(leerSesiones())[0]);
   const [borrando, setBorrando] = useState<string | null>(null);
   const [nuevoEquipo, setNuevoEquipo] = useState('');
   const [fallo, setFallo] = useState(false);
@@ -203,7 +205,7 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
     setTodas(lista);
     setFallo(!guardarSesiones(lista));
   };
-  const equipos = [...new Set([...todas.map((s) => s.equipo), ...leerDiario().equipos.map((e) => e.nombre)])];
+  const equipos = nombresEquipos(todas);
   const sesion = todas.find((s) => s.id === abierta);
 
   if (sesion)

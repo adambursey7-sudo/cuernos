@@ -12,7 +12,7 @@ import { Sesiones } from './pantallas/Sesiones';
 import type { crearAudio } from './pantallas/Entrenando';
 import { Sistema } from './pantallas/Sistema';
 import { anadirFicha, fichaDeEjercicio } from './recursos/guardarEjercicioIA';
-import { enlacePendiente, olvidarEnlacePendiente, recogerEnlaceDeLaDireccion } from './enlaceEntrante';
+import { enlacePendiente, EVENTO_OLVIDADO, olvidarEnlacePendiente, recogerEnlaceDeLaDireccion } from './enlaceEntrante';
 import type { Ficha } from './recursos/fichas';
 import { buscarSistema } from './sistemas/almacen';
 import type { Sistema as SistemaDatos } from './sistemas/tipos';
@@ -33,7 +33,9 @@ type Edicion = { base?: SistemaDatos; ficha?: Ficha } | null;
 
 export function App() {
   // Un enlace que llega de fuera (atajo del iPhone) abre Recursos con ese enlace puesto, también si la app ya estaba abierta.
-  const [entrante, setEntrante] = useState<{ enlace: string; n: number } | undefined>(() => { const e = enlacePendiente(); return e ? { enlace: e, n: 0 } : undefined; });
+  const [entrante, setEntrante] = useState<{ enlace: string } | undefined>(() => { const e = enlacePendiente(); return e ? { enlace: e } : undefined; });
+  const enlaceVisto = useRef(entrante?.enlace);
+  const [vez, setVez] = useState(0);
   const [pestana, setPestana] = useState<Pestana>(entrante ? 'biblioteca' : 'hoy');
   const [rama, setRama] = useState<Rama>(entrante ? 'recursos' : 'jugadas');
   // La jugada abierta queda encima de Hoy o de la Biblioteca; al volver se ve la pestaña desde la que se abrió.
@@ -96,7 +98,7 @@ export function App() {
         <Inicio empezarHoy={empezarHoy} verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} verRecursos={() => irABiblioteca('recursos')} />
       </>
     );
-  else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} retocar={(e, c, r) => setEdicion({ base: e.sistema, ficha: fichaDeEjercicio(e, c, r) })} enlaceInicial={entrante?.enlace} key={entrante?.n ?? 'sin'} />;
+  else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} retocar={(e, c, r) => setEdicion({ base: e.sistema, ficha: fichaDeEjercicio(e, c, r) })} enlaceInicial={entrante?.enlace} key={vez} />;
 
   useEffect(() => {
     const mirar = () => {
@@ -104,17 +106,21 @@ export function App() {
       recogerEnlaceDeLaDireccion();
       const e = enlacePendiente();
       if (!e) return;
-      setEntrante((previo) => {
-        if (previo?.enlace === e) return previo;
-        setPestana('biblioteca'); setRama('recursos');
-        setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null);
-        return { enlace: e, n: (previo?.n ?? 0) + 1 };
-      });
+      // Ya está en pantalla (la app vuelve a primer plano con el mismo enlace): no se reabre.
+      if (enlaceVisto.current === e) return;
+      enlaceVisto.current = e;
+      setEntrante({ enlace: e });
+      setVez((n) => n + 1);
+      setPestana('biblioteca'); setRama('recursos');
+      setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null);
     };
+    // Al guardarlo o cancelarlo, el mismo enlace puede volver a llegar y debe abrirse otra vez.
+    const olvidado = () => { enlaceVisto.current = undefined; setEntrante(undefined); };
+    window.addEventListener(EVENTO_OLVIDADO, olvidado);
     document.addEventListener('visibilitychange', mirar);
     window.addEventListener('pageshow', mirar);
     window.addEventListener('popstate', mirar);
-    return () => { document.removeEventListener('visibilitychange', mirar); window.removeEventListener('pageshow', mirar); window.removeEventListener('popstate', mirar); };
+    return () => { document.removeEventListener('visibilitychange', mirar); window.removeEventListener('pageshow', mirar); window.removeEventListener('popstate', mirar); window.removeEventListener(EVENTO_OLVIDADO, olvidado); };
   }, []);
 
   // Sin conexión: la app funciona igual, solo se avisa.
