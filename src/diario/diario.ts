@@ -2,6 +2,7 @@
 // Todo vive solo en este móvil y entra en la copia de seguridad. No hay datos reales en el código.
 import { limpiarHabilidades, type HabilidadEquipo } from '../habilidades/habilidades';
 import { limpiarRotacion, type Rotacion } from '../rotacion/rotacion';
+import { limpiarReglas, type Reglas } from '../reglas/reglas';
 import { refrescarNumeros } from './puestos';
 
 const CLAVE = 'horns.diario';
@@ -68,6 +69,8 @@ export interface Equipo {
   habilidades?: HabilidadEquipo[];
   /** Rotación del próximo partido: quién juega cada uno de los 4 cuartos (ids de jugadora). */
   rotacion?: Rotacion;
+  /** Reglas de la competición del equipo; sin ellas, las de FIBA. */
+  reglas?: Reglas;
 }
 
 export interface Diario {
@@ -119,10 +122,11 @@ export function limpiar(d: unknown): Diario {
   const validos = Array.isArray(x?.equipos) ? x!.equipos.filter(esEquipo) : [];
   const ids = new Set(validos.map((e) => e.id));
   const jugadoras = Array.isArray(x?.jugadoras) ? x!.jugadoras.filter((j) => esJugadora(j) && ids.has(j.equipoId)) : [];
-  const equipos = validos.map(({ habilidades, rotacion, tipo, ...e }): Equipo => {
+  const equipos = validos.map(({ habilidades, rotacion, tipo, reglas, ...e }): Equipo => {
     const suyas = new Set(jugadoras.filter((j) => j.equipoId === e.id).map((j) => j.id));
     const r = limpiarRotacion(rotacion, suyas);
-    return { ...e, ...(tipo === 'senior' ? { tipo } : {}), ...(habilidades === undefined ? {} : { habilidades: limpiarHabilidades(habilidades) }), ...(r ? { rotacion: r } : {}) };
+    const rg = limpiarReglas(reglas);
+    return { ...e, ...(rg ? { reglas: rg } : {}), ...(tipo === 'senior' ? { tipo } : {}), ...(habilidades === undefined ? {} : { habilidades: limpiarHabilidades(habilidades) }), ...(r ? { rotacion: r } : {}) };
   });
   return { equipos, jugadoras };
 }
@@ -182,7 +186,7 @@ export function juntarDiario(actual: Diario, copia: Diario): Diario {
       ...actual.equipos.filter((e) => !eq.has(e.id)),
       ...copia.equipos.map((e) => {
         const mio = actual.equipos.find((x) => x.id === e.id);
-        return { ...e, ...(e.tipo || !mio?.tipo ? {} : { tipo: mio.tipo }), ...(e.habilidades || !mio?.habilidades ? {} : { habilidades: mio.habilidades }), ...(e.rotacion || !mio?.rotacion ? {} : { rotacion: mio.rotacion }) };
+        return { ...e, ...(e.tipo || !mio?.tipo ? {} : { tipo: mio.tipo }), ...(e.habilidades || !mio?.habilidades ? {} : { habilidades: mio.habilidades }), ...(e.rotacion || !mio?.rotacion ? {} : { rotacion: mio.rotacion }), ...(e.reglas || !mio?.reglas ? {} : { reglas: mio.reglas }) };
       }),
     ],
     jugadoras: [

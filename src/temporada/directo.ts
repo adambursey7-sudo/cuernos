@@ -17,20 +17,20 @@ export function sumarPuntos(d: Directo | undefined, id: string, n: number): Dire
 }
 
 /** Apunta (o quita) una falta; entre 0 y 5. */
-export function ponerFalta(d: Directo | undefined, id: string, delta: 1 | -1): Directo {
+export function ponerFalta(d: Directo | undefined, id: string, delta: 1 | -1, tope = FALTAS_FUERA): Directo {
   const l = linea(d, id);
-  return { ...d, [id]: { ...l, f: Math.min(FALTAS_FUERA, Math.max(0, l.f + delta)) } };
+  return { ...d, [id]: { ...l, f: Math.min(tope, Math.max(0, l.f + delta)) } };
 }
 
 export const totalPuntos = (d: Directo | undefined) => Object.values(d ?? {}).reduce((a, l) => a + l.p, 0);
 
-export function estadoFaltas(f: number): 'fuera' | 'peligro' | 'ok' {
-  return f >= FALTAS_FUERA ? 'fuera' : f === FALTAS_FUERA - 1 ? 'peligro' : 'ok';
+export function estadoFaltas(f: number, tope = FALTAS_FUERA): 'fuera' | 'peligro' | 'ok' {
+  return f >= tope ? 'fuera' : f === tope - 1 ? 'peligro' : 'ok';
 }
 
 /** Jugadores a vigilar desde el banquillo: ya fuera o con 4 faltas. */
-export const avisosFaltas = (d: Directo | undefined) =>
-  Object.entries(d ?? {}).flatMap(([id, l]) => (estadoFaltas(l.f) === 'ok' ? [] : [{ id, estado: estadoFaltas(l.f) as 'fuera' | 'peligro' }]));
+export const avisosFaltas = (d: Directo | undefined, tope = FALTAS_FUERA) =>
+  Object.entries(d ?? {}).flatMap(([id, l]) => (estadoFaltas(l.f, tope) === 'ok' ? [] : [{ id, estado: estadoFaltas(l.f, tope) as 'fuera' | 'peligro' }]));
 
 /** Deja solo líneas válidas. */
 export function limpiarDirecto(x: unknown): Directo | undefined {
@@ -38,7 +38,7 @@ export function limpiarDirecto(x: unknown): Directo | undefined {
   const salida: Directo = {};
   for (const [id, v] of Object.entries(x as Record<string, Linea>)) {
     if (!id || !v || !Number.isInteger(v.p) || !Number.isInteger(v.f)) continue;
-    const l = { p: Math.min(300, Math.max(0, v.p)), f: Math.min(FALTAS_FUERA, Math.max(0, v.f)) };
+    const l = { p: Math.min(300, Math.max(0, v.p)), f: Math.min(7, Math.max(0, v.f)) };
     if (l.p || l.f) salida[id] = l;
   }
   return Object.keys(salida).length ? salida : undefined;

@@ -15,6 +15,7 @@ import {
 import { ImportarCalendario } from './ImportarCalendario';
 import { InformeRivalEditor } from './InformeRival';
 import { EnDirecto } from './EnDirecto';
+import { reglasDe } from '../reglas/reglas';
 import { CompartirPlan } from './CompartirPlan';
 
 const TIPOS: { id: TipoEvento; nombre: string }[] = [{ id: 'partido', nombre: 'Partido' }, { id: 'entreno', nombre: 'Entreno' }, { id: 'otro', nombre: 'Otro' }];
@@ -210,7 +211,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
           </Entrada>
         )}
         {sen && e.tipo === 'partido' && <CompartirPlan e={e} equipo={equipo.nombre} />}
-        {sen && e.tipo === 'partido' && <EnDirecto e={e} jugadoras={jugadoras} poner={poner} />}
+        {sen && e.tipo === 'partido' && <EnDirecto e={e} jugadoras={jugadoras} poner={poner} faltas={reglasDe(equipo).faltas} />}
         {e.tipo === 'partido' && <InformeRivalEditor e={e} eventos={t.eventos} equipo={equipo.nombre} poner={poner} enlazar={(id) => poner({ sesionId: id })} />}
         {e.tipo === 'partido' && (
           <>

@@ -1,3 +1,4 @@
+import { ReglasEquipo } from './ReglasEquipo';
 // Equipo (tramo 1 del loop Diario): plantilla con dorsal grande y ficha de cada jugadora con tres pestañas (opción A, Adam 30/10).
 // Los datos viven solo en este móvil. La ficha se guarda sola al escribir.
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -170,6 +171,7 @@ function FichaEquipo({ e, jugadoras, cambiar, borrar, volver, ir }: { e: EquipoD
         <input value={e.nombre} maxLength={40} onChange={(ev) => cambiar({ ...e, nombre: ev.target.value })} />
       </label>
       <ElegirTipo tipo={e.tipo ?? 'formacion'} cambiar={(tipo) => { const { tipo: _antes, ...resto } = e; cambiar(tipo === 'senior' ? { ...resto, tipo } : resto); }} />
+      <ReglasEquipo e={e} cambiar={cambiar} />
       <Campo etiqueta="Forma de jugar" valor={e.forma} cambiar={(forma) => cambiar({ ...e, forma })} ayuda="Cómo quieres que juegue el equipo" filas={4} />
       <Campo etiqueta="Virtudes del equipo" valor={e.virtudes} cambiar={(virtudes) => cambiar({ ...e, virtudes })} ayuda="En qué es bueno" />
       <Campo etiqueta="A trabajar" valor={e.trabajar} cambiar={(trabajar) => cambiar({ ...e, trabajar })} ayuda="Lo que hay que mejorar" />

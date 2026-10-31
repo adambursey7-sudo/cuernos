@@ -18,7 +18,13 @@ describe('partido en directo', () => {
     expect(ponerFalta(undefined, 'z', -1).z.f).toBe(0);
   });
   it('limpia lo que no vale', () => {
-    expect(limpiarDirecto({ a: { p: 4, f: 9 }, c: { p: 'no', f: 0 }, d: { p: 0, f: 0 } })).toEqual({ a: { p: 4, f: 5 } });
+    expect(limpiarDirecto({ a: { p: 4, f: 9 }, c: { p: 'no', f: 0 }, d: { p: 0, f: 0 } })).toEqual({ a: { p: 4, f: 7 } });
     expect(limpiarDirecto(null)).toBeUndefined();
+  });
+  it('las faltas para quedar fuera salen de las reglas del equipo', () => {
+    let d: Directo | undefined;
+    for (let i = 0; i < 9; i++) d = ponerFalta(d, 'a', 1, 6);
+    expect(d!.a.f).toBe(6);
+    expect(avisosFaltas(ponerFalta(undefined, 'b', 1), 2)).toEqual([{ id: 'b', estado: 'peligro' }]);
   });
 });

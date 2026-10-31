@@ -1,0 +1,57 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Horns: reglas, PDF y reels</title>
+<style>
+:root{--f:#12161c;--c:#1c232d;--t:#eef2f6;--a:#f0a43a;--ok:#5ac18e}
+body{background:var(--f);color:var(--t);font:16px/1.45 system-ui,sans-serif;padding:16px;max-width:900px;margin:auto}
+h1{font-size:26px}h2{border-top:1px solid #2b3643;padding-top:20px;color:var(--a)}
+.op{background:var(--c);border-radius:12px;padding:14px;margin:12px 0}
+.op b.n{display:inline-block;background:var(--a);color:#000;border-radius:6px;padding:0 8px;margin-right:6px}
+.rec{outline:2px solid var(--ok)}.rec::after{content:"Recomendada";color:var(--ok);font-size:13px;display:block;margin-top:6px}
+pre{background:#0b0e12;border-radius:8px;padding:10px;overflow:auto;font-size:13px;color:#cfd8e2}
+.mas{color:var(--ok)}.men{color:#e87a7a}p{margin:6px 0}
+</style></head><body>
+<h1>Reglas de competición, PDF y reels</h1>
+<p>Elige una opción por bloque (o di «las recomendadas»). No se programa nada hasta tu visto bueno. Todo lo que use Claude lo ejecuta tu servidor (Jarvis).</p>
+
+<h2>R · Reglas de la competición</h2>
+<div class="op rec"><p><b class="n">1</b>Reglas editables en cada equipo</p>
+<pre>Equipo · Reglas de la competición
+ Periodos    [3]   Minutos por periodo [8]
+ Descanso    [2 min]  Tiempos muertos [ ]
+ Faltas para quedar fuera [5]
+ Notas de la competición [texto libre]
+ Plantillas: FIBA 4x10 · Formación 4x8 · Otra</pre>
+<p class="mas">+ Vale para cualquier competición, también la de San Francisco, sin cambiar la app.</p><p class="men">− Hay que rellenarlas una vez por equipo.</p></div>
+<div class="op"><p><b class="n">2</b>Solo una lista de plantillas ya hechas</p>
+<p class="mas">+ Rápido, sin escribir.</p><p class="men">− Si la competición es rara, no cabe.</p></div>
+<div class="op"><p><b class="n">3</b>Rellenar leyendo el PDF de las normas</p>
+<p class="mas">+ Sin escribir nada.</p><p class="men">− Depende de que el PDF sea de texto y claro; hay que revisarlo.</p></div>
+<p>Con esto cambian: los cuartos de la rotación, el cronómetro de pista, las faltas y los minutos por jugador.</p>
+
+<h2>P · Subir el PDF (plantilla y normas)</h2>
+<div class="op rec"><p><b class="n">1</b>Leer el PDF de texto en el móvil y enseñar una vista previa</p>
+<pre>Subir PDF → Detecta: 12 jugadores · 3 periodos de 8 min
+ [x] Ejemplo Uno · 4 · Base
+ [x] Ejemplo Dos · 7 · Alero
+ [Importar los marcados]</pre>
+<p class="mas">+ No necesita Claude ni conexión. Eliges qué entra.</p><p class="men">− Solo PDF de texto; si el formato es raro, falla alguna línea.</p></div>
+<div class="op"><p><b class="n">2</b>Pegar el texto del PDF en una caja</p>
+<p class="mas">+ Muy fiable.</p><p class="men">− Más pasos para ti.</p></div>
+<div class="op"><p><b class="n">3</b>Mandarlo a Claude por Jarvis para que lo ordene</p>
+<p class="mas">+ Entiende formatos distintos.</p><p class="men">− Necesita el PC encendido; los nombres salen del móvil hacia tu servidor.</p></div>
+
+<h2>V · Reel o vídeo → jugada</h2>
+<div class="op rec"><p><b class="n">1</b>Subir un vídeo del móvil (grabación de pantalla)</p>
+<pre>Jugada desde vídeo → [Elegir vídeo]
+ Jarvis saca imágenes → Claude dibuja
+ Borrador por revisar: pasos 1 a 5 en la pizarra
+ [Corregir]  [Guardar como mía]</pre>
+<p class="mas">+ Es lo más fiable y no depende de Instagram ni TikTok.</p><p class="men">− Vídeo largo = más espera; hay que revisar siempre el dibujo.</p></div>
+<div class="op"><p><b class="n">2</b>Pegar el enlace del reel</p>
+<p class="mas">+ Muy cómodo.</p><p class="men">− Instagram y TikTok bloquean las descargas; falla a menudo.</p></div>
+<div class="op"><p><b class="n">3</b>Subir el vídeo y que tú marques los momentos clave</p>
+<p class="mas">+ Claude acierta más con menos imágenes.</p><p class="men">− Más trabajo tuyo.</p></div>
+<p>En todos los casos sale como borrador y nunca se guarda sin que lo apruebes.</p>
+
+<h2>Orden propuesto</h2>
+<p>1) R · 2) P · 3) V. Paro tras cada uno.</p>
+</body></html>
