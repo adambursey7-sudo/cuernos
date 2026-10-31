@@ -1,6 +1,7 @@
 // Diario del entrenador (opción A, elegida por Adam el 30/10): plantilla con dorsal grande y ficha con tres pestañas.
 // Todo vive solo en este móvil y entra en la copia de seguridad. No hay datos reales en el código.
 import { limpiarHabilidades, type HabilidadEquipo } from '../habilidades/habilidades';
+import { limpiarRotacion, type Rotacion } from '../rotacion/rotacion';
 import { refrescarNumeros } from './puestos';
 
 const CLAVE = 'horns.diario';
@@ -51,6 +52,8 @@ export interface Equipo {
   puestos?: Partial<Record<'1' | '2' | '3' | '4' | '5', string>>;
   /** Habilidades del equipo con su estado (fuerte, normal, a trabajar). */
   habilidades?: HabilidadEquipo[];
+  /** Rotación del próximo partido: quién juega cada uno de los 4 cuartos (ids de jugadora). */
+  rotacion?: Rotacion;
 }
 
 export interface Diario {
@@ -98,11 +101,14 @@ export function esJugadora(j: unknown): j is Jugadora {
 /** Deja solo lo válido (también al cargar una copia): sin equipo no hay jugadoras. */
 export function limpiar(d: unknown): Diario {
   const x = d as Partial<Diario> | null;
-  const equipos = Array.isArray(x?.equipos)
-    ? x!.equipos.filter(esEquipo).map((e) => (e.habilidades === undefined ? e : { ...e, habilidades: limpiarHabilidades(e.habilidades) }))
-    : [];
-  const ids = new Set(equipos.map((e) => e.id));
+  const validos = Array.isArray(x?.equipos) ? x!.equipos.filter(esEquipo) : [];
+  const ids = new Set(validos.map((e) => e.id));
   const jugadoras = Array.isArray(x?.jugadoras) ? x!.jugadoras.filter((j) => esJugadora(j) && ids.has(j.equipoId)) : [];
+  const equipos = validos.map(({ habilidades, rotacion, ...e }): Equipo => {
+    const suyas = new Set(jugadoras.filter((j) => j.equipoId === e.id).map((j) => j.id));
+    const r = limpiarRotacion(rotacion, suyas);
+    return { ...e, ...(habilidades === undefined ? {} : { habilidades: limpiarHabilidades(habilidades) }), ...(r ? { rotacion: r } : {}) };
+  });
   return { equipos, jugadoras };
 }
 
@@ -161,7 +167,7 @@ export function juntarDiario(actual: Diario, copia: Diario): Diario {
       ...actual.equipos.filter((e) => !eq.has(e.id)),
       ...copia.equipos.map((e) => {
         const mio = actual.equipos.find((x) => x.id === e.id);
-        return e.habilidades || !mio?.habilidades ? e : { ...e, habilidades: mio.habilidades };
+        return { ...e, ...(e.habilidades || !mio?.habilidades ? {} : { habilidades: mio.habilidades }), ...(e.rotacion || !mio?.rotacion ? {} : { rotacion: mio.rotacion }) };
       }),
     ],
     jugadoras: [

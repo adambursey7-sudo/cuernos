@@ -558,3 +558,16 @@ select#fi-sis { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.
 .tele-columnas .bien { color: #9fe3b0; }
 .tele-columnas .mal { color: #ffb3ab; }
 .tele-radar { width: min(420px, 100%); }
+
+/* Rotación del partido (vuelta 6) */
+.rot-tabla { display: grid; gap: 6px; }
+.rot-fila { display: grid; grid-template-columns: 40px repeat(4, minmax(0, 1fr)) 56px; gap: 6px; align-items: center; justify-items: center; }
+.rot-cab { color: var(--tenue); font-size: 0.85rem; }
+.rot-fila .dorsal { width: 36px; height: 36px; font-size: 1.1rem; }
+.rot-fila.baja { opacity: 0.5; }
+.rot-casilla { width: 100%; min-height: 40px; border-radius: 10px; border: 1.5px solid var(--tenue); background: none; font-size: 1.1rem; color: var(--tenue); }
+.rot-casilla.on { background: var(--principal); border-color: var(--principal); color: var(--sobre-principal); }
+.rot-casilla:disabled { opacity: 0.35; }
+.rot-pie { font-size: 0.85rem; }
+.rot-ok { color: #9fe3b0; }
+.rot-mal { color: #ffb3ab; font-weight: 700; }

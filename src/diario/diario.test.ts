@@ -69,5 +69,24 @@ describe('importar plantilla', () => {
     expect(disponibles([j, nuevaJugadora(e.id)])).toBe(1);
     expect(limpiar({ equipos: [e], jugadoras: [{ ...j, lesion: { desde: 3 } }] }).jugadoras).toHaveLength(0);
   });
+
+  it('la rotación del equipo se conserva con sus jugadoras y descarta a las que ya no están', () => {
+    const e = nuevoEquipo('Ejemplo');
+    const j = nuevaJugadora(e.id, { numero: '5' });
+    const rotacion = [[j.id, 'fantasma'], [], [j.id], []];
+    const d = limpiar({ equipos: [{ ...e, rotacion }], jugadoras: [j] });
+    expect(d.equipos[0].rotacion).toEqual([[j.id], [], [j.id], []]);
+    expect(limpiar({ equipos: [{ ...e, rotacion: 'rota' }], jugadoras: [j] }).equipos[0].rotacion).toBeUndefined();
+    expect(juntarDiario(d, { equipos: [e], jugadoras: [j] }).equipos[0].rotacion).toEqual(d.equipos[0].rotacion);
+  });
+
+  it('al restaurar una copia sin habilidades se conservan las de este móvil, y si la copia las trae gana la copia', () => {
+    const propias = [{ id: 'tiro', nombre: 'Tiro exterior', estado: 'trabajar' as const, como: '' }];
+    const mio = { ...nuevoEquipo('Ejemplo'), habilidades: propias };
+    const { habilidades: _sin, ...sinHabilidades } = mio;
+    expect(juntarDiario({ equipos: [mio], jugadoras: [] }, { equipos: [sinHabilidades], jugadoras: [] }).equipos[0].habilidades).toEqual(propias);
+    const otras = [{ id: 'pase', nombre: 'Pase', estado: 'fuerte' as const, como: '' }];
+    expect(juntarDiario({ equipos: [mio], jugadoras: [] }, { equipos: [{ ...mio, habilidades: otras }], jugadoras: [] }).equipos[0].habilidades).toEqual(otras);
+  });
 });
 

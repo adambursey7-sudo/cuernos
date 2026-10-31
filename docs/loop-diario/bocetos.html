@@ -52,6 +52,58 @@ img{width:100%;max-width:260px;height:auto;border-radius:12px;margin:0 auto;disp
 </header>
 
 
+<section id="vuelta6">
+  <h2>Vuelta 6 · Rotación y minutos del partido (31/10)</h2>
+  <p class="mute">Para repartir los minutos de cada jugadora en un partido de 4 cuartos de 10 minutos, que jueguen todas lo justo y sin contar a las lesionadas. Elige una forma (o una mezcla). Nombres y números de los dibujos, inventados. No programo hasta que contestes.</p>
+
+  <h3>1 · Tres formas de hacerlo</h3>
+  <div class="opciones">
+    <div class="op rec">
+      <span class="letra">A</span><h3>Tabla por cuartos</h3>
+      <div class="tel"><span class="tit">Ejemplo Cadete · Minutos</span>
+        <div class="fila"><span class="dor">4</span><span style="flex:1;letter-spacing:3px">■ ■ □ ■</span><span class="chip v">30</span></div>
+        <div class="fila"><span class="dor">7</span><span style="flex:1;letter-spacing:3px">■ □ ■ ■</span><span class="chip v">30</span></div>
+        <div class="fila"><span class="dor">9</span><span style="flex:1;letter-spacing:3px">□ ■ ■ □</span><span class="chip r">20</span></div>
+        <div class="fila"><span class="dor">11</span><span style="flex:1;letter-spacing:3px">■ ■ ■ ■</span><span class="chip v">40</span></div>
+        <div class="fila" style="opacity:.5"><span class="dor">13</span><span style="flex:1" class="mini">Lesionada</span><span class="chip">—</span></div>
+        <p class="mini">5 en pista por cuarto · ■ juega · □ banquillo</p>
+        <div class="barra"><span class="on">Repartir</span><span>Guardar</span></div></div>
+      <div class="pros"><span><b>＋</b> Se hace y se lee rápido, con el pulgar.</span><span><b>＋</b> El total de minutos sale solo y avisa de quien juega poco.</span><span><i>－</i> No se ven los cambios dentro del cuarto.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">B</span><h3>Línea de tiempo con cambios</h3>
+      <div class="tel"><span class="tit">Ejemplo Cadete · Minutos</span>
+        <p class="mini" style="text-align:left">0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;30&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;40</p>
+        <div class="fila"><span class="dor">4</span><span style="flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--acc) 0 40%,var(--panel2) 40% 55%,var(--acc) 55% 100%)"></span></div>
+        <div class="fila"><span class="dor">7</span><span style="flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--acc) 0 22%,var(--panel2) 22% 48%,var(--acc) 48% 100%)"></span></div>
+        <div class="fila"><span class="dor">9</span><span style="flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--panel2) 0 25%,var(--acc) 25% 70%,var(--panel2) 70% 100%)"></span></div>
+        <div class="fila"><span class="dor">11</span><span style="flex:1;height:8px;border-radius:4px;background:var(--acc)"></span></div>
+        <p class="mini">Arrastra los bordes de cada barra</p></div>
+      <div class="pros"><span><b>＋</b> Es lo más fiel a un partido real.</span><span><i>－</i> Arrastrar bordes finos con el dedo es incómodo.</span><span><i>－</i> Es bastante más trabajo de programar.</span></div>
+    </div>
+    <div class="op">
+      <span class="letra">C</span><h3>Reparto automático</h3>
+      <div class="tel"><span class="tit">Ejemplo Cadete · Repartir</span>
+        <div class="fila"><span style="flex:1">Mínimo por jugadora</span><span class="chip">12 min</span></div>
+        <div class="fila"><span style="flex:1">Titulares fijas</span><span class="chip">1 2 3 4 5</span></div>
+        <div class="fila"><span style="flex:1">Lesionadas fuera</span><span class="chip v">sí</span></div>
+        <p class="mini">Propone quién juega cada cuarto y tú lo retocas.</p>
+        <div class="barra"><span class="on">Proponer</span></div></div>
+      <div class="pros"><span><b>＋</b> Ahorra el trabajo de hacerlo a mano.</span><span><i>－</i> Sola puede proponer algo raro; siempre hay que revisarla.</span><span><i>－</i> Sin la tabla debajo no se puede corregir.</span></div>
+    </div>
+  </div>
+  <p class="nota"><b>Recomiendo A + C:</b> la tabla de A, con el botón «Repartir» de C que la rellena por ti y luego tocas las casillas para corregir. B queda para más adelante.</p>
+
+  <h3>2 · Cómo se usaría (A + C)</h3>
+  <div class="opciones">
+    <div class="op"><span class="etq">Paso 1</span><p>En la ficha del equipo, botón «Rotación del partido». Si hay una lesionada, sale apagada y no cuenta.</p></div>
+    <div class="op"><span class="etq">Paso 2</span><p>Tocas «Repartir»: pone 5 en pista cada cuarto y reparte los minutos lo más parejo posible, con tu mínimo.</p></div>
+    <div class="op"><span class="etq">Paso 3</span><p>Tocas una casilla para cambiarla. Si un cuarto no tiene 5, se marca en rojo y los minutos totales se recalculan.</p></div>
+    <div class="op"><span class="etq">Paso 4</span><p>Se guarda con la fecha del partido en este móvil. Después, el balance puede mostrar quién jugó cuánto.</p></div>
+  </div>
+  <p class="pie">Por decidir: si el partido es siempre 4×10 (lo normal en cadete) o configurable; y si «Repartir» debe tener en cuenta las habilidades (por ejemplo, no dejar sin tiradoras un cuarto). La rotación se guardaría solo en este móvil y sin entrar en lo que se comparte.</p>
+</section>
+
 <section id="vuelta5b">
   <h2>Vuelta 5 (ampliada) · Qué hacen otras apps, qué podemos añadir y con qué estilo (31/10)</h2>
   <p class="mute">Búsqueda hecha el 31/10 en tiendas de apps y páginas de los fabricantes. <b>Ojo:</b> casi todo es publicidad de cada app, no opiniones de usuarios, y no he podido abrir ninguna de ellas por dentro; lo que cuento es lo que dicen sus fichas. Cada idea lleva su fuente. Los dibujos usan nombres y datos inventados. No programo nada de esto hasta que elijas.</p>

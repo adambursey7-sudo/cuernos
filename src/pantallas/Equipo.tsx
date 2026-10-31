@@ -10,9 +10,10 @@ import { leerTexto, textoDePdf, type Candidata } from '../diario/importar';
 import { leerTemporadas, resumenAsistencia, temporadaDe } from '../temporada/temporada';
 import { DiarioSesion } from './DiarioSesion';
 import { Habilidades } from './Habilidades';
+import { Rotacion } from './Rotacion';
 import { Temporada } from './Temporada';
 
-type Vista = { tipo: 'plantilla' } | { tipo: 'temporada' } | { tipo: 'habilidades' } | { tipo: 'diario' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
+type Vista = { tipo: 'plantilla' } | { tipo: 'temporada' } | { tipo: 'habilidades' } | { tipo: 'rotacion' } | { tipo: 'diario' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
 
 function Campo({ etiqueta, valor, cambiar, filas = 3, ayuda }: { etiqueta: string; valor: string; cambiar: (v: string) => void; filas?: number; ayuda?: string }) {
   return (
@@ -234,10 +235,10 @@ function Importar({ equipoId, existentes, crear, volver }: { equipoId: string; e
   );
 }
 
-function Apartados({ ver, vista }: { ver: (v: 'plantilla' | 'habilidades' | 'diario' | 'temporada') => void; vista: 'plantilla' | 'habilidades' | 'diario' | 'temporada' }) {
+function Apartados({ ver, vista }: { ver: (v: 'plantilla' | 'habilidades' | 'rotacion' | 'diario' | 'temporada') => void; vista: 'plantilla' | 'habilidades' | 'rotacion' | 'diario' | 'temporada' }) {
   return (
     <div className="niveles filtro" role="tablist" aria-label="Apartados del equipo">
-      {([['plantilla', 'Plantilla'], ['habilidades', 'Habilidades'], ['diario', 'Diario'], ['temporada', 'Temporada']] as const).map(([id, nombre]) => (
+      {([['plantilla', 'Plantilla'], ['habilidades', 'Habilidades'], ['rotacion', 'Rotación'], ['diario', 'Diario'], ['temporada', 'Temporada']] as const).map(([id, nombre]) => (
         <button key={id} role="tab" aria-selected={vista === id} className={vista === id ? 'chip on' : 'chip'} onClick={() => ver(id)}>{nombre}</button>
       ))}
     </div>
@@ -324,6 +325,21 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
         )}
         {fallo && <p className="aviso">El móvil no deja guardar: libera espacio o haz una copia.</p>}
         <Habilidades key={equipo.id} e={equipo} cambiar={(n) => setD(guardarEquipo(d, n))} abrirEjercicio={abrirEjercicio} abrirSistema={abrirSistema} abrirSesion={abrirSesion} />
+      </section>
+    );
+
+  if (vista.tipo === 'rotacion')
+    return (
+      <section className="pantalla encabezado-equipo">
+        <h1 className="titulo">Equipo</h1>
+        <Apartados vista="rotacion" ver={(v) => setVista({ tipo: v })} />
+        {d.equipos.length > 1 && (
+          <div className="niveles filtro" role="group" aria-label="Equipo">
+            {d.equipos.map((x) => <button key={x.id} className={x.id === equipo.id ? 'chip on' : 'chip'} aria-pressed={x.id === equipo.id} onClick={() => setActivo(x.id)}>{x.nombre}</button>)}
+          </div>
+        )}
+        {fallo && <p className="aviso">El móvil no deja guardar: libera espacio o haz una copia.</p>}
+        <Rotacion key={equipo.id} e={equipo} js={plantilla(d, equipo.id)} cambiar={(n) => setD(guardarEquipo(d, n))} />
       </section>
     );
 
