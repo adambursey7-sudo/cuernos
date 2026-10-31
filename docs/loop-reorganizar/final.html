@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Horns, reorganizar: final</title>
+<style>
+:root{--bg:#14110e;--panel:#211c17;--fg:#f3ece2;--mute:#a89d8e;--acc:#e8883a;--ok:#7fc58a;--mal:#e5736a;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;margin:0;padding:20px 16px 56px}
+main{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2{margin:0}h1{font-size:2rem}h2{font-size:1.3rem;color:var(--acc)}
+section{background:var(--panel);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px}
+ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.ok li::marker{color:var(--ok)}.mal li::marker{color:var(--mal)}
+.mute{color:var(--mute)}
+</style></head><body><main>
+<header><h1>Horns, reorganizar: final</h1><p class="mute">31/10 · Nada publicado ni unido a main.</p></header>
+
+<section class="ok"><h2>Hecho</h2><ul>
+<li>Biblioteca tiene tres ramas a la vista: Jugadas, Ejercicios y Recursos. Recursos ya no está escondido.</li>
+<li>Hoy tiene el botón «Guardar enlace». Un reel son 2 toques.</li>
+<li>El enlace del iPhone lleva siempre a Recursos con el enlace puesto. Funciona con la app ya abierta y al repetir el mismo reel.</li>
+<li>La copia de seguridad ahora guarda sesiones, espacios de la cancha y favoritos. Las copias antiguas siguen valiendo.</li>
+<li>Borrar una sesión o una nota pide «Sí, borrar».</li>
+<li>Quitar un ejercicio de una sesión deja «Deshacer» durante 8 segundos.</li>
+<li>Si una copia se carga a medias, la app lo dice y cuenta qué entró.</li>
+<li>Espacios de la cancha tiene su propia pantalla, desde Más.</li>
+<li>Sesiones ofrece los equipos que ya creaste en Equipo.</li>
+<li>Textos corregidos, aviso del GIF dentro de la app y nombres de las esquinas sin cortar.</li>
+<li>Revisión de código hecha y arreglada. Compila, 252 pruebas bien, build bien.</li>
+</ul></section>
+
+<section class="mal"><h2>Mejorable</h2><ul>
+<li>Falta probar el atajo real en el iPhone, en Safari y en la pantalla de inicio. Es lo único que confirma el arreglo.</li>
+<li>Sin ver en móvil real: editor, pizarra y cargar una copia.</li>
+<li>Al cargar una copia, los espacios de la cancha sustituyen a los tuyos (no se pueden mezclar).</li>
+<li>La revisión de seguridad del enlace queda pendiente: hay que lanzarla desde la carpeta de la app.</li>
+<li>Más es una página larga. Se puede dividir más adelante.</li>
+</ul></section>
+</main></body></html>
