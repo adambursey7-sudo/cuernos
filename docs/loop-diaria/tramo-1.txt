@@ -1,0 +1,21 @@
+LOOP HERRAMIENTA DIARIA - TRAMO 1: biblioteca de sistemas (rama loop/herramienta-diaria)
+
+Decision de diseno (Adam pidio seguir hasta el final sin esperar): se tomo la opcion A, acordeon por familias
+(Ataque, Balon parado, Final, Salida de presion, Defensa), con el buscador de siempre arriba y filtros de nivel y
+dificultad. Se abre sola cuando hay busqueda o filtros, y los grupos de 4 o menos jugadas salen abiertos.
+Si Adam prefiere la B (buscador con pestanas grandes), solo hay que cambiar Sistemas.tsx.
+
+Hecho
+- 20 sistemas nuevos en src/sistemas/datosBiblioteca.ts (en total 30): bloqueo lateral, mano a mano, corte UCLA,
+  puerta atras, 4 fuera 1 dentro, ataque contra zona 2-3, contraataque 3 carriles, saque de fondo en caja y en linea,
+  saque de banda con bloqueo ciego, final con saque, defensa individual base, ayuda y recuperacion, bloqueo drop /
+  hedge / cambio / ICE, zona 3-2 y tres presiones (individual, 2-2-1, 1-2-1-1).
+- Cada uno: objetivo, cuando usarlo, variantes, dificultad (1-3), progresion por edad, lecturas, errores, ejercicios,
+  pizarra paso a paso (decimetros, canasta en 75,12), revisar:true y fuente.
+- Ficha de la pantalla Sistema con las secciones nuevas; filtro de dificultad.
+- Pruebas: biblioteca.test.ts (dentro de la pista, ficha completa con fuente, ids unicos, cobertura, agrupado).
+
+Pendiente de Adam
+- TODOS son borrador: validar jugada a jugada (pasos y coordenadas son mios a partir de conceptos conocidos,
+  no copiados de un libro concreto; la fuente indica el concepto y el organismo, no una pagina).
+- Las presiones se dibujan solo en la zona de salida (media pista).

@@ -1,5 +1,6 @@
 // Jugadas del entrenador: se guardan solo en su móvil (decisión de Adam: sin cuentas). Las del libro van en datos.ts.
 import { SISTEMAS } from './datos';
+import { SISTEMAS_BIBLIOTECA } from './datosBiblioteca';
 import { SISTEMAS_SENIOR } from './datosSenior';
 import type { Jugador, Sistema } from './tipos';
 
@@ -53,7 +54,7 @@ export function borrarMio(id: string) {
 }
 
 export function todosLosSistemas(): Sistema[] {
-  return [...SISTEMAS, ...SISTEMAS_SENIOR, ...leerMios()];
+  return [...SISTEMAS, ...SISTEMAS_SENIOR, ...SISTEMAS_BIBLIOTECA, ...leerMios()];
 }
 
 export function buscarSistema(id: string): Sistema | undefined {

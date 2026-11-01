@@ -47,7 +47,28 @@ export interface Sistema {
   visibles?: Jugador[];
   /** El balón lo tiene alguien que no sale en el ejercicio: no se dibuja. */
   sinBalon?: boolean;
+  /** Subgrupo dentro del libro («Saques», «Zonas», «Presiones»…); sirve para ordenar la lista. */
+  grupo?: string;
+  /** Ficha técnica ampliada (biblioteca de sistemas). */
+  objetivo?: string;
+  cuando?: string;
+  variantes?: string[];
+  /** 1 = fácil de enseñar, 2 = media, 3 = difícil. */
+  dificultad?: Dificultad;
+  /** Cómo se enseña por edad: qué se trabaja en cada nivel, de menos a más. */
+  progresion?: Partial<Record<Nivel, string>>;
+  /** Pendiente de que Adam lo valide; va siempre con su fuente. */
+  revisar?: boolean;
+  /** De dónde sale la idea (escuela, entrenador o reglamento). Sin fuente no hay sistema. */
+  fuente?: string;
 }
+
+export type Dificultad = 1 | 2 | 3;
+export const DIFICULTADES: { id: Dificultad; nombre: string }[] = [
+  { id: 1, nombre: 'Fácil' },
+  { id: 2, nombre: 'Media' },
+  { id: 3, nombre: 'Difícil' },
+];
 
 export const NIVELES: { id: Nivel; nombre: string }[] = [
   { id: 'minibasket', nombre: 'Minibasket' },

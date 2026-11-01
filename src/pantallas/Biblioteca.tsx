@@ -7,7 +7,7 @@ import { Marca } from '../Logo';
 import type { Ejercicio as EjercicioIA } from '../recursos/guardarEjercicioIA';
 import type { Cuestionario } from '../recursos/ia';
 import type { Recurso } from '../recursos/recursos';
-import { FAMILIAS, NIVELES } from '../sistemas/tipos';
+import { DIFICULTADES, FAMILIAS, NIVELES, type Dificultad } from '../sistemas/tipos';
 import { Chips, Ejercicios } from './Ejercicios';
 import { Sistemas, type FiltroJugadas } from './Sistemas';
 import { VistasEjercicios, type Vista } from './VistasEjercicios';
@@ -101,6 +101,7 @@ export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, retoca
                 <Chips etiqueta="Libro de jugadas" todos="Todas" opciones={FAMILIAS} valor={jugadas.familia} cambiar={(familia) => setJugadas({ ...jugadas, familia })} />
                 <Chips etiqueta="Esta semana" todos="Todas" opciones={[{ id: 'si' as const, nombre: 'Solo las de esta semana' }]} valor={jugadas.semana ? 'si' : undefined} cambiar={(v) => setJugadas({ ...jugadas, semana: v === 'si' })} />
                 <Chips etiqueta="Nivel del equipo" todos="Cualquier nivel" opciones={NIVELES} valor={jugadas.nivel} cambiar={(nivel) => setJugadas({ ...jugadas, nivel })} />
+                <Chips etiqueta="Dificultad" todos="Cualquiera" opciones={DIFICULTADES.map((d) => ({ id: String(d.id), nombre: d.nombre }))} valor={jugadas.dificultad ? String(jugadas.dificultad) : undefined} cambiar={(d) => setJugadas({ ...jugadas, dificultad: d ? (Number(d) as Dificultad) : undefined })} />
               </>
             ) : (
               <>

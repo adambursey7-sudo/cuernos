@@ -6,7 +6,7 @@ import { Pista } from '../pizarra/Pista';
 import { SelectorNumeros } from '../pizarra/SelectorNumeros';
 import { useJugada } from '../pizarra/useJugada';
 import { borrarMio } from '../sistemas/almacen';
-import { NIVELES, type Nivel, type Sistema as SistemaDatos } from '../sistemas/tipos';
+import { DIFICULTADES, NIVELES, type Nivel, type Sistema as SistemaDatos } from '../sistemas/tipos';
 import { Ficha } from '../imprimir/Ficha';
 import { AnadirASesion } from './AnadirASesion';
 import { fichaParaSesion } from '../recursos/fichaDeJugada';
@@ -166,11 +166,16 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
         <p>{s.idea}</p>
         <h2>Lectura en {NIVELES.find((n) => n.id === nivel)!.nombre.toLowerCase()}</h2>
         <p>{lectura ?? 'Esta ficha aún no tiene lectura para este nivel.'}</p>
+        {s.objetivo && (<><h2>Objetivo</h2><p>{s.objetivo}</p></>)}
+        {s.cuando && (<><h2>Cuándo usarlo</h2><p>{s.cuando}</p></>)}
+        {s.progresion?.[nivel] && (<><h2>Cómo se enseña en {NIVELES.find((n) => n.id === nivel)!.nombre.toLowerCase()}</h2><p>{s.progresion[nivel]}</p></>)}
         <h2>Errores típicos</h2>
         <ul>{s.errores.map((e) => <li key={e}>{e}</li>)}</ul>
+        {s.variantes && s.variantes.length > 0 && (<><h2>Variantes</h2><ul>{s.variantes.map((e) => <li key={e}>{e}</li>)}</ul></>)}
         <h2>Ejercicios</h2>
         <ul>{s.ejercicios.map((e) => <li key={e}>{e}</li>)}</ul>
-        <p className="pie">Contra defensa {s.contra}.</p>
+        <p className="pie">{s.tipo === 'defensa' ? `Se usa contra ${s.contra}.` : `Contra defensa ${s.contra}.`}{s.dificultad ? ` Dificultad: ${DIFICULTADES.find((d) => d.id === s.dificultad)?.nombre.toLowerCase()}.` : ''}</p>
+        {s.revisar && <p className="aviso">Borrador por revisar. Fuente: {s.fuente}</p>}
       </div>
 
       <MandarASesion s={s} />
