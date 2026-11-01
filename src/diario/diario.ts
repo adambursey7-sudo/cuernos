@@ -3,6 +3,7 @@
 import { limpiarHabilidades, type HabilidadEquipo } from '../habilidades/habilidades';
 import { limpiarRotacion, type Rotacion } from '../rotacion/rotacion';
 import { limpiarReglas, type Reglas } from '../reglas/reglas';
+import { limpiarDatosJugadora, limpiarExtras, type Escudo, type Genero, type Mano, type Objetivo, type Staff } from '../equipo/modelo';
 import { refrescarNumeros } from './puestos';
 
 const CLAVE = 'horns.diario';
@@ -34,6 +35,9 @@ export interface Jugadora {
   lesion?: Lesion;
   /** Papel en el equipo: titular, rotación o especialista. */
   rol?: Rol;
+  /** Año de nacimiento (solo el año) y mano buena. */
+  nacimiento?: number;
+  mano?: Mano;
 }
 
 export interface Lesion {
@@ -71,6 +75,19 @@ export interface Equipo {
   rotacion?: Rotacion;
   /** Reglas de la competición del equipo; sin ellas, las de FIBA. */
   reglas?: Reglas;
+  /** Sin dato: senior = masculino, formación = femenino (como era antes de poder elegirlo). */
+  genero?: Genero;
+  /** Categoría escrita: «Cadete», «Senior A»… */
+  categoria?: string;
+  /** Temporada en texto: «2026-27». */
+  temporada?: string;
+  /** Color del equipo (#rrggbb) y escudo sencillo. */
+  color?: string;
+  escudo?: Escudo;
+  staff?: Staff[];
+  objetivos?: Objetivo[];
+  /** Equipo de ejemplo para probar: se puede borrar sin avisar de nada más. */
+  ejemplo?: boolean;
 }
 
 export interface Diario {
@@ -121,12 +138,12 @@ export function limpiar(d: unknown): Diario {
   const x = d as Partial<Diario> | null;
   const validos = Array.isArray(x?.equipos) ? x!.equipos.filter(esEquipo) : [];
   const ids = new Set(validos.map((e) => e.id));
-  const jugadoras = Array.isArray(x?.jugadoras) ? x!.jugadoras.filter((j) => esJugadora(j) && ids.has(j.equipoId)) : [];
-  const equipos = validos.map(({ habilidades, rotacion, tipo, reglas, ...e }): Equipo => {
+  const jugadoras = Array.isArray(x?.jugadoras) ? x!.jugadoras.filter((j) => esJugadora(j) && ids.has(j.equipoId)).map(limpiarDatosJugadora) : [];
+  const equipos = validos.map(({ habilidades, rotacion, tipo, reglas, genero, categoria, temporada, color, escudo, staff, objetivos, ejemplo, ...e }): Equipo => {
     const suyas = new Set(jugadoras.filter((j) => j.equipoId === e.id).map((j) => j.id));
     const r = limpiarRotacion(rotacion, suyas);
     const rg = limpiarReglas(reglas);
-    return { ...e, ...(rg ? { reglas: rg } : {}), ...(tipo === 'senior' ? { tipo } : {}), ...(habilidades === undefined ? {} : { habilidades: limpiarHabilidades(habilidades) }), ...(r ? { rotacion: r } : {}) };
+    return { ...e, ...limpiarExtras({ genero, categoria, temporada, color, escudo, staff, objetivos, ejemplo }), ...(rg ? { reglas: rg } : {}), ...(tipo === 'senior' ? { tipo } : {}), ...(habilidades === undefined ? {} : { habilidades: limpiarHabilidades(habilidades) }), ...(r ? { rotacion: r } : {}) };
   });
   return { equipos, jugadoras };
 }
@@ -177,6 +194,8 @@ export const quitarEquipo = (d: Diario, id: string): Diario => ({
   jugadoras: d.jugadoras.filter((j) => j.equipoId !== id),
 });
 
+const CONSERVAR = ['tipo', 'habilidades', 'rotacion', 'reglas', 'genero', 'categoria', 'temporada', 'color', 'escudo', 'staff', 'objetivos'] as const satisfies readonly (keyof Equipo)[];
+
 /** Junta lo de una copia con lo actual: si coincide el id, gana la copia (salvo la lesión, las habilidades y el tipo de equipo: si la copia no los trae, se conservan los de este móvil). */
 export function juntarDiario(actual: Diario, copia: Diario): Diario {
   const eq = new Set(copia.equipos.map((e) => e.id));
@@ -186,7 +205,9 @@ export function juntarDiario(actual: Diario, copia: Diario): Diario {
       ...actual.equipos.filter((e) => !eq.has(e.id)),
       ...copia.equipos.map((e) => {
         const mio = actual.equipos.find((x) => x.id === e.id);
-        return { ...e, ...(e.tipo || !mio?.tipo ? {} : { tipo: mio.tipo }), ...(e.habilidades || !mio?.habilidades ? {} : { habilidades: mio.habilidades }), ...(e.rotacion || !mio?.rotacion ? {} : { rotacion: mio.rotacion }), ...(e.reglas || !mio?.reglas ? {} : { reglas: mio.reglas }) };
+        // Una copia vieja no trae lo nuevo: se conserva lo de este móvil.
+        const conservado = Object.fromEntries(CONSERVAR.filter((k) => e[k] === undefined && mio?.[k] !== undefined).map((k) => [k, mio![k]]));
+        return { ...e, ...conservado };
       }),
     ],
     jugadoras: [

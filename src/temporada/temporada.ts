@@ -9,6 +9,10 @@ const CLAVE = 'horns.temporada';
 
 export type TipoEvento = 'partido' | 'entreno' | 'otro';
 
+export const COMPETICIONES = [['liga', 'Liga'], ['amistoso', 'Amistoso'], ['copa', 'Copa'], ['playoff', 'Playoff']] as const;
+export type Competicion = (typeof COMPETICIONES)[number][0];
+export const esCompeticion = (x: unknown): x is Competicion => COMPETICIONES.some(([id]) => id === x);
+
 export interface Fase {
   id: string;
   nombre: string;
@@ -48,6 +52,8 @@ export interface Evento {
   rival?: InformeRival;
   /** Número de jornada de liga (solo en un partido). */
   jornada?: number;
+  /** Qué competición es (solo en un partido). Sin dato, liga. */
+  competicion?: Competicion;
   /** Hora de salida del viaje (solo en un partido fuera). */
   salida?: string;
   /** Plan de partido (senior): defensa, jugadas y a quién buscar. */
@@ -93,7 +99,19 @@ export interface Temporada {
   excepciones: Record<string, Excepcion>;
   /** Asistencia: por clave de entreno (la de `Item`), ids de las jugadoras que vinieron. Si no hay clave, no se ha pasado lista. */
   asistencia?: Record<string, string[]>;
-  /** Clasificación de la liga, apuntada a mano (solo senior). */
+  /** Clasificación de la liga, apuntada a mano. */
+  clasificacion?: FilaClasificacion[];
+  /** Temporadas cerradas de este equipo (la más reciente, primero). */
+  anteriores?: Archivada[];
+}
+
+/** Una temporada ya cerrada: lo que se jugó y se entrenó, sin horarios ni fases. */
+export interface Archivada {
+  etiqueta: string;
+  inicio: string;
+  fin: string;
+  eventos: Evento[];
+  asistencia?: Record<string, string[]>;
   clasificacion?: FilaClasificacion[];
 }
 
@@ -145,6 +163,7 @@ function limpiaEvento(e: unknown): Evento | null {
     ...(txt(x.sesionId) ? { sesionId: x.sesionId } : {}), ...(x.libre ? { libre: true } : {}),
     ...(x.tipo === 'partido' && Number.isInteger(x.jornada) && x.jornada! >= 1 && x.jornada! <= 99 ? { jornada: x.jornada } : {}),
     ...(x.tipo === 'partido' && esHora(x.salida) ? { salida: x.salida } : {}),
+    ...(x.tipo === 'partido' && esCompeticion(x.competicion) && x.competicion !== 'liga' ? { competicion: x.competicion } : {}),
     ...(x.tipo === 'partido' && txt(x.plan) && x.plan.trim() ? { plan: x.plan.slice(0, 600) } : {}),
     ...(x.tipo === 'partido' && limpiarDirecto(x.directo) ? { directo: limpiarDirecto(x.directo) } : {}),
     ...listaTexto('bien', x.bien), ...listaTexto('mal', x.mal), ...listaTexto('mirar', x.mirar), ...listaTexto('pasadas', x.pasadas),
@@ -199,11 +218,17 @@ export function limpiarTemporada(t: unknown): Temporada | null {
     if (k && Array.isArray(v)) asistencia[k] = [...new Set(v.filter((id): id is string => txt(id) && id !== ''))];
   }
   const lista = <T,>(a: unknown, f: (x: unknown) => T | null): T[] => (Array.isArray(a) ? a.map(f).filter((y): y is T => y !== null) : []);
+  const anteriores = (Array.isArray(x.anteriores) ? x.anteriores : []).slice(0, 10).flatMap((a) => {
+    if (!a || !txt(a.etiqueta)) return [];
+    const t = limpiarTemporada({ ...a, equipoId: '-', fases: [], fijos: [], excepciones: {}, anteriores: [] });
+    return t ? [{ etiqueta: a.etiqueta.slice(0, 12), inicio: t.inicio, fin: t.fin, eventos: t.eventos, ...(t.asistencia ? { asistencia: t.asistencia } : {}), ...(t.clasificacion ? { clasificacion: t.clasificacion } : {}) }] : [];
+  });
   return {
     equipoId: x.equipoId, inicio: x.inicio, fin: x.fin < x.inicio ? x.inicio : x.fin,
     fases: lista(x.fases, limpiaFase), fijos: lista(x.fijos, limpiaFijo), eventos: lista(x.eventos, limpiaEvento), excepciones: ex,
     ...(Object.keys(asistencia).length ? { asistencia } : {}),
     ...(Array.isArray(x.clasificacion) && x.clasificacion.length ? { clasificacion: lista(x.clasificacion, limpiaFila) } : {}),
+    ...(anteriores.length ? { anteriores } : {}),
   };
 }
 
@@ -375,6 +400,15 @@ export function itemsParaIcs(t: Temporada) {
 export function balanceLiga(t: Temporada): { g: number; p: number; pf: number; pc: number } {
   const r = t.eventos.flatMap((e) => (e.tipo === 'partido' && e.resultado ? [e.resultado] : []));
   return { g: r.filter((x) => x.a > x.c).length, p: r.filter((x) => x.a < x.c).length, pf: r.reduce((n, x) => n + x.a, 0), pc: r.reduce((n, x) => n + x.c, 0) };
+}
+
+/** Competición de un partido: sin dato, liga. */
+export const competicionDe = (e: Evento): Competicion => e.competicion ?? 'liga';
+
+/** Balance solo de una competición («liga»: lo que cuenta para la clasificación). */
+export function balanceDe(t: Pick<Temporada, 'eventos'>, comp: Competicion): { g: number; p: number } {
+  const r = t.eventos.flatMap((e) => (e.tipo === 'partido' && e.resultado && competicionDe(e) === comp ? [e.resultado] : []));
+  return { g: r.filter((x) => x.a > x.c).length, p: r.filter((x) => x.a < x.c).length };
 }
 
 /** Puntos de clasificación: 2 por victoria y 1 por derrota. */
