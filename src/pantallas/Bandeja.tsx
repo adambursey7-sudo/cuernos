@@ -6,7 +6,7 @@ import { textoDePdf } from '../diario/importar';
 import { leerDiario, plantilla } from '../diario/diario';
 import { leerEquipoActivo } from '../equipo/equipos';
 import { anadirFicha } from '../recursos/guardarEjercicioIA';
-import { enviar, ErrorJarvis, esperar, leerConexion } from '../recursos/jarvis';
+import { ErrorIA, preguntar, proveedorActivo } from '../conexiones/ia';
 import { RASGOS_RIVAL } from '../temporada/rival';
 import { guardarEvento, guardarTemporadas, leerTemporadas, temporadaDe, type Evento } from '../temporada/temporada';
 
@@ -26,7 +26,7 @@ export function Bandeja({ volver }: { volver: () => void }) {
   const [hecho, setHecho] = useState<{ repartidos: number; avisos: string[] } | null>(null);
   const cancelado = useRef(false);
   useEffect(() => () => { cancelado.current = true; }, []);
-  const conexion = leerConexion();
+  const quien = proveedorActivo();
   const partido = partidos.find((p) => p.id === partidoId);
 
   const adjuntar = async (archivo: File | undefined) => {
@@ -58,19 +58,18 @@ export function Bandeja({ volver }: { volver: () => void }) {
   };
 
   const mandarAClaude = async () => {
-    if (!conexion || !envio) return;
+    if (!quien || !envio) return;
     cancelado.current = false;
     setEsperando(true);
     setError('');
     try {
-      const id = await enviar(conexion, promptBandeja(envio.texto));
-      const respuesta = await esperar(conexion, id, () => cancelado.current);
+      const respuesta = await preguntar(promptBandeja(envio.texto), () => cancelado.current);
       if (cancelado.current) return;
       const l = leerRespuesta(respuesta);
       if (!l.length) setError('Claude no ha sacado nada claro de esto. Prueba a ordenarlo aquí en el móvil o a pegar menos texto.');
       else { setBorradores(l); setEnvio(null); }
     } catch (e) {
-      setError(e instanceof ErrorJarvis ? e.message : 'Algo falló. Inténtalo otra vez.');
+      setError(e instanceof ErrorIA ? e.message : 'Algo falló. Inténtalo otra vez.');
     } finally {
       setEsperando(false);
     }
@@ -162,12 +161,12 @@ export function Bandeja({ volver }: { volver: () => void }) {
         </>
       ) : envio ? (
         <>
-          <p className="meta">Esto es lo que se enviará a Claude. {envio.cambios > 0 ? `He cambiado ${envio.cambios} ${envio.cambios === 1 ? 'nombre' : 'nombres'} por su dorsal.` : 'No he encontrado nombres de tu plantilla.'} Revísalo: si queda algún nombre, bórralo ahora.</p>
+          <p className="meta">Esto es lo que se enviará a la IA. {envio.cambios > 0 ? `He cambiado ${envio.cambios} ${envio.cambios === 1 ? 'nombre' : 'nombres'} por su dorsal.` : 'No he encontrado nombres de tu plantilla.'} Revísalo: si queda algún nombre, bórralo ahora.</p>
           <label className="campo-diario"><span>Texto que se envía</span>
             <textarea rows={8} value={envio.texto} maxLength={MAX_TEXTO} onChange={(e) => setEnvio({ ...envio, texto: e.target.value })} /></label>
           {error && <p className="aviso" role="alert">{error}</p>}
-          <button className="principal ancho" disabled={esperando || !conexion} onClick={mandarAClaude}>{esperando ? 'Claude está leyendo…' : 'Enviar a Claude'}</button>
-          {!conexion && <p className="meta">Para usar Claude hay que conectar Jarvis una vez (Biblioteca → Ejercicios → Pedir a Claude).</p>}
+          <button className="principal ancho" disabled={esperando || !quien} onClick={mandarAClaude}>{esperando ? 'Leyendo…' : 'Enviar a la IA'}</button>
+          {!quien && <p className="meta">Para usar la IA conecta Jarvis o pon una clave de Gemini en Más → Conexiones.</p>}
           <button className="secundario ancho" onClick={() => { cancelado.current = true; setEsperando(false); setEnvio(null); }}>Volver</button>
         </>
       ) : (
@@ -179,8 +178,8 @@ export function Bandeja({ volver }: { volver: () => void }) {
             <input type="file" accept=".csv,.tsv,.txt,.pdf,text/*,application/pdf" hidden onChange={(e) => { void adjuntar(e.target.files?.[0]); e.target.value = ''; }} /></label>
           {error && <p className="aviso" role="alert">{error}</p>}
           <button className="principal ancho" onClick={ordenarAqui}>Ordenar en el móvil</button>
-          <button className="secundario ancho" onClick={prepararEnvio}>Ordenar con Claude…</button>
-          <p className="meta">Con Claude, antes de enviar te enseño el texto con los nombres cambiados por dorsales. Los menores nunca salen con nombre.</p>
+          <button className="secundario ancho" onClick={prepararEnvio}>Ordenar con IA…</button>
+          <p className="meta">Con la IA, antes de enviar te enseño el texto con los nombres cambiados por dorsales. Los menores nunca salen con nombre.</p>
         </>
       )}
     </section>
