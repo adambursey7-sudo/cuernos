@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { enCamino, foto, inicios } from '../pizarra/animar';
 import { Pista } from '../pizarra/Pista';
 import { guardarMio } from '../sistemas/almacen';
-import { NIVELES, type Jugador, type Nivel, type Punto, type Sistema } from '../sistemas/tipos';
-import { adivinar, ajustarCurva, cambiarTipo, dentro, fijarTipo, limpiar, mover, nuevoBorrador, opcionesDe, pasar, quitarMovimiento, quitarPase } from './editar';
+import { FAMILIAS, NIVELES, type Familia, type Jugador, type Nivel, type Punto, type Sistema } from '../sistemas/tipos';
+import { adivinar, ajustarCurva, cambiarTipo, dentro, duplicarPaso, fijarTipo, limpiar, mover, moverPaso, nuevoBorrador, opcionesDe, pasar, ponerFamilia, quitarMovimiento, quitarPaso, quitarPase } from './editar';
 
 const JUGADORES: Jugador[] = ['1', '2', '3', '4', '5'];
 /** Distancia (en dm de pista) para agarrar a un jugador con el dedo y para que el arrastre cuente. */
@@ -165,6 +165,15 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
         )}
       </div>
 
+      {!colocando && b.pasos.length > 0 && (
+        <div className="fila-chips" role="group" aria-label="Este paso">
+          <button className="chip pequeno" onClick={() => { cambiar(duplicarPaso(b, actual)); setSelecc(actual + 1); setElegido(null); }}>⧉ Duplicar</button>
+          <button className="chip pequeno" disabled={actual === 0} onClick={() => { cambiar(moverPaso(b, actual, -1)); setSelecc(actual - 1); }} aria-label="Mover el paso antes">◀ Antes</button>
+          <button className="chip pequeno" disabled={actual >= b.pasos.length - 1} onClick={() => { cambiar(moverPaso(b, actual, 1)); setSelecc(actual + 1); }} aria-label="Mover el paso después">Después ▶</button>
+          <button className="chip pequeno" disabled={b.pasos.length <= 1} onClick={() => { cambiar(quitarPaso(b, actual)); setSelecc(Math.max(0, actual - 1)); setElegido(null); }}>🗑 Quitar paso</button>
+        </div>
+      )}
+
       <div className="fase">
         {colocando ? (
           <span>Arrastra a cada jugador a su sitio. Toca el círculo del balón para decir quién lo lleva.</span>
@@ -295,6 +304,13 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
       </div>
 
       <div className="ajustes-jugada">
+        <label>
+          Categoría
+          <select id="familia-jugada" value={b.familia ?? ''} onFocus={recordar} onChange={(ev) => setB(ponerFamilia(b, (ev.target.value || undefined) as Familia | undefined))}>
+            <option value="">Sin categoría</option>
+            {FAMILIAS.map((f) => <option key={f.id} value={f.id}>{f.nombre}</option>)}
+          </select>
+        </label>
         <label>
           Desde
           <select id="nivel-jugada" value={b.nivelMinimo} onFocus={recordar} onChange={(e) => setB({ ...b, nivelMinimo: e.target.value as Nivel })}>

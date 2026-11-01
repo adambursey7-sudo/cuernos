@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { SISTEMAS } from '../sistemas/datos';
 import { esSistemaValido } from '../sistemas/almacen';
 import type { Paso } from '../sistemas/tipos';
-import { adivinar, ajustarCurva, cambiarTipo, describir, limpiar, mover, nuevoBorrador, opcionesDe, pasar, fijarTipo, quitarMovimiento, quitarPase } from './editar';
+import { adivinar, ajustarCurva, cambiarTipo, describir, duplicarPaso, limpiar, mover, moverPaso, ponerFamilia, quitarPaso, nuevoBorrador, opcionesDe, pasar, fijarTipo, quitarMovimiento, quitarPase } from './editar';
 
 describe('editor', () => {
   it('una jugada nueva empieza con cinco abiertos y el balón en el 1', () => {
@@ -88,5 +88,31 @@ describe('editor: elegir el movimiento', () => {
     expect(quitarMovimiento(con, '5').movimientos).toHaveLength(1);
     const conPase = pasar(con, '1', '5');
     expect(quitarPase(conPase).movimientos).toHaveLength(2);
+  });
+});
+
+describe('pasos de la jugada', () => {
+  const base = () => ({ ...nuevoBorrador(), pasos: [{ texto: 'uno', movimientos: [] }, { texto: 'dos', movimientos: [] }, { texto: 'tres', movimientos: [] }] });
+  it('duplicar copia el paso detras de el, sin compartir datos', () => {
+    const s = duplicarPaso(base(), 1);
+    expect(s.pasos.map((p) => p.texto)).toEqual(['uno', 'dos', 'dos', 'tres']);
+    s.pasos[2].texto = 'otro';
+    expect(s.pasos[1].texto).toBe('dos');
+  });
+  it('mover cambia de sitio con el vecino y en los extremos no hace nada', () => {
+    expect(moverPaso(base(), 0, 1).pasos.map((p) => p.texto)).toEqual(['dos', 'uno', 'tres']);
+    const b = base();
+    expect(moverPaso(b, 0, -1)).toBe(b);
+    expect(moverPaso(b, 2, 1)).toBe(b);
+  });
+  it('quitar un paso lo borra, pero el ultimo que queda no' , () => {
+    expect(quitarPaso(base(), 1).pasos.map((p) => p.texto)).toEqual(['uno', 'tres']);
+    const solo = { ...base(), pasos: [{ texto: 'x', movimientos: [] }] };
+    expect(quitarPaso(solo, 0)).toBe(solo);
+  });
+  it('la categoria de defensa o presion hace la jugada de defensa; las demas, de ataque; sin categoria, la quita', () => {
+    expect(ponerFamilia(base(), 'defensa')).toMatchObject({ familia: 'defensa', tipo: 'defensa' });
+    expect(ponerFamilia(base(), 'parado')).toMatchObject({ familia: 'parado', tipo: 'ataque' });
+    expect(ponerFamilia(ponerFamilia(base(), 'parado'), undefined).familia).toBeUndefined();
   });
 });

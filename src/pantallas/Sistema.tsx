@@ -8,6 +8,9 @@ import { useJugada } from '../pizarra/useJugada';
 import { borrarMio } from '../sistemas/almacen';
 import { NIVELES, type Nivel, type Sistema as SistemaDatos } from '../sistemas/tipos';
 import { Ficha } from '../imprimir/Ficha';
+import { AnadirASesion } from './AnadirASesion';
+import { fichaParaSesion } from '../recursos/fichaDeJugada';
+import type { Ficha as FichaDatos } from '../recursos/fichas';
 import { Tarjetas } from '../imprimir/Tarjetas';
 import { guardarUltima } from '../ultima';
 import { Presentacion } from './Presentacion';
@@ -167,6 +170,8 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
         <p className="pie">Contra defensa {s.contra}.</p>
       </div>
 
+      <MandarASesion s={s} />
+
       <div className="acciones-jugada">
         <button onClick={() => setImprimiendo(true)}>⎙ Imprimir ficha</button>
         <button onClick={() => setTarjetas(true)}>✂ Tarjetas de bolsillo</button>
@@ -189,4 +194,12 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
       </div>
     </section>
   );
+}
+
+/** «Mandar a una sesión»: la jugada se hace ficha una vez y se elige la sesión con un toque. */
+function MandarASesion({ s }: { s: SistemaDatos }) {
+  const [ficha, setFicha] = useState<FichaDatos | null | undefined>();
+  if (ficha === null) return <p className="aviso" role="alert">El móvil no deja guardar: libera espacio e inténtalo otra vez.</p>;
+  if (ficha) return <AnadirASesion f={ficha} />;
+  return <button className="secundario ancho" onClick={() => setFicha(fichaParaSesion(s) ?? null)}>Mandar a una sesión</button>;
 }
