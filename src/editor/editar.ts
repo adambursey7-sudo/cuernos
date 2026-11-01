@@ -14,6 +14,15 @@ const CINCO_ABIERTOS: Sistema['inicio'] = {
   '5': [136, 14],
 };
 
+/** Colocaciones de partida para no tener que arrastrar a los cinco uno a uno (coordenadas en dm, canasta en (75, 12)). */
+export const PLANTILLAS: { id: string; nombre: string; inicio: Sistema['inicio']; balon: Jugador }[] = [
+  { id: 'abiertos', nombre: '5 abiertos', inicio: CINCO_ABIERTOS, balon: '1' },
+  { id: 'cuatro-fuera', nombre: '4 fuera 1 dentro', inicio: { '1': [75, 100], '2': [22, 72], '3': [128, 72], '4': [30, 38], '5': [75, 26] }, balon: '1' },
+  { id: 'tres-dos', nombre: '3 fuera 2 dentro', inicio: { '1': [75, 100], '2': [20, 66], '3': [130, 66], '4': [52, 24], '5': [98, 24] }, balon: '1' },
+  { id: 'alto', nombre: 'Poste alto', inicio: { '1': [75, 104], '2': [24, 72], '3': [126, 72], '4': [20, 20], '5': [75, 56] }, balon: '1' },
+  { id: 'cinco-uno', nombre: 'Uno arriba, dos ala, dos esquina', inicio: { '1': [75, 98], '2': [34, 62], '3': [116, 62], '4': [14, 18], '5': [136, 18] }, balon: '1' },
+];
+
 export function nuevoBorrador(base?: Sistema): Sistema {
   if (base?.propio) return structuredClone(base);
   if (base)
@@ -163,6 +172,16 @@ export function moverPaso(s: Sistema, i: number, dir: -1 | 1): Sistema {
   if (i < 0 || j < 0 || i >= s.pasos.length || j >= s.pasos.length) return s;
   const pasos = [...s.pasos];
   [pasos[i], pasos[j]] = [pasos[j], pasos[i]];
+  return { ...s, pasos };
+}
+
+/** Lleva el paso `de` a la posición `a` (arrastrar una pestaña de paso). Fuera de rango o igual, queda igual. */
+export function reordenarPaso(s: Sistema, de: number, a: number): Sistema {
+  const n = s.pasos.length;
+  if (de === a || de < 0 || a < 0 || de >= n || a >= n) return s;
+  const pasos = [...s.pasos];
+  const [p] = pasos.splice(de, 1);
+  pasos.splice(a, 0, p);
   return { ...s, pasos };
 }
 

@@ -269,6 +269,7 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
 
       <button className={marcar ? 'chip on' : 'chip'} aria-pressed={marcar} onClick={() => { const n = !marcar; setMarcar(n); try { localStorage.setItem('horns.marcarTiros', n ? '1' : '0'); } catch { /* sin almacenamiento */ } }}>Marcar tiros en la pista</button>
       {aviso && <p className="aviso" role="status">{aviso}</p>}
+      <p className="vivo-quien" aria-live="polite">{sel ? <>Apuntando a <b>{etiqueta(nombreDe(roster, sel))}</b> · {linea(sel).p} pts · {linea(sel).f} faltas</> : 'Toca a una jugadora en pista'}</p>
       <section className="vivo-pad" aria-label={sel ? `Apuntar a ${etiqueta(nombreDe(roster, sel))}` : 'Elige una jugadora'}>
         <div className="fila-pad puntos">
           {([['c1', '+1'], ['c2', '+2'], ['c3', '+3']] as const).map(([t, n]) => <button key={t} disabled={fin || !sel} onClick={() => apuntar(t)}>{n}</button>)}

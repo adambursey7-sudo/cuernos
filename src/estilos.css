@@ -918,3 +918,30 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible, [tabindex]:
 .pp-marcador span:first-child b { color: var(--principal); }
 .pp-pie { font: 700 clamp(1rem, 3vw, 2rem)/1.2 var(--body); opacity: 0.8; }
 @media (orientation: landscape) { .pp-marcador b { font-size: clamp(5rem, 22vh, 18rem); } .pp-reloj { font-size: clamp(4rem, 26vh, 14rem); } }
+
+/* Pro 2: pestaña de paso que se lleva con el dedo */
+.chip.llevando { opacity: 0.6; transform: scale(1.12); box-shadow: var(--sombra-2); }
+.barra-guardar { position: sticky; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 5; padding: var(--e2) 0 var(--e1); background: linear-gradient(transparent, var(--fondo) 35%); }
+.barra-guardar .guardar { width: 100%; min-height: 52px; font-size: 1.1rem; }
+
+/* Pro 2: partido en directo con botones más grandes y a quién se apunta siempre a la vista */
+.vivo-quien { margin: 0; text-align: center; font-size: 0.95rem; color: var(--tenue); }
+.vivo-quien b { font: 900 1.25rem/1 var(--display); color: var(--principal); }
+.jug { min-height: 124px; }
+.fila-pad { gap: 8px; }
+.fila-pad button { min-height: 62px; font-size: 1.05rem; }
+.fila-pad.puntos button:nth-child(-n+3) { min-height: 76px; font-size: 1.9rem; }
+.fila-pad button:active { transform: scale(0.96); }
+.vivo-marcador .fila-rival button { min-width: 64px; min-height: 52px; font-size: 1.1rem; }
+.vivo-pie button { min-height: 58px; font-size: 0.85rem; }
+.ban { min-width: 60px; min-height: 60px; }
+
+/* Pro 2: navegación y aspecto: menú inferior más legible y toques más cómodos */
+.pestanas .rotulo-pestana { font-size: 0.8rem; }
+.pestanas button { min-height: 60px; }
+.pestanas .burbuja { width: 60px; height: 32px; }
+.atajos button { min-height: 64px; }
+.chip { min-height: 38px; }
+.herramientas button { min-height: 52px; }
+.tira-pasos { scrollbar-width: none; }
+.tira-pasos::-webkit-scrollbar { display: none; }
