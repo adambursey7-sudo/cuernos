@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { datosTarjeta } from './tarjetaResultado';
+import { conAlfa, datosTarjeta } from './tarjetaResultado';
 import { hojaPartido } from '../temporada/hojaPartido';
 import type { Equipo } from '../diario/diario';
 import type { Evento } from '../temporada/temporada';
@@ -46,5 +46,12 @@ describe('hoja del partido', () => {
   });
   it('siempre sale con 12 filas para apuntar a mano', () => {
     expect((hojaPartido(partido, equipo.nombre, roster, { nombres: false }).match(/<td class="pts">/g) ?? []).length).toBe(12);
+  });
+});
+
+describe('color con transparencia', () => {
+  it('acepta #rrggbb y #rgb', () => {
+    expect(conAlfa('#fff8ee', 0.5)).toBe('rgba(255, 248, 238, 0.5)');
+    expect(conAlfa('#fff', 0.13)).toBe('rgba(255, 255, 255, 0.13)');
   });
 });

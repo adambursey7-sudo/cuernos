@@ -175,5 +175,6 @@ export function quitarPaso(s: Sistema, i: number): Sistema {
 /** La categoría del libro de jugadas; la defensa y la presión se guardan como jugadas de defensa. */
 export function ponerFamilia(s: Sistema, familia: Familia | undefined): Sistema {
   const { familia: _antes, ...resto } = s;
-  return { ...resto, ...(familia ? { familia } : {}), tipo: familia === 'defensa' || familia === 'presion' ? 'defensa' : 'ataque' };
+  // Sin categoría la jugada sigue siendo de lo que era; con ella, de defensa si es defensa o presión.
+  return { ...resto, ...(familia ? { familia, tipo: familia === 'defensa' || familia === 'presion' ? 'defensa' : 'ataque' } : {}) };
 }

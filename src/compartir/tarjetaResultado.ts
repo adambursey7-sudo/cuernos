@@ -49,6 +49,24 @@ const ANCHO = 1080;
 const ALTO = 1350;
 const FUENTE = "'Graduate', 'Rockwell', Georgia, serif";
 
+/** Un rectángulo de esquinas redondas dibujado a mano: `roundRect` no existe en los Safari anteriores al 16. */
+function rectRedondo(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+/** Un #rrggbb (o #rgb) con transparencia, como rgba(). */
+export function conAlfa(hex: string, alfa: number): string {
+  const h = hex.length === 4 ? hex.slice(1).split('').map((c) => c + c).join('') : hex.slice(1);
+  const n = parseInt(h, 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alfa})`;
+}
+
 function recortar(ctx: CanvasRenderingContext2D, texto: string, ancho: number): string {
   if (ctx.measureText(texto).width <= ancho) return texto;
   let t = texto;
@@ -67,7 +85,7 @@ export function dibujarTarjeta(ctx: CanvasRenderingContext2D, d: DatosTarjeta): 
   g.addColorStop(1, '#00000066');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, ANCHO, 560);
-  ctx.strokeStyle = `${sobre}22`;
+  ctx.strokeStyle = conAlfa(sobre, 0.13);
   ctx.lineWidth = 60;
   ctx.beginPath();
   ctx.arc(ANCHO - 60, 40, 260, 0, Math.PI * 2);
@@ -105,8 +123,7 @@ export function dibujarTarjeta(ctx: CanvasRenderingContext2D, d: DatosTarjeta): 
     d.destacadas.forEach((x, i) => {
       const cx = hueco * (i + 1) + ancho * i + ancho / 2;
       ctx.fillStyle = '#1c2433';
-      ctx.beginPath();
-      ctx.roundRect(cx - ancho / 2, 900, ancho, 280, 28);
+      rectRedondo(ctx, cx - ancho / 2, 900, ancho, 280, 28);
       ctx.fill();
       ctx.fillStyle = d.color;
       ctx.font = `900 120px ${FUENTE}`;

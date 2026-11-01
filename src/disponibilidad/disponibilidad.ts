@@ -109,7 +109,8 @@ const sinTildes = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLo
 export function interpretarRespuestas(texto: string): { numero: string; r: Respuesta }[] {
   const ultimo = new Map<string, Respuesta>();
   for (const linea of texto.split(/\r?\n/)) {
-    const t = sinTildes(linea);
+    // Fuera lo que no es dorsal: «[12:30]», horas, fechas y el nombre de quien escribe antes de los dos puntos.
+    const t = sinTildes(linea).replace(/\[[^\]]*\]/g, ' ').replace(/\b\d{1,2}[:.]\d{2}\b/g, ' ').replace(/\b\d{1,2}\/\d{1,2}(\/\d{2,4})?\b/g, ' ').replace(/^[^:\d#]*:\s*/, '');
     const n = t.match(/#?\b(\d{1,3})\b/);
     if (!n) continue;
     const resto = t.replace(n[0], ' ');

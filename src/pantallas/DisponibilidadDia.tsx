@@ -27,16 +27,19 @@ export function DisponibilidadDia({ item, t, jugadoras, equipo, cambiar }: { ite
     const leidas = interpretarRespuestas(pegado);
     let nuevo = t.disponibilidad;
     const sinDorsal: string[] = [];
+    const repetidos: string[] = [];
     let n = 0;
     for (const { numero, r: resp } of leidas) {
-      const j = jugadoras.find((x) => String(Number(x.numero)) === numero);
-      if (!j) { sinDorsal.push(numero); continue; }
+      const candidatas = jugadoras.filter((x) => /^\d+$/.test(x.numero) && String(Number(x.numero)) === numero);
+      if (candidatas.length === 0) { sinDorsal.push(numero); continue; }
+      if (candidatas.length > 1) { repetidos.push(numero); continue; }
+      const j = candidatas[0];
       nuevo = ponerRespuesta(nuevo, item.clave, j.id, resp);
       n++;
     }
     cambiar(conDisponibilidad(t, nuevo));
     setPegado('');
-    setAviso(`${n} ${n === 1 ? 'respuesta apuntada' : 'respuestas apuntadas'}${sinDorsal.length ? `. No encuentro los dorsales ${sinDorsal.map((d) => `#${d}`).join(' ')}.` : '.'}`);
+    setAviso(`${n} ${n === 1 ? 'respuesta apuntada' : 'respuestas apuntadas'}${sinDorsal.length ? `. No encuentro los dorsales ${sinDorsal.map((d) => `#${d}`).join(' ')}` : ''}${repetidos.length ? `. Dorsal repetido (apúntalo a mano): ${repetidos.map((d) => `#${d}`).join(' ')}` : ''}.`);
   };
 
   return (

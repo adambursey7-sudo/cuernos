@@ -114,5 +114,6 @@ describe('pasos de la jugada', () => {
     expect(ponerFamilia(base(), 'defensa')).toMatchObject({ familia: 'defensa', tipo: 'defensa' });
     expect(ponerFamilia(base(), 'parado')).toMatchObject({ familia: 'parado', tipo: 'ataque' });
     expect(ponerFamilia(ponerFamilia(base(), 'parado'), undefined).familia).toBeUndefined();
+    expect(ponerFamilia(ponerFamilia(base(), 'defensa'), undefined)).toMatchObject({ tipo: 'defensa' });
   });
 });

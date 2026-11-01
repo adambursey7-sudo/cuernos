@@ -1,7 +1,7 @@
 // Planificador (loop Pro, tramo 8): intensidad y carga de cada sesión, material, plantillas de semana y volumen semanal de la temporada.
 // Todo se calcula con lo que ya hay; la carga se mide en «unidades» = minutos × intensidad (1 suave, 2 media, 3 alta; sin dato, media).
 import { sumarDias } from '../temporada/fechas';
-import { agendaDia, nuevoFijo, faseDe, type EntrenoFijo, type Fase, type Temporada } from '../temporada/temporada';
+import { agendaDia, nuevoFijo, quitarFijo, faseDe, type EntrenoFijo, type Fase, type Temporada } from '../temporada/temporada';
 import type { Bloque, Sesion } from './sesiones';
 
 export type Intensidad = 1 | 2 | 3;
@@ -51,13 +51,20 @@ export const PLANTILLAS_SEMANA: PlantillaSemana[] = [
   { id: 'descarga', nombre: 'Semana de descarga', idea: 'Menos minutos y más suaves: después de una semana dura o en exámenes.', entrenos: [{ dia: 1, hora: '19:00', minutos: 60, objetivo: 'Descarga: técnica y tiro' }, { dia: 3, hora: '19:00', minutos: 60, objetivo: 'Descarga: juego libre y repaso' }] },
 ];
 
-/** Sustituye los entrenos de la semana por los de la plantilla (conservando pista y vestuario del día si coincide). */
+/**
+ * Cambia los entrenos que se repiten cada semana (toda la temporada) por los de la plantilla.
+ * Si un día ya tenía entreno se conserva su id (así no se pierden sus cambios de un día, sesiones ni listas), con su pista y vestuario;
+ * los días que dejan de entrenar se quitan con todo lo que colgaba de ellos.
+ */
 export function aplicarPlantillaSemana(t: Temporada, p: PlantillaSemana): Temporada {
+  const dias = new Set(p.entrenos.map((e) => e.dia));
+  let limpia = t;
+  for (const f of t.fijos) if (!dias.has(f.dia)) limpia = quitarFijo(limpia, f.id);
   const fijos: EntrenoFijo[] = p.entrenos.map((e) => {
     const antes = t.fijos.find((f) => f.dia === e.dia);
-    return { ...nuevoFijo(e.dia), hora: e.hora, minutos: e.minutos, objetivo: e.objetivo, ...(antes?.pista ? { pista: antes.pista } : {}), ...(antes?.vestuario ? { vestuario: antes.vestuario } : {}) };
+    return { ...(antes ?? nuevoFijo(e.dia)), dia: e.dia, hora: e.hora, minutos: e.minutos, objetivo: e.objetivo };
   });
-  return { ...t, fijos };
+  return { ...limpia, fijos };
 }
 
 export interface SemanaCarga {

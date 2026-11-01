@@ -104,6 +104,9 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
   const [cronometro, setCronometro] = useState<ReturnType<typeof crearAudio> | false>(arranque ?? false);
   useEffect(() => { if (arranque) gastado(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const { avisar, aviso } = useAvisoDeshacer();
+  // La sesión tal como está en el momento de deshacer: así solo vuelve el ejercicio quitado y no se pisan otros cambios.
+  const ultima = useRef(s);
+  ultima.current = s;
   const desde = inicios(s);
   const perdidos = huerfanos(s);
   // Reordenar arrastrando el asa de un bloque hasta otro.
@@ -186,7 +189,7 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
                       onPointerCancel={() => { arrastre.current = null; setSobre(null); }}>≡</button>
                     <button className="chip" onClick={() => cambiar(mover(s, i, -1))} disabled={i === 0} aria-label="Subir">▲</button>
                     <button className="chip" onClick={() => cambiar(mover(s, i, 1))} disabled={i === s.bloques.length - 1} aria-label="Bajar">▼</button>
-                    <button className="chip" onClick={() => { const antes = s; cambiar(quitar(s, i)); avisar('Ejercicio quitado', () => cambiar(antes)); }} aria-label="Quitar de la sesión">✕</button>
+                    <button className="chip" onClick={() => { const quitado = b; const pos = i; cambiar(quitar(s, i)); avisar('Ejercicio quitado', () => { const hoy = ultima.current; const bloques = [...hoy.bloques]; bloques.splice(Math.min(pos, bloques.length), 0, quitado); cambiar({ ...hoy, bloques }); }); }} aria-label="Quitar de la sesión">✕</button>
                   </div>
                   <input className="objetivo-bloque" value={b.objetivo ?? ''} maxLength={80} placeholder="Objetivo de este bloque" aria-label="Objetivo del bloque" onChange={(ev) => cambiar({ ...s, bloques: s.bloques.map((x, j) => (j === i ? { ...x, objetivo: ev.target.value || undefined } : x)) })} />
                   <div className="fila-chips" role="group" aria-label="Intensidad">

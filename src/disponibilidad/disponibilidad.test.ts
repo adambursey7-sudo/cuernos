@@ -47,6 +47,10 @@ describe('pegar respuestas del grupo', () => {
     const r = interpretarRespuestas('7 voy\n#12 no puede\n4 quizá\n9 ni idea\nhola a todos\n7 no voy\n15 Sí');
     expect(Object.fromEntries(r.map((x) => [x.numero, x.r]))).toEqual({ 7: 'no', 12: 'no', 4: 'quiza', 9: 'quiza', 15: 'si' });
   });
+  it('ignora la hora y la fecha del chat exportado y el nombre de quien escribe', () => {
+    const r = interpretarRespuestas('[12:30, 3/11/2026] Madre de ejemplo: 7 voy\nMañana 19:00, el 9 quizá\nPadre: #4 no voy');
+    expect(Object.fromEntries(r.map((x) => [x.numero, x.r]))).toEqual({ 7: 'si', 9: 'quiza', 4: 'no' });
+  });
   it('lo que no se entiende se deja', () => {
     expect(interpretarRespuestas('el 7 es nuevo\nbuenas')).toEqual([]);
   });

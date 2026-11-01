@@ -41,6 +41,7 @@ describe('plantillas de semana', () => {
     const n = aplicarPlantillaSemana(t, PLANTILLAS_SEMANA.find((p) => p.id === 'dos')!);
     expect(n.fijos.map((f) => [f.dia, f.hora, f.minutos])).toEqual([[1, '19:00', 90], [3, '19:00', 75]]);
     expect(n.fijos[0].pista).toBe('Pista B');
+    expect(n.fijos[0].id).toBe('x');
     expect(n.fijos[1].pista).toBeUndefined();
   });
   it('todas las plantillas tienen días distintos de 0 a 6', () => {
@@ -84,5 +85,20 @@ describe('sesiones de antes y nuevas', () => {
     expect(nueva.bloques[0]).toMatchObject({ intensidad: 3, objetivo: 'Lectura' });
     expect(nueva.bloques[1].intensidad).toBeUndefined();
     expect(nueva.bloques[1].objetivo).toBeUndefined();
+  });
+});
+
+describe('plantilla de semana y lo que cuelga de los entrenos', () => {
+  it('el día que sigue conserva su id y sus cambios; el que se va se lleva sus listas', () => {
+    const t: Temporada = {
+      equipoId: 'e', inicio: '2026-09-01', fin: '2027-06-30', fases: [], eventos: [],
+      fijos: [{ id: 'x', dia: 1, hora: '18:00', minutos: 60 }, { id: 'z', dia: 4, hora: '18:00', minutos: 60 }],
+      excepciones: { 'x|2026-11-03': { cancelado: true }, 'z|2026-11-06': { cancelado: true } },
+      asistencia: { 'x|2026-10-27': ['a'], 'z|2026-10-30': ['a'] },
+    };
+    const n = aplicarPlantillaSemana(t, PLANTILLAS_SEMANA.find((p) => p.id === 'dos')!);
+    expect(n.fijos.map((f) => f.id)).toContain('x');
+    expect(n.fijos.map((f) => f.id)).not.toContain('z');
+    expect(n.asistencia).toEqual({ 'x|2026-10-27': ['a'] });
   });
 });

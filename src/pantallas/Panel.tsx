@@ -153,7 +153,7 @@ export function Panel({ verDia, abrirSesion }: { verDia: (fecha: string) => void
           <span className="rotulo">Tu semana pasada</span>
           <p>
             {semana.entrenos > 0 && <><b>{semana.entrenos}</b> {semana.entrenos === 1 ? 'entreno' : 'entrenos'} · <b>{semana.minutos}</b> min{semana.asistencia !== null && <> · asistencia <b>{semana.asistencia}%</b></>}</>}
-            {semana.partidos.map((x) => <span key={x.rival} className="linea-partido"><i className={x.marca}>{x.marca}</i> {x.rival} <b>{x.a}–{x.c}</b></span>)}
+            {semana.partidos.map((x, k) => <span key={`${x.rival}-${k}`} className="linea-partido"><i className={x.marca}>{x.marca}</i> {x.rival} <b>{x.a}–{x.c}</b></span>)}
           </p>
           <button className="chip" onClick={() => void enviarTexto(textoSemana(semana, equipo.nombre))}>Compartir el resumen</button>
         </section>

@@ -38,6 +38,7 @@ export function Cifras({ equipo, jugadoras }: { equipo: Equipo; jugadoras: Jugad
   const hechos = objetivos.filter((o) => o.hecho).length;
   const tr = resumenTiros(tirosDeEventos(t?.eventos ?? []));
   const etiquetas = filas.map((f) => dm(f.fecha));
+  const porSemana = asistenciaPorSemana(t, hoyTexto, jugadoras.length);
 
   const conDatos = jugadoras.filter((j) => partidosDe(t, j.id).length > 0);
   const jugadoraId = conDatos.some((j) => j.id === quien) ? quien : conDatos[0]?.id ?? '';
@@ -78,8 +79,8 @@ export function Cifras({ equipo, jugadoras }: { equipo: Equipo; jugadoras: Jugad
       <section aria-label="Asistencia por semanas">
         <h2 className="sub">Asistencia por semanas</h2>
         <Grafica etiqueta="Asistencia a los entrenos de las últimas ocho semanas" sufijo="%" minimo={0}
-          etiquetas={asistenciaPorSemana(t, hoyTexto, jugadoras.length).map((s) => dm(s.lunes))}
-          series={[{ nombre: 'Asistencia', color: 'var(--ok)', valores: asistenciaPorSemana(t, hoyTexto, jugadoras.length).map((s) => s.pct) }]} />
+          etiquetas={porSemana.map((s) => dm(s.lunes))}
+          series={[{ nombre: 'Asistencia', color: 'var(--ok)', valores: porSemana.map((s) => s.pct) }]} />
       </section>
 
       <section aria-label="Carga de entrenamiento">

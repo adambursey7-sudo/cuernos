@@ -37,7 +37,7 @@ export function semanaPasada(t: Temporada | undefined, sesiones: Sesion[], hoyTe
 export function textoSemana(r: ResumenSemana, equipo: string): string {
   const dia = (f: string) => `${Number(f.slice(8))}/${Number(f.slice(5, 7))}`;
   const lineas = [`${equipo} · semana del ${dia(r.lunes)} al ${dia(sumarDias(r.lunes, 6))}`];
-  if (r.entrenos) lineas.push(`Entrenos: ${r.entrenos} (${r.minutos} min)${r.asistencia === null ? '' : ` · asistencia ${r.asistencia}%`}`);
+  if (r.entrenos || r.asistencia !== null) lineas.push(`Entrenos: ${r.entrenos} (${r.minutos} min)${r.asistencia === null ? '' : ` · asistencia ${r.asistencia}%`}`);
   for (const p of r.partidos) lineas.push(`${p.marca === 'G' ? 'Ganado' : p.marca === 'P' ? 'Perdido' : 'Empate'} contra ${p.rival}: ${p.a}–${p.c}`);
   return lineas.join('\n');
 }
