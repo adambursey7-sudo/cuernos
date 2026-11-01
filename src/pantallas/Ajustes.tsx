@@ -29,7 +29,6 @@ export function Ajustes() {
   const [aspecto, setAspecto] = useState(leerAspecto);
   const [aviso, setAviso] = useState('');
   const [intro, setIntro] = useState(introActiva);
-  const [conSalud, setConSalud] = useState(false);
   const [verEspacios, setVerEspacios] = useState(false);
   const [lectura, setLectura] = useState(leerLectura);
   const leer = (n: typeof lectura) => { setLectura(n); aplicarLectura(n); };
@@ -42,7 +41,7 @@ export function Ajustes() {
     const mios = leerMios();
     const nombre = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
     const sesiones = leerSesiones();
-    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones(), { sesiones, espacios: leerEspacios(), favoritos: leerFavoritos(), semana: leerSemana(), porEquipo: { favoritos: listasPropias('favoritos'), semana: listasPropias('semana') } })], nombre, { type: 'application/json' });
+    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), false, leerEtiquetas(), leerReflexiones(), { sesiones, espacios: leerEspacios(), favoritos: leerFavoritos(), semana: leerSemana(), porEquipo: { favoritos: listasPropias('favoritos'), semana: listasPropias('semana') } })], nombre, { type: 'application/json' });
     const njug = leerDiario().jugadoras.length;
     const nequ = leerDiario().equipos.length;
     const resumen = `${nequ} ${nequ === 1 ? 'equipo' : 'equipos'}, ${njug} ${njug === 1 ? 'jugador o jugadora' : 'jugadores y jugadoras'}, ${sesiones.length} ${sesiones.length === 1 ? 'sesión' : 'sesiones'}, ${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'} y tus colores`;
@@ -181,10 +180,7 @@ export function Ajustes() {
 
       <h2 className="sub">Copia de seguridad</h2>
       <p className="vacio">Tus jugadas y tu plantilla solo están en este móvil. La copia incluye los nombres de las jugadoras: guárdala donde no la vea nadie más. Guarda una copia (en Drive, Archivos…) para pasarlas a otro móvil o por si se borra Safari.</p>
-      <label className="salud-copia">
-        <input type="checkbox" checked={conSalud} onChange={(ev) => setConSalud(ev.target.checked)} />
-        Incluir las lesiones (dato de salud)
-      </label>
+      <p className="meta">Las lesiones y los datos de salud no van nunca en la copia: se quedan solo en este móvil.</p>
       <div className="copia">
         <button onClick={() => void descargar()}>Guardar copia</button>
         <label className="cargar">

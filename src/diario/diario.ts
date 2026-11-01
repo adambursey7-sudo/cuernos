@@ -4,6 +4,7 @@ import { limpiarHabilidades, type HabilidadEquipo } from '../habilidades/habilid
 import { limpiarRotacion, type Rotacion } from '../rotacion/rotacion';
 import { limpiarReglas, type Reglas } from '../reglas/reglas';
 import { limpiarDatosJugadora, limpiarExtras, type Escudo, type Genero, type Mano, type Objetivo, type Staff } from '../equipo/modelo';
+import { conEstados, sincronizarEstados } from '../salud/salud';
 import { refrescarNumeros } from './puestos';
 
 const CLAVE = 'horns.diario';
@@ -148,18 +149,30 @@ export function limpiar(d: unknown): Diario {
   return { equipos, jugadoras };
 }
 
+/** El diario tal como se guarda: sin lesiones. Las lesiones viven aparte, en `salud/` (ver ahí la privacidad). */
 export function leerDiario(): Diario {
   try {
-    return limpiar(JSON.parse(localStorage.getItem(CLAVE) ?? '{}'));
+    const crudo = JSON.parse(localStorage.getItem(CLAVE) ?? '{}');
+    const d = limpiar(crudo);
+    // Datos de antes: si el diario traía lesiones, pasan al almacén de salud y se quitan de aquí.
+    if (d.jugadoras.some((j) => j.lesion)) {
+      const conLesion = d.jugadoras.filter((j) => j.lesion);
+      if (sincronizarEstados(conLesion, { completo: false })) {
+        try { localStorage.setItem(CLAVE, JSON.stringify(sinSalud(d))); } catch { /* se intentará en el próximo guardado */ }
+      }
+    }
+    return { ...d, jugadoras: conEstados(d.jugadoras.map(({ lesion: _l, ...j }) => j)) };
   } catch {
     return { equipos: [], jugadoras: [] };
   }
 }
 
-/** Devuelve false si el móvil no deja guardar. */
+/** Devuelve false si el móvil no deja guardar. Las lesiones van al almacén de salud, nunca al diario. */
 export function guardarDiario(d: Diario): boolean {
   try {
-    localStorage.setItem(CLAVE, JSON.stringify(limpiar(d)));
+    const limpio = limpiar(d);
+    if (!sincronizarEstados(limpio.jugadoras)) return false;
+    localStorage.setItem(CLAVE, JSON.stringify(sinSalud(limpio)));
     refrescarNumeros();
     return true;
   } catch {

@@ -1,0 +1,24 @@
+LOOP HERRAMIENTA DIARIA - TRAMO 3: lesiones y salud (privacidad estricta)
+
+Decision de diseno (Adam pidio seguir sin esperar): opcion A. En la plantilla solo se ve un resumen (baja o duda, dias, vuelta, fase);
+los detalles medicos se abren con doble toque, o con el PIN si lo hay. Si prefiere una pestana de salud aparte (B), el almacen ya esta
+separado y solo cambia la pantalla.
+
+Hecho
+- src/salud/salud.ts: almacen propio (clave del movil distinta del diario). Parte por lesion: estado (baja/duda), fecha de baja, vuelta
+  estimada, alta, fase de vuelta progresiva (5 fases orientativas), restricciones de carga (sin contacto, minutos maximos) y,
+  como detalle, tipo, gravedad, restricciones con palabras y evolucion con fechas. Historial por jugadora.
+- src/salud/cifrado.ts: PIN de 4 a 8 cifras -> PBKDF2 + AES-GCM (Web Crypto). Con PIN, los detalles quedan cifrados en el almacen;
+  el resumen (estado, fechas, carga) sigue sin cifrar porque convocatoria y rotacion lo necesitan. No hay forma de recuperar un PIN olvidado.
+- Aislamiento por codigo: guardarDiario manda las lesiones al almacen de salud y guarda el diario SIN ellas; leerDiario migra solo
+  los diarios antiguos. armarCopia nunca incluye salud (se quito la casilla «Incluir las lesiones» de Mas); leerCopia ignora las
+  lesiones de copias viejas. Una prueba comprueba que ningun otro fichero conoce la clave del almacen.
+- Pantalla ParteSalud en la ficha del jugador (Equipo). La convocatoria marca con ◐ a quien tiene restriccion de carga.
+- avisosDeCarga(minutos) listo para usarlo en sesiones.
+- Pruebas: 11 nuevas (exclusion en copias, migracion, estados, cifrado, PIN).
+
+Pendiente
+- Mostrar avisosDeCarga dentro de la pantalla de la sesion (hoy solo la convocatoria).
+- Las fases de vuelta son orientativas y estan sin validar por un medico o fisio.
+- Probar en iPhone el doble toque y el PIN.
+- /security-review al final del loop (toca datos de salud y cifrado).
