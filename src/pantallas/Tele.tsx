@@ -26,7 +26,7 @@ function datos(equipo: Equipo) {
 const titulo = (i: Item) => (i.tipo === 'partido' ? `Partido · ${i.titulo || 'sin rival'}` : i.titulo || 'Entreno');
 
 /** Pantalla grande: logo, próximo partido o entreno, la semana y el equipo. Se cierra con la ✕ o con Escape. */
-function ModoTele({ equipo, cerrar }: { equipo: Equipo; cerrar: () => void }) {
+export function ModoTele({ equipo, cerrar }: { equipo: Equipo; cerrar: () => void }) {
   const { hoyTexto, proximo, semana, hs, fuertes, flojas } = datos(equipo);
   const cierre = useRef(cerrar);
   cierre.current = cerrar;

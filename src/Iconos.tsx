@@ -36,3 +36,28 @@ export const IconoCronometro = () => (
 export const IconoMas = () => (
   <Icono><circle cx="5.5" cy="12" r="1.2" fill="currentColor" /><circle cx="12" cy="12" r="1.2" fill="currentColor" /><circle cx="18.5" cy="12" r="1.2" fill="currentColor" /></Icono>
 );
+
+/** Pasar lista: hoja con una marca de verificación. */
+export const IconoLista = () => (
+  <Icono><rect x="5" y="3.5" width="14" height="17" rx="2" /><path d="M8.5 9l1.6 1.6L13 7.8M8.5 15.5h7" /></Icono>
+);
+
+/** Empezar partido: marcador con un balón. */
+export const IconoPartido = () => (
+  <Icono><circle cx="12" cy="12" r="8.5" /><path d="M10 8.5l6 3.5-6 3.5z" /></Icono>
+);
+
+/** Convocatoria: personas con una marca. */
+export const IconoConvocatoria = () => (
+  <Icono><circle cx="9" cy="8.5" r="3" /><path d="M3.5 19.5c.4-3.4 2.6-5 5.5-5 1.5 0 2.7.4 3.6 1.2M15.5 17.5l2 2 3.5-4" /></Icono>
+);
+
+/** Calendario. */
+export const IconoCalendario = () => (
+  <Icono><rect x="3.5" y="5" width="17" height="15" rx="2" /><path d="M3.5 10h17M8 3v4M16 3v4" /></Icono>
+);
+
+/** Gráfica de barras con tendencia. */
+export const IconoGrafica = () => (
+  <Icono><path d="M4 20h16M7 20v-6M12 20V8M17 20v-9" /></Icono>
+);

@@ -1,6 +1,5 @@
 // Inicio de club (interfaz C, elegida por Adam el 29/10): «Seguir donde lo dejaste» y colecciones que se deslizan de lado.
 import type { ReactNode } from 'react';
-import { usuarioActual } from '../Acceso';
 import { diasSinCopia } from '../copiaFecha';
 import { IconoBiblioteca, IconoCronometro } from '../Iconos';
 import { Pista } from '../pizarra/Pista';
@@ -13,10 +12,8 @@ import { hoy, leerDiario } from '../diario/diario';
 import { leerEquipoActivo } from '../equipo/equipos';
 import { leerSesiones } from '../sesiones/sesiones';
 import { DIAS, diaSemana, lunesDe, sumarDias } from '../temporada/fechas';
-import { cuando, siguiente } from '../temporada/siguiente';
 import { agendaDia, leerTemporadas, temporadaDe } from '../temporada/temporada';
-import { Tele } from './Tele';
-import { Vacio } from '../ui/Vacio';
+import { Panel } from './Panel';
 
 /** «Esta semana» (lunes a domingo) del primer equipo, con sus partidos y entrenos. Al tocar un día se abre en Equipo → Temporada. */
 function EstaSemana({ verDia, abrirSesion }: { verDia: (fecha: string) => void; abrirSesion: (id: string) => void }) {
@@ -52,38 +49,6 @@ function EstaSemana({ verDia, abrirSesion }: { verDia: (fecha: string) => void; 
           );
         }))}
       </ul>
-    </section>
-  );
-}
-
-/** «Lo siguiente»: el próximo partido o entreno, con su sesión a un toque. Si no hay nada, invita a apuntarlo. */
-function LoSiguiente({ verDia, abrirSesion }: { verDia: (fecha: string) => void; abrirSesion: (id: string) => void }) {
-  const hoyTexto = hoy();
-  const equipo = leerEquipoActivo();
-  const t = equipo ? temporadaDe(leerTemporadas(), equipo.id) : undefined;
-  const ahora = new Date().toTimeString().slice(0, 5);
-  const item = t ? siguiente(t, hoyTexto, ahora) : undefined;
-  if (!item) {
-    return (
-      <Vacio dibujo="calendario" titulo="Aún no hay nada apuntado" texto="Apunta tus entrenos y partidos y aquí verás siempre el próximo." accion={equipo ? 'Apuntar un entreno' : 'Crear mi equipo'} alPulsar={() => verDia(hoyTexto)} />
-    );
-  }
-  const sesion = item.sesionId ? leerSesiones().find((x) => x.id === item.sesionId) : undefined;
-  const partido = item.tipo === 'partido';
-  return (
-    <section className={`siguiente ${item.tipo}`} aria-label="Lo siguiente">
-      <span className="rotulo">Lo siguiente</span>
-      <div className="cuando"><b>{cuando(item.fecha, hoyTexto)}</b><span className="hora">{item.hora}</span></div>
-      <b className="titulo-sig">{partido ? `Partido · ${item.titulo || 'sin rival'}` : item.titulo || 'Entreno'}</b>
-      <span className="meta">
-        {partido && item.evento ? (item.evento.casa === false ? 'Fuera' : 'En casa') : equipo?.nombre}
-        {item.evento?.lugar ? ` · ${item.evento.lugar}` : ''}
-      </span>
-      {sesion ? (
-        <button className="accion-sig" onClick={() => abrirSesion(sesion.id)}>Abrir sesión: {sesion.nombre}</button>
-      ) : (
-        <button className="accion-sig suave" onClick={() => verDia(item.fecha)}>Ver el día</button>
-      )}
     </section>
   );
 }
@@ -146,13 +111,12 @@ export function Inicio({ abrir, abrirEjercicio, crear, verTodas, verEjercicios, 
 
   return (
     <section className="pantalla inicio">
-      <h1 className="saludo">Coach {usuarioActual() ?? "Adam"}</h1>
       {(() => {
         const dias = leerDiario().jugadoras.length || leerMios().length ? diasSinCopia() : null;
         return dias === null ? null : <p className="aviso-copia">{Number.isFinite(dias) ? `Hace ${dias} días que no guardas copia.` : 'Todavía no has guardado copia.'} Hazla en Más → Ajustes.</p>;
       })()}
 
-      {leerEquipoActivo() ? <Tele verDia={verDia} abrirSesion={abrirSesion} /> : <LoSiguiente verDia={verDia} abrirSesion={abrirSesion} />}
+      <Panel verDia={verDia} abrirSesion={abrirSesion} />
 
       <div className="atajos">
         <button onClick={() => { const hoyId = sesionDeHoy(); if (hoyId) empezarHoy(hoyId, crearAudio()); else verSesiones(); }}><span className="burbuja-atajo"><IconoCronometro /></span>Cronómetro</button>

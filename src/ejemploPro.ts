@@ -17,7 +17,7 @@ export function cargarEjemploPro(hoyTexto: string): void {
   }));
   const proximo: Evento = { id: 'ev-pro-prox', fecha: sumarDias(hoyTexto, 2), hora: '17:30', tipo: 'partido', titulo: 'Ejemplo Rival G', casa: true, lugar: 'Pabellón', balance: '', jornada: 7, convocados: ids.slice(0, 10) };
   const asistencia: Record<string, string[]> = {};
-  for (let s = 1; s <= 6; s++) {
+  for (let s = 0; s <= 6; s++) {
     for (const dia of [1, 3]) {
       const fecha = sumarDias(lunes, -7 * s + dia);
       const f = m.temporada.fijos.find((x) => x.dia === dia);

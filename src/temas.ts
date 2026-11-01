@@ -82,6 +82,9 @@ export function guardarAspecto(a: Aspecto) {
 export const esClaro = (a: Aspecto): boolean =>
   a === 'claro' || (a === 'auto' && typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: light)').matches);
 
+/** ¿La app se ve ahora en claro? */
+export const aspectoClaro = (): boolean => esClaro(leerAspecto());
+
 /** Los mismos colores del equipo sobre fondo claro: el principal se oscurece lo justo para que el texto se lea (4,5 de contraste). */
 export function paraClaro(c: Colores): Colores {
   let principal = c.principal;
