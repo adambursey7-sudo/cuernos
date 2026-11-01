@@ -43,7 +43,7 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
   const [ahora, setAhora] = useState(() => Date.now());
   const [sel, setSel] = useState<string | null>(() => p?.vivo.enPista[0] ?? null);
   const [entrando, setEntrando] = useState<string | null>(null);
-  const [vista, setVista] = useState<'juego' | 'cronologia' | 'resumen'>(() => (p?.vivo.fin ? 'resumen' : 'juego'));
+  const [vista, setVista] = useState<'juego' | 'cronologia' | 'resumen' | 'pantalla'>(() => (p?.vivo.fin ? 'resumen' : 'juego'));
   const [confirmaFin, setConfirmaFin] = useState(false);
   // «Marcar tiros»: al apuntar un tiro de campo se toca en la pista dónde fue (se recuerda la elección).
   const [marcar, setMarcar] = useState(() => { try { return localStorage.getItem('horns.marcarTiros') === '1'; } catch { return false; } });
@@ -149,6 +149,21 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
     return [quien, que].filter(Boolean).join(' · ');
   };
 
+  // Pantalla de pista: el marcador enorme para una tablet o una tele; se toca para volver.
+  if (vista === 'pantalla') {
+    return (
+      <button className="vivo pantalla-pista" onClick={() => setVista('juego')} aria-label="Volver al partido">
+        <span className="pp-cuarto">{nombreCuarto(v.cuarto)}</span>
+        <span className="pp-reloj" role="timer">{reloj(restante(v, ahora))}</span>
+        <span className="pp-marcador">
+          <span><small>{equipo!.nombre.slice(0, 18)}</small><b>{a}</b></span>
+          <span><small>{(datos.e.titulo || 'Rival').slice(0, 18)}</small><b>{p.rival}</b></span>
+        </span>
+        <span className="pp-pie">Faltas del equipo {faltasEquipo(v)}{enBonus(v) ? ' · BONUS' : ''} · Tiempos muertos {v.tm}/{TIEMPOS_MUERTOS}</span>
+      </button>
+    );
+  }
+
   if (vista === 'cronologia') {
     return (
       <div className="vivo" role="dialog" aria-label="Cronología del partido">
@@ -213,6 +228,7 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
       <header className="vivo-cab">
         <button className="atras" onClick={salir} aria-label="Salir del partido (se queda guardado)">‹</button>
         <b className="vivo-rival">vs {datos.e.titulo || 'rival'}</b>
+        <button className="chip" onClick={() => setVista('pantalla')}>Pantalla</button>
         <button className="chip" onClick={() => setVista('cronologia')}>Jugadas</button>
       </header>
 

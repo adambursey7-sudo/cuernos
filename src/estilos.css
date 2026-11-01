@@ -898,3 +898,22 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible, [tabindex]:
 /* Aviso con «Deshacer» */
 .toast { position: fixed; left: 50%; bottom: calc(76px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 70; display: flex; align-items: center; gap: var(--e3); max-width: min(92vw, 520px); padding: 6px 6px 6px var(--e4); border-radius: var(--r-pill); background: var(--texto); color: var(--fondo); box-shadow: var(--sombra-2); animation: entra var(--t-normal) var(--suave); }
 .toast button { min-height: 44px; padding: 0 var(--e4); border: none; border-radius: var(--r-pill); background: color-mix(in srgb, var(--fondo) 18%, transparent); color: inherit; font-weight: 800; }
+
+/* ===== Extras (loop Pro, tramo 10): resumen semanal y pantalla de pista ===== */
+.semana-pasada { display: grid; gap: var(--e2); padding: var(--e3) var(--e4); border-radius: var(--r-md); background: var(--superficie); border: 1px solid var(--borde); box-shadow: var(--sombra-1); }
+.semana-pasada .rotulo { font: 800 0.7rem/1 var(--display); text-transform: uppercase; letter-spacing: 0.08em; color: var(--tenue); }
+.semana-pasada p { margin: 0; display: grid; gap: 4px; }
+.semana-pasada .linea-partido { display: flex; align-items: center; gap: 8px; }
+.semana-pasada .linea-partido i { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font: 900 0.8rem/1 var(--display); font-style: normal; background: var(--tenue); color: #fff; }
+.semana-pasada .linea-partido i.G { background: var(--ok); color: #0c2a16; } .semana-pasada .linea-partido i.P { background: var(--defensa); }
+.semana-pasada .chip { justify-self: start; }
+.pantalla-pista { border: none; background: #0d0b09; color: #fff8ee; align-content: center; justify-items: center; gap: 2vh; text-align: center; grid-template-rows: none; --principal: var(--principal-vivo, var(--principal)); }
+.pantalla-pista span { display: block; }
+.pp-cuarto { font: 800 clamp(1.4rem, 5vw, 3rem)/1 var(--display); letter-spacing: 0.2em; opacity: 0.7; }
+.pp-reloj { font: 900 clamp(4rem, 22vw, 14rem)/1 var(--display); font-variant-numeric: tabular-nums; }
+.pp-marcador { display: grid !important; grid-template-columns: 1fr 1fr; gap: 6vw; width: 100%; }
+.pp-marcador small { display: block; font: 800 clamp(1rem, 3.4vw, 2.4rem)/1 var(--display); letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.75; }
+.pp-marcador b { display: block; font: 900 clamp(5rem, 30vw, 18rem)/1 var(--display); font-variant-numeric: tabular-nums; }
+.pp-marcador span:first-child b { color: var(--principal); }
+.pp-pie { font: 700 clamp(1rem, 3vw, 2rem)/1.2 var(--body); opacity: 0.8; }
+@media (orientation: landscape) { .pp-marcador b { font-size: clamp(5rem, 22vh, 18rem); } .pp-reloj { font-size: clamp(4rem, 26vh, 14rem); } }

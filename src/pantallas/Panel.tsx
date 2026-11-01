@@ -6,6 +6,8 @@ import { colorLegible } from '../equipo/modelo';
 import { EscudoEquipo } from '../equipo/EscudoEquipo';
 import { leerEquipoActivo } from '../equipo/equipos';
 import { resumir } from '../disponibilidad/disponibilidad';
+import { semanaPasada, textoSemana } from '../estadistica/semanal';
+import { enviarTexto } from '../recursos/compartirTexto';
 import { asistenciaSemana, balance, cuentaAtras, haceCuanto, jugados, racha, textoRacha } from '../estadistica/resumen';
 import { IconoConvocatoria, IconoLista, IconoPartido } from '../Iconos';
 import { leerSesiones } from '../sesiones/sesiones';
@@ -91,6 +93,7 @@ export function Panel({ verDia, abrirSesion }: { verDia: (fecha: string) => void
   const jugadoras = plantilla(leerDiario(), equipo.id).length;
   const asis = asistenciaSemana(t, hoyTexto, jugadoras);
   const entreno = t ? proximoEntreno(t, hoyTexto) : undefined;
+  const semana = semanaPasada(t, leerSesiones(), hoyTexto, jugadoras);
   // El partido del día que ya se terminó en directo no vuelve a salir como «el siguiente».
   const partido = t ? t.eventos.filter((e) => e.tipo === 'partido' && e.fecha >= hoyTexto && !e.vivo?.fin).sort((a, b) => a.fecha.localeCompare(b.fecha) || a.hora.localeCompare(b.hora))[0] : undefined;
   return (
@@ -142,6 +145,17 @@ export function Panel({ verDia, abrirSesion }: { verDia: (fecha: string) => void
             <span className="meta">{haceCuanto(ultimo.evento.fecha, hoyTexto)}{ultimo.evento.jornada ? ` · jornada ${ultimo.evento.jornada}` : ''}</span>
           </span>
           <span className="marcador-chico">{ultimo.a}–{ultimo.c}</span>
+        </section>
+      )}
+
+      {semana && (
+        <section className="semana-pasada" aria-label="Resumen de la semana pasada">
+          <span className="rotulo">Tu semana pasada</span>
+          <p>
+            {semana.entrenos > 0 && <><b>{semana.entrenos}</b> {semana.entrenos === 1 ? 'entreno' : 'entrenos'} · <b>{semana.minutos}</b> min{semana.asistencia !== null && <> · asistencia <b>{semana.asistencia}%</b></>}</>}
+            {semana.partidos.map((x) => <span key={x.rival} className="linea-partido"><i className={x.marca}>{x.marca}</i> {x.rival} <b>{x.a}–{x.c}</b></span>)}
+          </p>
+          <button className="chip" onClick={() => void enviarTexto(textoSemana(semana, equipo.nombre))}>Compartir el resumen</button>
         </section>
       )}
 
