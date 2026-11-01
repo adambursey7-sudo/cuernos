@@ -6,6 +6,7 @@ import { palabras } from '../diario/tipo';
 import { leerSesiones, sesionesDe } from '../sesiones/sesiones';
 import { Familias } from './Familias';
 import { ConvocatoriaPartido } from './ConvocatoriaPartido';
+import { ViajePartido } from './ViajePartido';
 import { DIAS, DIAS_LARGOS, corta, cuadriculaMes, mesDe, nombreMes, sumarMeses } from '../temporada/fechas';
 import { escribirIcs } from '../temporada/ics';
 import {
@@ -236,6 +237,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
           </Entrada>
         )}
         {e.tipo === 'partido' && <ConvocatoriaPartido e={e} jugadoras={jugadoras} poner={poner} />}
+        {e.tipo === 'partido' && e.casa === false && <ViajePartido e={e} equipo={equipo.nombre} jugadoras={jugadoras} poner={poner} />}
         {e.tipo === 'partido' && <CompartirPlan e={e} equipo={equipo.nombre} jugadoras={jugadoras} />}
         {e.tipo === 'partido' && <EnDirecto e={e} jugadoras={jugadoras} poner={poner} faltas={reglasDe(equipo).faltas} />}
         {e.tipo === 'partido' && <InformeRivalEditor e={e} eventos={t.eventos} equipo={equipo.nombre} poner={poner} enlazar={(id) => poner({ sesionId: id })} />}

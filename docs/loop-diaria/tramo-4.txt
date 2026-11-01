@@ -1,0 +1,20 @@
+LOOP HERRAMIENTA DIARIA - TRAMO 4: viajes, logistica y estadisticas avanzadas
+
+Decision de diseno (Adam pidio seguir sin esperar):
+- Viajes: una tarjeta desplegable dentro del partido fuera (Calendario -> partido), no una pantalla nueva: menos toques en el movil.
+- Estadisticas: una seccion «Avanzadas» al final de Cifras, con tabla por dorsal, quintetos en lista y una grafica de tendencia.
+Si prefiere un panel propio de viajes o una pestana de estadisticas, solo cambia la pantalla: los calculos estan aparte.
+
+Hecho
+- src/viajes/viaje.ts + src/pantallas/ViajePartido.tsx: transporte, punto de encuentro, salida y vuelta, alojamiento, comidas,
+  convocados que viajan (por dorsal), lista de material con casillas (6 cosas habituales), gastos con total y reparto por persona,
+  y «copiar aviso para las familias» (dorsales, sin gastos ni material). Va dentro del partido (Evento.viaje), asi que entra en la copia.
+- src/estadistica/avanzada.ts + src/pantallas/Avanzadas.tsx: +/- por jugador, valoracion y valoracion por 40 min (desde 10 min jugados),
+  quintetos mas usados (tiempo juntos y diferencia), tendencia de la diferencia de puntos (media de 3) y valoracion por edad.
+  Sale de la cronologia del partido en directo; no se guarda nada nuevo.
+- Pruebas: 15 nuevas (reparto de +/-, tiempos de quinteto, valoracion, tendencia, limpieza y mensaje del viaje).
+
+Pendiente
+- «Evolucion de habilidades por edad» se queda en valoracion por edad (la habilidad del catalogo no guarda historial).
+- La valoracion no cuenta tapones ni faltas recibidas (la app no los apunta).
+- Probar en el iPhone: tarjeta del viaje y seccion Avanzadas con un partido en directo.
