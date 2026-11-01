@@ -6,7 +6,7 @@ import { enCamino, foto, inicios } from '../pizarra/animar';
 import { Pista } from '../pizarra/Pista';
 import { guardarMio } from '../sistemas/almacen';
 import { FAMILIAS, NIVELES, type Familia, type Jugador, type Nivel, type Punto, type Sistema } from '../sistemas/tipos';
-import { adivinar, ajustarCurva, cambiarTipo, dentro, duplicarPaso, fijarTipo, limpiar, mover, moverPaso, nuevoBorrador, opcionesDe, pasar, ponerFamilia, quitarMovimiento, quitarPaso, quitarPase } from './editar';
+import { adivinar, ajustarCurva, cambiarTipo, dentro, duplicarPaso, fijarTipo, limpiar, mover, moverPaso, nuevoBorrador, opcionesDe, pasar, ponerFamilia, PLANTILLAS, quitarMovimiento, quitarPaso, quitarPase } from './editar';
 
 const JUGADORES: Jugador[] = ['1', '2', '3', '4', '5'];
 /** Distancia (en dm de pista) para agarrar a un jugador con el dedo y para que el arrastre cuente. */
@@ -183,6 +183,14 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
           <span><b>Paso {actual + 1}</b> · arrastra a un jugador: lo que dibujes es su movimiento.</span>
         )}
       </div>
+
+      {colocando && (
+        <div className="fila-chips" role="group" aria-label="Colocaciones listas">
+          {PLANTILLAS.map((pl) => (
+            <button key={pl.id} className="chip pequeno" onClick={() => cambiar({ ...b, inicio: structuredClone(pl.inicio), balon: pl.balon })}>{pl.nombre}</button>
+          ))}
+        </div>
+      )}
 
       <div className="lienzo">
         <Pista sistema={vista} t={t} numeros={null} />

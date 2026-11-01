@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { SISTEMAS } from '../sistemas/datos';
 import { esSistemaValido } from '../sistemas/almacen';
 import type { Paso } from '../sistemas/tipos';
-import { adivinar, ajustarCurva, cambiarTipo, describir, duplicarPaso, limpiar, mover, moverPaso, ponerFamilia, quitarPaso, nuevoBorrador, opcionesDe, pasar, fijarTipo, quitarMovimiento, quitarPase } from './editar';
+import { PLANTILLAS, adivinar, ajustarCurva, cambiarTipo, describir, duplicarPaso, limpiar, mover, moverPaso, ponerFamilia, quitarPaso, nuevoBorrador, opcionesDe, pasar, fijarTipo, quitarMovimiento, quitarPase } from './editar';
 
 describe('editor', () => {
   it('una jugada nueva empieza con cinco abiertos y el balón en el 1', () => {
@@ -115,5 +115,16 @@ describe('pasos de la jugada', () => {
     expect(ponerFamilia(base(), 'parado')).toMatchObject({ familia: 'parado', tipo: 'ataque' });
     expect(ponerFamilia(ponerFamilia(base(), 'parado'), undefined).familia).toBeUndefined();
     expect(ponerFamilia(ponerFamilia(base(), 'defensa'), undefined)).toMatchObject({ tipo: 'defensa' });
+  });
+});
+
+describe('colocaciones listas', () => {
+  it('quedan dentro de la pista y con los cinco jugadores', () => {
+    for (const pl of PLANTILLAS) {
+      for (const j of ['1', '2', '3', '4', '5'] as const) {
+        const [x, y] = pl.inicio[j];
+        expect(x >= 0 && x <= 150 && y >= 0 && y <= 140, `${pl.id} ${j}`).toBe(true);
+      }
+    }
   });
 });
