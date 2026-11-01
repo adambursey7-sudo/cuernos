@@ -617,3 +617,8 @@ select#fi-sis { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.
 .objetivo { display: flex; align-items: center; gap: 10px; min-height: 44px; }
 .objetivo input[type='checkbox'] { width: 22px; height: 22px; flex: none; }
 .objetivo.hecho span { text-decoration: line-through; color: var(--tenue); }
+
+.asistente .campo-diario, .bloque-equipo .campo-diario { min-width: 0; }
+.asistente input, .asistente select, .bloque-equipo input, .bloque-equipo select { max-width: 100%; box-sizing: border-box; min-width: 0; }
+.asistente input[type='date'], .asistente input[type='time'] { width: 100%; }
+.asistente .niveles { flex-wrap: wrap; overflow: visible; }
