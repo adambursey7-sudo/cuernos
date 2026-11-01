@@ -6,6 +6,8 @@ export interface Candidata {
   numero: string;
   nombre: string;
   posicion: Posicion | '';
+  /** Año de nacimiento, si la línea lo traía. */
+  nacimiento?: number;
 }
 
 const POS: [RegExp, Posicion][] = [
@@ -30,6 +32,9 @@ const limpiarNombre = (s: string) =>
 export function leerLinea(linea: string): Candidata | null {
   let resto = linea.trim();
   if (!resto) return null;
+  // Un año de cuatro cifras suelto (1950-2029) es el año de nacimiento.
+  const año = /(?:^|[\s;,|\t(])((?:19[5-9]|20[0-2])\d)(?=$|[\s;,|\t)])/.exec(resto);
+  if (año) resto = resto.replace(año[1], ' ');
   const celdas = resto.split(/\s*[;\t|]\s*|,(?=\s*\S)/).map((c) => c.trim()).filter(Boolean);
   let numero = '';
   let posicion: Posicion | '' = '';
@@ -68,7 +73,7 @@ export function leerLinea(linea: string): Candidata | null {
   }
   const nombre = limpiarNombre(nombres.join(' '));
   if (!numero || nombre.length < 2 || !/[a-záéíóúñü]{2}/i.test(nombre) || CABECERAS.test(nombre)) return null;
-  return { numero, nombre, posicion };
+  return { numero, nombre, posicion, ...(año ? { nacimiento: Number(año[1]) } : {}) };
 }
 
 export function leerTexto(texto: string): Candidata[] {

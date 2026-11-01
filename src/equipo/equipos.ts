@@ -6,21 +6,14 @@ import { leerTexto } from '../diario/importar';
 import type { Sesion } from '../sesiones/sesiones';
 import { esFecha, lunesDe, sumarDias } from '../temporada/fechas';
 import { balanceLiga, nuevaTemporada, nuevoFijo, type Archivada, type Temporada } from '../temporada/temporada';
+import { leerActivoId } from './porEquipo';
 import { escudoPorDefecto, etiquetaTemporada, limpiarEscudo, type Escudo, type Genero } from './modelo';
 
-const CLAVE = 'horns.equipoActivo';
-
-export function leerActivoId(): string {
-  try {
-    return localStorage.getItem(CLAVE) ?? '';
-  } catch {
-    return '';
-  }
-}
+export { leerActivoId };
 
 export function ponerActivoId(id: string): void {
   try {
-    localStorage.setItem(CLAVE, id);
+    localStorage.setItem('horns.equipoActivo', id);
   } catch {
     /* sin almacenamiento: vuelve al primer equipo al reabrir */
   }

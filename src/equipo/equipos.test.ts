@@ -80,6 +80,20 @@ describe('modelo del equipo', () => {
   });
 });
 
+describe('importar con año de nacimiento', () => {
+  it('lee el año suelto en una lista pegada y lo guarda en la ficha', () => {
+    const m = montarEquipo({ ...datos, lista: '4 Ejemplo Uno 2010 Base\n7;Ejemplo Dos;Alero;2009\n9 Ejemplo Tres' });
+    expect(m.jugadoras.map((j) => [j.numero, j.nombre, j.posicion, j.nacimiento])).toEqual([
+      ['4', 'Ejemplo Uno', 'Base', 2010], ['7', 'Ejemplo Dos', 'Alero', 2009], ['9', 'Ejemplo Tres', '', undefined],
+    ]);
+  });
+
+  it('un número de cuatro cifras fuera de época no es un año', () => {
+    const m = montarEquipo({ ...datos, lista: '5 Ejemplo Cuatro 3000' });
+    expect(m.jugadoras[0].nacimiento).toBeUndefined();
+  });
+});
+
 describe('equipo activo', () => {
   const a = nuevoEquipo('A');
   const b = nuevoEquipo('B');

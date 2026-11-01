@@ -1,35 +1,17 @@
-// Libro de jugadas del equipo: las favoritas (estrella) y las que se trabajan «esta semana». Solo en este móvil.
-const CLAVE = 'horns.semana';
+// Libro de jugadas del equipo: las favoritas (estrella) y las que se trabajan «esta semana». Solo en este móvil, por equipo.
+import { guardarLista, leerLista } from '../equipo/porEquipo';
 
-export function leerSemana(): string[] {
-  try {
-    const l = JSON.parse(localStorage.getItem(CLAVE) ?? '[]');
-    return Array.isArray(l) ? l.filter((x): x is string => typeof x === 'string') : [];
-  } catch {
-    return [];
-  }
-}
+export const leerSemana = (): string[] => leerLista('semana');
 
-/** Devuelve la lista con la jugada puesta o quitada de «esta semana» y la guarda. */
+/** Devuelve la lista con la jugada puesta o quitada de «esta semana» y la guarda (en la lista del equipo activo). */
 export function alternarSemana(lista: string[], id: string): string[] {
   const nueva = lista.includes(id) ? lista.filter((x) => x !== id) : [...lista, id];
-  try {
-    localStorage.setItem(CLAVE, JSON.stringify(nueva));
-  } catch {
-    /* sin almacenamiento: dura hasta cerrar la app */
-  }
+  guardarLista('semana', nueva); // sin almacenamiento: dura hasta cerrar la app
   return nueva;
 }
 
 /** Guarda la lista entera (al cargar una copia). Devuelve false si el móvil no deja. */
-export function guardarSemana(lista: string[]): boolean {
-  try {
-    localStorage.setItem(CLAVE, JSON.stringify(lista));
-    return true;
-  } catch {
-    return false;
-  }
-}
+export const guardarSemana = (lista: string[]): boolean => guardarLista('semana', lista);
 
 /** Quita las jugadas que ya no existen (una propia borrada). */
 export const semanaVigente = (lista: string[], existentes: ReadonlySet<string>) => lista.filter((id) => existentes.has(id));

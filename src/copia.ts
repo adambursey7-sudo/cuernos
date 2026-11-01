@@ -8,6 +8,7 @@ import { limpiarReflexiones, type Reflexion } from './diario/reflexion';
 import { limpiarEtiquetas, type Etiquetas } from './habilidades/habilidades';
 import { limpiarFichas, type Ficha } from './recursos/fichas';
 import { limpiarRecursos, type Recurso } from './recursos/recursos';
+import { limpiarPorEquipo } from './equipo/porEquipo';
 import { limpiarSesiones, type Sesion } from './sesiones/sesiones';
 import { limpiarTemporadas, soloDeEquipos, type Temporada } from './temporada/temporada';
 
@@ -19,6 +20,13 @@ export interface ExtraCopia {
   sesiones?: Sesion[];
   favoritos?: string[];
   semana?: string[];
+  /** Estrellas y libro de la semana propios de cada equipo (por id de equipo). */
+  porEquipo?: PorEquipo;
+}
+
+export interface PorEquipo {
+  favoritos: Record<string, string[]>;
+  semana: Record<string, string[]>;
 }
 
 /** Las lesiones (dato de salud) solo entran en la copia si se piden (`conSalud`). */
@@ -29,14 +37,14 @@ export function armarCopia(mios: Sistema[], colores: Colores, diario?: Diario, t
 const textos = (x: unknown): string[] | undefined => (Array.isArray(x) ? x.filter((s): s is string => typeof s === 'string' && s.length < 200).slice(0, 1000) : undefined);
 
 /** Lee un archivo de copia. Lanza un error con un mensaje para el entrenador si no vale. */
-export function leerCopia(texto: string): { mios: Sistema[]; colores?: Colores; diario?: Diario; temporadas?: Temporada[]; recursos?: Recurso[]; fichas?: Ficha[]; etiquetas?: Etiquetas; reflexiones?: Reflexion[]; sesiones?: Sesion[]; favoritos?: string[]; semana?: string[] } {
+export function leerCopia(texto: string): { mios: Sistema[]; colores?: Colores; diario?: Diario; temporadas?: Temporada[]; recursos?: Recurso[]; fichas?: Ficha[]; etiquetas?: Etiquetas; reflexiones?: Reflexion[]; sesiones?: Sesion[]; favoritos?: string[]; semana?: string[]; porEquipo?: PorEquipo } {
   let datos: unknown;
   try {
     datos = JSON.parse(texto);
   } catch {
     throw new Error('Ese archivo no es una copia de Horns.');
   }
-  const d = datos as { app?: string; mios?: unknown; colores?: Colores; diario?: unknown; temporadas?: unknown; recursos?: unknown; fichas?: unknown; etiquetas?: unknown; reflexiones?: unknown; sesiones?: unknown; favoritos?: unknown; semana?: unknown };
+  const d = datos as { app?: string; mios?: unknown; colores?: Colores; diario?: unknown; temporadas?: unknown; recursos?: unknown; fichas?: unknown; etiquetas?: unknown; reflexiones?: unknown; sesiones?: unknown; favoritos?: unknown; semana?: unknown; porEquipo?: { favoritos?: unknown; semana?: unknown } };
   if (d?.app !== MARCA || !Array.isArray(d.mios)) throw new Error('Ese archivo no es una copia de Horns.');
   const mios = d.mios.filter(esSistemaValido);
   const hex = /^#[0-9a-f]{6}$/i;
@@ -50,8 +58,9 @@ export function leerCopia(texto: string): { mios: Sistema[]; colores?: Colores; 
   const reflexiones = d.reflexiones ? limpiarReflexiones(d.reflexiones) : undefined;
   const sesiones = d.sesiones ? limpiarSesiones(d.sesiones) : undefined;
   const ids = diario ? new Set(diario.equipos.map((e) => e.id)) : undefined;
+  const porEquipo = d.porEquipo ? { favoritos: limpiarPorEquipo(d.porEquipo.favoritos, ids), semana: limpiarPorEquipo(d.porEquipo.semana, ids) } : undefined;
   return {
-    mios, colores, diario, recursos, fichas, etiquetas, favoritos: textos(d.favoritos), semana: textos(d.semana),
+    mios, colores, diario, recursos, fichas, etiquetas, favoritos: textos(d.favoritos), semana: textos(d.semana), porEquipo,
     reflexiones: reflexiones && ids ? reflexiones.filter((r) => ids.has(r.equipoId)) : reflexiones,
     sesiones: sesiones && ids ? sesiones.filter((s) => !s.equipoId || ids.has(s.equipoId)) : sesiones,
     temporadas: temporadas && diario ? soloDeEquipos(temporadas, diario.equipos.map((e) => e.id)) : temporadas,

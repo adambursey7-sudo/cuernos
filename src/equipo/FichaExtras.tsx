@@ -9,6 +9,7 @@ import { leerReflexiones } from '../diario/reflexion';
 import { leerColores } from '../temas';
 import { anotarCopia } from '../copiaFecha';
 import { EscudoEquipo } from './EscudoEquipo';
+import { copiarListas, listasDeEquipo } from './porEquipo';
 import { HEREDAR_TODO, cerrarTemporada, duplicarEquipo, equipoSiguienteTemporada, heredarDe, resumenArchivada, type QueHeredar } from './equipos';
 import { FORMAS_ESCUDO, PAPELES, esPapel, escudoPorDefecto, letrasDe, type Genero } from './modelo';
 
@@ -118,6 +119,7 @@ export function AccionesEquipo({ d, e, aplicar, elegir, cambiado }: { d: Diario;
     const r = duplicarEquipo(d, leerTemporadas(), leerSesiones(), e.id);
     if (!r) return;
     const ok = guardarSesiones([...leerSesiones(), ...r.sesiones]) && (!r.temporada || guardarTemporadas([...leerTemporadas(), r.temporada]));
+    copiarListas(e.id, r.equipo.id);
     aplicar({ equipos: [...d.equipos, r.equipo], jugadoras: [...d.jugadoras, ...r.jugadoras] });
     guardado(ok, `Equipo copiado como «${r.equipo.nombre}», con su plantilla, horarios y sesiones.`);
     elegir(r.equipo.id);
@@ -149,7 +151,7 @@ export function AccionesEquipo({ d, e, aplicar, elegir, cambiado }: { d: Diario;
     const solo = recortarAEquipo(e.id, todo);
     if (!solo) return;
     const nombre = `horns-${e.nombre.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'equipo'}-${hoy()}.json`;
-    const archivo = new File([armarCopia([], leerColores(), solo.diario, solo.temporadas, [], [], false, undefined, solo.reflexiones, { sesiones: solo.sesiones })], nombre, { type: 'application/json' });
+    const archivo = new File([armarCopia([], leerColores(), solo.diario, solo.temporadas, [], [], false, undefined, solo.reflexiones, { sesiones: solo.sesiones, porEquipo: listasDeEquipo(e.id) })], nombre, { type: 'application/json' });
     if (navigator.canShare?.({ files: [archivo] })) {
       try {
         await navigator.share({ files: [archivo], title: `Copia de ${e.nombre}` });

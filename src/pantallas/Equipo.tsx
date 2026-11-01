@@ -16,7 +16,9 @@ import { EscudoEquipo } from '../equipo/EscudoEquipo';
 import { anadirEquipo, type EquipoMontado } from '../equipo/equipos';
 import { AccionesEquipo, CuerpoTecnico, IdentidadEquipo, Objetivos } from '../equipo/FichaExtras';
 import { MANOS, esFemenino } from '../equipo/modelo';
+import { asistenciaPorMes, nombreMes } from '../equipo/familias';
 import { SelectorEquipo } from '../equipo/SelectorEquipo';
+import { olvidarListas } from '../equipo/porEquipo';
 import { alinearSesiones, guardarSesiones, leerSesiones } from '../sesiones/sesiones';
 import { DiarioSesion } from './DiarioSesion';
 import { Habilidades } from './Habilidades';
@@ -53,6 +55,7 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
   const w = palabras(eq);
   const sen = esSenior(eq);
   const asis = useMemo(() => resumenAsistencia(temporadaDe(leerTemporadas(), j.equipoId), j.id), [j.equipoId, j.id]);
+  const porMes = useMemo(() => asistenciaPorMes(temporadaDe(leerTemporadas(), j.equipoId), j.id), [j.equipoId, j.id]);
   const poner = (c: Partial<Jugadora>) => cambiar({ ...j, ...c });
   return (
     <section className="pantalla ficha-jugadora">
@@ -89,6 +92,11 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
             </div>
           </div>
           {asis.de > 0 && <p className="meta">Asistencia: ha venido a <b>{asis.vino} de {asis.de}</b> entrenos con lista.</p>}
+          {porMes.length > 1 && (
+            <ul className="lista progreso-mes" aria-label="Asistencia mes a mes">
+              {porMes.map((m) => <li key={m.mes} className="meta">{nombreMes(m.mes)}: <b>{m.vino} de {m.de}</b></li>)}
+            </ul>
+          )}
           {otra && <p className="aviso">El {j.numero} ya lo lleva {otra.nombre || (sen ? 'otro jugador' : 'otra jugadora')}.</p>}
           <div className="niveles filtro" role="group" aria-label="Posición">
             {POSICIONES.map((p) => (
@@ -367,7 +375,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema, a
         e={equipo}
         jugadoras={plantilla(d, equipo.id)}
         cambiar={(e) => setD(guardarEquipo(d, e))}
-        borrar={() => { const resto = d.equipos.filter((e) => e.id !== equipo.id); setD(quitarEquipo(d, equipo.id)); setActivo(resto[0]?.id ?? ''); setVista({ tipo: 'plantilla' }); }}
+        borrar={() => { const resto = d.equipos.filter((e) => e.id !== equipo.id); olvidarListas(equipo.id); setD(quitarEquipo(d, equipo.id)); setActivo(resto[0]?.id ?? ''); setVista({ tipo: 'plantilla' }); }}
         volver={() => setVista({ tipo: 'plantilla' })}
         ir={ir}
       />

@@ -6,6 +6,7 @@ import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
 import { anotarCopia } from '../copiaFecha';
 import { armarCopia, juntar, leerCopia, unirTextos } from '../copia';
 import { guardarFavoritos, leerFavoritos } from '../favoritos';
+import { guardarLista, leerLista, listasPropias } from '../equipo/porEquipo';
 import { guardarSesiones, juntarSesiones, leerSesiones } from '../sesiones/sesiones';
 import { guardarSemana, leerSemana } from '../sistemas/libro';
 import { guardarReflexiones, juntarReflexiones, leerReflexiones } from '../diario/reflexion';
@@ -37,7 +38,7 @@ export function Ajustes() {
     const mios = leerMios();
     const nombre = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
     const sesiones = leerSesiones();
-    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones(), { sesiones, favoritos: leerFavoritos(), semana: leerSemana() })], nombre, { type: 'application/json' });
+    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones(), { sesiones, favoritos: leerFavoritos(), semana: leerSemana(), porEquipo: { favoritos: listasPropias('favoritos'), semana: listasPropias('semana') } })], nombre, { type: 'application/json' });
     const njug = leerDiario().jugadoras.length;
     const nequ = leerDiario().equipos.length;
     const resumen = `${nequ} ${nequ === 1 ? 'equipo' : 'equipos'}, ${njug} ${njug === 1 ? 'jugador o jugadora' : 'jugadores y jugadoras'}, ${sesiones.length} ${sesiones.length === 1 ? 'sesión' : 'sesiones'}, ${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'} y tus colores`;
@@ -76,6 +77,8 @@ export function Ajustes() {
       if (copia.sesiones && !guardarSesiones(juntarSesiones(leerSesiones(), copia.sesiones))) throw new Error('El móvil no deja guardar las sesiones: libera espacio e inténtalo otra vez.');
       if (copia.favoritos) guardarFavoritos(unirTextos(leerFavoritos(), copia.favoritos));
       if (copia.semana) guardarSemana(unirTextos(leerSemana(), copia.semana));
+      for (const lista of ['favoritos', 'semana'] as const)
+        for (const [id, valor] of Object.entries(copia.porEquipo?.[lista] ?? {})) guardarLista(lista, unirTextos(leerLista(lista, id), valor), id);
       if (copia.colores) poner(copia.colores);
       const equiposCopia = copia.diario?.equipos.length ?? 0;
       setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${equiposCopia} ${equiposCopia === 1 ? 'equipo' : 'equipos'} con ${copia.diario.jugadoras.length} jugadores y jugadoras` : ''}${copia.sesiones?.length ? `, ${copia.sesiones.length} sesiones` : ''}${copia.colores ? ' y los colores' : ''}.`);
