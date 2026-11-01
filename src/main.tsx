@@ -24,7 +24,22 @@ registerSW({
   },
 });
 
+// Solo en desarrollo: ?ejemplo=pro llena la app con un equipo de ejemplo para ver las pantallas con datos.
+if (import.meta.env.DEV && new URLSearchParams(location.search).get('ejemplo') === 'pro') {
+  const { cargarEjemploPro } = await import('./ejemploPro');
+  const { hoy } = await import('./diario/diario');
+  cargarEjemploPro(hoy());
+  const asp = new URLSearchParams(location.search).get('aspecto');
+  if (asp) localStorage.setItem('horns.aspecto', asp);
+  history.replaceState(null, '', location.pathname);
+}
 aplicarColores(leerColores());
+// «Como el móvil»: si el móvil cambia de claro a oscuro con la app abierta, la app lo sigue.
+try {
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => aplicarColores(leerColores(), false));
+} catch {
+  /* navegador sin matchMedia: el aspecto cambia al reabrir */
+}
 aplicarLectura(leerLectura(), false);
 const raiz = createRoot(document.getElementById('raiz')!);
 

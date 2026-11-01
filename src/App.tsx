@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Marca } from './Logo';
-import { Editor } from './editor/Editor';
 import { buscarEjercicio } from './ejercicios/ejercicios';
 import { IconoBiblioteca, IconoEquipo, IconoHoy, IconoMas, IconoSesiones } from './Iconos';
-import { Ajustes } from './pantallas/Ajustes';
 import { Biblioteca, type Rama } from './pantallas/Biblioteca';
 import { Ejercicio } from './pantallas/Ejercicio';
-import { Equipo } from './pantallas/Equipo';
+import { Esqueleto } from './ui/Vacio';
 import { Inicio } from './pantallas/Inicio';
 import { Sesiones } from './pantallas/Sesiones';
 import type { crearAudio } from './pantallas/Entrenando';
@@ -20,6 +18,11 @@ import { SelectorEquipo } from './equipo/SelectorEquipo';
 import { alinearSesiones, guardarSesiones, leerSesiones } from './sesiones/sesiones';
 import { buscarSistema } from './sistemas/almacen';
 import type { Sistema as SistemaDatos } from './sistemas/tipos';
+
+// Las pantallas más pesadas se cargan al abrirlas: la app arranca antes y se ve un esqueleto mientras llegan.
+const Editor = lazy(() => import('./editor/Editor').then((m) => ({ default: m.Editor })));
+const Ajustes = lazy(() => import('./pantallas/Ajustes').then((m) => ({ default: m.Ajustes })));
+const Equipo = lazy(() => import('./pantallas/Equipo').then((m) => ({ default: m.Equipo })));
 
 // Menú de abajo (opción A de Adam, 30/10): cinco apartados iguales.
 function enlaceDeLaDireccion(): string | undefined {
@@ -141,7 +144,7 @@ export function App() {
   return (
     <div className="app" onTouchStart={tocar} onTouchEnd={soltar}>
       {!enLinea && <p className="sin-red" role="status">Sin conexión: todo sigue funcionando, menos abrir enlaces.</p>}
-      <main key={pestana === 'equipo' ? pestana : `${pestana}-${activoId}`} className="entra">{contenido}</main>
+      <main key={pestana === 'equipo' ? pestana : `${pestana}-${activoId}`} className="entra"><Suspense fallback={<Esqueleto />}>{contenido}</Suspense></main>
       <nav className="pestanas" aria-label="Secciones">
         {PESTANAS.map((p) => (
           <button key={p.id} className={p.id === pestana ? 'on' : ''} aria-current={p.id === pestana ? 'page' : undefined} onClick={() => { setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>

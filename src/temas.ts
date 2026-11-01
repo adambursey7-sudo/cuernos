@@ -44,6 +44,51 @@ export function textoSobre(hex: string): string {
   return claro >= oscuro ? '#fff8ee' : '#141a26';
 }
 
+/** Contraste WCAG entre dos colores #rrggbb (de 1 a 21). */
+export function contraste(a: string, b: string): number {
+  const [x, y] = [luz(a), luz(b)].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
+}
+
+const mezcla = (a: string, b: string, t: number): string => {
+  const n = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const [p, q] = [n(a), n(b)];
+  return '#' + p.map((v, i) => Math.round(v + (q[i] - v) * t).toString(16).padStart(2, '0')).join('');
+};
+
+/** Aspecto de la app: oscuro (el de siempre), claro, o el que tenga el móvil. */
+export type Aspecto = 'oscuro' | 'claro' | 'auto';
+export const ASPECTOS: [Aspecto, string][] = [['oscuro', 'Oscuro'], ['claro', 'Claro'], ['auto', 'Como el móvil']];
+const CLAVE_ASPECTO = 'horns.aspecto';
+export const FONDO_CLARO = '#f4f2ec';
+
+export function leerAspecto(): Aspecto {
+  try {
+    const v = localStorage.getItem(CLAVE_ASPECTO);
+    return v === 'claro' || v === 'auto' ? v : 'oscuro';
+  } catch {
+    return 'oscuro';
+  }
+}
+
+export function guardarAspecto(a: Aspecto) {
+  try {
+    localStorage.setItem(CLAVE_ASPECTO, a);
+  } catch {
+    /* sin almacenamiento: el aspecto dura hasta cerrar */
+  }
+}
+
+export const esClaro = (a: Aspecto): boolean =>
+  a === 'claro' || (a === 'auto' && typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: light)').matches);
+
+/** Los mismos colores del equipo sobre fondo claro: el principal se oscurece lo justo para que el texto se lea (4,5 de contraste). */
+export function paraClaro(c: Colores): Colores {
+  let principal = c.principal;
+  for (let i = 0; i < 12 && contraste(principal, FONDO_CLARO) < 4.5; i++) principal = mezcla(principal, '#000000', 0.12);
+  return { ...c, fondo: FONDO_CLARO, principal };
+}
+
 const CLAVE = 'cuernos.colores';
 
 export function leerColores(): Colores {
@@ -60,9 +105,22 @@ export function leerColores(): Colores {
 }
 
 /** `guardar = false` en el visor de un enlace: los colores del que envía no pisan los de quien lo abre. */
-export function aplicarColores(c: Colores, guardar = true) {
-  const raiz = document.documentElement.style;
+export function aplicarColores(guardado: Colores, guardar = true) {
+  const claro = esClaro(leerAspecto());
+  const c = claro ? paraClaro(guardado) : guardado;
+  const el = document.documentElement;
+  el.dataset.modo = claro ? 'claro' : 'oscuro';
+  el.style.colorScheme = claro ? 'light' : 'dark';
+  const raiz = el.style;
   const texto = textoSobre(c.fondo);
+  // Colores de estado y sombras según el aspecto: los verdes y rojos claros solo se leen sobre fondo oscuro.
+  raiz.setProperty('--principal-vivo', guardado.principal);   // el del equipo sin oscurecer: para las superficies que son siempre oscuras (tele)
+  raiz.setProperty('--ok', claro ? '#1f8f45' : '#4cc26a');
+  raiz.setProperty('--ok-texto', claro ? '#14663a' : '#9fe3b0');
+  raiz.setProperty('--mal-texto', claro ? '#a3281e' : '#ffb3ab');
+  raiz.setProperty('--aviso', claro ? '#9a5b00' : '#ffb020');
+  raiz.setProperty('--sombra-1', claro ? '0 1px 2px #1a1a1f26, 0 2px 8px #1a1a1f12' : '0 1px 2px #0006, 0 2px 8px #0003');
+  raiz.setProperty('--sombra-2', claro ? '0 2px 4px #1a1a1f22, 0 10px 28px #1a1a1f26' : '0 2px 4px #0007, 0 10px 28px #0006');
   raiz.setProperty('--principal', c.principal);
   raiz.setProperty('--sobre-principal', textoSobre(c.principal));
   raiz.setProperty('--fondo', c.fondo);
@@ -75,7 +133,7 @@ export function aplicarColores(c: Colores, guardar = true) {
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', c.fondo);
   if (!guardar) return;
   try {
-    localStorage.setItem(CLAVE, JSON.stringify({ principal: c.principal, fondo: c.fondo, pista: c.pista, jugadores: c.jugadores }));
+    localStorage.setItem(CLAVE, JSON.stringify({ principal: guardado.principal, fondo: guardado.fondo, pista: guardado.pista, jugadores: guardado.jugadores }));
   } catch {
     /* sin almacenamiento: los colores duran hasta cerrar */
   }

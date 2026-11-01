@@ -16,6 +16,7 @@ import { DIAS, diaSemana, lunesDe, sumarDias } from '../temporada/fechas';
 import { cuando, siguiente } from '../temporada/siguiente';
 import { agendaDia, leerTemporadas, temporadaDe } from '../temporada/temporada';
 import { Tele } from './Tele';
+import { Vacio } from '../ui/Vacio';
 
 /** «Esta semana» (lunes a domingo) del primer equipo, con sus partidos y entrenos. Al tocar un día se abre en Equipo → Temporada. */
 function EstaSemana({ verDia, abrirSesion }: { verDia: (fecha: string) => void; abrirSesion: (id: string) => void }) {
@@ -64,12 +65,7 @@ function LoSiguiente({ verDia, abrirSesion }: { verDia: (fecha: string) => void;
   const item = t ? siguiente(t, hoyTexto, ahora) : undefined;
   if (!item) {
     return (
-      <section className="siguiente vacio-card" aria-label="Lo siguiente">
-        <span className="rotulo">Lo siguiente</span>
-        <b className="titulo-sig">Aún no hay nada apuntado</b>
-        <span className="meta">Apunta tus entrenos y partidos y aquí verás siempre el próximo.</span>
-        <button className="accion-sig" onClick={() => verDia(hoyTexto)}>{equipo ? 'Apuntar un entreno' : 'Crear mi equipo'}</button>
-      </section>
+      <Vacio dibujo="calendario" titulo="Aún no hay nada apuntado" texto="Apunta tus entrenos y partidos y aquí verás siempre el próximo." accion={equipo ? 'Apuntar un entreno' : 'Crear mi equipo'} alPulsar={() => verDia(hoyTexto)} />
     );
   }
   const sesion = item.sesionId ? leerSesiones().find((x) => x.id === item.sesionId) : undefined;

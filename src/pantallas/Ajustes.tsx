@@ -17,13 +17,14 @@ import { guardarTemporadas, juntarTemporadas, leerTemporadas } from '../temporad
 import { guardarTodosMios, leerMios } from '../sistemas/almacen';
 import { SISTEMAS } from '../sistemas/datos';
 import { aplicarLectura, ESCALAS, leerLectura, NOMBRES_LETRA, type Letra } from '../preferencias';
-import { aplicarColores, leerColores, NOMBRES_COLOR, PALETAS, type Colores } from '../temas';
+import { aplicarColores, ASPECTOS, guardarAspecto, leerAspecto, leerColores, NOMBRES_COLOR, PALETAS, type Colores } from '../temas';
 
 const CAMPOS = Object.keys(NOMBRES_COLOR) as (keyof Colores)[];
 const igual = (a: Colores, b: Colores) => CAMPOS.every((k) => a[k].toLowerCase() === b[k].toLowerCase());
 
 export function Ajustes() {
   const [c, setC] = useState(leerColores);
+  const [aspecto, setAspecto] = useState(leerAspecto);
   const [aviso, setAviso] = useState('');
   const [intro, setIntro] = useState(introActiva);
   const [conSalud, setConSalud] = useState(false);
@@ -105,6 +106,14 @@ export function Ajustes() {
       <label className="campo-diario">
         <span><input type="checkbox" checked={lectura.quieto} onChange={(ev) => leer({ ...lectura, quieto: ev.target.checked })} /> Reducir movimiento (sin animaciones)</span>
       </label>
+      <h2 className="sub">Aspecto</h2>
+      <div className="letras" role="group" aria-label="Aspecto de la app">
+        {ASPECTOS.map(([id, nombre]) => (
+          <button key={id} className={id === aspecto ? 'on' : ''} aria-pressed={id === aspecto} onClick={() => { guardarAspecto(id); setAspecto(id); aplicarColores(leerColores(), false); }}>
+            {nombre}
+          </button>
+        ))}
+      </div>
       <h2 className="sub">Colores</h2>
       <div className="muestra">
         <Pista sistema={SISTEMAS[0]} t={2} />
