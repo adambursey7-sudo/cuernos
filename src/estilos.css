@@ -808,3 +808,36 @@ button:active:not(:disabled) { transform: scale(0.97); }
 .vivo > .chip { justify-self: start; }
 .mapa-tiros .calor-texto.chico .pct { font-size: 3.8px; stroke-width: 1px; }
 .mapa-tiros .calor-texto.chico .de { font-size: 2.8px; stroke-width: 0.8px; }
+
+/* ===== Cifras y progreso (loop Pro, tramo 5) ===== */
+.cifras { display: grid; gap: var(--e4); }
+.anillos { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--e2); }
+.anillos > div { display: grid; justify-items: center; gap: 6px; padding: var(--e3) 2px; border-radius: var(--r-md); background: var(--superficie); border: 1px solid var(--borde); box-shadow: var(--sombra-1); text-align: center; }
+.anillos span:last-child { font-size: 0.7rem; line-height: 1.2; color: var(--tenue); font-weight: 700; }
+.anillos .anillo-centro { font-size: 0.85rem; }
+.grafica { width: 100%; height: auto; display: block; background: var(--superficie); border-radius: var(--r-md); border: 1px solid var(--borde); }
+.grafica .rejilla { stroke: var(--borde); stroke-width: 1; }
+.grafica .eje { font: 700 9px var(--body); fill: var(--tenue); }
+.grafica .trazo { fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.grafica .punto { stroke: var(--superficie); stroke-width: 1.5; }
+.grafica .ultimo-valor { font: 800 11px var(--body); paint-order: stroke; stroke: var(--superficie); stroke-width: 3px; }
+.leyenda-grafica { margin: 4px 0 0; display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--tenue); }
+.leyenda-grafica i { display: inline-block; width: 14px; height: 4px; border-radius: 2px; margin-left: 8px; }
+.cifras section { display: grid; gap: var(--e2); }
+.cifras .sub { margin: 0; }
+.racha-asis { display: flex; align-items: center; gap: var(--e3); padding: var(--e3); border-radius: var(--r-md); background: var(--superficie); border: 1px solid var(--borde); }
+.racha-asis span { display: grid; gap: 2px; }
+.racha-asis small { color: var(--tenue); }
+.records { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.records li { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 2px var(--e3); padding: var(--e3); border-radius: var(--r-sm); background: var(--superficie); border: 1px solid var(--borde); }
+.records b { font: 900 1.4rem/1 var(--display); color: var(--principal); font-variant-numeric: tabular-nums; }
+.records small { grid-column: 1 / -1; color: var(--tenue); }
+.comparar { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.comparar th, .comparar td { padding: 9px 8px; border-bottom: 1px solid var(--borde); text-align: center; font-size: 0.92rem; }
+.comparar thead th { font: 800 0.8rem/1.1 var(--display); color: var(--tenue); }
+.comparar tbody th { text-align: left; font-weight: 700; }
+.comparar td.gana { color: var(--ok-texto); font-weight: 800; background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.cifras, .cifras section, .panel-mapa, .panel { grid-template-columns: minmax(0, 1fr); }
+.cifras select { width: 100%; max-width: 100%; }
+.cifras .anillos { grid-template-columns: repeat(4, minmax(0, 1fr)); }

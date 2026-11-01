@@ -25,8 +25,9 @@ import { DiarioSesion } from './DiarioSesion';
 import { Habilidades } from './Habilidades';
 import { Rotacion } from './Rotacion';
 import { Temporada } from './Temporada';
+import { Cifras } from './Cifras';
 
-type Vista = { tipo: 'asistente' } | { tipo: 'plantilla' } | { tipo: 'temporada' } | { tipo: 'habilidades' } | { tipo: 'rotacion' } | { tipo: 'diario' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
+type Vista = { tipo: 'asistente' } | { tipo: 'plantilla' } | { tipo: 'temporada' } | { tipo: 'cifras' } | { tipo: 'habilidades' } | { tipo: 'rotacion' } | { tipo: 'diario' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
 
 function Campo({ etiqueta, valor, cambiar, filas = 3, ayuda }: { etiqueta: string; valor: string; cambiar: (v: string) => void; filas?: number; ayuda?: string }) {
   return (
@@ -310,10 +311,10 @@ function Importar({ equipoId, w, existentes, crear, volver, usarReglas }: { usar
   );
 }
 
-function Apartados({ ver, vista }: { ver: (v: 'plantilla' | 'habilidades' | 'rotacion' | 'diario' | 'temporada') => void; vista: 'plantilla' | 'habilidades' | 'rotacion' | 'diario' | 'temporada' }) {
+function Apartados({ ver, vista }: { ver: (v: 'plantilla' | 'habilidades' | 'rotacion' | 'diario' | 'temporada' | 'cifras') => void; vista: 'plantilla' | 'habilidades' | 'rotacion' | 'diario' | 'temporada' | 'cifras' }) {
   return (
     <div className="niveles filtro" role="tablist" aria-label="Apartados del equipo">
-      {([['plantilla', 'Plantilla'], ['habilidades', 'Habilidades'], ['rotacion', 'Rotación'], ['diario', 'Diario'], ['temporada', 'Temporada']] as const).map(([id, nombre]) => (
+      {([['plantilla', 'Plantilla'], ['habilidades', 'Habilidades'], ['rotacion', 'Rotación'], ['diario', 'Diario'], ['temporada', 'Temporada'], ['cifras', 'Cifras']] as const).map(([id, nombre]) => (
         <button key={id} role="tab" aria-selected={vista === id} className={vista === id ? 'chip on' : 'chip'} onClick={() => ver(id)}>{nombre}</button>
       ))}
     </div>
@@ -425,6 +426,16 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema, a
         <Apartados vista="diario" ver={(v) => setVista({ tipo: v })} />
         <SelectorEquipo equipos={d.equipos} activo={equipo.id} elegir={setActivo} />
         <DiarioSesion key={equipo.id} equipo={equipo} />
+      </section>
+    );
+
+  if (vista.tipo === 'cifras')
+    return (
+      <section className="pantalla encabezado-equipo">
+        <h1 className="titulo">Equipo</h1>
+        <Apartados vista="cifras" ver={(v) => setVista({ tipo: v })} />
+        <SelectorEquipo equipos={d.equipos} activo={equipo.id} elegir={setActivo} />
+        <Cifras key={equipo.id} equipo={equipo} jugadoras={plantilla(d, equipo.id)} />
       </section>
     );
 
