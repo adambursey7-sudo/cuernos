@@ -1,0 +1,14 @@
+UNIÓN DE LA RAMA loop/pro (carpeta C:\dev\baloncesto-t-pro)
+
+ORDEN
+1. Primero la del senior masculino (loop/senior-masculino).
+2. Después equipo completo (loop/equipo-completo).
+3. Por último esta (loop/pro), que sale de equipo completo.
+
+CÓMO
+- Al unir equipo completo, esta rama ya lleva todos sus cambios (sale de ella): solo habrá que unir lo nuevo.
+- Los sitios donde puede haber choques si se cambió algo a la vez: los estilos generales, la pantalla de Equipo, la de Temporada, la de Sesiones y el archivo de temporada.
+- Después de unir: pasar las pruebas, la comprobación de tipos y la compilación para la web.
+
+NADA DE ESTO SE HA HECHO. No se ha unido, publicado ni empujado nada.
+Los datos viejos se abren igual: el partido en directo, la disponibilidad y las novedades de las sesiones son campos nuevos opcionales.

@@ -1,0 +1,24 @@
+PENDIENTE DEL LOOP PRO
+
+PARA PROBAR EN EL IPHONE
+- Hoy: cuenta atrás, accesos rápidos y modo claro.
+- Partido en directo: arrastrar del banquillo a la pista, reloj, deshacer, «Marcar tiros en la pista» y la barra roja «En directo».
+- Tarjeta del resultado como imagen (menú de compartir) y hoja del partido en PDF.
+- Disponibilidad: pegar las respuestas del grupo.
+- Pantalla de pista (botón «Pantalla» en el partido) con la tele o la tablet.
+- Instalar en la pantalla de inicio y abrir sin conexión.
+
+DECISIONES QUE TE TOCAN
+- El aspecto por defecto es oscuro. Si quieres que sea «como el móvil», es cambiar una línea.
+- Las plantillas de semana cambian los entrenos de toda la temporada. ¿Quieres que pidan confirmación antes?
+
+MEJORAS QUE QUEDAN
+- Reordenar los pasos de una jugada arrastrando (hoy es con botones).
+- Pasar lista y ver convocatoria podrían abrir su pantalla directamente, sin pasar por el calendario.
+- Los tiros libres no se marcan en la pista.
+- Lanzar /security-review una vez desde la carpeta del repositorio (desde la carpeta de Adam no pudo ejecutarse; se hizo una comprobación a mano).
+- Probar con una temporada real con muchos partidos, por si la gráfica de tendencia necesita ajustar la escala.
+
+NO SE HA HECHO (A PROPÓSITO)
+- Widget de «próximo partido»: una app instalada desde la web no puede tenerlo en el iPhone.
+- Unir a main, publicar, hacer push, reiniciar Jarvis: sin tu permiso.
