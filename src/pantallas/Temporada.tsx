@@ -2,13 +2,15 @@
 // hoja del día desde abajo (con «Abrir día» a pantalla completa), entrenos fijos de la semana, partidos sueltos o en lista y .ics.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { hoy, type Equipo, type Jugadora } from '../diario/diario';
-import { esSenior, palabras } from '../diario/tipo';
-import { leerSesiones } from '../sesiones/sesiones';
+import { palabras } from '../diario/tipo';
+import { leerSesiones, sesionesDe } from '../sesiones/sesiones';
+import { Familias } from './Familias';
+import { ConvocatoriaPartido } from './ConvocatoriaPartido';
 import { DIAS, DIAS_LARGOS, corta, cuadriculaMes, mesDe, nombreMes, sumarMeses } from '../temporada/fechas';
 import { escribirIcs } from '../temporada/ics';
 import {
   ETIQUETAS_BIEN, ETIQUETAS_MAL, notasDelBalance,
-  agendaDia, balanceLiga, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarFila, nuevaFila, ordenarClasificacion, puntosClasificacion, quitarFila, guardarTemporada, guardarTemporadas, itemsParaIcs, leerTemporadas, marcasDia,
+  COMPETICIONES, agendaDia, balanceDe, balanceLiga, cambiarFijoDia, competicionDe, faseDe, guardarEvento, guardarFase, guardarFijo, guardarFila, nuevaFila, ordenarClasificacion, puntosClasificacion, quitarFila, guardarTemporada, guardarTemporadas, itemsParaIcs, leerTemporadas, marcasDia,
   nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarEvento, quitarFase, quitarFijo, temporadaDe, temporadaPorDefecto,
   type Evento, type Fase, type Item, type Temporada as TemporadaDatos, type TipoEvento,
 } from '../temporada/temporada';
@@ -23,7 +25,7 @@ const NOMBRES_FASE = ['Pretemporada', 'Liga', 'Parón', 'Fase final'];
 const MINUTOS = [45, 60, 75, 90, 120];
 const colorFase = (i: number) => `hsl(${(i * 67 + 20) % 360} 55% 58%)`;
 
-type Vista = 'mes' | 'fases' | 'fijos' | 'importar' | 'liga';
+type Vista = 'mes' | 'fases' | 'fijos' | 'importar' | 'liga' | 'familias';
 
 function Atras({ volver, titulo }: { volver: () => void; titulo: string }) {
   return (
@@ -58,7 +60,7 @@ function EditorFase({ f, cambiar, borrar, volver }: { f: Fase; cambiar: (f: Fase
   );
 }
 
-function EditorFijos({ t, senior, cambiar, volver }: { t: TemporadaDatos; senior: boolean; cambiar: (t: TemporadaDatos) => void; volver: () => void }) {
+function EditorFijos({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: TemporadaDatos) => void; volver: () => void }) {
   return (
     <section className="pantalla">
       <Atras volver={volver} titulo="Entrenos de cada semana" />
@@ -75,7 +77,7 @@ function EditorFijos({ t, senior, cambiar, volver }: { t: TemporadaDatos; senior
               {(MINUTOS.includes(f.minutos) ? MINUTOS : [...MINUTOS, f.minutos].sort((a, b) => a - b)).map((m) => <option key={m} value={m}>{m} min</option>)}
             </select>
             <button className="chip" aria-label="Quitar este entreno" onClick={() => cambiar(quitarFijo(t, f.id))}>✕</button>
-            {senior && (
+            {(
               <div className="tp-fijo-extra">
                 <Entrada etiqueta="Pista"><input value={f.pista ?? ''} maxLength={80} placeholder="Pista B" onChange={(ev) => cambiar(guardarFijo(t, { ...f, pista: ev.target.value || undefined }))} /></Entrada>
                 <Entrada etiqueta="Vestuario"><input value={f.vestuario ?? ''} maxLength={80} placeholder="Vestuario 2" onChange={(ev) => cambiar(guardarFijo(t, { ...f, vestuario: ev.target.value || undefined }))} /></Entrada>
@@ -99,6 +101,13 @@ function Liga({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: Temporad
     <section className="pantalla">
       <Atras volver={volver} titulo="Liga" />
       <p className="meta">Tu balance sale de los partidos con resultado: <b>{b.g}–{b.p}</b> · puntos {b.pf}–{b.pc}{b.pf + b.pc > 0 ? ` (${b.pf - b.pc >= 0 ? '+' : ''}${b.pf - b.pc})` : ''}.</p>
+      <ul className="lista">
+        {COMPETICIONES.map(([id, nombre]) => {
+          const n = t.eventos.filter((e) => e.tipo === 'partido' && e.resultado && competicionDe(e) === id).length;
+          const r = balanceDe(t, id);
+          return n ? <li key={id} className="meta">{nombre}: <b>{r.g}–{r.p}</b> en {n} {n === 1 ? 'partido' : 'partidos'}</li> : null;
+        })}
+      </ul>
       <h3 className="sub">Clasificación</h3>
       <p className="meta">La apuntas tú tras cada jornada. Cuenta 2 puntos por victoria y 1 por derrota.</p>
       {filas.length === 0 && <p className="vacio">Todavía no hay equipos apuntados.</p>}
@@ -129,12 +138,11 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
   anotar: (notas: { id: string; texto: string }[]) => void; jugadoras: Jugadora[]; t: TemporadaDatos; fecha: string; completa: boolean; alternar: () => void; cerrar: () => void; cambiar: (t: TemporadaDatos) => void; abrirSesion: (id: string) => void; equipo: Equipo;
 }) {
   const pal = palabras(equipo);
-  const sen = esSenior(equipo);
   const [edita, setEdita] = useState<string | null>(null);
   const [lista, setLista] = useState<string | null>(null);
   const items = agendaDia(t, fecha);
   const fase = faseDe(t, fecha);
-  const sesiones = leerSesiones().filter((s) => s.equipo === equipo.nombre);
+  const sesiones = sesionesDe(leerSesiones(), equipo);
   const item = items.find((i) => i.clave === edita);
 
   const añadir = (tipo: TipoEvento) => {
@@ -196,8 +204,9 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
             <button className={e.casa === false ? 'chip on' : 'chip'} aria-pressed={e.casa === false} onClick={() => poner({ casa: false })}>Fuera</button>
           </div>
         )}
-        {sen && e.tipo === 'partido' && (
+        {e.tipo === 'partido' && (
           <div className="dos-botones">
+            <Entrada etiqueta="Competición"><div className="niveles filtro" role="group" aria-label="Competición">{COMPETICIONES.map(([id, nombre]) => <button key={id} className={competicionDe(e) === id ? 'chip on' : 'chip'} aria-pressed={competicionDe(e) === id} onClick={() => poner({ competicion: id === 'liga' ? undefined : id })}>{nombre}</button>)}</div></Entrada>
             <Entrada etiqueta="Jornada"><input inputMode="numeric" value={e.jornada ?? ''} placeholder="5" onChange={(ev) => { const n = Number(ev.target.value.replace(/\D/g, '')); poner({ jornada: n ? Math.min(99, n) : undefined }); }} /></Entrada>
             {e.casa === false && <Entrada etiqueta="Salida del viaje"><input type="time" value={e.salida ?? ''} onChange={(ev) => poner({ salida: ev.target.value || undefined })} /></Entrada>}
           </div>
@@ -205,13 +214,14 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
         <Entrada etiqueta="Pabellón o lugar"><input value={e.lugar} maxLength={60} placeholder="(opcional)" onChange={(ev) => poner({ lugar: ev.target.value })} /></Entrada>
         {e.tipo === 'otro' && <label className="marca-linea"><input type="checkbox" checked={!!e.libre} onChange={(ev) => poner({ libre: ev.target.checked || undefined })} /> Sin entreno ese día (festivo)</label>}
         {e.tipo !== 'otro' && selector(e.sesionId, (id) => poner({ sesionId: id }))}
-        {sen && e.tipo === 'partido' && (
+        {e.tipo === 'partido' && (
           <Entrada etiqueta="Plan de partido">
             <textarea rows={3} maxLength={600} value={e.plan ?? ''} placeholder="Defensa, jugadas y a quién buscar" onChange={(ev) => poner({ plan: ev.target.value || undefined })} />
           </Entrada>
         )}
-        {sen && e.tipo === 'partido' && <CompartirPlan e={e} equipo={equipo.nombre} />}
-        {sen && e.tipo === 'partido' && <EnDirecto e={e} jugadoras={jugadoras} poner={poner} faltas={reglasDe(equipo).faltas} />}
+        {e.tipo === 'partido' && <ConvocatoriaPartido e={e} jugadoras={jugadoras} poner={poner} />}
+        {e.tipo === 'partido' && <CompartirPlan e={e} equipo={equipo.nombre} jugadoras={jugadoras} />}
+        {e.tipo === 'partido' && <EnDirecto e={e} jugadoras={jugadoras} poner={poner} faltas={reglasDe(equipo).faltas} />}
         {e.tipo === 'partido' && <InformeRivalEditor e={e} eventos={t.eventos} equipo={equipo.nombre} poner={poner} enlazar={(id) => poner({ sesionId: id })} />}
         {e.tipo === 'partido' && (
           <>
@@ -282,7 +292,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
                     <span className="datos">
                       <b>{i.tipo === 'partido' ? `Partido · ${i.titulo || 'sin rival'}` : i.titulo || (i.tipo === 'entreno' ? 'Entreno' : 'Evento')}</b>
                       <span className="meta">
-                        {[sen && e?.jornada && `J${e.jornada}`, e?.tipo === 'partido' && (e.casa === false ? 'Fuera' : 'Casa'), sen && e?.casa === false && e.salida && `salida ${e.salida}`, e?.resultado && `${e.resultado.a}–${e.resultado.c}`, e?.lugar, sen && i.fijo?.pista, sen && i.fijo?.vestuario, sen && i.fijo?.objetivo, i.cancelado && 'cancelado', e?.libre && 'sin entreno'].filter(Boolean).join(' · ') || 'Toca para editar'}
+                        {[e?.competicion && COMPETICIONES.find(([id]) => id === e.competicion)?.[1], e?.jornada && `J${e.jornada}`, e?.tipo === 'partido' && (e.casa === false ? 'Fuera' : 'Casa'), e?.casa === false && e.salida && `salida ${e.salida}`, e?.resultado && `${e.resultado.a}–${e.resultado.c}`, e?.lugar, i.fijo?.pista, i.fijo?.vestuario, i.fijo?.objetivo, i.cancelado && 'cancelado', e?.libre && 'sin entreno'].filter(Boolean).join(' · ') || 'Toca para editar'}
                       </span>
                     </span>
                   </button>
@@ -369,7 +379,8 @@ export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion, anotar
     );
 
   if (vista === 'liga') return <Liga t={t} cambiar={cambiar} volver={() => setVista('mes')} />;
-  if (vista === 'fijos') return <EditorFijos t={t} senior={esSenior(equipo)} cambiar={cambiar} volver={() => setVista('mes')} />;
+  if (vista === 'familias') return <Familias equipo={equipo} t={t} jugadoras={jugadoras} volver={() => setVista('mes')} />;
+  if (vista === 'fijos') return <EditorFijos t={t} cambiar={cambiar} volver={() => setVista('mes')} />;
   if (vista === 'importar') return <ImportarCalendario t={t} volver={() => setVista('mes')} guardar={(n) => { cambiar(n); setVista('mes'); }} />;
   const fase = faseId ? t.fases.find((f) => f.id === faseId) : undefined;
   if (vista === 'fases' && fase)
@@ -426,9 +437,10 @@ export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion, anotar
       <div className="dos-botones">
         <button className="secundario" onClick={nuevaFaseEnMes}>＋ Fase</button>
         <button className="secundario" onClick={() => setVista('fijos')}>Entrenos de la semana</button>
-        {esSenior(equipo) && <button className="secundario" onClick={() => setVista('liga')}>Liga y clasificación</button>}
+        <button className="secundario" onClick={() => setVista('liga')}>Liga y clasificación</button>
         <button className="secundario" onClick={() => setVista('importar')}>Importar lista o .ics</button>
         <button className="secundario" onClick={exportar}>Exportar .ics</button>
+        <button className="secundario" onClick={() => setVista('familias')}>Familias y papeles</button>
       </div>
       {dia && <div className="tp-hueco" aria-hidden />}
       {dia && (
