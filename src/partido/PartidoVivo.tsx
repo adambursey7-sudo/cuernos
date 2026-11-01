@@ -6,6 +6,7 @@ import { leerEquipoActivo } from '../equipo/equipos';
 import { reglasDe } from '../reglas/reglas';
 import { totalPuntos } from '../temporada/directo';
 import { guardarEvento, guardarTemporada, guardarTemporadas, leerTemporadas, temporadaDe, type Evento } from '../temporada/temporada';
+import { tocar } from '../ui/tacto';
 import { MapaTiros, PanelMapa } from './MapaTiros';
 import { esTriple, tirosDeVivo } from './mapa';
 import {
@@ -92,7 +93,7 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
     return () => { cerrado = true; void cerrojo?.release().catch(() => undefined); };
   }, []);
 
-  const hacer = useCallback((j: Omit<Jugada, 'n' | 'c' | 's'>) => setP((x) => (x ? registrar(x, j, Date.now()) : x)), []);
+  const hacer = useCallback((j: Omit<Jugada, 'n' | 'c' | 's'>) => { tocar(); setP((x) => (x ? registrar(x, j, Date.now()) : x)); }, []);
   const cambio = useCallback((entra: string, sale: string) => { setP((x) => (x ? cambiar(x, entra, sale, Date.now()) : x)); setEntrando(null); setSel(entra); }, []);
 
   // Arrastrar a una jugadora del banquillo hasta una de la pista.
@@ -222,9 +223,8 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
           <b className={`reloj${restante(v, ahora) <= 60 ? ' poco' : ''}`} role="timer" aria-label={`Quedan ${reloj(restante(v, ahora))}`}>{reloj(restante(v, ahora))}</b>
           <button className={corriendo ? 'secundario' : 'principal'} disabled={fin} onClick={() => setP((x) => (x ? { ...x, vivo: x.vivo.corre ? parar(x.vivo, Date.now()) : arrancar(x.vivo, Date.now()) } : x))}>{corriendo ? 'Parar' : seg > 0 ? 'Seguir' : 'Empezar'}</button>
         </div>
-        <div className="eq rival"><span>Rival</span><b aria-label={`Rival ${p.rival}`}>{p.rival}</b>
-          <span className="mini-pad">{[1, 2, 3].map((n) => <button key={n} disabled={fin} onClick={() => hacer({ tipo: 'rival', v: n })} aria-label={`Rival suma ${n}`}>+{n}</button>)}</span>
-        </div>
+        <div className="eq rival"><span>Rival</span><b aria-label={`Rival ${p.rival}`}>{p.rival}</b></div>
+        <span className="mini-pad fila-rival"><em>Puntos del rival</em>{[1, 2, 3].map((n) => <button key={n} disabled={fin} onClick={() => hacer({ tipo: 'rival', v: n })} aria-label={`Rival suma ${n}`}>+{n}</button>)}</span>
       </section>
 
       <section className="vivo-estado" aria-label="Faltas y tiempos muertos">

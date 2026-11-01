@@ -9,6 +9,7 @@ import { Pista } from '../pizarra/Pista';
 import { buscarSistema } from '../sistemas/almacen';
 import { fichaDeBloque, idBloqueFicha, leerFichas, type Ficha } from '../recursos/fichas';
 import { Entrenando, crearAudio } from './Entrenando';
+import { useAvisoDeshacer } from '../ui/Toast';
 import {
   DURACIONES, PASO_MINUTOS, bloqueDe, conMinutos, conTipo, diferencia, guardarSesiones, huerfanos, inicios, leerSesiones, mover, nuevaSesion, quitar,
   reparto, sesionesDe, total, tituloBloque, type Sesion,
@@ -102,6 +103,7 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
   // Si llega un audio ya creado (botón Cronómetro de Inicio), el cronómetro arranca directamente.
   const [cronometro, setCronometro] = useState<ReturnType<typeof crearAudio> | false>(arranque ?? false);
   useEffect(() => { if (arranque) gastado(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const { avisar, aviso } = useAvisoDeshacer();
   const desde = inicios(s);
   const perdidos = huerfanos(s);
   // Reordenar arrastrando el asa de un bloque hasta otro.
@@ -184,7 +186,7 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
                       onPointerCancel={() => { arrastre.current = null; setSobre(null); }}>≡</button>
                     <button className="chip" onClick={() => cambiar(mover(s, i, -1))} disabled={i === 0} aria-label="Subir">▲</button>
                     <button className="chip" onClick={() => cambiar(mover(s, i, 1))} disabled={i === s.bloques.length - 1} aria-label="Bajar">▼</button>
-                    <button className="chip" onClick={() => cambiar(quitar(s, i))} aria-label="Quitar de la sesión">✕</button>
+                    <button className="chip" onClick={() => { const antes = s; cambiar(quitar(s, i)); avisar('Ejercicio quitado', () => cambiar(antes)); }} aria-label="Quitar de la sesión">✕</button>
                   </div>
                   <input className="objetivo-bloque" value={b.objetivo ?? ''} maxLength={80} placeholder="Objetivo de este bloque" aria-label="Objetivo del bloque" onChange={(ev) => cambiar({ ...s, bloques: s.bloques.map((x, j) => (j === i ? { ...x, objetivo: ev.target.value || undefined } : x)) })} />
                   <div className="fila-chips" role="group" aria-label="Intensidad">
@@ -204,6 +206,7 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
         </ol>
       )}
       <button className="principal ancho" onClick={() => setAnadiendo(true)}>+ Añadir ejercicio</button>
+      {aviso}
       {s.bloques.length > 0 && <button className="principal ancho empezar" onClick={() => setCronometro(crearAudio())}>▶ Empezar el entrenamiento</button>}
     </section>
   );

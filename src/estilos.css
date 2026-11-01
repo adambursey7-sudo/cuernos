@@ -879,3 +879,22 @@ button:active:not(:disabled) { transform: scale(0.97); }
 .leyenda-carga i.punto-partido { border-radius: 50%; width: 9px; height: 9px; }
 .tp-carga { border-radius: var(--r-md); } .tp-carga summary { min-height: 44px; display: flex; align-items: center; font-weight: 800; color: var(--principal); cursor: pointer; }
 .chip.pequeno.on:not([class*='tipo-']) { background: var(--principal); border-color: var(--principal); color: var(--sobre-principal); }
+
+/* ===== Acabado de app nativa (loop Pro, tramo 9) ===== */
+.vivo-marcador .fila-rival { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr repeat(3, minmax(56px, 72px)); align-items: center; gap: 6px; padding-top: 6px; border-top: 1px solid #fff8ee22; }
+.vivo-marcador .fila-rival em { font: 800 0.7rem/1 var(--display); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; font-style: normal; }
+.vivo-marcador .fila-rival button { min-width: 56px; min-height: 44px; }
+.vivo-marcador .centro button { min-height: 44px; }
+.nueva { min-height: 44px; }
+.nombre-sesion, .busqueda input, .color input { min-height: 44px; }
+.color input { width: 44px; height: 44px; }
+.fila-previa input[type='checkbox'], .marca-linea input { min-width: 24px; min-height: 24px; }
+/* Foco visible en todo lo que se puede teclear o tocar, no solo en botones */
+select:focus-visible, textarea:focus-visible, summary:focus-visible, [tabindex]:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--principal); outline-offset: 2px; }
+/* Barra «partido en directo»: la acción principal siempre a mano mientras se juega */
+.barra-directo { position: sticky; bottom: calc(74px + env(safe-area-inset-bottom)); z-index: 12; display: flex; align-items: center; justify-content: center; gap: var(--e2); min-height: 52px; margin: 0 max(10px, env(safe-area-inset-left)) 6px; padding: 0 var(--e4); border: none; border-radius: var(--r-pill); background: var(--defensa); color: #fff; font: 800 0.95rem/1.1 var(--display); text-transform: uppercase; box-shadow: var(--sombra-2); }
+.barra-directo i { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: late 1.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .barra-directo i { animation: none; } }
+/* Aviso con «Deshacer» */
+.toast { position: fixed; left: 50%; bottom: calc(76px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 70; display: flex; align-items: center; gap: var(--e3); max-width: min(92vw, 520px); padding: 6px 6px 6px var(--e4); border-radius: var(--r-pill); background: var(--texto); color: var(--fondo); box-shadow: var(--sombra-2); animation: entra var(--t-normal) var(--suave); }
+.toast button { min-height: 44px; padding: 0 var(--e4); border: none; border-radius: var(--r-pill); background: color-mix(in srgb, var(--fondo) 18%, transparent); color: inherit; font-weight: 800; }

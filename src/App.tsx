@@ -7,6 +7,7 @@ import { Ejercicio } from './pantallas/Ejercicio';
 import { Esqueleto } from './ui/Vacio';
 import { Limite } from './ui/Limite';
 import { alPedirPartido } from './partido/abrir';
+import { BarraDirecto } from './partido/BarraDirecto';
 const PartidoVivo = lazy(() => import('./partido/PartidoVivo').then((m) => ({ default: m.PartidoVivo })));
 import { Inicio } from './pantallas/Inicio';
 import { Sesiones } from './pantallas/Sesiones';
@@ -153,6 +154,7 @@ export function App() {
       {!enLinea && <p className="sin-red" role="status">Sin conexión: todo sigue funcionando, menos abrir enlaces.</p>}
       <main key={pestana === 'equipo' ? pestana : `${pestana}-${activoId}`} className="entra"><Limite><Suspense fallback={<Esqueleto />}>{contenido}</Suspense></Limite></main>
       {partidoId && <Limite><Suspense fallback={<Esqueleto />}><PartidoVivo key={partidoId} eventoId={partidoId} salir={() => setPartidoId(null)} /></Suspense></Limite>}
+      {!partidoId && <BarraDirecto abrir={setPartidoId} />}
       <nav className="pestanas" aria-label="Secciones">
         {PESTANAS.map((p) => (
           <button key={p.id} className={p.id === pestana ? 'on' : ''} aria-current={p.id === pestana ? 'page' : undefined} onClick={() => { setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>
