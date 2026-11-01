@@ -17,6 +17,7 @@ import {
 import { ImportarCalendario } from './ImportarCalendario';
 import { InformeRivalEditor } from './InformeRival';
 import { EnDirecto } from './EnDirecto';
+import { DisponibilidadDia } from './DisponibilidadDia';
 import { reglasDe } from '../reglas/reglas';
 import { CompartirPlan } from './CompartirPlan';
 
@@ -323,6 +324,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
                       </div>
                     );
                   })()}
+                  {(i.tipo === 'partido' || i.tipo === 'entreno') && !i.cancelado && jugadoras.length > 0 && <DisponibilidadDia item={i} t={t} jugadoras={jugadoras} equipo={equipo.nombre} cambiar={cambiar} />}
                   {e?.tipo === 'partido' && e.balance && completa && <p className="nota-jugadora">{e.balance}</p>}
                 </li>
               );

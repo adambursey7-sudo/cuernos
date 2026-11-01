@@ -5,6 +5,7 @@ import { hoy, leerDiario, plantilla } from '../diario/diario';
 import { colorLegible } from '../equipo/modelo';
 import { EscudoEquipo } from '../equipo/EscudoEquipo';
 import { leerEquipoActivo } from '../equipo/equipos';
+import { resumir } from '../disponibilidad/disponibilidad';
 import { asistenciaSemana, balance, cuentaAtras, haceCuanto, jugados, racha, textoRacha } from '../estadistica/resumen';
 import { IconoConvocatoria, IconoLista, IconoPartido } from '../Iconos';
 import { leerSesiones } from '../sesiones/sesiones';
@@ -34,7 +35,7 @@ function proximoEntreno(t: NonNullable<ReturnType<typeof temporadaDe>>, desde: s
   return undefined;
 }
 
-function Hero({ item, ahora, verDia, abrirSesion }: { item: Item; ahora: Date; verDia: (f: string) => void; abrirSesion: (id: string) => void }) {
+function Hero({ item, ahora, disp, verDia, abrirSesion }: { item: Item; ahora: Date; disp?: ReturnType<typeof resumir>; verDia: (f: string) => void; abrirSesion: (id: string) => void }) {
   const c = cuentaAtras(item.fecha, item.hora, ahora);
   const sesion = item.sesionId ? leerSesiones().find((x) => x.id === item.sesionId) : undefined;
   const partido = item.tipo === 'partido';
@@ -46,6 +47,11 @@ function Hero({ item, ahora, verDia, abrirSesion }: { item: Item; ahora: Date; v
         {partido && item.evento ? (item.evento.casa === false ? 'Fuera' : 'En casa') : ''}
         {item.evento?.lugar ? `${partido ? ' · ' : ''}${item.evento.lugar}` : ''}
       </p>
+      {disp && (
+        <p className="disp-hero" aria-label="Disponibilidad">
+          <b>{disp.si.length}</b> van · <b>{disp.no.length}</b> no · <b>{disp.quiza.length}</b> quizá · <b>{disp.faltan.length}</b> sin contestar
+        </p>
+      )}
       {c.enMarcha ? (
         <span className="en-marcha">En marcha ahora</span>
       ) : (
@@ -98,7 +104,7 @@ export function Panel({ verDia, abrirSesion }: { verDia: (fecha: string) => void
       </div>
 
       {item ? (
-        <Hero item={item} ahora={ahora} verDia={verDia} abrirSesion={abrirSesion} />
+        <Hero item={item} ahora={ahora} disp={t && item ? resumir(t.disponibilidad?.[item.clave], plantilla(leerDiario(), equipo.id).map((j) => j.id)) : undefined} verDia={verDia} abrirSesion={abrirSesion} />
       ) : (
         <Vacio dibujo="calendario" titulo="Aún no hay nada apuntado" texto="Apunta tus entrenos y partidos y aquí verás siempre el próximo, con cuenta atrás." accion="Apuntar un entreno" alPulsar={() => verDia(hoyTexto)} />
       )}

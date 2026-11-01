@@ -5,6 +5,7 @@ import { diaSemana, diasEntre, esFecha, esHora, sumarDias } from './fechas';
 import { limpiarInforme, type InformeRival } from './rival';
 import { limpiarDirecto, type Directo } from './directo';
 import { limpiarVivo, type Vivo } from '../partido/vivo';
+import { limpiarDisponibilidad, sinRespuestas, type Disponibilidad } from '../disponibilidad/disponibilidad';
 
 const CLAVE = 'horns.temporada';
 
@@ -105,6 +106,8 @@ export interface Temporada {
   excepciones: Record<string, Excepcion>;
   /** Asistencia: por clave de entreno (la de `Item`), ids de las jugadoras que vinieron. Si no hay clave, no se ha pasado lista. */
   asistencia?: Record<string, string[]>;
+  /** Voy / no voy / quizá de cada jugadora a cada partido o entreno (por clave de `Item`). */
+  disponibilidad?: Disponibilidad;
   /** Clasificación de la liga, apuntada a mano. */
   clasificacion?: FilaClasificacion[];
   /** Temporadas cerradas de este equipo (la más reciente, primero). */
@@ -242,6 +245,7 @@ export function limpiarTemporada(t: unknown): Temporada | null {
     equipoId: x.equipoId, inicio: x.inicio, fin: x.fin < x.inicio ? x.inicio : x.fin,
     fases: lista(x.fases, limpiaFase), fijos: lista(x.fijos, limpiaFijo), eventos: lista(x.eventos, limpiaEvento), excepciones: ex,
     ...(Object.keys(asistencia).length ? { asistencia } : {}),
+    ...(limpiarDisponibilidad(x.disponibilidad) ? { disponibilidad: limpiarDisponibilidad(x.disponibilidad) } : {}),
     ...(Array.isArray(x.clasificacion) && x.clasificacion.length ? { clasificacion: lista(x.clasificacion, limpiaFila) } : {}),
     ...(anteriores.length ? { anteriores } : {}),
   };
@@ -318,7 +322,17 @@ export function marcasDia(t: Temporada, fecha: string): { partido: boolean; entr
 export const guardarEvento = (t: Temporada, e: Evento): Temporada => ({
   ...t, eventos: t.eventos.some((x) => x.id === e.id) ? t.eventos.map((x) => (x.id === e.id ? e : x)) : [...t.eventos, e],
 });
-export const quitarEvento = (t: Temporada, id: string): Temporada => ({ ...t, eventos: t.eventos.filter((e) => e.id !== id), ...sinAsistencia(t, (k) => k === id) });
+export const quitarEvento = (t: Temporada, id: string): Temporada => ({ ...t, eventos: t.eventos.filter((e) => e.id !== id), ...sinAsistencia(t, (k) => k === id), ...conRespuestas(t, (k) => k === id) });
+
+function conRespuestas(t: Temporada, quitar: (clave: string) => boolean): Pick<Temporada, 'disponibilidad'> {
+  return t.disponibilidad ? { disponibilidad: sinRespuestas(t.disponibilidad, quitar) } : {};
+}
+
+/** Guarda la disponibilidad de la temporada (ya calculada por `ponerRespuesta`). */
+export const conDisponibilidad = (t: Temporada, d: Disponibilidad | undefined): Temporada => {
+  const { disponibilidad: _, ...resto } = t;
+  return d ? { ...resto, disponibilidad: d } : resto;
+};
 
 function sinAsistencia(t: Temporada, quitar: (clave: string) => boolean): Pick<Temporada, 'asistencia'> {
   if (!t.asistencia) return {};
@@ -355,6 +369,7 @@ export const quitarFijo = (t: Temporada, id: string): Temporada => ({
   fijos: t.fijos.filter((f) => f.id !== id),
   excepciones: Object.fromEntries(Object.entries(t.excepciones).filter(([k]) => !k.startsWith(`${id}|`))),
   ...sinAsistencia(t, (k) => k.startsWith(`${id}|`)),
+  ...conRespuestas(t, (k) => k.startsWith(`${id}|`)),
 });
 
 export function cambiarFijoDia(t: Temporada, item: Item, cambio: Excepcion): Temporada {

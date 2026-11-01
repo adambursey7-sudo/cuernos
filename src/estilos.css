@@ -841,3 +841,17 @@ button:active:not(:disabled) { transform: scale(0.97); }
 .cifras, .cifras section, .panel-mapa, .panel { grid-template-columns: minmax(0, 1fr); }
 .cifras select { width: 100%; max-width: 100%; }
 .cifras .anillos { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* ===== Disponibilidad (loop Pro, tramo 6) ===== */
+.disponibilidad { display: grid; gap: var(--e2); padding: 0 6px 6px; }
+.resp-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.resp-lista li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--e2); padding: 6px 8px; border-radius: var(--r-sm); background: var(--fondo); border: 1px solid var(--borde); }
+.resp-quien { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.resp-botones { display: inline-flex; gap: 4px; }
+.resp { min-height: 44px; min-width: 46px; padding: 0 8px; border-radius: var(--r-sm); border: 1.5px solid var(--borde); background: none; font-size: 0.78rem; font-weight: 800; }
+.resp.si.on { background: var(--ok); border-color: var(--ok); color: #0c2a16; }
+.resp.no.on { background: var(--defensa); border-color: var(--defensa); color: #fff; }
+.resp.quiza.on { background: var(--aviso); border-color: var(--aviso); color: #1a1205; }
+
+.hero .disp-hero { margin: 0; font-size: 0.85rem; opacity: 0.95; }
+.hero .disp-hero b { font: 900 1rem/1 var(--display); }

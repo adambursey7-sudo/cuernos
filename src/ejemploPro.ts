@@ -64,7 +64,8 @@ export function cargarEjemploPro(hoyTexto: string): void {
     }
   }
   guardarDiario({ equipos: [m.equipo], jugadoras: m.jugadoras });
-  guardarTemporadas([{ ...m.temporada, eventos: [...jugados, proximo], asistencia }]);
+  const disponibilidad = { 'ev-pro-prox': Object.fromEntries(ids.slice(0, 8).map((id, k) => [id, k === 3 ? 'no' : k === 6 ? 'quiza' : 'si'])) as Record<string, 'si' | 'no' | 'quiza'> };
+  guardarTemporadas([{ ...m.temporada, eventos: [...jugados, proximo], asistencia, disponibilidad }]);
   localStorage.setItem('horns.equipoActivo', m.equipo.id);
   // En desarrollo no hace falta entrar ni ver el vídeo de entrada para sacar capturas.
   localStorage.setItem('horns.acceso', 'prueba');
