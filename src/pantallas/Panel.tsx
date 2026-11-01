@@ -10,7 +10,7 @@ import { IconoConvocatoria, IconoLista, IconoPartido } from '../Iconos';
 import { leerSesiones } from '../sesiones/sesiones';
 import { sumarDias } from '../temporada/fechas';
 import { cuando, siguiente } from '../temporada/siguiente';
-import { agendaDia, leerTemporadas, proximoPartido, temporadaDe, type Item } from '../temporada/temporada';
+import { agendaDia, leerTemporadas, temporadaDe, type Item } from '../temporada/temporada';
 import { aspectoClaro, leerColores, paraClaro, textoSobre } from '../temas';
 import { Anillo } from '../ui/Anillo';
 import { Vacio } from '../ui/Vacio';
@@ -34,12 +34,7 @@ function proximoEntreno(t: NonNullable<ReturnType<typeof temporadaDe>>, desde: s
   return undefined;
 }
 
-function Hero({ item, verDia, abrirSesion }: { item: Item; verDia: (f: string) => void; abrirSesion: (id: string) => void }) {
-  const [ahora, setAhora] = useState(() => new Date());
-  useEffect(() => {
-    const id = setInterval(() => setAhora(new Date()), 30_000);
-    return () => clearInterval(id);
-  }, []);
+function Hero({ item, ahora, verDia, abrirSesion }: { item: Item; ahora: Date; verDia: (f: string) => void; abrirSesion: (id: string) => void }) {
   const c = cuentaAtras(item.fecha, item.hora, ahora);
   const sesion = item.sesionId ? leerSesiones().find((x) => x.id === item.sesionId) : undefined;
   const partido = item.tipo === 'partido';
@@ -70,13 +65,19 @@ function Hero({ item, verDia, abrirSesion }: { item: Item; verDia: (f: string) =
 
 export function Panel({ verDia, abrirSesion }: { verDia: (fecha: string) => void; abrirSesion: (id: string) => void }) {
   const [tele, setTele] = useState(false);
+  // Cada 30 segundos se repinta todo el panel: la cuenta atrás avanza y, al pasar un partido, «lo siguiente» cambia solo.
+  const [ahora, setAhora] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setAhora(new Date()), 30_000);
+    return () => clearInterval(id);
+  }, []);
   const equipo = leerEquipoActivo();
   if (!equipo) {
     return <Vacio dibujo="gente" titulo="Aún no tienes equipo" texto="Crea tu equipo en la pestaña Equipo y aquí verás el próximo partido, la racha y la asistencia." />;
   }
   const t = temporadaDe(leerTemporadas(), equipo.id);
   const hoyTexto = hoy();
-  const item = t ? siguiente(t, hoyTexto, new Date().toTimeString().slice(0, 5)) : undefined;
+  const item = t ? siguiente(t, hoyTexto, ahora.toTimeString().slice(0, 5)) : undefined;
   const js = jugados(t);
   const bal = balance(js);
   const r = racha(js);
@@ -84,7 +85,8 @@ export function Panel({ verDia, abrirSesion }: { verDia: (fecha: string) => void
   const jugadoras = plantilla(leerDiario(), equipo.id).length;
   const asis = asistenciaSemana(t, hoyTexto, jugadoras);
   const entreno = t ? proximoEntreno(t, hoyTexto) : undefined;
-  const partido = t ? proximoPartido(t, hoyTexto) : undefined;
+  // El partido del día que ya se terminó en directo no vuelve a salir como «el siguiente».
+  const partido = t ? t.eventos.filter((e) => e.tipo === 'partido' && e.fecha >= hoyTexto && !e.vivo?.fin).sort((a, b) => a.fecha.localeCompare(b.fecha) || a.hora.localeCompare(b.hora))[0] : undefined;
   return (
     <div className="panel" style={acentoDe(equipo.color)}>
       <div className="panel-equipo">
@@ -96,7 +98,7 @@ export function Panel({ verDia, abrirSesion }: { verDia: (fecha: string) => void
       </div>
 
       {item ? (
-        <Hero item={item} verDia={verDia} abrirSesion={abrirSesion} />
+        <Hero item={item} ahora={ahora} verDia={verDia} abrirSesion={abrirSesion} />
       ) : (
         <Vacio dibujo="calendario" titulo="Aún no hay nada apuntado" texto="Apunta tus entrenos y partidos y aquí verás siempre el próximo, con cuenta atrás." accion="Apuntar un entreno" alPulsar={() => verDia(hoyTexto)} />
       )}

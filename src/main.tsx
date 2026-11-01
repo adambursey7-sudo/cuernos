@@ -25,18 +25,19 @@ registerSW({
 });
 
 // Solo en desarrollo: ?ejemplo=pro llena la app con un equipo de ejemplo para ver las pantallas con datos.
-if (import.meta.env.DEV && new URLSearchParams(location.search).get('ejemplo') === 'pro') {
-  const { cargarEjemploPro } = await import('./ejemploPro');
-  const { hoy } = await import('./diario/diario');
-  cargarEjemploPro(hoy());
-  const asp = new URLSearchParams(location.search).get('aspecto');
-  if (asp) localStorage.setItem('horns.aspecto', asp);
-  history.replaceState(null, '', location.pathname);
-}
+const semilla: Promise<void> = import.meta.env.DEV && new URLSearchParams(location.search).get('ejemplo') === 'pro'
+  ? Promise.all([import('./ejemploPro'), import('./diario/diario')]).then(([{ cargarEjemploPro }, { hoy }]) => {
+      cargarEjemploPro(hoy());
+      const asp = new URLSearchParams(location.search).get('aspecto');
+      if (asp) localStorage.setItem('horns.aspecto', asp);
+      history.replaceState(null, '', location.pathname);
+    })
+  : Promise.resolve();
+
 aplicarColores(leerColores());
 // «Como el móvil»: si el móvil cambia de claro a oscuro con la app abierta, la app lo sigue.
 try {
-  matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => aplicarColores(leerColores(), false));
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { if (!document.documentElement.dataset.visor) aplicarColores(leerColores(), false); });
 } catch {
   /* navegador sin matchMedia: el aspecto cambia al reabrir */
 }
@@ -44,10 +45,12 @@ aplicarLectura(leerLectura(), false);
 const raiz = createRoot(document.getElementById('raiz')!);
 
 // Un enlace de jugada (…#j= o …#p=) abre solo el visor, con los colores de quien la manda y sin guardarlos.
-leerEnlace(location.hash)
+semilla
+  .then(() => aplicarColores(leerColores()))
+  .then(() => leerEnlace(location.hash))
   .then(
     (compartida) => {
-      if (compartida?.colores) aplicarColores(compartida.colores, false);
+      if (compartida?.colores) { document.documentElement.dataset.visor = '1'; aplicarColores(compartida.colores, false); }
       return compartida ? <Visor datos={compartida} /> : <ConIntro><ConAcceso><App /></ConAcceso></ConIntro>;
     },
     () => <Visor datos="roto" />,

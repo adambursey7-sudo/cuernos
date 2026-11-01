@@ -19,6 +19,9 @@ const etiqueta = (j?: Jugadora) => (j ? `#${j.numero || '?'}` : '#?');
 function inicial(e: Evento, roster: Jugadora[], duracion: number): Partido {
   const quinteto = (e.quinteto ?? []).filter((id) => roster.some((j) => j.id === id));
   const base = e.vivo ?? nuevoVivo(quinteto.length === 5 ? quinteto : roster.slice(0, 5).map((j) => j.id), duracion);
+  // Si la plantilla cambió desde que se guardó (convocatoria, lesión), la pista se rehace con quien sigue disponible.
+  const quedan = base.enPista.filter((id) => roster.some((j) => j.id === id));
+  base.enPista = quedan.length < Math.min(5, roster.length) ? [...quedan, ...roster.filter((j) => !quedan.includes(j.id)).map((j) => j.id)].slice(0, 5) : quedan;
   return { directo: e.directo ?? {}, rival: e.resultado?.c ?? 0, vivo: base };
 }
 
@@ -49,9 +52,12 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
   useEffect(() => { if (!aviso) return; const id = setTimeout(() => setAviso(''), 2500); return () => clearTimeout(id); }, [aviso]);
   const corriendo = !!p?.vivo.corre;
 
-  // El partido se guarda en la temporada con cada jugada: si se cierra la app, no se pierde nada.
+  // El partido se guarda en la temporada a los 0,3 segundos de cada jugada (y al salir): si se cierra la app, no se pierde nada.
+  const pendienteGuardar = useRef<(() => void) | null>(null);
   useEffect(() => {
     if (!p || !datos) return;
+    const guardar = () => {
+    pendienteGuardar.current = null;
     const lista = leerTemporadas();
     const t = temporadaDe(lista, equipo!.id);
     if (!t) return;
@@ -59,7 +65,12 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
     const hay = vivo.cronologia.length > 0 || vivo.segundos > 0 || vivo.corre;
     if (!hay) return;
     guardarTemporadas(guardarTemporada(lista, guardarEvento(t, { ...datos.e, ...(t.eventos.find((x) => x.id === eventoId) ?? {}), directo: p.directo, resultado: { a: totalPuntos(p.directo), c: p.rival }, vivo })));
+    };
+    pendienteGuardar.current = guardar;
+    const id = setTimeout(guardar, 300);
+    return () => clearTimeout(id);
   }, [p, datos, equipo, eventoId]);
+  useEffect(() => () => pendienteGuardar.current?.(), []);
 
   // Reloj: se repinta cada cuarto de segundo mientras corre y se para solo al acabar el cuarto.
   useEffect(() => {
@@ -74,8 +85,11 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
   // La pantalla no se apaga mientras se juega.
   useEffect(() => {
     let cerrojo: { release: () => Promise<void> } | undefined;
-    (navigator as Navigator & { wakeLock?: { request: (t: 'screen') => Promise<{ release: () => Promise<void> }> } }).wakeLock?.request('screen').then((c) => { cerrojo = c; }).catch(() => undefined);
-    return () => { void cerrojo?.release().catch(() => undefined); };
+    let cerrado = false;
+    (navigator as Navigator & { wakeLock?: { request: (t: 'screen') => Promise<{ release: () => Promise<void> }> } }).wakeLock?.request('screen')
+      .then((c) => { if (cerrado) void c.release().catch(() => undefined); else cerrojo = c; })
+      .catch(() => undefined);
+    return () => { cerrado = true; void cerrojo?.release().catch(() => undefined); };
   }, []);
 
   const hacer = useCallback((j: Omit<Jugada, 'n' | 'c' | 's'>) => setP((x) => (x ? registrar(x, j, Date.now()) : x)), []);
