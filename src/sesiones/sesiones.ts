@@ -10,6 +10,10 @@ export interface Bloque {
   ejercicio: string;
   minutos: number;
   tipo: TipoEjercicio;
+  /** Qué se busca en este bloque (opcional). */
+  objetivo?: string;
+  /** 1 suave, 2 media, 3 alta; sin dato, media. */
+  intensidad?: 1 | 2 | 3;
 }
 
 export interface Sesion {
@@ -22,6 +26,9 @@ export interface Sesion {
   /** Duración prevista del entrenamiento, en minutos. */
   duracion: number;
   bloques: Bloque[];
+  /** Pista o espacio donde se hace (opcional) y material extra a mano, separado por comas. */
+  pista?: string;
+  material?: string;
 }
 
 export const PASO_MINUTOS = 5;
@@ -109,7 +116,24 @@ export function alinearSesiones(sesiones: Sesion[], equipos: { id: string; nombr
 }
 
 /** Deja solo las sesiones válidas (también al cargar una copia). */
-export const limpiarSesiones = (l: unknown): Sesion[] => (Array.isArray(l) ? l.filter(esSesion) : []);
+export const limpiarSesiones = (l: unknown): Sesion[] => (Array.isArray(l) ? l.filter(esSesion).map(limpiarExtras) : []);
+
+/** Quita lo raro de los datos opcionales de una sesión (objetivo, intensidad, pista y material). */
+function limpiarExtras(s: Sesion): Sesion {
+  const corto = (v: unknown, n: number) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, n) : undefined);
+  const { pista, material, bloques, ...resto } = s;
+  const p = corto(pista, 60);
+  const m = corto(material, 200);
+  return {
+    ...resto,
+    ...(p ? { pista: p } : {}),
+    ...(m ? { material: m } : {}),
+    bloques: bloques.map(({ objetivo, intensidad, ...b }) => {
+      const o = corto(objetivo, 80);
+      return { ...b, ...(o ? { objetivo: o } : {}), ...(intensidad === 1 || intensidad === 2 || intensidad === 3 ? { intensidad } : {}) };
+    }),
+  };
+}
 
 /** Junta las de una copia con las actuales: si coincide el id, gana la copia. */
 export const juntarSesiones = (actuales: Sesion[], copia: Sesion[]): Sesion[] => {

@@ -856,3 +856,26 @@ button:active:not(:disabled) { transform: scale(0.97); }
 .hero .disp-hero { margin: 0; font-size: 0.85rem; opacity: 0.95; }
 .hero .disp-hero b { font: 900 1rem/1 var(--display); }
 .ajustes-jugada { flex-wrap: wrap; } .ajustes-jugada .guardar { flex: 1 1 100%; min-height: 52px; } .ajustes-jugada label { flex: 1 1 40%; min-width: 0; } .ajustes-jugada select { min-width: 0; max-width: 100%; min-height: 44px; }
+
+/* ===== Planificador (loop Pro, tramo 8) ===== */
+.resumen-sesion { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0; }
+.resumen-sesion div { display: grid; gap: 2px; padding: var(--e2) 4px; border-radius: var(--r-sm); background: var(--superficie); border: 1px solid var(--borde); text-align: center; }
+.resumen-sesion dt { font: 800 0.6rem/1.1 var(--display); text-transform: uppercase; letter-spacing: 0.06em; color: var(--tenue); }
+.resumen-sesion dd { margin: 0; font: 900 1.15rem/1.1 var(--display); }
+.bloque.sobre .cuerpo { outline: 3px dashed var(--principal); outline-offset: 2px; }
+.chip.asa { font-size: 1.3rem; cursor: grab; min-width: 48px; }
+.objetivo-bloque { width: 100%; min-height: 40px; padding: 6px 10px; border-radius: var(--r-sm); border: 1.5px solid var(--borde); background: var(--fondo); color: var(--texto); font: inherit; font-size: 0.92rem; }
+.plantillas-semana { display: grid; gap: var(--e2); }
+.tarjeta-plantilla { display: grid; gap: 2px; text-align: left; padding: var(--e3); border-radius: var(--r-md); background: var(--superficie); border: 1px solid var(--borde); box-shadow: var(--sombra-1); }
+.tarjeta-plantilla b { font: 800 1.05rem/1.2 var(--display); text-transform: uppercase; }
+.carga-semanal { display: grid; gap: var(--e2); grid-template-columns: minmax(0, 1fr); }
+.carga-semanal svg { width: 100%; height: auto; background: var(--superficie); border-radius: var(--r-md); border: 1px solid var(--borde); }
+.carga-semanal .rejilla { stroke: var(--borde); }
+.carga-semanal .eje { font: 700 8.5px var(--body); fill: var(--tenue); }
+.carga-semanal .hoy rect { stroke: var(--texto); stroke-width: 1.5; }
+.carga-semanal .punto-partido, .leyenda-carga .punto-partido { fill: var(--texto); background: var(--texto); }
+.leyenda-carga { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 0.8rem; color: var(--tenue); }
+.leyenda-carga i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+.leyenda-carga i.punto-partido { border-radius: 50%; width: 9px; height: 9px; }
+.tp-carga { border-radius: var(--r-md); } .tp-carga summary { min-height: 44px; display: flex; align-items: center; font-weight: 800; color: var(--principal); cursor: pointer; }
+.chip.pequeno.on:not([class*='tipo-']) { background: var(--principal); border-color: var(--principal); color: var(--sobre-principal); }

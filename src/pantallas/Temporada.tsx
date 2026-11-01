@@ -17,6 +17,8 @@ import {
 import { ImportarCalendario } from './ImportarCalendario';
 import { InformeRivalEditor } from './InformeRival';
 import { EnDirecto } from './EnDirecto';
+import { CargaSemanal } from './CargaSemanal';
+import { PLANTILLAS_SEMANA, aplicarPlantillaSemana } from '../sesiones/plan';
 import { DisponibilidadDia } from './DisponibilidadDia';
 import { reglasDe } from '../reglas/reglas';
 import { CompartirPlan } from './CompartirPlan';
@@ -66,6 +68,19 @@ function EditorFijos({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: T
     <section className="pantalla">
       <Atras volver={volver} titulo="Entrenos de cada semana" />
       <p className="meta">Se repiten toda la temporada. Los festivos y los parones los quitan solos; un día suelto se cancela o se cambia desde el calendario.</p>
+      <section aria-label="Plantillas de semana">
+        <h2 className="sub">Plantillas de semana</h2>
+        <div className="plantillas-semana">
+          {PLANTILLAS_SEMANA.map((p) => (
+            <button key={p.id} className="tarjeta-plantilla" onClick={() => cambiar(aplicarPlantillaSemana(t, p))}>
+              <b>{p.nombre}</b>
+              <span className="meta">{p.idea}</span>
+              <span className="meta">{p.entrenos.map((e) => `${DIAS_LARGOS[e.dia].slice(0, 3)} ${e.hora}`).join(' · ')}</span>
+            </button>
+          ))}
+        </div>
+        {t.fijos.length > 0 && <p className="meta">Al elegir una plantilla se cambian los entrenos de abajo (la pista y el vestuario del mismo día se conservan).</p>}
+      </section>
       {t.fijos.length === 0 && <p className="vacio">Todavía no hay ninguno.</p>}
       <ul className="lista">
         {[...t.fijos].sort((a, b) => a.dia - b.dia || a.hora.localeCompare(b.hora)).map((f) => (
@@ -421,6 +436,7 @@ export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion, anotar
         </div>
       )}
       {faseHoy && <p className="meta"><b>{faseHoy.nombre || 'Fase'}</b>{faseHoy.objetivo ? ` · Objetivo: ${faseHoy.objetivo}` : ''}{faseHoy.trabajar ? ` · Trabajar: ${faseHoy.trabajar}` : ''}</p>}
+      <details className="tp-carga"><summary>Carga por semana</summary><CargaSemanal t={t} /></details>
       <div className="tp-mes">
         <button className="chip" onClick={() => setMes(sumarMeses(mes, -1))} aria-label="Mes anterior">‹</button>
         <h3>{nombreMes(mes)}</h3>

@@ -11,6 +11,7 @@ import { PanelMapa } from '../partido/MapaTiros';
 import { tirosDeEventos, resumenTiros } from '../partido/mapa';
 import { corta } from '../temporada/fechas';
 import { leerTemporadas, temporadaDe } from '../temporada/temporada';
+import { CargaSemanal } from './CargaSemanal';
 import { Anillo } from '../ui/Anillo';
 import { Grafica } from '../ui/Grafica';
 import { Vacio } from '../ui/Vacio';
@@ -79,6 +80,11 @@ export function Cifras({ equipo, jugadoras }: { equipo: Equipo; jugadoras: Jugad
         <Grafica etiqueta="Asistencia a los entrenos de las últimas ocho semanas" sufijo="%" minimo={0}
           etiquetas={asistenciaPorSemana(t, hoyTexto, jugadoras.length).map((s) => dm(s.lunes))}
           series={[{ nombre: 'Asistencia', color: 'var(--ok)', valores: asistenciaPorSemana(t, hoyTexto, jugadoras.length).map((s) => s.pct) }]} />
+      </section>
+
+      <section aria-label="Carga de entrenamiento">
+        <h2 className="sub">Carga de entrenamiento</h2>
+        <CargaSemanal t={t} />
       </section>
 
       <section aria-label="Cada jugadora">

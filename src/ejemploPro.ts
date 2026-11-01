@@ -65,7 +65,8 @@ export function cargarEjemploPro(hoyTexto: string): void {
   }
   guardarDiario({ equipos: [m.equipo], jugadoras: m.jugadoras });
   const disponibilidad = { 'ev-pro-prox': Object.fromEntries(ids.slice(0, 8).map((id, k) => [id, k === 3 ? 'no' : k === 6 ? 'quiza' : 'si'])) as Record<string, 'si' | 'no' | 'quiza'> };
-  guardarTemporadas([{ ...m.temporada, eventos: [...jugados, proximo], asistencia, disponibilidad }]);
+  const fases = [{ id: 'f1', nombre: 'Preparación', desde: m.temporada.inicio, hasta: sumarDias(lunes, -22), objetivo: 'Forma y fundamentos', trabajar: 'Tiro y defensa de balón' }, { id: 'f2', nombre: 'Liga', desde: sumarDias(lunes, -21), hasta: sumarDias(lunes, 70), objetivo: 'Ganar en casa', trabajar: 'Juego de equipo' }, { id: 'f3', nombre: 'Final', desde: sumarDias(lunes, 71), hasta: m.temporada.fin, objetivo: 'Llegar bien', trabajar: 'Finales de partido' }];
+  guardarTemporadas([{ ...m.temporada, fases, eventos: [...jugados, proximo], asistencia, disponibilidad }]);
   localStorage.setItem('horns.equipoActivo', m.equipo.id);
   // En desarrollo no hace falta entrar ni ver el vídeo de entrada para sacar capturas.
   localStorage.setItem('horns.acceso', 'prueba');
