@@ -789,3 +789,22 @@ button:active:not(:disabled) { transform: scale(0.97); }
 .tabla-box thead th { font: 800 0.66rem/1 var(--display); text-transform: uppercase; color: var(--tenue); }
 .tabla-box tbody th { text-align: left; font: 900 1rem/1 var(--display); padding-left: var(--e3); }
 .tabla-box td.mej { color: var(--principal); font-weight: 800; background: color-mix(in srgb, var(--principal) 14%, transparent); }
+
+/* ===== Mapa de tiros (loop Pro, tramo 4) ===== */
+.mapa-tiros { border-radius: var(--r-md); overflow: hidden; box-shadow: var(--sombra-1); border: 1px solid var(--borde); }
+.mapa-tiros.elegible { cursor: crosshair; touch-action: none; }
+.mapa-tiros .tiro-ok { fill: var(--ok); stroke: #fff; stroke-width: 0.9; }
+.mapa-tiros .tiro-fallo { fill: none; stroke: #e04a3a; stroke-width: 1.8; stroke-linecap: round; paint-order: stroke; }
+.mapa-tiros .calor-texto { pointer-events: none; text-anchor: middle; }
+.mapa-tiros .calor-texto .pct { font: 800 7px var(--body); fill: #fff; stroke: #0007; stroke-width: 1.6px; paint-order: stroke; }
+.mapa-tiros .calor-texto .de { font: 700 4.4px var(--body); fill: #fff; stroke: #0007; stroke-width: 1.2px; paint-order: stroke; }
+.panel-mapa { display: grid; gap: var(--e3); }
+.cifras-tiro { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 0; }
+.cifras-tiro div { display: grid; gap: 2px; padding: var(--e2) 4px; border-radius: var(--r-sm); background: var(--superficie); border: 1px solid var(--borde); text-align: center; }
+.cifras-tiro dt { font: 800 0.58rem/1.1 var(--display); text-transform: uppercase; letter-spacing: 0.04em; color: var(--tenue); }
+.cifras-tiro dd { margin: 0; font: 800 0.78rem/1.2 var(--body); font-variant-numeric: tabular-nums; }
+.leyenda-calor { margin: 0; display: flex; align-items: center; gap: var(--e2); font-size: 0.82rem; color: var(--tenue); }
+.leyenda-calor i { flex: none; width: 56px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, hsl(0 70% 48%), hsl(65 70% 48%), hsl(130 70% 48%)); }
+.vivo > .chip { justify-self: start; }
+.mapa-tiros .calor-texto.chico .pct { font-size: 3.8px; stroke-width: 1px; }
+.mapa-tiros .calor-texto.chico .de { font-size: 2.8px; stroke-width: 0.8px; }

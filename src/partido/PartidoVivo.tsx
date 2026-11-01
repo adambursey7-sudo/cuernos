@@ -6,6 +6,8 @@ import { leerEquipoActivo } from '../equipo/equipos';
 import { reglasDe } from '../reglas/reglas';
 import { totalPuntos } from '../temporada/directo';
 import { guardarEvento, guardarTemporada, guardarTemporadas, leerTemporadas, temporadaDe, type Evento } from '../temporada/temporada';
+import { MapaTiros, PanelMapa } from './MapaTiros';
+import { esTriple, tirosDeVivo } from './mapa';
 import {
   CATEGORIAS, TEXTO, TIEMPOS_MUERTOS, arrancar, boxScore, cambiar, cuartoSiguiente, deshacer, enBonus, estaFuera, faltasEquipo, mejores, minutos, nombreCuarto, nuevoVivo, parar,
   reabrir, registrar, reloj, restante, segundosCuarto, terminar, type Jugada, type Partido, type Tipo,
@@ -39,6 +41,12 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
   const [entrando, setEntrando] = useState<string | null>(null);
   const [vista, setVista] = useState<'juego' | 'cronologia' | 'resumen'>(() => (p?.vivo.fin ? 'resumen' : 'juego'));
   const [confirmaFin, setConfirmaFin] = useState(false);
+  // «Marcar tiros»: al apuntar un tiro de campo se toca en la pista dónde fue (se recuerda la elección).
+  const [marcar, setMarcar] = useState(() => { try { return localStorage.getItem('horns.marcarTiros') === '1'; } catch { return false; } });
+  const [pendiente, setPendiente] = useState<Tipo | null>(null);
+  const [aviso, setAviso] = useState('');
+  const [pestanaRes, setPestanaRes] = useState<'stats' | 'mapa'>('stats');
+  useEffect(() => { if (!aviso) return; const id = setTimeout(() => setAviso(''), 2500); return () => clearTimeout(id); }, [aviso]);
   const corriendo = !!p?.vivo.corre;
 
   // El partido se guarda en la temporada con cada jugada: si se cierra la app, no se pierde nada.
@@ -106,7 +114,20 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
   const seg = segundosCuarto(v, ahora);
   const ultima = v.cronologia[v.cronologia.length - 1];
   const linea = (id: string) => p.directo[id] ?? { p: 0, f: 0 };
-  const apuntar = (tipo: Tipo, extra: Partial<Jugada> = {}) => { if (sel) hacer({ tipo, j: sel, ...extra }); };
+  const apuntar = (tipo: Tipo, extra: Partial<Jugada> = {}) => {
+    if (!sel) return;
+    if (marcar && (tipo === 'c2' || tipo === 'c3' || tipo === 'f2' || tipo === 'f3')) { setPendiente(tipo); return; }
+    hacer({ tipo, j: sel, ...extra });
+  };
+  // La posición manda: si se toca dentro del arco es de 2 y fuera es de 3, aunque se hubiera pulsado otro botón.
+  const ubicar = (x: number, y: number) => {
+    if (!sel || !pendiente) return;
+    const doble = esTriple(x, y) ? '3' : '2';
+    const tipo = (pendiente[0] + doble) as Tipo;
+    if (tipo !== pendiente) setAviso(doble === '3' ? 'Era un triple: apuntado de 3' : 'Era dentro del arco: apuntado de 2');
+    hacer({ tipo, j: sel, x, y });
+    setPendiente(null);
+  };
   const textoJugada = (j: Jugada) => {
     const quien = j.tipo === 'rival' ? 'Rival' : j.tipo === 'tm' || j.tipo === 'cuarto' ? '' : j.tipo === 'cambio' ? `entra ${etiqueta(nombreDe(roster, j.j))}, sale ${etiqueta(nombreDe(roster, j.k))}` : etiqueta(nombreDe(roster, j.j));
     const que = j.tipo === 'rival' ? `+${j.v}` : j.tipo === 'cuarto' ? `Fin del ${nombreCuarto(j.v ?? 1)}` : j.tipo === 'cambio' ? '' : TEXTO[j.tipo];
@@ -138,6 +159,11 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
           <span>{gano ? 'Victoria' : a < p.rival ? 'Derrota' : 'Empate'}</span>
           <b>{a} – {p.rival}</b>
         </section>
+        <div className="ramas" role="group" aria-label="Qué ver">
+          <button className={pestanaRes === 'stats' ? 'on' : ''} aria-pressed={pestanaRes === 'stats'} onClick={() => setPestanaRes('stats')}>Estadística</button>
+          <button className={pestanaRes === 'mapa' ? 'on' : ''} aria-pressed={pestanaRes === 'mapa'} onClick={() => setPestanaRes('mapa')}>Mapa de tiros</button>
+        </div>
+        {pestanaRes === 'mapa' ? <PanelMapa tiros={tirosDeVivo(v)} jugadoras={roster} /> : <>
         <section className="mejores" aria-label="Lo mejor del partido">
           {CATEGORIAS.map(([c, nombre]) => top[c].length > 0 && (
             <div key={c} className="mejor"><span className="rotulo">{nombre}</span><b>★ {top[c].map((id) => etiqueta(nombreDe(roster, id))).join(' ')}</b><small>{filas.find((f) => f.id === top[c][0])![c]}</small></div>
@@ -158,6 +184,7 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
             </tbody>
           </table>
         </div>
+        </>}
         <div className="dos-botones">
           <button className="secundario" onClick={() => { setP((x) => (x ? reabrir(x) : x)); setConfirmaFin(false); setVista('juego'); }}>Reabrir el partido</button>
           <button className="principal" onClick={salir}>Hecho</button>
@@ -210,6 +237,8 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
         })}
       </section>
 
+      <button className={marcar ? 'chip on' : 'chip'} aria-pressed={marcar} onClick={() => { const n = !marcar; setMarcar(n); try { localStorage.setItem('horns.marcarTiros', n ? '1' : '0'); } catch { /* sin almacenamiento */ } }}>Marcar tiros en la pista</button>
+      {aviso && <p className="aviso" role="status">{aviso}</p>}
       <section className="vivo-pad" aria-label={sel ? `Apuntar a ${etiqueta(nombreDe(roster, sel))}` : 'Elige una jugadora'}>
         <div className="fila-pad puntos">
           {([['c1', '+1'], ['c2', '+2'], ['c3', '+3']] as const).map(([t, n]) => <button key={t} disabled={fin || !sel} onClick={() => apuntar(t)}>{n}</button>)}
@@ -241,6 +270,18 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
           ? <button className="principal" onClick={() => { setP((x) => (x ? terminar(x, Date.now()) : x)); setConfirmaFin(false); setVista('resumen'); }}>¿Terminar? Sí</button>
           : <button className="principal" disabled={fin} onClick={() => setConfirmaFin(true)}>Terminar</button>}
       </footer>
+      {pendiente && (
+        <div className="velo" onClick={() => setPendiente(null)}>
+          <div className="hoja" onClick={(ev) => ev.stopPropagation()} role="dialog" aria-label="¿Desde dónde fue el tiro?">
+            <div className="hoja-cabeza"><b>{etiqueta(nombreDe(roster, sel ?? undefined))} · {pendiente[0] === 'c' ? 'Canasta' : 'Fallo'}. Toca dónde fue</b></div>
+            <MapaTiros tiros={tirosDeVivo(v).filter((t) => t.j === sel)} modo="puntos" alElegir={ubicar} etiqueta="Pista: toca el lugar del tiro" />
+            <div className="dos-botones">
+              <button className="secundario" onClick={() => { hacer({ tipo: pendiente, j: sel! }); setPendiente(null); }}>Sin lugar</button>
+              <button className="secundario" onClick={() => setPendiente(null)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
       {fantasma && <span className="fantasma" style={{ left: fantasma.x, top: fantasma.y }}>{nombreDe(roster, fantasma.id)?.numero || '?'}</span>}
     </div>
   );
