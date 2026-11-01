@@ -6,7 +6,7 @@ import { enCamino, foto, inicios } from '../pizarra/animar';
 import { Pista } from '../pizarra/Pista';
 import { guardarMio } from '../sistemas/almacen';
 import { FAMILIAS, NIVELES, type Familia, type Jugador, type Nivel, type Punto, type Sistema } from '../sistemas/tipos';
-import { adivinar, ajustarCurva, cambiarTipo, dentro, duplicarPaso, fijarTipo, limpiar, mover, moverPaso, nuevoBorrador, opcionesDe, pasar, ponerFamilia, PLANTILLAS, quitarMovimiento, quitarPaso, quitarPase } from './editar';
+import { adivinar, ajustarCurva, cambiarTipo, dentro, duplicarPaso, fijarTipo, limpiar, mover, moverPaso, nuevoBorrador, opcionesDe, pasar, ponerFamilia, PLANTILLAS, quitarMovimiento, quitarPaso, quitarPase, reordenarPaso } from './editar';
 
 const JUGADORES: Jugador[] = ['1', '2', '3', '4', '5'];
 /** Distancia (en dm de pista) para agarrar a un jugador con el dedo y para que el arrastre cuente. */
@@ -34,6 +34,10 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
   const [viendo, setViendo] = useState<number | null>(null);
   const [error, setError] = useState('');
   const capa = useRef<SVGSVGElement>(null);
+  // Arrastrar una pestaña de paso a otro sitio la reordena; un toque sin arrastre la abre como siempre.
+  const tira = useRef<{ n: number; x: number; activo: boolean } | null>(null);
+  const [llevando, setLlevando] = useState<number | null>(null);
+  const acabaDeLlevar = useRef(false);
 
   const actual = Math.min(selecc, Math.max(0, b.pasos.length - 1));
   const marcas = inicios(b);
@@ -133,6 +137,25 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
     cambiarPaso((p) => mover(p, jugador, tipo, hasta, ajustarCurva(recorrido)));
   };
 
+  const bajarPaso = (e: React.PointerEvent, n: number) => { e.currentTarget.setPointerCapture(e.pointerId); tira.current = { n, x: e.clientX, activo: false }; acabaDeLlevar.current = false; };
+  const moverPasoDedo = (e: React.PointerEvent) => {
+    const a = tira.current;
+    if (!a) return;
+    if (!a.activo && Math.abs(e.clientX - a.x) > 10) { a.activo = true; setLlevando(a.n); }
+  };
+  const soltarPaso = (e: React.PointerEvent) => {
+    const a = tira.current;
+    tira.current = null;
+    setLlevando(null);
+    if (!a?.activo) return;
+    acabaDeLlevar.current = true;
+    const destino = (document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null)?.closest<HTMLElement>('[data-paso]')?.dataset.paso;
+    if (destino === undefined) return;
+    cambiar(reordenarPaso(b, a.n, Number(destino)));
+    setSelecc(Number(destino));
+    setElegido(null);
+  };
+
   const guardar = () => {
     const final = limpiar(b);
     if (!final.pasos.length) return setError('Añade al menos un movimiento antes de guardar.');
@@ -156,7 +179,9 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
       <div className="tira-pasos" role="tablist" aria-label="Pasos de la jugada">
         <button role="tab" aria-selected={colocando} className={colocando ? 'chip on' : 'chip'} onClick={() => { setColocando(true); setElegido(null); setViendo(null); }}>Colocar</button>
         {b.pasos.map((_, n) => (
-          <button key={n} role="tab" aria-selected={!colocando && n === actual} className={!colocando && n === actual ? 'chip on' : 'chip'} onClick={() => { setColocando(false); setSelecc(n); setElegido(null); setPasando(false); setViendo(null); }}>
+          <button key={n} role="tab" data-paso={n} aria-selected={!colocando && n === actual} className={`${!colocando && n === actual ? 'chip on' : 'chip'}${llevando === n ? ' llevando' : ''}`} style={{ touchAction: 'pan-y' }}
+            onPointerDown={(e) => bajarPaso(e, n)} onPointerMove={moverPasoDedo} onPointerUp={soltarPaso} onPointerCancel={() => { tira.current = null; setLlevando(null); }}
+            onClick={() => { if (acabaDeLlevar.current) { acabaDeLlevar.current = false; return; } setColocando(false); setSelecc(n); setElegido(null); setPasando(false); setViendo(null); }}>
             {n + 1}
           </button>
         ))}
@@ -176,11 +201,11 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
 
       <div className="fase">
         {colocando ? (
-          <span>Arrastra a cada jugador a su sitio. Toca el círculo del balón para decir quién lo lleva.</span>
+          <span>Elige una colocación o arrastra a cada jugador a su sitio. Toca el círculo del balón para decir quién lo lleva.</span>
         ) : elegido ? (
           <span><b>Jugador {elegido}</b> · elige qué hace, o arrástralo otra vez.</span>
         ) : (
-          <span><b>Paso {actual + 1}</b> · arrastra a un jugador: lo que dibujes es su movimiento.</span>
+          <span><b>Paso {actual + 1}</b> · arrastra a un jugador: lo que dibujes es su movimiento. Arrastra el número del paso para cambiarlo de sitio.</span>
         )}
       </div>
 
@@ -325,9 +350,9 @@ export function Editor({ base, cerrar, guardado }: { base?: Sistema; cerrar: () 
             {NIVELES.map((n) => <option key={n.id} value={n.id}>{nombreNivel(n.id)}</option>)}
           </select>
         </label>
-        <button className="guardar" onClick={guardar}>Guardar jugada</button>
       </div>
       {error && <p className="error" role="alert">{error}</p>}
+      <div className="barra-guardar"><button className="guardar" onClick={guardar}>Guardar jugada</button></div>
     </section>
   );
 }

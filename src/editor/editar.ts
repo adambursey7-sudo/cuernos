@@ -175,6 +175,16 @@ export function moverPaso(s: Sistema, i: number, dir: -1 | 1): Sistema {
   return { ...s, pasos };
 }
 
+/** Lleva el paso `de` a la posición `a` (arrastrar una pestaña de paso). Fuera de rango o igual, queda igual. */
+export function reordenarPaso(s: Sistema, de: number, a: number): Sistema {
+  const n = s.pasos.length;
+  if (de === a || de < 0 || a < 0 || de >= n || a >= n) return s;
+  const pasos = [...s.pasos];
+  const [p] = pasos.splice(de, 1);
+  pasos.splice(a, 0, p);
+  return { ...s, pasos };
+}
+
 /** Quita el paso `i`. Una jugada necesita al menos un paso: el último no se quita. */
 export function quitarPaso(s: Sistema, i: number): Sistema {
   if (s.pasos.length <= 1 || i < 0 || i >= s.pasos.length) return s;

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { SISTEMAS } from '../sistemas/datos';
 import { esSistemaValido } from '../sistemas/almacen';
 import type { Paso } from '../sistemas/tipos';
-import { PLANTILLAS, adivinar, ajustarCurva, cambiarTipo, describir, duplicarPaso, limpiar, mover, moverPaso, ponerFamilia, quitarPaso, nuevoBorrador, opcionesDe, pasar, fijarTipo, quitarMovimiento, quitarPase } from './editar';
+import { PLANTILLAS, adivinar, ajustarCurva, cambiarTipo, describir, duplicarPaso, limpiar, mover, moverPaso, ponerFamilia, quitarPaso, reordenarPaso, nuevoBorrador, opcionesDe, pasar, fijarTipo, quitarMovimiento, quitarPase } from './editar';
 
 describe('editor', () => {
   it('una jugada nueva empieza con cinco abiertos y el balón en el 1', () => {
@@ -126,5 +126,17 @@ describe('colocaciones listas', () => {
         expect(x >= 0 && x <= 150 && y >= 0 && y <= 140, `${pl.id} ${j}`).toBe(true);
       }
     }
+  });
+});
+
+describe('reordenar pasos arrastrando', () => {
+  const tres = { ...nuevoBorrador(), pasos: [{ texto: 'a', movimientos: [] }, { texto: 'b', movimientos: [] }, { texto: 'c', movimientos: [] }] };
+  it('lleva un paso a otra posición', () => {
+    expect(reordenarPaso(tres, 0, 2).pasos.map((p) => p.texto)).toEqual(['b', 'c', 'a']);
+    expect(reordenarPaso(tres, 2, 0).pasos.map((p) => p.texto)).toEqual(['c', 'a', 'b']);
+  });
+  it('fuera de rango o igual no cambia nada', () => {
+    expect(reordenarPaso(tres, 1, 1)).toBe(tres);
+    expect(reordenarPaso(tres, 0, 5)).toBe(tres);
   });
 });
