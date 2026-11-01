@@ -21,6 +21,16 @@ export function alternarFavorito(lista: string[], id: string): string[] {
   return nueva;
 }
 
+/** Guarda la lista entera (al cargar una copia). Devuelve false si el móvil no deja. */
+export function guardarFavoritos(lista: string[]): boolean {
+  try {
+    localStorage.setItem(CLAVE, JSON.stringify(lista));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Quita acentos y mayúsculas para que «defensa» encuentre «Defensa» y «junior» a «Júnior». */
 export const plano = (t: string) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 

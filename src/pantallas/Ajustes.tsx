@@ -4,7 +4,10 @@ import { introActiva, ponerIntroActiva } from '../Intro';
 import { Pista } from '../pizarra/Pista';
 import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
 import { anotarCopia } from '../copiaFecha';
-import { armarCopia, juntar, leerCopia } from '../copia';
+import { armarCopia, juntar, leerCopia, unirTextos } from '../copia';
+import { guardarFavoritos, leerFavoritos } from '../favoritos';
+import { guardarSesiones, juntarSesiones, leerSesiones } from '../sesiones/sesiones';
+import { guardarSemana, leerSemana } from '../sistemas/libro';
 import { guardarReflexiones, juntarReflexiones, leerReflexiones } from '../diario/reflexion';
 import { guardarEtiquetas, leerEtiquetas } from '../habilidades/habilidades';
 import { guardarFichas, juntarFichas, leerFichas } from '../recursos/fichas';
@@ -33,9 +36,11 @@ export function Ajustes() {
   const descargar = async () => {
     const mios = leerMios();
     const nombre = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
-    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones())], nombre, { type: 'application/json' });
+    const sesiones = leerSesiones();
+    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones(), { sesiones, favoritos: leerFavoritos(), semana: leerSemana() })], nombre, { type: 'application/json' });
     const njug = leerDiario().jugadoras.length;
-    const resumen = `${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'}, ${njug} ${njug === 1 ? 'jugadora' : 'jugadoras'} y tus colores`;
+    const nequ = leerDiario().equipos.length;
+    const resumen = `${nequ} ${nequ === 1 ? 'equipo' : 'equipos'}, ${njug} ${njug === 1 ? 'jugador o jugadora' : 'jugadores y jugadoras'}, ${sesiones.length} ${sesiones.length === 1 ? 'sesión' : 'sesiones'}, ${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'} y tus colores`;
     // En el móvil se abre el menú de compartir (Drive, Archivos, AirDrop…); si no hay, se descarga.
     if (navigator.canShare?.({ files: [archivo] })) {
       try {
@@ -68,8 +73,12 @@ export function Ajustes() {
       if (copia.fichas && !guardarFichas(juntarFichas(leerFichas(), copia.fichas))) throw new Error('El móvil no deja guardar las fichas: libera espacio e inténtalo otra vez.');
       if (copia.etiquetas && !guardarEtiquetas({ ...leerEtiquetas(), ...copia.etiquetas })) throw new Error('El móvil no deja guardar las etiquetas: libera espacio e inténtalo otra vez.');
       if (copia.reflexiones && !guardarReflexiones(juntarReflexiones(leerReflexiones(), copia.reflexiones))) throw new Error('El móvil no deja guardar el diario: libera espacio e inténtalo otra vez.');
+      if (copia.sesiones && !guardarSesiones(juntarSesiones(leerSesiones(), copia.sesiones))) throw new Error('El móvil no deja guardar las sesiones: libera espacio e inténtalo otra vez.');
+      if (copia.favoritos) guardarFavoritos(unirTextos(leerFavoritos(), copia.favoritos));
+      if (copia.semana) guardarSemana(unirTextos(leerSemana(), copia.semana));
       if (copia.colores) poner(copia.colores);
-      setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${copia.diario.jugadoras.length} jugadoras` : ''}${copia.colores ? ' y los colores' : ''}.`);
+      const equiposCopia = copia.diario?.equipos.length ?? 0;
+      setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${equiposCopia} ${equiposCopia === 1 ? 'equipo' : 'equipos'} con ${copia.diario.jugadoras.length} jugadores y jugadoras` : ''}${copia.sesiones?.length ? `, ${copia.sesiones.length} sesiones` : ''}${copia.colores ? ' y los colores' : ''}.`);
     } catch (err) {
       setAviso(err instanceof Error ? err.message : 'No se ha podido cargar la copia.');
     }

@@ -14,6 +14,10 @@ import { Sistema } from './pantallas/Sistema';
 import { anadirFicha, fichaDeEjercicio } from './recursos/guardarEjercicioIA';
 import { primerEnlace } from './recursos/recursos';
 import type { Ficha } from './recursos/fichas';
+import { leerDiario } from './diario/diario';
+import { equipoActivo, leerActivoId, ponerActivoId } from './equipo/equipos';
+import { SelectorEquipo } from './equipo/SelectorEquipo';
+import { alinearSesiones, guardarSesiones, leerSesiones } from './sesiones/sesiones';
 import { buscarSistema } from './sistemas/almacen';
 import type { Sistema as SistemaDatos } from './sistemas/tipos';
 
@@ -49,12 +53,18 @@ export function App() {
   // La jugada abierta queda encima de Hoy o de la Biblioteca; al volver se ve la pestaña desde la que se abrió.
   const [abierto, setAbierto] = useState<{ id: string; paso: number } | null>(null);
   const [edicion, setEdicion] = useState<Edicion>(null);
+  // Equipo con el que se trabaja: Hoy, Sesiones y Tele muestran los datos de este equipo.
+  const [activoId, setActivoId] = useState(() => equipoActivo(leerDiario().equipos, leerActivoId())?.id ?? '');
+  const elegirEquipo = (id: string) => { ponerActivoId(id); setActivoId(id); setSesionId(null); };
+  const equipos = leerDiario().equipos;
   const sistema = abierto ? buscarSistema(abierto.id) : undefined;
   const abrir = (id: string, paso = 0) => setAbierto({ id, paso });
   // El ejercicio abierto queda encima de su lista (o de Inicio); desde él se puede ir a su sistema.
   const [ejercicioId, setEjercicioId] = useState<string | null>(null);
   // La sesión abierta se recuerda aquí para volver a ella tras mirar un ejercicio.
   const [sesionId, setSesionId] = useState<string | null>(null);
+  // Las sesiones de antes (sin id de equipo) ganan el de su equipo al abrir la app; al renombrar un equipo lo hace la pantalla Equipo.
+  useState(() => { const antes = leerSesiones(); const despues = alinearSesiones(antes, leerDiario().equipos); if (despues !== antes) guardarSesiones(despues); });
   const ejercicio = ejercicioId ? buscarEjercicio(ejercicioId) : undefined;
   // Un día de la temporada abierto desde Inicio («Esta semana»): lleva a Equipo → Temporada en ese día.
   const [fechaAbrir, setFechaAbrir] = useState<string | undefined>();
@@ -70,7 +80,7 @@ export function App() {
 
   let contenido;
   if (pestana === 'sesiones' && !ejercicio) contenido = <Sesiones abrirEjercicio={setEjercicioId} abierta={sesionId} abrir={setSesionId} arranque={arranque} gastado={() => setArranque(null)} />;
-  else if (pestana === 'equipo') contenido = <Equipo key={fechaAbrir ?? 'sin-fecha'} ir={irABiblioteca} fecha={fechaAbrir} abrirSesion={abrirSesion} abrirEjercicio={verEjercicio} abrirSistema={verSistema} />;
+  else if (pestana === 'equipo') contenido = <Equipo key={fechaAbrir ?? 'sin-fecha'} ir={irABiblioteca} fecha={fechaAbrir} abrirSesion={abrirSesion} abrirEjercicio={verEjercicio} abrirSistema={verSistema} activoId={activoId} elegir={elegirEquipo} />;
   else if (pestana === 'mas') contenido = <><header className="cabecera-app"><Marca className="marca-cabecera" /></header><Ajustes /></>;
   else if (edicion)
     contenido = (
@@ -102,7 +112,7 @@ export function App() {
   else if (pestana === 'hoy')
     contenido = (
       <>
-        <header className="cabecera-app"><Marca className="marca-cabecera" /></header>
+        <header className="cabecera-app"><Marca className="marca-cabecera" /><SelectorEquipo equipos={equipos} activo={equipoActivo(equipos, activoId)?.id ?? ''} elegir={elegirEquipo} /></header>
         <Inicio empezarHoy={empezarHoy} verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} />
       </>
     );
@@ -131,7 +141,7 @@ export function App() {
   return (
     <div className="app" onTouchStart={tocar} onTouchEnd={soltar}>
       {!enLinea && <p className="sin-red" role="status">Sin conexión: todo sigue funcionando, menos abrir enlaces.</p>}
-      <main key={pestana} className="entra">{contenido}</main>
+      <main key={pestana === 'equipo' ? pestana : `${pestana}-${activoId}`} className="entra">{contenido}</main>
       <nav className="pestanas" aria-label="Secciones">
         {PESTANAS.map((p) => (
           <button key={p.id} className={p.id === pestana ? 'on' : ''} aria-current={p.id === pestana ? 'page' : undefined} onClick={() => { setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>

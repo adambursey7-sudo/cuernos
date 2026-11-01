@@ -21,5 +21,15 @@ export function alternarSemana(lista: string[], id: string): string[] {
   return nueva;
 }
 
+/** Guarda la lista entera (al cargar una copia). Devuelve false si el móvil no deja. */
+export function guardarSemana(lista: string[]): boolean {
+  try {
+    localStorage.setItem(CLAVE, JSON.stringify(lista));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Quita las jugadas que ya no existen (una propia borrada). */
 export const semanaVigente = (lista: string[], existentes: ReadonlySet<string>) => lista.filter((id) => existentes.has(id));

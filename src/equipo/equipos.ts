@@ -1,7 +1,7 @@
 // Montar y mover equipos enteros: el equipo activo, el asistente de «Nuevo equipo», el equipo de ejemplo,
 // duplicar, heredar de otro, cerrar la temporada y empezar la siguiente. Todo son funciones puras sobre los datos;
 // las pantallas guardan el resultado. Aquí no hay nombres reales: el ejemplo usa «Ejemplo Uno»…
-import { nuevaJugadora, nuevoEquipo, type Diario, type Equipo, type Jugadora, type TipoEquipo } from '../diario/diario';
+import { leerDiario, nuevaJugadora, nuevoEquipo, type Diario, type Equipo, type Jugadora, type TipoEquipo } from '../diario/diario';
 import { leerTexto } from '../diario/importar';
 import type { Sesion } from '../sesiones/sesiones';
 import { esFecha, lunesDe, sumarDias } from '../temporada/fechas';
@@ -216,3 +216,6 @@ export function equipoSiguienteTemporada(e: Equipo): Equipo {
   const otra = e.temporada && /^\d{4}-\d{2}$/.test(e.temporada) ? `${Number(e.temporada.slice(0, 4)) + 1}-${String(Number(e.temporada.slice(5)) + 1).padStart(2, '0').slice(-2)}` : undefined;
   return { ...resto, ...(otra ? { temporada: otra } : {}), ...(e.objetivos ? { objetivos: e.objetivos.filter((o) => !o.hecho) } : {}) };
 }
+
+/** El equipo activo leído de lo guardado (para las pantallas que no reciben el equipo por parámetro). */
+export const leerEquipoActivo = (): Equipo | undefined => equipoActivo(leerDiario().equipos, leerActivoId());

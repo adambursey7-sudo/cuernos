@@ -4,19 +4,26 @@ import { reglasDeTexto, resumenReglas, type Reglas } from '../reglas/reglas';
 // Los datos viven solo en este móvil. La ficha se guarda sola al escribir.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  POSICIONES, ROLES, disponibles, guardarDiario, guardarEquipo, guardarJugadora, hoy, leerDiario, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, quitarJugadora, repetida,
+  POSICIONES, ROLES, disponibles, guardarDiario, guardarEquipo, guardarJugadora, hoy, leerDiario, nuevaJugadora, plantilla, quitarEquipo, quitarJugadora, repetida,
   type Diario, type Equipo as EquipoDatos, type Jugadora, type TipoEquipo,
 } from '../diario/diario';
 import { esSenior, palabras } from '../diario/tipo';
 import { NOMBRE_PUESTO, PUESTOS, rellenarPuestos } from '../diario/puestos';
 import { leerTexto, textoDePdf, type Candidata } from '../diario/importar';
-import { leerTemporadas, resumenAsistencia, temporadaDe } from '../temporada/temporada';
+import { guardarTemporadas, guardarTemporada, leerTemporadas, resumenAsistencia, temporadaDe } from '../temporada/temporada';
+import { Asistente } from '../equipo/Asistente';
+import { EscudoEquipo } from '../equipo/EscudoEquipo';
+import { anadirEquipo, type EquipoMontado } from '../equipo/equipos';
+import { AccionesEquipo, CuerpoTecnico, IdentidadEquipo, Objetivos } from '../equipo/FichaExtras';
+import { MANOS, esFemenino } from '../equipo/modelo';
+import { SelectorEquipo } from '../equipo/SelectorEquipo';
+import { alinearSesiones, guardarSesiones, leerSesiones } from '../sesiones/sesiones';
 import { DiarioSesion } from './DiarioSesion';
 import { Habilidades } from './Habilidades';
 import { Rotacion } from './Rotacion';
 import { Temporada } from './Temporada';
 
-type Vista = { tipo: 'plantilla' } | { tipo: 'temporada' } | { tipo: 'habilidades' } | { tipo: 'rotacion' } | { tipo: 'diario' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
+type Vista = { tipo: 'asistente' } | { tipo: 'plantilla' } | { tipo: 'temporada' } | { tipo: 'habilidades' } | { tipo: 'rotacion' } | { tipo: 'diario' } | { tipo: 'equipo' } | { tipo: 'jugadora'; id: string } | { tipo: 'importar' };
 
 function Campo({ etiqueta, valor, cambiar, filas = 3, ayuda }: { etiqueta: string; valor: string; cambiar: (v: string) => void; filas?: number; ayuda?: string }) {
   return (
@@ -30,7 +37,7 @@ function Campo({ etiqueta, valor, cambiar, filas = 3, ayuda }: { etiqueta: strin
 function ElegirTipo({ tipo, cambiar }: { tipo: TipoEquipo; cambiar: (t: TipoEquipo) => void }) {
   return (
     <div className="niveles filtro" role="group" aria-label="Tipo de equipo">
-      {([['formacion', 'Formación'], ['senior', 'Senior masculino']] as const).map(([id, nombre]) => (
+      {([['formacion', 'Formación'], ['senior', 'Senior']] as const).map(([id, nombre]) => (
         <button key={id} className={tipo === id ? 'chip on' : 'chip'} aria-pressed={tipo === id} onClick={() => cambiar(id)}>{nombre}</button>
       ))}
     </div>
@@ -71,6 +78,15 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
               <span>Dorsal</span>
               <input value={j.numero} maxLength={2} inputMode="numeric" onChange={(ev) => poner({ numero: ev.target.value.replace(/\D/g, '') })} />
             </label>
+          </div>
+          <div className="fila-campos">
+            <label className="campo-diario num">
+              <span>Año de nacimiento</span>
+              <input value={j.nacimiento ?? ''} maxLength={4} inputMode="numeric" placeholder="2010" onChange={(ev) => { const v = ev.target.value.replace(/\D/g, ''); const { nacimiento: _n, ...resto } = j; cambiar(v ? { ...resto, nacimiento: Number(v) } : resto); }} />
+            </label>
+            <div className="niveles filtro" role="group" aria-label="Mano buena">
+              {MANOS.map(([id, nombre]) => <button key={id} className={j.mano === id ? 'chip on' : 'chip'} aria-pressed={j.mano === id} onClick={() => poner({ mano: j.mano === id ? undefined : id })}>{nombre}</button>)}
+            </div>
           </div>
           {asis.de > 0 && <p className="meta">Asistencia: ha venido a <b>{asis.vino} de {asis.de}</b> entrenos con lista.</p>}
           {otra && <p className="aviso">El {j.numero} ya lo lleva {otra.nombre || (sen ? 'otro jugador' : 'otra jugadora')}.</p>}
@@ -159,7 +175,7 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
   );
 }
 
-function FichaEquipo({ e, jugadoras, cambiar, borrar, volver, ir }: { e: EquipoDatos; jugadoras: Jugadora[]; cambiar: (e: EquipoDatos) => void; borrar: () => void; volver: () => void; ir: (t: 'ejercicios' | 'jugadas') => void }) {
+function FichaEquipo({ d, e, jugadoras, cambiar, borrar, volver, ir, aplicar, elegir, cambiado }: { d: Diario; e: EquipoDatos; jugadoras: Jugadora[]; cambiar: (e: EquipoDatos) => void; borrar: () => void; volver: () => void; ir: (t: 'ejercicios' | 'jugadas') => void; aplicar: (d: Diario) => void; elegir: (id: string) => void; cambiado: () => void }) {
   const [seguro, setSeguro] = useState(false);
   return (
     <section className="pantalla ficha-jugadora">
@@ -172,6 +188,9 @@ function FichaEquipo({ e, jugadoras, cambiar, borrar, volver, ir }: { e: EquipoD
         <input value={e.nombre} maxLength={40} onChange={(ev) => cambiar({ ...e, nombre: ev.target.value })} />
       </label>
       <ElegirTipo tipo={e.tipo ?? 'formacion'} cambiar={(tipo) => { const { tipo: _antes, ...resto } = e; cambiar(tipo === 'senior' ? { ...resto, tipo } : resto); }} />
+      <IdentidadEquipo e={e} cambiar={cambiar} />
+      <CuerpoTecnico e={e} cambiar={cambiar} />
+      <Objetivos e={e} cambiar={cambiar} />
       <ReglasEquipo e={e} cambiar={cambiar} />
       <Campo etiqueta="Forma de jugar" valor={e.forma} cambiar={(forma) => cambiar({ ...e, forma })} ayuda="Cómo quieres que juegue el equipo" filas={4} />
       <Campo etiqueta="Virtudes del equipo" valor={e.virtudes} cambiar={(virtudes) => cambiar({ ...e, virtudes })} ayuda="En qué es bueno" />
@@ -179,7 +198,7 @@ function FichaEquipo({ e, jugadoras, cambiar, borrar, volver, ir }: { e: EquipoD
       <Campo etiqueta="Cómo entrenarlo" valor={e.como} cambiar={(como) => cambiar({ ...e, como })} ayuda="Qué tipo de ejercicios y sistemas, y cuánto" filas={5} />
       <div className="puestos">
         <h2 className="sub">Quién es quién en la pizarra</h2>
-        <p className="meta">Cada puesto de las jugadas (1 a 5) con {esSenior(e) ? 'el jugador' : 'la jugadora'} que lo hace. En la pizarra puedes enseñar su dorsal en vez del puesto.</p>
+        <p className="meta">Cada puesto de las jugadas (1 a 5) con {esFemenino(e) ? 'la jugadora' : 'el jugador'} que lo hace. En la pizarra puedes enseñar su dorsal en vez del puesto.</p>
         {PUESTOS.map((p) => (
           <label key={p} className="puesto">
             <span className="dorsal" aria-hidden>{p}</span>
@@ -196,6 +215,7 @@ function FichaEquipo({ e, jugadoras, cambiar, borrar, volver, ir }: { e: EquipoD
         <button className="secundario" onClick={() => ir('ejercicios')}>Buscar ejercicios</button>
         <button className="secundario" onClick={() => ir('jugadas')}>Buscar jugadas</button>
       </div>
+      <AccionesEquipo d={d} e={e} aplicar={aplicar} elegir={elegir} cambiado={cambiado} />
       <div className="peligro">
         {seguro ? (
           <>
@@ -291,46 +311,45 @@ function Apartados({ ver, vista }: { ver: (v: 'plantilla' | 'habilidades' | 'rot
   );
 }
 
-export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }: { ir: (t: 'ejercicios' | 'jugadas') => void; fecha?: string; abrirSesion: (id: string) => void; abrirEjercicio: (id: string) => void; abrirSistema: (id: string) => void }) {
+export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema, activoId, elegir }: { ir: (t: 'ejercicios' | 'jugadas') => void; fecha?: string; abrirSesion: (id: string) => void; abrirEjercicio: (id: string) => void; abrirSistema: (id: string) => void; activoId: string; elegir: (id: string) => void }) {
   const [d, setD] = useState<Diario>(leerDiario);
-  const [activo, setActivo] = useState<string>(() => leerDiario().equipos[0]?.id ?? '');
+  const activo = activoId;
+  const setActivo = elegir;
   const [vista, setVista] = useState<Vista>(() => (fecha ? { tipo: 'temporada' } : { tipo: 'plantilla' }));
-  const [nombre, setNombre] = useState('');
-  const [tipoNuevo, setTipoNuevo] = useState<TipoEquipo>('formacion');
   const [fallo, setFallo] = useState(false);
+  const [, refrescar] = useState(0);
   const primera = useRef(true);
 
   useEffect(() => {
     if (primera.current) { primera.current = false; return; }
     setFallo(!guardarDiario(d));
+    // Si se renombró un equipo, sus sesiones lo siguen.
+    const antes = leerSesiones();
+    const despues = alinearSesiones(antes, d.equipos);
+    if (despues !== antes) guardarSesiones(despues);
   }, [d]);
 
   const equipo = d.equipos.find((e) => e.id === activo) ?? d.equipos[0];
 
-  const crearEquipo = () => {
-    const n = nombre.trim();
-    if (!n) return;
-    const e = nuevoEquipo(n, tipoNuevo);
-    setD(guardarEquipo(d, e));
-    setActivo(e.id);
-    setNombre('');
-    setTipoNuevo('formacion');
+  const crearConAsistente = (m: EquipoMontado) => {
+    const ok = guardarTemporadas(guardarTemporada(leerTemporadas(), m.temporada));
+    setD(anadirEquipo(d, m));
+    setFallo(!ok);
+    setActivo(m.equipo.id);
+    setVista({ tipo: 'plantilla' });
   };
 
-  if (!equipo)
+  if (!equipo || vista.tipo === 'asistente')
     return (
-      <section className="pantalla">
-        <h1 className="titulo">Equipo</h1>
-        <p className="vacio">Aquí vive tu cuaderno: la plantilla, la ficha de cada jugador o jugadora y cómo juega y entrena tu equipo. Se guarda solo en este móvil.</p>
-        <div className="nuevo-equipo">
-          <label className="campo-diario">
-            <span>¿Cómo se llama tu equipo?</span>
-            <input value={nombre} maxLength={40} placeholder={tipoNuevo === 'senior' ? 'Senior A' : 'Cadete femenino'} onChange={(ev) => setNombre(ev.target.value)} onKeyDown={(ev) => ev.key === 'Enter' && crearEquipo()} />
-          </label>
-          <ElegirTipo tipo={tipoNuevo} cambiar={setTipoNuevo} />
-          <button className="principal ancho" disabled={!nombre.trim()} onClick={crearEquipo}>Crear equipo</button>
-        </div>
-      </section>
+      <>
+        {!equipo && (
+          <section className="pantalla">
+            <h1 className="titulo">Equipo</h1>
+            <p className="vacio">Aquí vive tu cuaderno: la plantilla, la ficha de cada jugador o jugadora, los horarios, el calendario y cómo juega y entrena tu equipo. Se guarda solo en este móvil.</p>
+          </section>
+        )}
+        <Asistente existentes={d.equipos} crear={crearConAsistente} cancelar={equipo ? () => setVista({ tipo: 'plantilla' }) : undefined} />
+      </>
     );
 
   if (vista.tipo === 'jugadora') {
@@ -341,6 +360,10 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
   if (vista.tipo === 'equipo')
     return (
       <FichaEquipo
+        d={d}
+        aplicar={setD}
+        elegir={setActivo}
+        cambiado={() => refrescar((n) => n + 1)}
         e={equipo}
         jugadoras={plantilla(d, equipo.id)}
         cambiar={(e) => setD(guardarEquipo(d, e))}
@@ -369,11 +392,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
       <section className="pantalla encabezado-equipo">
         <h1 className="titulo">Equipo</h1>
         <Apartados vista="habilidades" ver={(v) => setVista({ tipo: v })} />
-        {d.equipos.length > 1 && (
-          <div className="niveles filtro" role="group" aria-label="Equipo">
-            {d.equipos.map((x) => <button key={x.id} className={x.id === equipo.id ? 'chip on' : 'chip'} aria-pressed={x.id === equipo.id} onClick={() => setActivo(x.id)}>{x.nombre}</button>)}
-          </div>
-        )}
+        <SelectorEquipo equipos={d.equipos} activo={equipo.id} elegir={setActivo} />
         {fallo && <p className="aviso">El móvil no deja guardar: libera espacio o haz una copia.</p>}
         <Habilidades key={equipo.id} e={equipo} cambiar={(n) => setD(guardarEquipo(d, n))} abrirEjercicio={abrirEjercicio} abrirSistema={abrirSistema} abrirSesion={abrirSesion} />
       </section>
@@ -384,11 +403,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
       <section className="pantalla encabezado-equipo">
         <h1 className="titulo">Equipo</h1>
         <Apartados vista="rotacion" ver={(v) => setVista({ tipo: v })} />
-        {d.equipos.length > 1 && (
-          <div className="niveles filtro" role="group" aria-label="Equipo">
-            {d.equipos.map((x) => <button key={x.id} className={x.id === equipo.id ? 'chip on' : 'chip'} aria-pressed={x.id === equipo.id} onClick={() => setActivo(x.id)}>{x.nombre}</button>)}
-          </div>
-        )}
+        <SelectorEquipo equipos={d.equipos} activo={equipo.id} elegir={setActivo} />
         {fallo && <p className="aviso">El móvil no deja guardar: libera espacio o haz una copia.</p>}
         <Rotacion key={equipo.id} e={equipo} js={plantilla(d, equipo.id)} cambiar={(n) => setD(guardarEquipo(d, n))} />
       </section>
@@ -399,11 +414,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
       <section className="pantalla encabezado-equipo">
         <h1 className="titulo">Equipo</h1>
         <Apartados vista="diario" ver={(v) => setVista({ tipo: v })} />
-        {d.equipos.length > 1 && (
-          <div className="niveles filtro" role="group" aria-label="Equipo">
-            {d.equipos.map((x) => <button key={x.id} className={x.id === equipo.id ? 'chip on' : 'chip'} aria-pressed={x.id === equipo.id} onClick={() => setActivo(x.id)}>{x.nombre}</button>)}
-          </div>
-        )}
+        <SelectorEquipo equipos={d.equipos} activo={equipo.id} elegir={setActivo} />
         <DiarioSesion key={equipo.id} equipo={equipo} />
       </section>
     );
@@ -414,11 +425,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
         <section className="pantalla encabezado-equipo">
           <h1 className="titulo">Equipo</h1>
           <Apartados vista="temporada" ver={(v) => setVista({ tipo: v })} />
-          {d.equipos.length > 1 && (
-            <div className="niveles filtro" role="group" aria-label="Equipo">
-              {d.equipos.map((e) => <button key={e.id} className={e.id === equipo.id ? 'chip on' : 'chip'} aria-pressed={e.id === equipo.id} onClick={() => setActivo(e.id)}>{e.nombre}</button>)}
-            </div>
-          )}
+          <SelectorEquipo equipos={d.equipos} activo={equipo.id} elegir={setActivo} />
         </section>
         <Temporada key={equipo.id} equipo={equipo} jugadoras={plantilla(d, equipo.id)} fechaInicial={fecha} abrirSesion={abrirSesion}
           anotar={(ns) => setD((cur) => ns.reduce((acc, n) => {
@@ -435,15 +442,12 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
     <section className="pantalla">
       <h1 className="titulo">Equipo</h1>
       <Apartados vista="plantilla" ver={(v) => setVista({ tipo: v })} />
-      {d.equipos.length > 1 && (
-        <div className="niveles filtro" role="group" aria-label="Equipo">
-          {d.equipos.map((e) => (
-            <button key={e.id} className={e.id === equipo.id ? 'chip on' : 'chip'} aria-pressed={e.id === equipo.id} onClick={() => setActivo(e.id)}>{e.nombre}</button>
-          ))}
-        </div>
-      )}
+      <SelectorEquipo equipos={d.equipos} activo={equipo.id} elegir={setActivo} />
       <button className="tarjeta-col resumen-equipo" onClick={() => setVista({ tipo: 'equipo' })}>
-        <span className="nombre">{equipo.nombre}</span>
+        <span className="cabecera-equipo">
+          <EscudoEquipo nombre={equipo.nombre} escudo={equipo.escudo} color={equipo.color} tam={44} />
+          <span><span className="nombre">{equipo.nombre}</span><br /><span className="meta">{[equipo.categoria, equipo.temporada].filter(Boolean).join(' · ')}</span></span>
+        </span>
         <span className="meta">{equipo.forma || equipo.virtudes || 'Toca para escribir su forma de jugar, sus virtudes y cómo entrenarlo'}</span>
       </button>
       <h2 className="sub">Plantilla · {jugadoras.length}{jugadoras.some((j) => j.lesion) ? ` · ${disponibles(jugadoras)} disponibles` : ''}</h2>
@@ -474,12 +478,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema }:
         <button className="secundario" onClick={() => setVista({ tipo: 'importar' })}>Importar PDF o lista</button>
       </div>
       <div className="nuevo-equipo">
-        <label className="campo-diario">
-          <span>Otro equipo</span>
-          <input value={nombre} maxLength={40} placeholder={tipoNuevo === 'senior' ? 'Senior B' : 'Infantil, Mini…'} onChange={(ev) => setNombre(ev.target.value)} onKeyDown={(ev) => ev.key === 'Enter' && crearEquipo()} />
-        </label>
-        <ElegirTipo tipo={tipoNuevo} cambiar={setTipoNuevo} />
-        <button className="secundario" disabled={!nombre.trim()} onClick={crearEquipo}>Añadir equipo</button>
+        <button className="secundario" onClick={() => setVista({ tipo: 'asistente' })}>＋ Nuevo equipo</button>
       </div>
     </section>
   );

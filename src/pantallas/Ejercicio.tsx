@@ -4,7 +4,7 @@ import { TIPOS, type Ejercicio as EjercicioDatos } from '../ejercicios/ejercicio
 import { Pista } from '../pizarra/Pista';
 import { useJugada } from '../pizarra/useJugada';
 import { NIVELES } from '../sistemas/tipos';
-import { leerDiario } from '../diario/diario';
+import { leerEquipoActivo } from '../equipo/equipos';
 import { jugadoresDe } from './Ejercicios';
 import { EtiquetasHabilidad } from './Habilidades';
 
@@ -80,7 +80,7 @@ export function Ejercicio({ e, volver, verSistema }: { e: EjercicioDatos; volver
           Lo marcado como <b>borrador</b> no está en la ficha{revisa('pizarra') ? ', y la pizarra está sacada de los pasos del sistema' : ''}: revísalo antes de usarlo con el equipo.
         </p>
       )}
-      <EtiquetasHabilidad id={e.id} texto={`${e.formato} ${e.nombre} ${e.sistema.nombre}`} habilidades={leerDiario().equipos[0]?.habilidades ?? []} />
+      <EtiquetasHabilidad id={e.id} texto={`${e.formato} ${e.nombre} ${e.sistema.nombre}`} habilidades={leerEquipoActivo()?.habilidades ?? []} />
       <button className="ver-sistema" onClick={verSistema}>Sale de la ficha de {e.sistema.nombre} ›</button>
     </section>
   );

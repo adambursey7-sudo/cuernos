@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Marca } from '../Logo';
 import { disponibles, hoy, plantilla, leerDiario, type Equipo } from '../diario/diario';
+import { leerEquipoActivo } from '../equipo/equipos';
 import { leerSesiones } from '../sesiones/sesiones';
 import { DIAS, diaSemana, lunesDe, sumarDias } from '../temporada/fechas';
 import { cuando, siguiente } from '../temporada/siguiente';
@@ -74,7 +75,7 @@ function ModoTele({ equipo, cerrar }: { equipo: Equipo; cerrar: () => void }) {
 
 export function Tele({ verDia, abrirSesion }: { verDia: (fecha: string) => void; abrirSesion: (id: string) => void }) {
   const [tele, setTele] = useState(false);
-  const equipo = leerDiario().equipos[0];
+  const equipo = leerEquipoActivo();
   if (!equipo) return null;
   const { hoyTexto, proximo, js, fuertes, flojas } = datos(equipo);
   const sesion = proximo?.sesionId ? leerSesiones().find((x) => x.id === proximo.sesionId) : undefined;

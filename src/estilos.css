@@ -590,3 +590,30 @@ select#fi-sis { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.
 .acceso-hola { font: 400 2.2rem/1.05 var(--display); text-transform: uppercase; text-align: center; margin: 56px 0 0; animation: acceso-sube 1s .6s both; }
 @keyframes acceso-gira { 0% { transform: scale(1) rotate(0); } 55% { transform: scale(1.5) rotate(360deg); } 100% { transform: scale(1.15) rotate(360deg); } }
 @keyframes acceso-sube { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+/* Equipo completo: selector con escudo y asistente de nuevo equipo */
+.selector-equipo { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 6px; scrollbar-width: none; }
+.selector-equipo .chip { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; white-space: nowrap; }
+.escudo-equipo { flex: none; display: block; }
+.cabecera-equipo { display: flex; align-items: center; gap: 12px; }
+.cabecera-equipo .nombre { font-family: var(--display); font-size: 1.15rem; }
+.asistente { display: grid; gap: 14px; }
+.asistente .paso-num { font-family: var(--display); font-size: 3.2rem; line-height: 1; color: var(--principal); }
+.asistente .pasos-puntos { display: flex; gap: 6px; }
+.asistente .pasos-puntos i { width: 26px; height: 6px; border-radius: 3px; background: var(--tenue); opacity: .5; }
+.asistente .pasos-puntos i.on { background: var(--principal); opacity: 1; }
+.asistente .campo-diario input, .asistente .campo-diario select { padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--tenue); background: var(--superficie); color: var(--texto); font-size: 1rem; min-height: 44px; }
+.asistente .fila-entreno { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: end; padding: 10px; border-radius: 12px; background: var(--superficie); }
+.asistente .fila-entreno .dia { grid-column: 1 / -1; font-weight: 700; }
+.asistente .botones-asistente { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+.asistente .botones-asistente .principal { min-height: 52px; }
+.asistente .botones-asistente button { min-height: 48px; }
+.asistente .escudo-grande { display: flex; justify-content: center; padding: 8px 0; }
+.asistente textarea { min-height: 120px; }
+.bloque-equipo { display: grid; gap: 8px; padding: 12px; border-radius: 14px; background: var(--superficie); }
+.fila-staff { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+.fila-staff input, .fila-staff select { padding: 9px 10px; border-radius: 10px; border: 1.5px solid var(--tenue); background: var(--fondo); color: var(--texto); font-size: 1rem; min-height: 44px; min-width: 0; }
+.fila-staff .papel { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; }
+.objetivo { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.objetivo input[type='checkbox'] { width: 22px; height: 22px; flex: none; }
+.objetivo.hecho span { text-decoration: line-through; color: var(--tenue); }

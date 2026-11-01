@@ -54,6 +54,9 @@ export interface Evento {
   jornada?: number;
   /** Qué competición es (solo en un partido). Sin dato, liga. */
   competicion?: Competicion;
+  /** Convocatoria (ids de jugadora) y quinteto inicial (hasta 5, entre los convocados). Solo en un partido. */
+  convocados?: string[];
+  quinteto?: string[];
   /** Hora de salida del viaje (solo en un partido fuera). */
   salida?: string;
   /** Plan de partido (senior): defensa, jugadas y a quién buscar. */
@@ -167,10 +170,18 @@ function limpiaEvento(e: unknown): Evento | null {
     ...(x.tipo === 'partido' && txt(x.plan) && x.plan.trim() ? { plan: x.plan.slice(0, 600) } : {}),
     ...(x.tipo === 'partido' && limpiarDirecto(x.directo) ? { directo: limpiarDirecto(x.directo) } : {}),
     ...listaTexto('bien', x.bien), ...listaTexto('mal', x.mal), ...listaTexto('mirar', x.mirar), ...listaTexto('pasadas', x.pasadas),
+    ...(x.tipo === 'partido' ? convocatoriaLimpia(x.convocados, x.quinteto) : {}),
   };
 }
 
-const listaTexto = (clave: 'bien' | 'mal' | 'mirar' | 'pasadas', v: unknown) => {
+/** El quinteto solo puede tener a gente convocada (si hay convocatoria) y como mucho cinco. */
+function convocatoriaLimpia(convocados: unknown, quinteto: unknown): Pick<Evento, 'convocados' | 'quinteto'> {
+  const conv = listaTexto('convocados', convocados).convocados;
+  const quin = listaTexto('quinteto', quinteto).quinteto?.filter((id) => !conv || conv.includes(id)).slice(0, 5);
+  return { ...(conv ? { convocados: conv.slice(0, 20) } : {}), ...(quin?.length ? { quinteto: quin } : {}) };
+}
+
+const listaTexto = (clave: 'bien' | 'mal' | 'mirar' | 'pasadas' | 'convocados' | 'quinteto', v: unknown) => {
   const a = Array.isArray(v) ? [...new Set(v.filter((s): s is string => txt(s) && s !== ''))] : [];
   return a.length ? { [clave]: a } : {};
 };

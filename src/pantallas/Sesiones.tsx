@@ -10,8 +10,10 @@ import { idBloqueFicha, leerFichas, type Ficha } from '../recursos/fichas';
 import { Entrenando, crearAudio } from './Entrenando';
 import {
   DURACIONES, PASO_MINUTOS, bloqueDe, conMinutos, conTipo, diferencia, guardarSesiones, huerfanos, inicios, leerSesiones, mover, nuevaSesion, quitar,
-  reparto, total, tituloBloque, type Sesion,
+  reparto, sesionesDe, total, tituloBloque, type Sesion,
 } from '../sesiones/sesiones';
+import { leerDiario } from '../diario/diario';
+import { leerEquipoActivo } from '../equipo/equipos';
 
 /** «1 h 15 min», «45 min». */
 export function horas(m: number): string {
@@ -179,7 +181,9 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
   arranque?: ReturnType<typeof crearAudio> | null; gastado?: () => void;
 }) {
   const [todas, setTodas] = useState<Sesion[]>(() => leerSesiones());
-  const [equipo, setEquipo] = useState<string | undefined>(() => leerSesiones()[0]?.equipo);
+  // Los equipos del diario van primero (el activo, elegido); detrás, nombres de sesiones antiguas sin equipo en el diario.
+  const equiposDiario = leerDiario().equipos;
+  const [equipo, setEquipo] = useState<string | undefined>(() => leerEquipoActivo()?.nombre ?? leerSesiones()[0]?.equipo);
   const [nuevoEquipo, setNuevoEquipo] = useState('');
   const [fallo, setFallo] = useState(false);
 
@@ -187,7 +191,7 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
     setTodas(lista);
     setFallo(!guardarSesiones(lista));
   };
-  const equipos = [...new Set(todas.map((s) => s.equipo))];
+  const equipos = [...new Set([...equiposDiario.map((e) => e.nombre), ...todas.map((s) => s.equipo)])];
   const sesion = todas.find((s) => s.id === abierta);
 
   if (sesion)
@@ -204,12 +208,15 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
     );
 
   const crear = (nombreEquipo: string, plantilla?: Plantilla) => {
-    const s = plantilla ? desdePlantilla(plantilla, nombreEquipo) : nuevaSesion(nombreEquipo);
+    const dueño = equiposDiario.find((e) => e.nombre === nombreEquipo);
+    const base = plantilla ? desdePlantilla(plantilla, nombreEquipo) : nuevaSesion(nombreEquipo);
+    const s = dueño ? { ...base, equipoId: dueño.id } : base;
     poner([...todas, s]);
     setEquipo(nombreEquipo);
     setAbierta(s.id);
   };
-  const delEquipo = todas.filter((s) => s.equipo === equipo);
+  const eqDiario = equiposDiario.find((e) => e.nombre === equipo);
+  const delEquipo = eqDiario ? sesionesDe(todas, eqDiario) : todas.filter((s) => s.equipo === equipo);
   const nombreLimpio = nuevoEquipo.trim().slice(0, 30);
 
   return (
