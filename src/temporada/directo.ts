@@ -3,10 +3,16 @@ export interface Linea {
   /** Puntos y faltas personales. */
   p: number;
   f: number;
+  /** Rebotes, asistencias, robos y pérdidas (solo si se apuntaron). */
+  reb?: number;
+  ast?: number;
+  rob?: number;
+  per?: number;
 }
 export type Directo = Record<string, Linea>;
 
 export const FALTAS_FUERA = 5;
+const EXTRAS = ['reb', 'ast', 'rob', 'per'] as const;
 
 const linea = (d: Directo | undefined, id: string): Linea => d?.[id] ?? { p: 0, f: 0 };
 
@@ -38,8 +44,9 @@ export function limpiarDirecto(x: unknown): Directo | undefined {
   const salida: Directo = {};
   for (const [id, v] of Object.entries(x as Record<string, Linea>)) {
     if (!id || !v || !Number.isInteger(v.p) || !Number.isInteger(v.f)) continue;
-    const l = { p: Math.min(300, Math.max(0, v.p)), f: Math.min(7, Math.max(0, v.f)) };
-    if (l.p || l.f) salida[id] = l;
+    const l: Linea = { p: Math.min(300, Math.max(0, v.p)), f: Math.min(7, Math.max(0, v.f)) };
+    for (const k of EXTRAS) if (Number.isInteger(v[k]) && v[k]! > 0) l[k] = Math.min(99, v[k]!);
+    if (l.p || l.f || EXTRAS.some((k) => l[k])) salida[id] = l;
   }
   return Object.keys(salida).length ? salida : undefined;
 }

@@ -4,6 +4,7 @@ import type { Candidata, ItemIcs } from './ics';
 import { diaSemana, diasEntre, esFecha, esHora, sumarDias } from './fechas';
 import { limpiarInforme, type InformeRival } from './rival';
 import { limpiarDirecto, type Directo } from './directo';
+import { limpiarVivo, type Vivo } from '../partido/vivo';
 
 const CLAVE = 'horns.temporada';
 
@@ -63,6 +64,8 @@ export interface Evento {
   plan?: string;
   /** Puntos y faltas por jugador, apuntados en directo (senior). */
   directo?: Directo;
+  /** Partido en directo: reloj, cuarto, en pista, minutos y cronología (solo ids de jugadora). */
+  vivo?: Vivo;
 }
 
 export interface EntrenoFijo {
@@ -169,6 +172,7 @@ function limpiaEvento(e: unknown): Evento | null {
     ...(x.tipo === 'partido' && esCompeticion(x.competicion) && x.competicion !== 'liga' ? { competicion: x.competicion } : {}),
     ...(x.tipo === 'partido' && txt(x.plan) && x.plan.trim() ? { plan: x.plan.slice(0, 600) } : {}),
     ...(x.tipo === 'partido' && limpiarDirecto(x.directo) ? { directo: limpiarDirecto(x.directo) } : {}),
+    ...(x.tipo === 'partido' && limpiarVivo(x.vivo) ? { vivo: limpiarVivo(x.vivo) } : {}),
     ...listaTexto('bien', x.bien), ...listaTexto('mal', x.mal), ...listaTexto('mirar', x.mirar), ...listaTexto('pasadas', x.pasadas),
     ...(x.tipo === 'partido' ? convocatoriaLimpia(x.convocados, x.quinteto) : {}),
   };

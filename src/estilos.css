@@ -722,3 +722,70 @@ button:active:not(:disabled) { transform: scale(0.97); }
 .ultimo .marcador-chico { font: 900 1.6rem/1 var(--display); font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { .anillo-arco { transition: none; } }
 .aviso-copia { padding: var(--e2) var(--e3); border-radius: var(--r-sm); background: color-mix(in srgb, var(--aviso) 16%, var(--fondo)); border: 1px solid color-mix(in srgb, var(--aviso) 40%, var(--fondo)); color: var(--texto); font-size: 0.9rem; font-weight: 700; }
+
+/* ===== Partido en directo (loop Pro, tramo 3) ===== */
+.vivo { position: fixed; inset: 0; z-index: 40; overflow-y: auto; overflow-x: hidden; display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: var(--e2); background: var(--fondo); padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); animation: entra var(--t-normal) var(--suave); }
+.vivo-cab { display: flex; align-items: center; gap: var(--e2); }
+.vivo-rival { flex: 1; font: 900 1.15rem/1 var(--display); text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vivo-marcador { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: var(--e2); padding: var(--e3); border-radius: var(--r-lg); background: #0d0b09; color: #fff8ee; border: 1.5px solid var(--borde); box-shadow: var(--sombra-2); }
+.vivo-marcador .eq { display: grid; justify-items: center; gap: 2px; min-width: 0; }
+.vivo-marcador .eq > span:first-child { font: 800 0.7rem/1 var(--display); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vivo-marcador .eq b { font: 900 3.1rem/0.95 var(--display); font-variant-numeric: tabular-nums; color: var(--principal-vivo, var(--principal)); }
+.vivo-marcador .rival b { color: #fff8ee; }
+.vivo-marcador .centro { display: grid; justify-items: center; gap: 4px; }
+.vivo-marcador .cuarto { padding: 2px 10px; border-radius: var(--r-pill); background: #fff8ee22; font: 800 0.8rem/1.4 var(--display); }
+.vivo-marcador .reloj { font: 900 2rem/1 var(--display); font-variant-numeric: tabular-nums; }
+.vivo-marcador .reloj.poco { color: #ff7a6b; }
+.vivo-marcador .centro button { min-height: 40px; padding: 0 var(--e4); font-size: 0.85rem; }
+.mini-pad { display: flex; gap: 3px; }
+.mini-pad button { min-width: 34px; min-height: 40px; padding: 0; border: none; border-radius: var(--r-sm); background: #fff8ee22; color: #fff8ee; font: 800 0.95rem/1 var(--display); }
+.vivo-estado { display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: var(--e2); }
+.vivo-estado .rotulo, .vivo-banquillo .rotulo { display: block; font: 800 0.66rem/1 var(--display); text-transform: uppercase; letter-spacing: 0.08em; color: var(--tenue); margin-bottom: 4px; }
+.puntitos { display: inline-flex; align-items: center; gap: 5px; }
+.puntitos i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--tenue); }
+.puntitos i.on { background: var(--defensa); border-color: var(--defensa); }
+.puntitos em { font: 800 0.7rem/1 var(--display); color: var(--mal-texto); text-transform: uppercase; margin-left: 4px; font-style: normal; }
+.vivo-pista { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.jug { display: grid; justify-items: center; gap: 2px; padding: 8px 2px; min-height: 112px; border-radius: var(--r-md); border: 2px solid var(--borde); background: var(--superficie); text-align: center; box-shadow: var(--sombra-1); }
+.jug.sel { border-color: var(--principal); background: color-mix(in srgb, var(--principal) 18%, var(--superficie)); }
+.jug.destino { border-style: dashed; border-color: var(--principal); }
+.jug.peligro { border-color: var(--aviso); } .jug.fuera { border-color: var(--defensa); opacity: 0.7; }
+.jug .dorsal { width: 40px; height: 40px; font-size: 1.3rem; }
+.jug-nombre { font-size: 0.66rem; line-height: 1.1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--tenue); padding: 0 2px; }
+.jug-datos { font-size: 0.72rem; line-height: 1.1; } .jug-datos b { font: 900 1.05rem/1 var(--display); }
+.jug-min { font-size: 0.68rem; color: var(--tenue); }
+.vivo-pad { display: grid; gap: 6px; }
+.fila-pad { display: grid; gap: 6px; }
+.fila-pad.puntos { grid-template-columns: repeat(3, 1fr); }
+.fila-pad.otras { grid-template-columns: repeat(5, 1fr); }
+.fila-pad button { min-height: 52px; border-radius: var(--r-sm); background: var(--superficie); border: 1px solid var(--borde); font: 800 1rem/1 var(--display); text-transform: uppercase; }
+.fila-pad.puntos button:nth-child(-n+3) { background: var(--principal); color: var(--sobre-principal); font-size: 1.5rem; border-color: var(--principal); }
+.fila-pad .falla { color: var(--mal-texto); font-size: 0.8rem; }
+.vivo-banquillo .banco { display: flex; flex-wrap: wrap; gap: 6px; }
+.ban { position: relative; touch-action: none; display: grid; justify-items: center; align-content: center; min-width: 52px; min-height: 52px; padding: 4px 8px; border-radius: var(--r-md); border: 2px solid var(--borde); background: var(--superficie); }
+.ban b { font: 900 1.3rem/1 var(--display); } .ban small { color: var(--tenue); font-size: 0.66rem; }
+.ban.sel { border-color: var(--principal); background: color-mix(in srgb, var(--principal) 20%, var(--superficie)); }
+.ban.fuera { opacity: 0.4; }
+.fantasma { position: fixed; z-index: 60; transform: translate(-50%, -130%); pointer-events: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--principal); color: var(--sobre-principal); font: 900 1.5rem/1 var(--display); box-shadow: var(--sombra-2); }
+.vivo-pie { position: sticky; bottom: 0; display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 6px; padding-top: 6px; background: linear-gradient(transparent, var(--fondo) 30%); }
+.vivo-pie button { min-height: 52px; padding: 0 6px; font-size: 0.78rem; line-height: 1.1; }
+.vivo-pie .deshacer { overflow: hidden; text-overflow: ellipsis; }
+.cronologia { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.cronologia li { display: flex; gap: var(--e3); align-items: baseline; padding: var(--e2) var(--e3); border-radius: var(--r-sm); background: var(--superficie); border-left: 5px solid var(--tenue); }
+.cronologia li.cr-c1, .cronologia li.cr-c2, .cronologia li.cr-c3 { border-left-color: var(--ok); }
+.cronologia li.cr-rival { border-left-color: var(--defensa); } .cronologia li.cr-fal { border-left-color: var(--aviso); }
+.cr-t { flex: none; min-width: 5.2em; font: 800 0.85rem/1 var(--display); font-variant-numeric: tabular-nums; color: var(--tenue); }
+.resumen-marcador { display: grid; justify-items: center; gap: 4px; padding: var(--e4); border-radius: var(--r-lg); background: var(--superficie); border: 1px solid var(--borde); }
+.resumen-marcador span { font: 800 0.9rem/1 var(--display); text-transform: uppercase; letter-spacing: 0.1em; color: var(--tenue); }
+.resumen-marcador b { font: 900 3.4rem/1 var(--display); font-variant-numeric: tabular-nums; }
+.resumen-marcador.G span { color: var(--ok-texto); } .resumen-marcador.P span { color: var(--mal-texto); }
+.mejores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.mejor { display: grid; justify-items: center; gap: 2px; padding: var(--e2) 2px; border-radius: var(--r-sm); background: var(--superficie); border: 1px solid var(--borde); text-align: center; }
+.mejor .rotulo { font: 800 0.6rem/1 var(--display); text-transform: uppercase; color: var(--tenue); letter-spacing: 0.05em; }
+.mejor b { font: 900 0.95rem/1.1 var(--display); color: var(--principal); } .mejor small { font-size: 0.8rem; color: var(--tenue); }
+.tabla-box { overflow-x: auto; border-radius: var(--r-md); border: 1px solid var(--borde); }
+.tabla-box table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 0.85rem; }
+.tabla-box th, .tabla-box td { padding: 8px 6px; text-align: center; border-bottom: 1px solid var(--borde); }
+.tabla-box thead th { font: 800 0.66rem/1 var(--display); text-transform: uppercase; color: var(--tenue); }
+.tabla-box tbody th { text-align: left; font: 900 1rem/1 var(--display); padding-left: var(--e3); }
+.tabla-box td.mej { color: var(--principal); font-weight: 800; background: color-mix(in srgb, var(--principal) 14%, transparent); }

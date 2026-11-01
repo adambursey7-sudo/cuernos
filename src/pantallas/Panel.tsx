@@ -15,6 +15,7 @@ import { aspectoClaro, leerColores, paraClaro, textoSobre } from '../temas';
 import { Anillo } from '../ui/Anillo';
 import { Vacio } from '../ui/Vacio';
 import { ModoTele } from './Tele';
+import { pedirPartido } from '../partido/abrir';
 
 /** Color del equipo que se lee en el aspecto actual (en claro se oscurece lo justo). */
 function acentoDe(color: string | undefined): React.CSSProperties | undefined {
@@ -102,7 +103,7 @@ export function Panel({ verDia, abrirSesion }: { verDia: (fecha: string) => void
 
       <div className="rapidos">
         <button onClick={() => verDia((entreno ?? { fecha: hoyTexto }).fecha)}><span className="burbuja-atajo"><IconoLista /></span>Pasar lista</button>
-        <button onClick={() => verDia((partido ?? { fecha: hoyTexto }).fecha)}><span className="burbuja-atajo"><IconoPartido /></span>Empezar partido</button>
+        <button onClick={() => (partido ? pedirPartido(partido.id) : verDia(hoyTexto))}><span className="burbuja-atajo"><IconoPartido /></span>Empezar partido</button>
         <button onClick={() => verDia((partido ?? { fecha: hoyTexto }).fecha)}><span className="burbuja-atajo"><IconoConvocatoria /></span>Ver convocatoria</button>
       </div>
 

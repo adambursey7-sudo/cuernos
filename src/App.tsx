@@ -5,6 +5,8 @@ import { IconoBiblioteca, IconoEquipo, IconoHoy, IconoMas, IconoSesiones } from 
 import { Biblioteca, type Rama } from './pantallas/Biblioteca';
 import { Ejercicio } from './pantallas/Ejercicio';
 import { Esqueleto } from './ui/Vacio';
+import { alPedirPartido } from './partido/abrir';
+const PartidoVivo = lazy(() => import('./partido/PartidoVivo').then((m) => ({ default: m.PartidoVivo })));
 import { Inicio } from './pantallas/Inicio';
 import { Sesiones } from './pantallas/Sesiones';
 import type { crearAudio } from './pantallas/Entrenando';
@@ -121,6 +123,10 @@ export function App() {
     );
   else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} retocar={(e, c, r) => setEdicion({ base: e.sistema, ficha: fichaDeEjercicio(e, c, r) })} enlaceInicial={entrante} />;
 
+  // El partido en directo se abre encima de todo desde Inicio o desde la hoja de un día.
+  const [partidoId, setPartidoId] = useState<string | null>(null);
+  useEffect(() => alPedirPartido(setPartidoId), []);
+
   // Sin conexión: la app funciona igual, solo se avisa.
   const [enLinea, setEnLinea] = useState(navigator.onLine);
   useEffect(() => {
@@ -145,6 +151,7 @@ export function App() {
     <div className="app" onTouchStart={tocar} onTouchEnd={soltar}>
       {!enLinea && <p className="sin-red" role="status">Sin conexión: todo sigue funcionando, menos abrir enlaces.</p>}
       <main key={pestana === 'equipo' ? pestana : `${pestana}-${activoId}`} className="entra"><Suspense fallback={<Esqueleto />}>{contenido}</Suspense></main>
+      {partidoId && <Suspense fallback={<Esqueleto />}><PartidoVivo key={partidoId} eventoId={partidoId} salir={() => setPartidoId(null)} /></Suspense>}
       <nav className="pestanas" aria-label="Secciones">
         {PESTANAS.map((p) => (
           <button key={p.id} className={p.id === pestana ? 'on' : ''} aria-current={p.id === pestana ? 'page' : undefined} onClick={() => { setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>

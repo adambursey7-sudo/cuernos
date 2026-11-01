@@ -1,6 +1,7 @@
 // Estadística rápida en directo (senior): puntos y faltas por jugador con botones grandes, y aviso de faltas.
 import { avisosFaltas, estadoFaltas, ponerFalta, sumarPuntos, totalPuntos, type Directo } from '../temporada/directo';
 import type { Evento } from '../temporada/temporada';
+import { pedirPartido } from '../partido/abrir';
 
 export function EnDirecto({ e, jugadoras, poner, faltas = 5 }: { faltas?: number; e: Evento; jugadoras: { id: string; nombre: string; numero?: string | number }[]; poner: (c: Partial<Evento>) => void }) {
   const d = e.directo;
@@ -9,8 +10,10 @@ export function EnDirecto({ e, jugadoras, poner, faltas = 5 }: { faltas?: number
   const nombre = (id: string) => jugadoras.find((j) => j.id === id)?.nombre || 'Sin nombre';
   if (jugadoras.length === 0) return null;
   return (
+    <>
+    <button className="principal ancho" onClick={() => pedirPartido(e.id)}>{e.vivo ? (e.vivo.fin ? 'Ver el resumen del partido' : 'Seguir el partido en directo') : 'Empezar partido en directo'}</button>
     <details className="en-directo">
-      <summary>Partido en directo{d ? ` · ${totalPuntos(d)} puntos` : ''}</summary>
+      <summary>Apuntar a mano{d ? ` · ${totalPuntos(d)} puntos` : ''}</summary>
       {avisos.length > 0 && (
         <p className="aviso" aria-live="polite">
           {avisos.map((a) => `${nombre(a.id)} ${a.estado === 'fuera' ? `está fuera (${faltas} faltas)` : `tiene ${faltas - 1} faltas`}`).join(' · ')}
@@ -34,5 +37,6 @@ export function EnDirecto({ e, jugadoras, poner, faltas = 5 }: { faltas?: number
         })}
       </ul>
     </details>
+    </>
   );
 }
