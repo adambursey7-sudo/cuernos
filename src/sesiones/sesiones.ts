@@ -10,16 +10,25 @@ export interface Bloque {
   ejercicio: string;
   minutos: number;
   tipo: TipoEjercicio;
+  /** Qué se busca en este bloque (opcional). */
+  objetivo?: string;
+  /** 1 suave, 2 media, 3 alta; sin dato, media. */
+  intensidad?: 1 | 2 | 3;
 }
 
 export interface Sesion {
   id: string;
   /** Equipo o categoría: «Cadete femenino». */
   equipo: string;
+  /** Id del equipo del diario, si lo hay (así renombrar el equipo no suelta sus sesiones). */
+  equipoId?: string;
   nombre: string;
   /** Duración prevista del entrenamiento, en minutos. */
   duracion: number;
   bloques: Bloque[];
+  /** Pista o espacio donde se hace (opcional) y material extra a mano, separado por comas. */
+  pista?: string;
+  material?: string;
 }
 
 export const PASO_MINUTOS = 5;
@@ -32,9 +41,10 @@ export const total = (s: Sesion) => s.bloques.reduce((a, b) => a + b.minutos, 0)
 /** Minutos que faltan (positivo) o sobran (negativo) respecto a la duración prevista. */
 export const diferencia = (s: Sesion) => s.duracion - total(s);
 
-export const nuevaSesion = (equipo: string, nombre = 'Entrenamiento'): Sesion => ({
+export const nuevaSesion = (equipo: string, nombre = 'Entrenamiento', equipoId?: string): Sesion => ({
   id: `s${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
   equipo,
+  ...(equipoId ? { equipoId } : {}),
   nombre,
   duracion: 90,
   bloques: [],
@@ -81,6 +91,7 @@ function esSesion(s: unknown): s is Sesion {
     !!x &&
     typeof x.id === 'string' &&
     typeof x.equipo === 'string' &&
+    (x.equipoId === undefined || typeof x.equipoId === 'string') &&
     typeof x.nombre === 'string' &&
     Number.isFinite(x.duracion) &&
     Array.isArray(x.bloques) &&
@@ -88,14 +99,47 @@ function esSesion(s: unknown): s is Sesion {
   );
 }
 
-/** Se queda con las sesiones bien formadas de lo que venga (una copia, por ejemplo). */
-export const limpiarSesiones = (crudo: unknown): Sesion[] => (Array.isArray(crudo) ? crudo.filter(esSesion) : []);
+/** Las sesiones de un equipo: por su id, o por el nombre si son de antes de que hubiera id. */
+export const sesionesDe = (todas: Sesion[], e: { id: string; nombre: string }) =>
+  todas.filter((s) => (s.equipoId ? s.equipoId === e.id : s.equipo === e.nombre));
 
-/** Junta las sesiones de una copia con las que ya hay: si coinciden, gana la copia. */
-export function juntarSesiones(actuales: Sesion[], deLaCopia: Sesion[]): Sesion[] {
-  const ids = new Set(deLaCopia.map((x) => x.id));
-  return [...actuales.filter((x) => !ids.has(x.id)), ...deLaCopia];
+/** Pone a cada sesión el id y el nombre actual de su equipo (si se puede saber cuál es por el nombre). Devuelve la misma lista si no hay nada que cambiar. */
+export function alinearSesiones(sesiones: Sesion[], equipos: { id: string; nombre: string }[]): Sesion[] {
+  let cambio = false;
+  const nuevas = sesiones.map((s) => {
+    const e = s.equipoId ? equipos.find((x) => x.id === s.equipoId) : equipos.find((x) => x.nombre === s.equipo);
+    if (!e || (s.equipoId === e.id && s.equipo === e.nombre)) return s;
+    cambio = true;
+    return { ...s, equipoId: e.id, equipo: e.nombre };
+  });
+  return cambio ? nuevas : sesiones;
 }
+
+/** Deja solo las sesiones válidas (también al cargar una copia). */
+export const limpiarSesiones = (l: unknown): Sesion[] => (Array.isArray(l) ? l.filter(esSesion).map(limpiarExtras) : []);
+
+/** Quita lo raro de los datos opcionales de una sesión (objetivo, intensidad, pista y material). */
+function limpiarExtras(s: Sesion): Sesion {
+  const corto = (v: unknown, n: number) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, n) : undefined);
+  const { pista, material, bloques, ...resto } = s;
+  const p = corto(pista, 60);
+  const m = corto(material, 200);
+  return {
+    ...resto,
+    ...(p ? { pista: p } : {}),
+    ...(m ? { material: m } : {}),
+    bloques: bloques.map(({ objetivo, intensidad, ...b }) => {
+      const o = corto(objetivo, 80);
+      return { ...b, ...(o ? { objetivo: o } : {}), ...(intensidad === 1 || intensidad === 2 || intensidad === 3 ? { intensidad } : {}) };
+    }),
+  };
+}
+
+/** Junta las de una copia con las actuales: si coincide el id, gana la copia. */
+export const juntarSesiones = (actuales: Sesion[], copia: Sesion[]): Sesion[] => {
+  const ids = new Set(copia.map((s) => s.id));
+  return [...actuales.filter((s) => !ids.has(s.id)), ...copia];
+};
 
 export function leerSesiones(): Sesion[] {
   try {

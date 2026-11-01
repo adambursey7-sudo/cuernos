@@ -1,0 +1,66 @@
+LOOP: Llevar un equipo SENIOR MASCULINO al máximo con Horns
+
+CONTEXTO
+Horns es mi app de baloncesto (C:\dev\baloncesto-app, publicada en https://adambursey7-sudo.github.io/cuernos/).
+Ya tiene: sistemas, pizarra animada, ejercicios y sesiones, cronómetro de pista, Diario, temporada y calendario,
+habilidades por edad, rotación y minutos, informe del rival, Pedir a Claude (ejercicios con lógica), recursos,
+Tele de equipo, copia de seguridad. Hasta ahora todo está pensado para formación (cadete femenino).
+Quiero que la app sirva igual de bien para llevar un SENIOR MASCULINO de principio a fin de temporada.
+
+OBJETIVO
+Que con Horns pueda montar y dirigir un equipo senior masculino completo: crear la plantilla, los horarios de
+entrenamiento, el calendario de liga, los sistemas de juego, los ejercicios, las sesiones, la preparación de cada
+partido y el seguimiento de la temporada. Revisar lo que ya hay, arreglar errores y proponer mejoras.
+
+PASOS
+1. Rama nueva desde main en un worktree propio (loop/senior-masculino). No toques la copia de main ni lo publicado.
+   Para tests: junction de node_modules a baloncesto-t-recursos y quitarla con «cmd /c rmdir» al acabar.
+2. Auditoría (antes de proponer nada). Recorre la app entera como entrenador de un senior y lista:
+   a) ERRORES: cosas que fallan, textos, pantallas rotas, datos que se pierden, tests que no pasan. Arréglalos
+      (los pequeños ya; los que cambien comportamiento, en el boceto).
+   b) COSAS PENSADAS SOLO PARA FORMACIÓN que no valen para senior (habilidades por edad, ejercicios de iniciación,
+      lenguaje, categorías, minutos obligatorios, etc.).
+   c) HUECOS: lo que un entrenador senior necesita y la app no ofrece.
+3. Investigar lo propio del senior masculino (WebSearch/WebFetch, resumiendo con mis palabras y anotando la fuente):
+   reglamento FIBA/FEB senior (4x10, 24 s, 8 s, faltas, plantilla de 12), ligas EBA / autonómicas / provinciales,
+   cómo se organiza una temporada (pretemporada, liga, fases, playoffs), carga de entrenamiento y descansos con
+   plantilla que trabaja, sistemas ofensivos y defensivos de senior (bloqueo directo y continuación, pick and pop,
+   horns, flex, motion, ATO/jugadas de balón parado, zonas 2-3 / 3-2 / 1-3-1, presión, defensa de bloqueos: ICE,
+   switch, drop, hedge), gestión de rotación, scouting y vídeo. Guárdalo en docs/senior/ (un .txt por tema
+   + índice con fuentes). Nada de libros pirateados ni textos largos copiados.
+4. Diseñar los CAMBIOS en bocetos (docs/loop-senior/bocetos.html + artefacto), por bloques. Para cada bloque, VARIAS
+   opciones con boceto, ventajas e inconvenientes, y una recomendación:
+   A) EQUIPO Y PLANTILLA: crear equipo senior masculino, plantilla de 10–12, posiciones y roles (titular, rotación,
+      especialista), dorsales, disponibilidad, lesiones (solo en el dispositivo), asistencia a entrenos.
+   B) HORARIOS: días y horas de entrenamiento (suelen ser de tarde-noche, 2–3 por semana), pista y vestuario,
+      recordatorios, entrenos que se cancelan o se mueven, objetivo de cada entreno.
+   C) CALENDARIO Y TEMPORADA: liga con jornadas, local/visitante, viaje y hora de salida, amistosos de pretemporada,
+      playoffs, clasificación, balance y estadísticas del equipo; importar el calendario que ya existe.
+   D) SISTEMAS DE JUEGO: biblioteca senior (ataque, defensa, balón parado, finales de partido, salida de presión),
+      combinarlos en un «libro de jugadas» del equipo, con los favoritos y los que se trabajan esta semana.
+   E) EJERCICIOS Y SESIONES: banco de ejercicios de senior (calentamiento, tiro, 1x1/2x2/3x3 con reglas de
+      lectura, situaciones de partido, final de partido, físico), plantillas de sesión de 90 min y planificación
+      semanal/mensual según el partido del fin de semana.
+   F) PARTIDO: preparación (informe del rival, plan de partido), banquillo (rotación y minutos con faltas y cansancio),
+      estadística rápida en directo, balance y lo que se trabaja la semana siguiente.
+   G) OTROS: informe a la plantilla por mensaje, Tele de equipo en el vestuario, PDF del plan de partido.
+   Espera MI ELECCIÓN y mi visto bueno de los bocetos antes de programar. No empieces a programar por tu cuenta.
+5. Programar lo que yo confirme, bloque a bloque (un bloque = un tramo). Pruebas automáticas para cada regla nueva.
+   Que lo de formación siga funcionando: el tipo de equipo (formación / senior) se elige al crearlo.
+6. Probar la app de verdad (/run): recorrer a mano crear equipo → horarios → calendario → sesión → partido, con pocas
+   capturas. Probar también el flujo en móvil (ancho de iPhone).
+7. Revisión por tramo: /code-review low (medium si toca datos de usuarios o la copia). Al final, /security-review una vez.
+   tsc, pruebas y build en verde. Sin dejar nada a medias.
+8. Cierre: boceto final de cambios y mejoras (Hecho/Mejorable) y avisarme por Telegram solo con lo importante.
+
+REGLAS DE TRABAJO
+- Háblame claro, sin códigos ni nombres de archivos en lo que me cuentes; frases cortas.
+- El repo es público y puede haber datos de personas: ningún nombre real en código, tests, capturas ni bocetos
+  (solo «Ejemplo Uno…»). Las lesiones y datos de salud, solo en el dispositivo, nunca en el repo ni en la copia salvo
+  que yo lo active. Sin nombres en las pizarras (el GIF se comparte).
+- La IA no inventa jugadas: usa los patrones y reglas de docs/conocimiento.
+- Los bocetos se hacen con varias opciones y yo elijo ([disenar-varias-y-elegir]).
+- Prompts para modelos externos, en inglés; conmigo, en español.
+- No unas a main, no publiques ni reinicies Jarvis sin que yo diga que sí.
+- Todo lo que quiera leer va en .txt en la carpeta del proyecto (docs), no en el Escritorio.
+- Al cerrar cada tramo, avisa corto y para hasta mi visto bueno. Al terminar, /guardar y propón /clear.

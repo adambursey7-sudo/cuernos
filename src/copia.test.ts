@@ -67,7 +67,7 @@ describe('copia con sesiones, espacios y favoritos', () => {
   it('las sesiones, los espacios y los favoritos vuelven al cargar', () => {
     const ses = nuevaSesion('Cadete femenino');
     const espacios = ESPACIOS_BASE.map((e) => ({ ...e, nombre: e.id === ESPACIOS_BASE[0].id ? 'Mi esquina' : e.nombre }));
-    const leida = leerCopia(armarCopia([], PALETAS[1], undefined, undefined, undefined, undefined, false, undefined, undefined, [ses], espacios, ['j:a', 'e:b']));
+    const leida = leerCopia(armarCopia([], PALETAS[1], undefined, undefined, undefined, undefined, false, undefined, undefined, { sesiones: [ses], espacios, favoritos: ['j:a', 'e:b'] }));
     expect(leida.sesiones).toEqual([ses]);
     expect(leida.espacios?.[0].nombre).toBe('Mi esquina');
     expect(leida.favoritos).toEqual(['j:a', 'e:b']);

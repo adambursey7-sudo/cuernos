@@ -2,6 +2,8 @@
 // Todo vive solo en este móvil y entra en la copia de seguridad. No hay datos reales en el código.
 import { limpiarHabilidades, type HabilidadEquipo } from '../habilidades/habilidades';
 import { limpiarRotacion, type Rotacion } from '../rotacion/rotacion';
+import { limpiarReglas, type Reglas } from '../reglas/reglas';
+import { limpiarDatosJugadora, limpiarExtras, type Escudo, type Genero, type Mano, type Objetivo, type Staff } from '../equipo/modelo';
 import { refrescarNumeros } from './puestos';
 
 const CLAVE = 'horns.diario';
@@ -31,18 +33,35 @@ export interface Jugadora {
   notas: Nota[];
   /** Lesión en curso (dato de salud: solo en este móvil; la copia de seguridad la deja fuera salvo que se pida). */
   lesion?: Lesion;
+  /** Papel en el equipo: titular, rotación o especialista. */
+  rol?: Rol;
+  /** Año de nacimiento (solo el año) y mano buena. */
+  nacimiento?: number;
+  mano?: Mano;
 }
 
 export interface Lesion {
   /** AAAA-MM-DD */
   desde: string;
   nota: string;
+  /** En duda: puede jugar, pero no se sabe. Sin esto, está lesionado y no juega. */
+  duda?: boolean;
 }
+
+/** Formación (cadete femenino, mini…) o senior masculino. Sin dato, es formación. */
+export type TipoEquipo = 'formacion' | 'senior';
+
+/** Papel en el equipo (solo se usa en senior). */
+export const ROLES = [['titular', 'Titular'], ['rotacion', 'Rotación'], ['especialista', 'Especialista']] as const;
+export type Rol = (typeof ROLES)[number][0];
+export const esRol = (x: unknown): x is Rol => ROLES.some(([id]) => id === x);
 
 export interface Equipo {
   id: string;
   /** Categoría: «Cadete femenino». */
   nombre: string;
+  /** Solo se guarda si es senior; sin dato, formación. */
+  tipo?: TipoEquipo;
   forma: string;
   virtudes: string;
   trabajar: string;
@@ -54,6 +73,21 @@ export interface Equipo {
   habilidades?: HabilidadEquipo[];
   /** Rotación del próximo partido: quién juega cada uno de los 4 cuartos (ids de jugadora). */
   rotacion?: Rotacion;
+  /** Reglas de la competición del equipo; sin ellas, las de FIBA. */
+  reglas?: Reglas;
+  /** Sin dato: senior = masculino, formación = femenino (como era antes de poder elegirlo). */
+  genero?: Genero;
+  /** Categoría escrita: «Cadete», «Senior A»… */
+  categoria?: string;
+  /** Temporada en texto: «2026-27». */
+  temporada?: string;
+  /** Color del equipo (#rrggbb) y escudo sencillo. */
+  color?: string;
+  escudo?: Escudo;
+  staff?: Staff[];
+  objetivos?: Objetivo[];
+  /** Equipo de ejemplo para probar: se puede borrar sin avisar de nada más. */
+  ejemplo?: boolean;
 }
 
 export interface Diario {
@@ -63,7 +97,7 @@ export interface Diario {
 
 const nuevoId = (p: string) => `${p}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
-export const nuevoEquipo = (nombre: string): Equipo => ({ id: nuevoId('e'), nombre, forma: '', virtudes: '', trabajar: '', como: '' });
+export const nuevoEquipo = (nombre: string, tipo: TipoEquipo = 'formacion'): Equipo => ({ id: nuevoId('e'), nombre, ...(tipo === 'senior' ? { tipo } : {}), forma: '', virtudes: '', trabajar: '', como: '' });
 
 export const nuevaJugadora = (equipoId: string, datos: Partial<Jugadora> = {}): Jugadora => ({
   id: nuevoId('j'),
@@ -94,7 +128,8 @@ export function esJugadora(j: unknown): j is Jugadora {
     (x.posicion === '' || (POSICIONES as readonly string[]).includes(x.posicion)) &&
     Array.isArray(x.notas) &&
     x.notas.every((n) => esTexto(n?.fecha) && esTexto(n?.texto)) &&
-    (x.lesion === undefined || (!!x.lesion && esTexto(x.lesion.desde) && esTexto(x.lesion.nota)))
+    (x.lesion === undefined || (!!x.lesion && esTexto(x.lesion.desde) && esTexto(x.lesion.nota) && (x.lesion.duda === undefined || typeof x.lesion.duda === 'boolean'))) &&
+    (x.rol === undefined || esRol(x.rol))
   );
 }
 
@@ -103,11 +138,12 @@ export function limpiar(d: unknown): Diario {
   const x = d as Partial<Diario> | null;
   const validos = Array.isArray(x?.equipos) ? x!.equipos.filter(esEquipo) : [];
   const ids = new Set(validos.map((e) => e.id));
-  const jugadoras = Array.isArray(x?.jugadoras) ? x!.jugadoras.filter((j) => esJugadora(j) && ids.has(j.equipoId)) : [];
-  const equipos = validos.map(({ habilidades, rotacion, ...e }): Equipo => {
+  const jugadoras = Array.isArray(x?.jugadoras) ? x!.jugadoras.filter((j) => esJugadora(j) && ids.has(j.equipoId)).map(limpiarDatosJugadora) : [];
+  const equipos = validos.map(({ habilidades, rotacion, tipo, reglas, genero, categoria, temporada, color, escudo, staff, objetivos, ejemplo, ...e }): Equipo => {
     const suyas = new Set(jugadoras.filter((j) => j.equipoId === e.id).map((j) => j.id));
     const r = limpiarRotacion(rotacion, suyas);
-    return { ...e, ...(habilidades === undefined ? {} : { habilidades: limpiarHabilidades(habilidades) }), ...(r ? { rotacion: r } : {}) };
+    const rg = limpiarReglas(reglas);
+    return { ...e, ...limpiarExtras({ genero, categoria, temporada, color, escudo, staff, objetivos, ejemplo }), ...(rg ? { reglas: rg } : {}), ...(tipo === 'senior' ? { tipo } : {}), ...(habilidades === undefined ? {} : { habilidades: limpiarHabilidades(habilidades) }), ...(r ? { rotacion: r } : {}) };
   });
   return { equipos, jugadoras };
 }
@@ -158,7 +194,9 @@ export const quitarEquipo = (d: Diario, id: string): Diario => ({
   jugadoras: d.jugadoras.filter((j) => j.equipoId !== id),
 });
 
-/** Junta lo de una copia con lo actual: si coincide el id, gana la copia (salvo la lesión y las habilidades: si la copia no las trae, se conservan las de este móvil). */
+const CONSERVAR = ['tipo', 'habilidades', 'rotacion', 'reglas', 'genero', 'categoria', 'temporada', 'color', 'escudo', 'staff', 'objetivos'] as const satisfies readonly (keyof Equipo)[];
+
+/** Junta lo de una copia con lo actual: si coincide el id, gana la copia (salvo la lesión, las habilidades y el tipo de equipo: si la copia no los trae, se conservan los de este móvil). */
 export function juntarDiario(actual: Diario, copia: Diario): Diario {
   const eq = new Set(copia.equipos.map((e) => e.id));
   const ju = new Set(copia.jugadoras.map((j) => j.id));
@@ -167,14 +205,17 @@ export function juntarDiario(actual: Diario, copia: Diario): Diario {
       ...actual.equipos.filter((e) => !eq.has(e.id)),
       ...copia.equipos.map((e) => {
         const mio = actual.equipos.find((x) => x.id === e.id);
-        return { ...e, ...(e.habilidades || !mio?.habilidades ? {} : { habilidades: mio.habilidades }), ...(e.rotacion || !mio?.rotacion ? {} : { rotacion: mio.rotacion }) };
+        // Una copia vieja no trae lo nuevo: se conserva lo de este móvil.
+        const conservado = Object.fromEntries(CONSERVAR.filter((k) => e[k] === undefined && mio?.[k] !== undefined).map((k) => [k, mio![k]]));
+        return { ...e, ...conservado };
       }),
     ],
     jugadoras: [
       ...actual.jugadoras.filter((j) => !ju.has(j.id)),
       ...copia.jugadoras.map((j) => {
         const mia = actual.jugadoras.find((x) => x.id === j.id);
-        return j.lesion || !mia?.lesion ? j : { ...j, lesion: mia.lesion };
+        if (!mia) return j;
+        return { ...j, ...(j.lesion || !mia.lesion ? {} : { lesion: mia.lesion }), ...(j.rol || !mia.rol ? {} : { rol: mia.rol }), ...(j.nacimiento || !mia.nacimiento ? {} : { nacimiento: mia.nacimiento }), ...(j.mano || !mia.mano ? {} : { mano: mia.mano }) };
       }),
     ],
   };
@@ -183,8 +224,11 @@ export function juntarDiario(actual: Diario, copia: Diario): Diario {
 /** El diario sin datos de salud (para la copia de seguridad por defecto). */
 export const sinSalud = (d: Diario): Diario => ({ ...d, jugadoras: d.jugadoras.map(({ lesion: _quitada, ...resto }) => resto) });
 
-/** Cuántas jugadoras de la plantilla pueden jugar (sin lesión en curso). */
-export const disponibles = (js: Jugadora[]) => js.filter((j) => !j.lesion).length;
+/** Fuera de juego: lesionado de verdad (el que está en duda cuenta como disponible). */
+export const estaFuera = (j: Jugadora) => !!j.lesion && !j.lesion.duda;
+
+/** Cuántos de la plantilla pueden jugar (sin lesión en curso; los que están en duda, sí). */
+export const disponibles = (js: Jugadora[]) => js.filter((j) => !estaFuera(j)).length;
 
 export const hoy = () => {
   const f = new Date();

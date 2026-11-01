@@ -1,0 +1,17 @@
+AUDITORÍA RÁPIDA DE LA INTERFAZ (antes del loop Pro, rama equipo-completo)
+
+LO QUE SE VEÍA BÁSICO
+- Hoy: una tarjeta oscura con «Mar 3 nov» y dos botones. Sin cuenta atrás, sin estado del equipo, sin último resultado.
+- Partido en directo: una lista desplegable con +1 +2 +3 y «Falta» por jugadora. Sin marcador, reloj, cuartos ni minutos.
+- Un solo aspecto (oscuro). Los verdes y rojos estaban escritos a mano en muchos sitios.
+- Pantallas vacías con una frase suelta.
+
+LO INCOHERENTE
+- Radios entre 8 y 22 píxeles sin criterio; sombras en unas tarjetas y en otras no.
+- Chips de 36 píxeles de alto (el dedo pide 44).
+- El aviso de «guarda copia» gritaba en naranja igual que un error.
+
+LO QUE COSTABA DEMASIADOS TOQUES
+- Pasar lista: Equipo → Temporada → el día → el entreno → lista (5 toques). Ahora, un toque desde Hoy.
+- Empezar a apuntar un partido: Equipo → Temporada → el día → el partido → desplegar (5 toques). Ahora, un toque desde Hoy.
+- Ver cómo va el equipo: no existía. Ahora Equipo → Cifras.

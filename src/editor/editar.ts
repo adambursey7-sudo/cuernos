@@ -1,7 +1,7 @@
 // Operaciones del editor «arrastra y dibuja» (opción A, elegida por Adam el 29/10): el camino del dedo es la flecha
 // y el tipo de movimiento se adivina. Funciones puras: devuelven copias nuevas.
 import { nuevoId } from '../sistemas/almacen';
-import type { Jugador, Movimiento, Paso, Punto, Sistema } from '../sistemas/tipos';
+import type { Familia, Jugador, Movimiento, Paso, Punto, Sistema } from '../sistemas/tipos';
 
 export type TipoMovimiento = 'corte' | 'bote' | 'bloqueo';
 
@@ -146,3 +146,35 @@ export function limpiar(s: Sistema): Sistema {
 
 /** Un punto de la pista dentro de los límites (los jugadores no se salen al arrastrar). */
 export const dentro = ([x, y]: Punto): Punto => [Math.max(6, Math.min(144, x)), Math.max(6, Math.min(134, y))];
+
+// ---- Pasos de la jugada (loop Pro, tramo 7): duplicar, mover y quitar un paso entero, y la categoría ----
+
+/** Copia el paso `i` justo detrás de él (sus movimientos son los mismos: se retoca después). */
+export function duplicarPaso(s: Sistema, i: number): Sistema {
+  if (i < 0 || i >= s.pasos.length) return s;
+  const pasos = [...s.pasos];
+  pasos.splice(i + 1, 0, structuredClone(s.pasos[i]));
+  return { ...s, pasos };
+}
+
+/** Mueve el paso `i` una posición (-1 antes, +1 después). Si no se puede, queda igual. */
+export function moverPaso(s: Sistema, i: number, dir: -1 | 1): Sistema {
+  const j = i + dir;
+  if (i < 0 || j < 0 || i >= s.pasos.length || j >= s.pasos.length) return s;
+  const pasos = [...s.pasos];
+  [pasos[i], pasos[j]] = [pasos[j], pasos[i]];
+  return { ...s, pasos };
+}
+
+/** Quita el paso `i`. Una jugada necesita al menos un paso: el último no se quita. */
+export function quitarPaso(s: Sistema, i: number): Sistema {
+  if (s.pasos.length <= 1 || i < 0 || i >= s.pasos.length) return s;
+  return { ...s, pasos: s.pasos.filter((_, k) => k !== i) };
+}
+
+/** La categoría del libro de jugadas; la defensa y la presión se guardan como jugadas de defensa. */
+export function ponerFamilia(s: Sistema, familia: Familia | undefined): Sistema {
+  const { familia: _antes, ...resto } = s;
+  // Sin categoría la jugada sigue siendo de lo que era; con ella, de defensa si es defensa o presión.
+  return { ...resto, ...(familia ? { familia, tipo: familia === 'defensa' || familia === 'presion' ? 'defensa' : 'ataque' } : {}) };
+}

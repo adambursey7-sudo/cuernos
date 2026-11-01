@@ -1,0 +1,39 @@
+AUDITORÍA RÁPIDA — montar un equipo nuevo desde cero (Horns, rama equipo-completo)
+Hecha leyendo la app y los datos como lo haría un entrenador que empieza la temporada.
+Estado "antes" = lo que había al salir de la rama del senior masculino.
+
+ERRORES Y DATOS QUE SE PERDÍAN
+1. La copia de seguridad no guardaba las sesiones, las estrellas ni el libro de la semana.
+   Si se borraba Safari, se perdía todo el trabajo de entrenos.            -> ARREGLADO (copia nueva, las viejas siguen valiendo)
+2. Al renombrar un equipo, sus sesiones se quedaban sueltas (se enlazaban por el nombre).   -> ARREGLADO (ahora por identificador)
+3. Con dos equipos, Inicio, Tele y las habilidades salían siempre del primero. No había
+   forma de cambiar de equipo en Hoy.                                      -> ARREGLADO (equipo activo + selector en cabecera)
+4. Las estrellas y el libro de la semana eran comunes a todos los equipos.  -> ARREGLADO (por equipo; los de antes no se pierden)
+5. "Senior masculino" fijaba el género: un senior femenino hablaba de "jugadores".  -> ARREGLADO (género aparte del tipo)
+
+PASOS DE MÁS
+6. Crear un equipo era un nombre y dos botones; luego había que ir a otras tres pantallas
+   para poner temporada, horarios y plantilla.                             -> ASISTENTE de 4 pasos, saltable, con vuelta atrás
+7. Empezar la temporada siguiente obligaba a rehacer horarios y a mano la plantilla.   -> "Cerrar la temporada" conserva plantilla y horarios
+8. Para montar dos equipos parecidos había que repetirlo todo.              -> "Duplicar equipo" y "Copiar lo de otro equipo"
+9. Importar la lista no leía el año de nacimiento.                          -> ARREGLADO
+
+HUECOS
+10. Pista, vestuario, jornada, plan de partido, estadística en directo y clasificación solo
+    existían en senior.                                                     -> abiertos a todos los equipos
+11. Sin tipos de partido (liga, amistoso, copa, playoff): el balance mezclaba todo.    -> HECHO, balance por competición
+12. Sin convocatoria ni quinteto inicial.                                   -> HECHO (convocatoria con dorsales, mensaje a familias sin nombres)
+13. Sin cuerpo técnico, sin objetivos, sin escudo ni color.                  -> HECHO
+14. Sin hoja por jugador ni informe de fin de temporada.                     -> HECHO
+15. Calendario exportable sin recordatorios.                                -> HECHO (aviso configurable; solo partidos para familias)
+
+REVISADO Y CORRECTO
+- Las lesiones siguen fuera de la copia salvo que se marque; la copia de un solo equipo tampoco las lleva.
+- Los mensajes que se comparten (convocatoria, horarios) llevan dorsales, no nombres de menores.
+- El texto de las hojas se escapa (un nombre con signos raros no rompe la hoja).
+- Sin conexión: la app es una PWA con todo precargado; no hay llamadas de red salvo Jarvis y los enlaces.
+
+PENDIENTE (no cabe sin complicar)
+- Importar la lista desde una FOTO: necesita reconocimiento de texto (pesado para el móvil). Hoy vale pegar, CSV, PDF o copiar desde Excel.
+- Los espacios de pista (reparto de canchas) siguen siendo comunes a todos los equipos.
+- Archivos .xlsx directos: pegar desde Excel ya funciona.

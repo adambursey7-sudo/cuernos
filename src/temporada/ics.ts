@@ -157,7 +157,7 @@ export function leerLista(texto: string, inicioTemporada: string): Candidata[] {
 
 /* ---------- Escribir .ics ---------- */
 
-const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r\n?|\n/g, '\\n');
 const sinGuiones = (f: string) => f.replace(/-/g, '');
 const sinPuntos = (h: string) => `${h.replace(':', '')}00`;
 const sumarMin = (f: string, h: string, min: number) => {
@@ -182,15 +182,25 @@ export interface ItemIcs {
 }
 
 /** La temporada como .ics: partidos, otros eventos y los entrenos de cada semana (con sus cambios) hasta el final. */
-export function escribirIcs(equipo: string, items: ItemIcs[]): string {
+export interface OpcionesIcs {
+  /** Recordatorio: minutos antes de cada cosa (0 o sin dato: sin recordatorio). */
+  avisarMin?: number;
+  /** Solo partidos y eventos (para las familias, que no necesitan los entrenos). */
+  sinEntrenos?: boolean;
+}
+
+export function escribirIcs(equipo: string, items: ItemIcs[], opciones: OpcionesIcs = {}): string {
   const marca = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
-  const cuerpo = items.map((i) => {
+  const aviso = opciones.avisarMin && opciones.avisarMin > 0 ? Math.min(opciones.avisarMin, 10_080) : 0;
+  const cuerpo = items.filter((i) => !(opciones.sinEntrenos && i.tipo === 'entreno')).map((i) => {
     const fin = sumarMin(i.fecha, i.hora, i.minutos);
     const nombre = i.tipo === 'partido' ? `Partido vs ${i.titulo || 'rival'}${i.casa === true ? ' (casa)' : i.casa === false ? ' (fuera)' : ''}` : i.tipo === 'entreno' ? `Entreno ${equipo}`.trim() : i.titulo || 'Evento';
     return [
       'BEGIN:VEVENT', `UID:${esc(i.uid)}@horns`, `DTSTAMP:${marca}`,
       `DTSTART:${sinGuiones(i.fecha)}T${sinPuntos(i.hora)}`, `DTEND:${sinGuiones(fin.f)}T${sinPuntos(fin.h)}`,
-      `SUMMARY:${esc(nombre)}`, ...(i.lugar ? [`LOCATION:${esc(i.lugar)}`] : []), 'END:VEVENT',
+      `SUMMARY:${esc(nombre)}`, ...(i.lugar ? [`LOCATION:${esc(i.lugar)}`] : []),
+      ...(aviso ? ['BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${esc(nombre)}`, `TRIGGER:-PT${aviso}M`, 'END:VALARM'] : []),
+      'END:VEVENT',
     ].map(plegar).join('\r\n');
   });
   return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Horns//Temporada//ES', 'CALSCALE:GREGORIAN', `X-WR-CALNAME:${esc(equipo)}`, ...cuerpo, 'END:VCALENDAR', ''].join('\r\n');

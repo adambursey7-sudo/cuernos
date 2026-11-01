@@ -1,0 +1,43 @@
+DECISIONES DEL LOOP «EQUIPO COMPLETO» (tomadas sin esperar, como pedía el encargo)
+
+A. Asistente de nuevo equipo
+   Opciones: (1) una sola pantalla larga, (2) cuatro pasos cortos, (3) siete pasos.
+   Elegida: 2. Cuatro pasos (equipo; temporada y horarios; color y escudo; plantilla). Cada paso se puede saltar menos el nombre,
+   siempre hay "Atrás", y el equipo de ejemplo está en el primer paso para probar sin escribir. Más pasos cansan en el móvil.
+
+B. Género y tipo
+   Opciones: (1) un único campo "senior masculino / formación", (2) género y tipo por separado.
+   Elegida: 2. Así vale un senior femenino y un cadete masculino. Los equipos de antes siguen igual (sin dato: senior = masculino,
+   formación = femenino).
+
+C. Varios equipos
+   Opciones: (1) pantalla de equipos aparte, (2) selector en la cabecera de Hoy y en Equipo.
+   Elegida: 2 (chips con escudo, solo se ven con 2 o más equipos). Un equipo ACTIVO se guarda en el móvil y manda en Hoy, Tele,
+   Sesiones, estrellas y libro de la semana.
+
+D. Estrellas y libro de la semana por equipo
+   Opciones: (1) separarlos ya y repartir lo de antes, (2) lista de siempre como punto de partida de cada equipo hasta que lo toca.
+   Elegida: 2. No se pierde nada ni hay que decidir a quién pertenece lo de antes.
+
+E. Sesiones
+   Opciones: (1) seguir por nombre, (2) identificador de equipo.
+   Elegida: 2, con alineación automática de las antiguas por nombre al abrir y al renombrar.
+
+F. Temporada nueva
+   Opciones: (1) borrar y empezar, (2) archivar. Elegida: 2. Lo jugado y la asistencia pasan a un historial (hasta 10 temporadas),
+   quedan plantilla y horarios un año después; partidos, rotación y objetivos cumplidos empiezan vacíos.
+
+G. Competición del partido
+   Liga / amistoso / copa / playoff. Sin dato = liga, así los partidos de antes cuentan como liga.
+
+H. Familias
+   Lo que se pega en un grupo lleva DORSALES, nunca nombres. La hoja de cada jugador sí lleva su nombre (es para su familia)
+   y no lleva lesiones ni notas del entrenador.
+
+I. Copia de seguridad
+   Versión 3 con sesiones, estrellas y libro; las copias viejas se leen igual. Copia de un solo equipo (se restaura encima sin
+   tocar los demás). Las lesiones solo salen si se marca.
+
+J. Lo que NO se hizo (y por qué)
+   - Foto de lista con reconocimiento de texto: pesado para el móvil y poco fiable.
+   - Espacios de pista por equipo: es un cambio de otro tamaño; queda como pendiente.

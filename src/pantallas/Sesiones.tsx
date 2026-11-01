@@ -1,17 +1,21 @@
 // Sesiones, opción B · Línea de tiempo (elegida por Adam el 29/10): los ejercicios en orden, cada uno con su color por tipo
 // y una altura que sigue a sus minutos. Se guardan por equipo (categoría, sin nombres) solo en este móvil.
-import { useEffect, useState } from 'react';
+import { PLANTILLAS, desdePlantilla, type Plantilla } from '../sesiones/plantillas';
+import { useEffect, useRef, useState } from 'react';
+import { INTENSIDADES, cargaSesion, intensidadDe, intensidadMedia, materialDeSesion, moverBloqueA, nombreIntensidad } from '../sesiones/plan';
 import { TIPOS, buscarEjercicio, filtrar, todosLosEjercicios, type Ejercicio } from '../ejercicios/ejercicios';
 import { MiniPizarra } from '../pizarra/MiniPizarra';
 import { Pista } from '../pizarra/Pista';
 import { buscarSistema } from '../sistemas/almacen';
-import { leerDiario } from '../diario/diario';
-import { idBloqueFicha, leerFichas, type Ficha } from '../recursos/fichas';
+import { fichaDeBloque, idBloqueFicha, leerFichas, type Ficha } from '../recursos/fichas';
 import { Entrenando, crearAudio } from './Entrenando';
+import { useAvisoDeshacer } from '../ui/Toast';
 import {
   DURACIONES, PASO_MINUTOS, bloqueDe, conMinutos, conTipo, diferencia, guardarSesiones, huerfanos, inicios, leerSesiones, mover, nuevaSesion, quitar,
-  reparto, total, tituloBloque, type Sesion,
+  reparto, sesionesDe, total, tituloBloque, type Sesion,
 } from '../sesiones/sesiones';
+import { leerDiario } from '../diario/diario';
+import { leerEquipoActivo } from '../equipo/equipos';
 
 /** «1 h 15 min», «45 min». */
 export function horas(m: number): string {
@@ -99,15 +103,21 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
   // Si llega un audio ya creado (botón Cronómetro de Inicio), el cronómetro arranca directamente.
   const [cronometro, setCronometro] = useState<ReturnType<typeof crearAudio> | false>(arranque ?? false);
   useEffect(() => { if (arranque) gastado(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  // Al quitar un ejercicio se guarda cómo estaba la sesión unos segundos, por si fue sin querer.
-  const [quitado, setQuitado] = useState<{ bloque: Sesion['bloques'][number]; i: number } | null>(null);
-  useEffect(() => {
-    if (!quitado) return;
-    const t = setTimeout(() => setQuitado(null), 8000);
-    return () => clearTimeout(t);
-  }, [quitado]);
+  const { avisar, aviso } = useAvisoDeshacer();
+  // La sesión tal como está en el momento de deshacer: así solo vuelve el ejercicio quitado y no se pisan otros cambios.
+  const ultima = useRef(s);
+  ultima.current = s;
   const desde = inicios(s);
   const perdidos = huerfanos(s);
+  // Reordenar arrastrando el asa de un bloque hasta otro.
+  const arrastre = useRef<{ de: number; activo: boolean; x: number; y: number } | null>(null);
+  const [sobre, setSobre] = useState<number | null>(null);
+  const blancoDe = (x: number, y: number) => {
+    const el = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest<HTMLElement>('[data-bloque]');
+    return el ? Number(el.dataset.bloque) : null;
+  };
+  const material = materialDeSesion(s, (id) => buscarEjercicio(id)?.material ?? fichaDeBloque(id)?.material.split(',') ?? []);
+  const media = intensidadMedia(s);
 
   if (cronometro !== false) return <Entrenando s={s} audio={cronometro} salir={() => { cronometro?.close().catch(() => {}); setCronometro(false); }} />;
 
@@ -134,6 +144,18 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
       </div>
       <Estado s={s} />
       <Reparto s={s} />
+      {media !== undefined && (
+        <dl className="resumen-sesion" aria-label="Resumen de la sesión">
+          <div><dt>Intensidad</dt><dd>{nombreIntensidad(media)}</dd></div>
+          <div><dt>Carga</dt><dd>{cargaSesion(s)} u</dd></div>
+          <div><dt>Bloques</dt><dd>{s.bloques.length}</dd></div>
+        </dl>
+      )}
+      <div className="dos-botones">
+        <label className="campo-diario"><span>Pista</span><input value={s.pista ?? ''} maxLength={60} placeholder="Pista 1" onChange={(ev) => cambiar({ ...s, pista: ev.target.value || undefined })} /></label>
+        <label className="campo-diario"><span>Material extra</span><input value={s.material ?? ''} maxLength={200} placeholder="Petos, cronómetro" onChange={(ev) => cambiar({ ...s, material: ev.target.value || undefined })} /></label>
+      </div>
+      {material.length > 0 && <p className="meta"><b>Material:</b> {material.join(' · ')}</p>}
       {perdidos > 0 && <p className="aviso">{perdidos === 1 ? 'Un ejercicio ya no existe' : `${perdidos} ejercicios ya no existen`} (era de una jugada que borraste): quítalo{perdidos === 1 ? '' : 's'}.</p>}
 
       {s.bloques.length === 0 ? (
@@ -144,7 +166,7 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
             const e = buscarEjercicio(b.ejercicio);
             const titulo = tituloBloque(b.ejercicio);
             return (
-              <li key={i} className={`bloque tipo-${b.tipo}`} style={{ minHeight: `${Math.max(76, b.minutos * 4)}px` }}>
+              <li key={i} data-bloque={i} className={`bloque tipo-${b.tipo}${sobre === i ? ' sobre' : ''}`} style={{ minHeight: `${Math.max(76, b.minutos * 4)}px` }}>
                 <span className="hora">{horas(desde[i])}</span>
                 <div className="cuerpo">
                   {e ? (
@@ -160,9 +182,20 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
                     <button className="chip" onClick={() => cambiar(conMinutos(s, i, b.minutos - PASO_MINUTOS))} aria-label="Cinco minutos menos">−5</button>
                     <b className="minutos">{b.minutos}′</b>
                     <button className="chip" onClick={() => cambiar(conMinutos(s, i, b.minutos + PASO_MINUTOS))} aria-label="Cinco minutos más">+5</button>
+                    <button className="chip asa" aria-label="Arrastrar para cambiar de sitio" style={{ touchAction: 'none' }}
+                      onPointerDown={(ev) => { ev.currentTarget.setPointerCapture(ev.pointerId); arrastre.current = { de: i, activo: false, x: ev.clientX, y: ev.clientY }; }}
+                      onPointerMove={(ev) => { const a = arrastre.current; if (!a) return; if (!a.activo && Math.hypot(ev.clientX - a.x, ev.clientY - a.y) > 8) a.activo = true; if (a.activo) setSobre(blancoDe(ev.clientX, ev.clientY)); }}
+                      onPointerUp={(ev) => { const a = arrastre.current; arrastre.current = null; setSobre(null); if (a?.activo) { const a2 = blancoDe(ev.clientX, ev.clientY); if (a2 !== null) cambiar(moverBloqueA(s, a.de, a2)); } }}
+                      onPointerCancel={() => { arrastre.current = null; setSobre(null); }}>≡</button>
                     <button className="chip" onClick={() => cambiar(mover(s, i, -1))} disabled={i === 0} aria-label="Subir">▲</button>
                     <button className="chip" onClick={() => cambiar(mover(s, i, 1))} disabled={i === s.bloques.length - 1} aria-label="Bajar">▼</button>
-                    <button className="chip" onClick={() => { setQuitado({ bloque: b, i }); cambiar(quitar(s, i)); }} aria-label="Quitar de la sesión">✕</button>
+                    <button className="chip" onClick={() => { const quitado = b; const pos = i; cambiar(quitar(s, i)); avisar('Ejercicio quitado', () => { const hoy = ultima.current; const bloques = [...hoy.bloques]; bloques.splice(Math.min(pos, bloques.length), 0, quitado); cambiar({ ...hoy, bloques }); }); }} aria-label="Quitar de la sesión">✕</button>
+                  </div>
+                  <input className="objetivo-bloque" value={b.objetivo ?? ''} maxLength={80} placeholder="Objetivo de este bloque" aria-label="Objetivo del bloque" onChange={(ev) => cambiar({ ...s, bloques: s.bloques.map((x, j) => (j === i ? { ...x, objetivo: ev.target.value || undefined } : x)) })} />
+                  <div className="fila-chips" role="group" aria-label="Intensidad">
+                    {INTENSIDADES.map(([n, nombre]) => (
+                      <button key={n} className={intensidadDe(b) === n ? 'chip pequeno on' : 'chip pequeno'} aria-pressed={intensidadDe(b) === n} onClick={() => cambiar({ ...s, bloques: s.bloques.map((x, j) => (j === i ? { ...x, intensidad: n } : x)) })}>{nombre}</button>
+                    ))}
                   </div>
                   <div className="fila-chips tipos" role="group" aria-label="Tipo de ejercicio">
                     {TIPOS.map((t) => (
@@ -175,28 +208,23 @@ function Editor({ s, cambiar, volver, abrirEjercicio, arranque, gastado }: {
           })}
         </ol>
       )}
-      {quitado && (
-        <p className="aviso" role="status">
-          Ejercicio quitado.{' '}
-          <button className="chip on" onClick={() => { const bl = [...s.bloques]; bl.splice(Math.min(quitado.i, bl.length), 0, quitado.bloque); cambiar({ ...s, bloques: bl }); setQuitado(null); }}>Deshacer</button>
-        </p>
-      )}
       <button className="principal ancho" onClick={() => setAnadiendo(true)}>+ Añadir ejercicio</button>
+      {aviso}
       {s.bloques.length > 0 && <button className="principal ancho empezar" onClick={() => setCronometro(crearAudio())}>▶ Empezar el entrenamiento</button>}
     </section>
   );
 }
 
 /** Los equipos con sesiones más los creados en Equipo. */
-const nombresEquipos = (sesiones: Sesion[]) => [...new Set([...sesiones.map((x) => x.equipo), ...leerDiario().equipos.map((e) => e.nombre)])];
 
 export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque = null, gastado = () => {} }: {
   abrirEjercicio: (id: string) => void; abierta: string | null; abrir: (id: string | null) => void;
   arranque?: ReturnType<typeof crearAudio> | null; gastado?: () => void;
 }) {
   const [todas, setTodas] = useState<Sesion[]>(() => leerSesiones());
-  // Los equipos son los de Equipo (los que ya creaste) más los que tengan sesiones.
-  const [equipo, setEquipo] = useState<string | undefined>(() => nombresEquipos(leerSesiones())[0]);
+  // Los equipos del diario van primero (el activo, elegido); detrás, nombres de sesiones antiguas sin equipo en el diario.
+  const equiposDiario = leerDiario().equipos;
+  const [equipo, setEquipo] = useState<string | undefined>(() => leerEquipoActivo()?.nombre ?? leerSesiones()[0]?.equipo);
   const [borrando, setBorrando] = useState<string | null>(null);
   const [nuevoEquipo, setNuevoEquipo] = useState('');
   const [fallo, setFallo] = useState(false);
@@ -205,7 +233,7 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
     setTodas(lista);
     setFallo(!guardarSesiones(lista));
   };
-  const equipos = nombresEquipos(todas);
+  const equipos = [...new Set([...equiposDiario.map((e) => e.nombre), ...todas.map((s) => s.equipo)])];
   const sesion = todas.find((s) => s.id === abierta);
 
   if (sesion)
@@ -221,13 +249,16 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
       />
     );
 
-  const crear = (nombreEquipo: string) => {
-    const s = nuevaSesion(nombreEquipo);
+  const crear = (nombreEquipo: string, plantilla?: Plantilla) => {
+    const dueño = equiposDiario.find((e) => e.nombre === nombreEquipo);
+    const base = plantilla ? desdePlantilla(plantilla, nombreEquipo) : nuevaSesion(nombreEquipo);
+    const s = dueño ? { ...base, equipoId: dueño.id } : base;
     poner([...todas, s]);
     setEquipo(nombreEquipo);
     setAbierta(s.id);
   };
-  const delEquipo = todas.filter((s) => s.equipo === equipo);
+  const eqDiario = equiposDiario.find((e) => e.nombre === equipo);
+  const delEquipo = eqDiario ? sesionesDe(todas, eqDiario) : todas.filter((s) => s.equipo === equipo);
   const nombreLimpio = nuevoEquipo.trim().slice(0, 30);
 
   return (
@@ -269,6 +300,11 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
             </ul>
           )}
           <button className="principal ancho" onClick={() => crear(equipo)}>+ Nueva sesión de {equipo}</button>
+          <div className="niveles filtro" role="group" aria-label="Plantillas">
+            {PLANTILLAS.map((p) => (
+              <button key={p.id} className="chip" title={p.idea} onClick={() => crear(equipo, p)}>+ {p.nombre}</button>
+            ))}
+          </div>
         </>
       )}
 

@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: false, // lo registra src/main.tsx, que busca versión nueva al volver a la app
-      workbox: { skipWaiting: true, clientsClaim: true, globPatterns: ['**/*.{js,css,html,svg,png,woff2}'] },
+      workbox: { skipWaiting: true, clientsClaim: true, globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff,woff2}'] },
       manifest: {
         name: 'Horns',
         short_name: 'Horns',
@@ -20,7 +20,12 @@ export default defineConfig(({ mode }) => ({
         lang: 'es',
         theme_color: '#1e2a44',
         background_color: '#1e2a44',
+        id: '/',
         display: 'standalone',
+        orientation: 'portrait',
+        shortcuts: [
+          { name: 'Hoy', short_name: 'Hoy', url: './', icons: [{ src: 'icono-192.png', sizes: '192x192', type: 'image/png' }] },
+        ],
         icons: [
           { src: 'icono.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
           { src: 'icono-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },

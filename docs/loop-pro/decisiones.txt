@@ -1,0 +1,36 @@
+DECISIONES DEL LOOP PRO (rama loop/pro, carpeta C:\dev\baloncesto-t-pro)
+Salimos de loop/equipo-completo. Cada decisión lleva su porqué.
+
+TRAMO 1 · SISTEMA DE DISEÑO
+- Aspecto por defecto: OSCURO (como hasta ahora). Claro y «Como el móvil» se eligen en Más.
+  Porqué: Adam ya eligió la paleta Parqué sobre fondo oscuro; cambiar el aspecto sin avisar sería romperle lo que eligió.
+- En claro, el color del equipo se oscurece lo justo para llegar a 4,5 de contraste. El fondo claro es fijo.
+  Porqué: así cualquier color del equipo se lee y no hay que elegir dos paletas.
+- La tele y el marcador del partido son siempre oscuros, también en claro. Porqué: se ven mejor de lejos y con la tele.
+- Radios, sombras, espacios y tiempos (150 y 220 ms) son variables. Los iconos siguen siendo SVG propios.
+- Pantallas pesadas (Equipo, Más, editor, partido en directo) se cargan al abrirlas, con esqueleto y aviso si no llegan.
+
+TRAMO 2 · PANEL DE INICIO
+- El equipo activo marca la pantalla de Hoy con su escudo y su color. En las demás pestañas sigue el color general.
+  Porqué: Hoy es donde se mira el equipo; las otras pantallas son herramientas y no deben cambiar de color.
+- «Pasar lista» y «Ver convocatoria» abren el día en Equipo → Temporada (ahí ya están). «Empezar partido» abre el partido en directo.
+
+TRAMO 3 · PARTIDO EN DIRECTO
+- Cada acción es una jugada que se puede deshacer y mueve el marcador y la estadística. Porqué: «deshacer siempre a mano».
+- Se guarda dentro del partido de la temporada (no es una tabla nueva): entra en la copia de seguridad sin tocar nada.
+- Solo ids de jugadora en lo guardado. Los nombres se ven en pantalla pero no viajan.
+- El reloj cuenta atrás y se para solo al acabar el cuarto. Si se cierra la app con el reloj puesto, no cuenta horas.
+- Cambios: arrastrar a la pista o tocar y elegir (los dos). Porqué: arrastrar es el gesto, tocar es el plan B si el dedo falla.
+- Los datos viejos (solo puntos y faltas) se abren igual. Hay pruebas de migración.
+
+TRAMO 4 · MAPA DE TIROS
+- Zona a zona (9 zonas) con la línea de tres de la pista de Horns. Porqué: el calor por zona se entiende de un vistazo y no necesita muchos tiros.
+- Si se toca dentro del arco es de 2 y fuera es de 3, aunque se hubiera pulsado otro botón. Porqué: la posición manda y evita errores.
+- «Marcar tiros» se activa o no; sin activarlo, el registro rápido sigue siendo un toque.
+
+TRAMO 5 · CIFRAS
+- Nueva pestaña «Cifras» dentro de Equipo. Todo calculado en el móvil, sin guardar nada nuevo.
+- Lo que no se apuntó en directo sale con «–», nunca con cero.
+
+REVISIÓN
+- /code-review medium tras los tramos 1 a 4 (en vez de uno por tramo): una sola pasada gasta menos y ve el conjunto. Se arreglaron 8 de 10 hallazgos; los otros dos eran falsos o no cambian nada.

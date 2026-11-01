@@ -7,7 +7,7 @@ import { Marca } from '../Logo';
 import type { Ejercicio as EjercicioIA } from '../recursos/guardarEjercicioIA';
 import type { Cuestionario } from '../recursos/ia';
 import type { Recurso } from '../recursos/recursos';
-import { NIVELES } from '../sistemas/tipos';
+import { FAMILIAS, NIVELES } from '../sistemas/tipos';
 import { Chips, Ejercicios } from './Ejercicios';
 import { Sistemas, type FiltroJugadas } from './Sistemas';
 import { VistasEjercicios, type Vista } from './VistasEjercicios';
@@ -98,6 +98,8 @@ export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, retoca
             {rama === 'jugadas' ? (
               <>
                 <Chips etiqueta="Tipo" todos="Ataque y defensa" opciones={TIPOS} valor={jugadas.tipo} cambiar={(tipo) => setJugadas({ ...jugadas, tipo })} />
+                <Chips etiqueta="Libro de jugadas" todos="Todas" opciones={FAMILIAS} valor={jugadas.familia} cambiar={(familia) => setJugadas({ ...jugadas, familia })} />
+                <Chips etiqueta="Esta semana" todos="Todas" opciones={[{ id: 'si' as const, nombre: 'Solo las de esta semana' }]} valor={jugadas.semana ? 'si' : undefined} cambiar={(v) => setJugadas({ ...jugadas, semana: v === 'si' })} />
                 <Chips etiqueta="Nivel del equipo" todos="Cualquier nivel" opciones={NIVELES} valor={jugadas.nivel} cambiar={(nivel) => setJugadas({ ...jugadas, nivel })} />
               </>
             ) : (

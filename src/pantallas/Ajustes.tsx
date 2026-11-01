@@ -5,25 +5,28 @@ import { EspaciosCancha } from './EspaciosCancha';
 import { Pista } from '../pizarra/Pista';
 import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
 import { anotarCopia } from '../copiaFecha';
-import { armarCopia, juntar, leerCopia } from '../copia';
+import { armarCopia, juntar, leerCopia, unirTextos } from '../copia';
+import { guardarFavoritos, leerFavoritos } from '../favoritos';
+import { guardarLista, leerLista, listasPropias } from '../equipo/porEquipo';
+import { guardarSesiones, juntarSesiones, leerSesiones } from '../sesiones/sesiones';
+import { guardarSemana, leerSemana } from '../sistemas/libro';
 import { guardarReflexiones, juntarReflexiones, leerReflexiones } from '../diario/reflexion';
 import { guardarEtiquetas, leerEtiquetas } from '../habilidades/habilidades';
 import { guardarFichas, juntarFichas, leerFichas } from '../recursos/fichas';
 import { guardarRecursos, juntarRecursos, leerRecursos } from '../recursos/recursos';
 import { guardarTemporadas, juntarTemporadas, leerTemporadas } from '../temporada/temporada';
 import { guardarTodosMios, leerMios } from '../sistemas/almacen';
-import { guardarSesiones, juntarSesiones, leerSesiones } from '../sesiones/sesiones';
 import { guardarEspacios, leerEspacios } from '../sistemas/espacios';
-import { guardarFavoritos, leerFavoritos } from '../favoritos';
 import { SISTEMAS } from '../sistemas/datos';
 import { aplicarLectura, ESCALAS, leerLectura, NOMBRES_LETRA, type Letra } from '../preferencias';
-import { aplicarColores, leerColores, NOMBRES_COLOR, PALETAS, type Colores } from '../temas';
+import { aplicarColores, ASPECTOS, guardarAspecto, leerAspecto, leerColores, NOMBRES_COLOR, PALETAS, type Colores } from '../temas';
 
 const CAMPOS = Object.keys(NOMBRES_COLOR) as (keyof Colores)[];
 const igual = (a: Colores, b: Colores) => CAMPOS.every((k) => a[k].toLowerCase() === b[k].toLowerCase());
 
 export function Ajustes() {
   const [c, setC] = useState(leerColores);
+  const [aspecto, setAspecto] = useState(leerAspecto);
   const [aviso, setAviso] = useState('');
   const [intro, setIntro] = useState(introActiva);
   const [conSalud, setConSalud] = useState(false);
@@ -38,9 +41,11 @@ export function Ajustes() {
   const descargar = async () => {
     const mios = leerMios();
     const nombre = `horns-copia-${new Date().toISOString().slice(0, 10)}.json`;
-    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones(), leerSesiones(), leerEspacios(), leerFavoritos())], nombre, { type: 'application/json' });
+    const sesiones = leerSesiones();
+    const archivo = new File([armarCopia(mios, c, leerDiario(), leerTemporadas(), leerRecursos(), leerFichas(), conSalud, leerEtiquetas(), leerReflexiones(), { sesiones, espacios: leerEspacios(), favoritos: leerFavoritos(), semana: leerSemana(), porEquipo: { favoritos: listasPropias('favoritos'), semana: listasPropias('semana') } })], nombre, { type: 'application/json' });
     const njug = leerDiario().jugadoras.length;
-    const resumen = `${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'}, ${njug} ${njug === 1 ? 'jugadora' : 'jugadoras'} y tus colores`;
+    const nequ = leerDiario().equipos.length;
+    const resumen = `${nequ} ${nequ === 1 ? 'equipo' : 'equipos'}, ${njug} ${njug === 1 ? 'jugador o jugadora' : 'jugadores y jugadoras'}, ${sesiones.length} ${sesiones.length === 1 ? 'sesión' : 'sesiones'}, ${mios.length} ${mios.length === 1 ? 'jugada' : 'jugadas'} y tus colores`;
     // En el móvil se abre el menú de compartir (Drive, Archivos, AirDrop…); si no hay, se descarga.
     if (navigator.canShare?.({ files: [archivo] })) {
       try {
@@ -83,7 +88,13 @@ export function Ajustes() {
       ['el diario', () => !copia.reflexiones || guardarReflexiones(juntarReflexiones(leerReflexiones(), copia.reflexiones))],
       ['las sesiones', () => !copia.sesiones || guardarSesiones(juntarSesiones(leerSesiones(), copia.sesiones))],
       ['los espacios de la cancha', () => !copia.espacios || guardarEspacios(copia.espacios)],
-      ['los favoritos', () => !copia.favoritos || guardarFavoritos([...leerFavoritos(), ...copia.favoritos])],
+      ['los favoritos', () => !copia.favoritos || guardarFavoritos(unirTextos(leerFavoritos(), copia.favoritos))],
+      ['el libro de la semana', () => !copia.semana || guardarSemana(unirTextos(leerSemana(), copia.semana))],
+      ['lo de cada equipo', () => {
+        for (const lista of ['favoritos', 'semana'] as const)
+          for (const [id, valor] of Object.entries(copia.porEquipo?.[lista] ?? {})) guardarLista(lista, unirTextos(leerLista(lista, id), valor), id);
+        return true;
+      }],
     ];
     const hechos: string[] = [];
     for (const [nombre, paso] of pasos) {
@@ -95,7 +106,8 @@ export function Ajustes() {
       }
       hechos.push(nombre);
     }
-    setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${copia.diario.jugadoras.length} jugadoras` : ''}${copia.sesiones ? `, ${copia.sesiones.length} ${copia.sesiones.length === 1 ? 'sesión' : 'sesiones'}` : ''}${copia.colores ? ' y los colores' : ''}.`);
+    const equiposCopia = copia.diario?.equipos.length ?? 0;
+    setAviso(`Copia cargada: ${copia.mios.length} ${copia.mios.length === 1 ? 'jugada' : 'jugadas'}${copia.diario ? `, ${equiposCopia} ${equiposCopia === 1 ? 'equipo' : 'equipos'} con ${copia.diario.jugadoras.length} jugadores y jugadoras` : ''}${copia.sesiones?.length ? `, ${copia.sesiones.length} ${copia.sesiones.length === 1 ? 'sesión' : 'sesiones'}` : ''}${copia.colores ? ' y los colores' : ''}.`);
   };
 
   if (verEspacios)
@@ -127,6 +139,14 @@ export function Ajustes() {
       <label className="campo-diario">
         <span><input type="checkbox" checked={lectura.quieto} onChange={(ev) => leer({ ...lectura, quieto: ev.target.checked })} /> Reducir movimiento (sin animaciones)</span>
       </label>
+      <h2 className="sub">Aspecto</h2>
+      <div className="letras" role="group" aria-label="Aspecto de la app">
+        {ASPECTOS.map(([id, nombre]) => (
+          <button key={id} className={id === aspecto ? 'on' : ''} aria-pressed={id === aspecto} onClick={() => { guardarAspecto(id); setAspecto(id); aplicarColores(leerColores(), false); }}>
+            {nombre}
+          </button>
+        ))}
+      </div>
       <h2 className="sub">Colores</h2>
       <div className="muestra">
         <Pista sistema={SISTEMAS[0]} t={2} />

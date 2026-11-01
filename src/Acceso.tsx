@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { GlifoO } from './Logo';
 
 const CLAVE = 'horns.acceso';
-const USUARIOS: Record<string, string> = { Adam: '8520', Benja: '1234' };
+// «prueba» solo existe en el servidor de desarrollo (no entra en lo publicado).
+const USUARIOS: Record<string, string> = { Adam: '8520', Benja: '1234', ...(import.meta.env.DEV ? { prueba: '1234' } : {}) };
 
 const leer = () => { try { return localStorage.getItem(CLAVE); } catch { return null; } };
 const poner = (v: string | null) => { try { if (v === null) localStorage.removeItem(CLAVE); else localStorage.setItem(CLAVE, v); } catch { /* sin almacenamiento: pedirá entrar cada vez */ } };

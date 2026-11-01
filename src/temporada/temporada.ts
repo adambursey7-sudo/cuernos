@@ -3,10 +3,17 @@
 import type { Candidata, ItemIcs } from './ics';
 import { diaSemana, diasEntre, esFecha, esHora, sumarDias } from './fechas';
 import { limpiarInforme, type InformeRival } from './rival';
+import { limpiarDirecto, type Directo } from './directo';
+import { limpiarVivo, type Vivo } from '../partido/vivo';
+import { limpiarDisponibilidad, sinRespuestas, type Disponibilidad } from '../disponibilidad/disponibilidad';
 
 const CLAVE = 'horns.temporada';
 
 export type TipoEvento = 'partido' | 'entreno' | 'otro';
+
+export const COMPETICIONES = [['liga', 'Liga'], ['amistoso', 'Amistoso'], ['copa', 'Copa'], ['playoff', 'Playoff']] as const;
+export type Competicion = (typeof COMPETICIONES)[number][0];
+export const esCompeticion = (x: unknown): x is Competicion => COMPETICIONES.some(([id]) => id === x);
 
 export interface Fase {
   id: string;
@@ -45,6 +52,21 @@ export interface Evento {
   libre?: boolean;
   /** Informe del rival (solo en un partido). */
   rival?: InformeRival;
+  /** Número de jornada de liga (solo en un partido). */
+  jornada?: number;
+  /** Qué competición es (solo en un partido). Sin dato, liga. */
+  competicion?: Competicion;
+  /** Convocatoria (ids de jugadora) y quinteto inicial (hasta 5, entre los convocados). Solo en un partido. */
+  convocados?: string[];
+  quinteto?: string[];
+  /** Hora de salida del viaje (solo en un partido fuera). */
+  salida?: string;
+  /** Plan de partido (senior): defensa, jugadas y a quién buscar. */
+  plan?: string;
+  /** Puntos y faltas por jugador, apuntados en directo (senior). */
+  directo?: Directo;
+  /** Partido en directo: reloj, cuarto, en pista, minutos y cronología (solo ids de jugadora). */
+  vivo?: Vivo;
 }
 
 export interface EntrenoFijo {
@@ -53,6 +75,18 @@ export interface EntrenoFijo {
   dia: number;
   hora: string;
   minutos: number;
+  /** Dónde se entrena, qué vestuario y qué se busca ese día (opcionales). */
+  pista?: string;
+  vestuario?: string;
+  objetivo?: string;
+}
+
+/** Una fila de la clasificación de la liga, apuntada a mano. */
+export interface FilaClasificacion {
+  id: string;
+  equipo: string;
+  g: number;
+  p: number;
 }
 
 /** Cambio de un entreno fijo en un día concreto. Clave: `idFijo|fecha`. */
@@ -72,6 +106,22 @@ export interface Temporada {
   excepciones: Record<string, Excepcion>;
   /** Asistencia: por clave de entreno (la de `Item`), ids de las jugadoras que vinieron. Si no hay clave, no se ha pasado lista. */
   asistencia?: Record<string, string[]>;
+  /** Voy / no voy / quizá de cada jugadora a cada partido o entreno (por clave de `Item`). */
+  disponibilidad?: Disponibilidad;
+  /** Clasificación de la liga, apuntada a mano. */
+  clasificacion?: FilaClasificacion[];
+  /** Temporadas cerradas de este equipo (la más reciente, primero). */
+  anteriores?: Archivada[];
+}
+
+/** Una temporada ya cerrada: lo que se jugó y se entrenó, sin horarios ni fases. */
+export interface Archivada {
+  etiqueta: string;
+  inicio: string;
+  fin: string;
+  eventos: Evento[];
+  asistencia?: Record<string, string[]>;
+  clasificacion?: FilaClasificacion[];
 }
 
 export interface Item {
@@ -97,6 +147,7 @@ export const nuevaFase = (desde: string, hasta: string): Fase => ({ id: nuevoId(
 export const nuevoEvento = (fecha: string, tipo: TipoEvento): Evento => ({
   id: nuevoId('v'), fecha, hora: tipo === 'partido' ? '11:00' : '18:30', tipo, titulo: '', casa: tipo === 'partido' ? true : undefined, lugar: '', balance: '',
 });
+export const nuevaFila = (): FilaClasificacion => ({ id: nuevoId('c'), equipo: '', g: 0, p: 0 });
 export const nuevoFijo = (dia: number): EntrenoFijo => ({ id: nuevoId('x'), dia, hora: '18:30', minutos: 90 });
 
 const TIPOS: TipoEvento[] = ['partido', 'entreno', 'otro'];
@@ -119,11 +170,25 @@ function limpiaEvento(e: unknown): Evento | null {
     id: x.id, fecha: x.fecha, hora: x.hora, tipo: x.tipo, titulo: x.titulo, lugar: x.lugar, balance: x.balance,
     ...(typeof x.casa === 'boolean' ? { casa: x.casa } : {}), ...(resultado ? { resultado } : {}),
     ...(txt(x.sesionId) ? { sesionId: x.sesionId } : {}), ...(x.libre ? { libre: true } : {}),
+    ...(x.tipo === 'partido' && Number.isInteger(x.jornada) && x.jornada! >= 1 && x.jornada! <= 99 ? { jornada: x.jornada } : {}),
+    ...(x.tipo === 'partido' && esHora(x.salida) ? { salida: x.salida } : {}),
+    ...(x.tipo === 'partido' && esCompeticion(x.competicion) && x.competicion !== 'liga' ? { competicion: x.competicion } : {}),
+    ...(x.tipo === 'partido' && txt(x.plan) && x.plan.trim() ? { plan: x.plan.slice(0, 600) } : {}),
+    ...(x.tipo === 'partido' && limpiarDirecto(x.directo) ? { directo: limpiarDirecto(x.directo) } : {}),
+    ...(x.tipo === 'partido' && limpiarVivo(x.vivo) ? { vivo: limpiarVivo(x.vivo) } : {}),
     ...listaTexto('bien', x.bien), ...listaTexto('mal', x.mal), ...listaTexto('mirar', x.mirar), ...listaTexto('pasadas', x.pasadas),
+    ...(x.tipo === 'partido' ? convocatoriaLimpia(x.convocados, x.quinteto) : {}),
   };
 }
 
-const listaTexto = (clave: 'bien' | 'mal' | 'mirar' | 'pasadas', v: unknown) => {
+/** El quinteto solo puede tener a gente convocada (si hay convocatoria) y como mucho cinco. */
+function convocatoriaLimpia(convocados: unknown, quinteto: unknown): Pick<Evento, 'convocados' | 'quinteto'> {
+  const conv = listaTexto('convocados', convocados).convocados;
+  const quin = listaTexto('quinteto', quinteto).quinteto?.filter((id) => !conv || conv.includes(id)).slice(0, 5);
+  return { ...(conv ? { convocados: conv.slice(0, 20) } : {}), ...(quin?.length ? { quinteto: quin } : {}) };
+}
+
+const listaTexto = (clave: 'bien' | 'mal' | 'mirar' | 'pasadas' | 'convocados' | 'quinteto', v: unknown) => {
   const a = Array.isArray(v) ? [...new Set(v.filter((s): s is string => txt(s) && s !== ''))] : [];
   return a.length ? { [clave]: a } : {};
 };
@@ -144,7 +209,16 @@ export function notasDelBalance(e: Evento, existentes: string[]): { id: string; 
 function limpiaFijo(f: unknown): EntrenoFijo | null {
   const x = f as EntrenoFijo;
   if (!x || !txt(x.id) || !Number.isInteger(x.dia) || x.dia < 0 || x.dia > 6 || !esHora(x.hora) || !Number.isFinite(x.minutos) || x.minutos <= 0) return null;
-  return { id: x.id, dia: x.dia, hora: x.hora, minutos: x.minutos };
+  const corto = (v: unknown) => (txt(v) && v.trim() ? v.trim().slice(0, 80) : undefined);
+  const [pista, vestuario, objetivo] = [corto(x.pista), corto(x.vestuario), corto(x.objetivo)];
+  return { id: x.id, dia: x.dia, hora: x.hora, minutos: x.minutos, ...(pista ? { pista } : {}), ...(vestuario ? { vestuario } : {}), ...(objetivo ? { objetivo } : {}) };
+}
+
+function limpiaFila(f: unknown): FilaClasificacion | null {
+  const x = f as FilaClasificacion;
+  const n = (v: unknown) => Number.isInteger(v) && (v as number) >= 0 && (v as number) <= 99;
+  if (!x || !txt(x.id) || !txt(x.equipo) || !n(x.g) || !n(x.p)) return null;
+  return { id: x.id, equipo: x.equipo.slice(0, 40), g: x.g, p: x.p };
 }
 
 /** Deja solo lo válido de una temporada (también al cargar una copia). */
@@ -162,10 +236,18 @@ export function limpiarTemporada(t: unknown): Temporada | null {
     if (k && Array.isArray(v)) asistencia[k] = [...new Set(v.filter((id): id is string => txt(id) && id !== ''))];
   }
   const lista = <T,>(a: unknown, f: (x: unknown) => T | null): T[] => (Array.isArray(a) ? a.map(f).filter((y): y is T => y !== null) : []);
+  const anteriores = (Array.isArray(x.anteriores) ? x.anteriores : []).slice(0, 10).flatMap((a) => {
+    if (!a || !txt(a.etiqueta)) return [];
+    const t = limpiarTemporada({ ...a, equipoId: '-', fases: [], fijos: [], excepciones: {}, anteriores: [] });
+    return t ? [{ etiqueta: a.etiqueta.slice(0, 12), inicio: t.inicio, fin: t.fin, eventos: t.eventos, ...(t.asistencia ? { asistencia: t.asistencia } : {}), ...(t.clasificacion ? { clasificacion: t.clasificacion } : {}) }] : [];
+  });
   return {
     equipoId: x.equipoId, inicio: x.inicio, fin: x.fin < x.inicio ? x.inicio : x.fin,
     fases: lista(x.fases, limpiaFase), fijos: lista(x.fijos, limpiaFijo), eventos: lista(x.eventos, limpiaEvento), excepciones: ex,
     ...(Object.keys(asistencia).length ? { asistencia } : {}),
+    ...(limpiarDisponibilidad(x.disponibilidad) ? { disponibilidad: limpiarDisponibilidad(x.disponibilidad) } : {}),
+    ...(Array.isArray(x.clasificacion) && x.clasificacion.length ? { clasificacion: lista(x.clasificacion, limpiaFila) } : {}),
+    ...(anteriores.length ? { anteriores } : {}),
   };
 }
 
@@ -240,7 +322,17 @@ export function marcasDia(t: Temporada, fecha: string): { partido: boolean; entr
 export const guardarEvento = (t: Temporada, e: Evento): Temporada => ({
   ...t, eventos: t.eventos.some((x) => x.id === e.id) ? t.eventos.map((x) => (x.id === e.id ? e : x)) : [...t.eventos, e],
 });
-export const quitarEvento = (t: Temporada, id: string): Temporada => ({ ...t, eventos: t.eventos.filter((e) => e.id !== id), ...sinAsistencia(t, (k) => k === id) });
+export const quitarEvento = (t: Temporada, id: string): Temporada => ({ ...t, eventos: t.eventos.filter((e) => e.id !== id), ...sinAsistencia(t, (k) => k === id), ...conRespuestas(t, (k) => k === id) });
+
+function conRespuestas(t: Temporada, quitar: (clave: string) => boolean): Pick<Temporada, 'disponibilidad'> {
+  return t.disponibilidad ? { disponibilidad: sinRespuestas(t.disponibilidad, quitar) } : {};
+}
+
+/** Guarda la disponibilidad de la temporada (ya calculada por `ponerRespuesta`). */
+export const conDisponibilidad = (t: Temporada, d: Disponibilidad | undefined): Temporada => {
+  const { disponibilidad: _, ...resto } = t;
+  return d ? { ...resto, disponibilidad: d } : resto;
+};
 
 function sinAsistencia(t: Temporada, quitar: (clave: string) => boolean): Pick<Temporada, 'asistencia'> {
   if (!t.asistencia) return {};
@@ -277,6 +369,7 @@ export const quitarFijo = (t: Temporada, id: string): Temporada => ({
   fijos: t.fijos.filter((f) => f.id !== id),
   excepciones: Object.fromEntries(Object.entries(t.excepciones).filter(([k]) => !k.startsWith(`${id}|`))),
   ...sinAsistencia(t, (k) => k.startsWith(`${id}|`)),
+  ...conRespuestas(t, (k) => k.startsWith(`${id}|`)),
 });
 
 export function cambiarFijoDia(t: Temporada, item: Item, cambio: Excepcion): Temporada {
@@ -327,8 +420,39 @@ export function itemsParaIcs(t: Temporada) {
   for (const fecha of [...fechas].sort()) {
     for (const i of agendaDia(t, fecha)) {
       if (i.cancelado) continue;
-      fuera.push({ fecha, hora: i.hora, tipo: i.tipo, titulo: i.evento?.titulo ?? i.titulo, casa: i.evento?.casa, lugar: i.evento?.lugar, minutos: i.fijo?.minutos ?? MINUTOS[i.tipo], uid: i.clave });
+      fuera.push({ fecha, hora: i.hora, tipo: i.tipo, titulo: i.evento?.titulo ?? i.titulo, casa: i.evento?.casa, lugar: i.evento?.lugar ?? i.fijo?.pista, minutos: i.fijo?.minutos ?? MINUTOS[i.tipo], uid: i.clave });
     }
   }
   return fuera;
 }
+
+/** Balance de los partidos con resultado: ganados, perdidos y puntos a favor y en contra. */
+export function balanceLiga(t: Temporada): { g: number; p: number; pf: number; pc: number } {
+  const r = t.eventos.flatMap((e) => (e.tipo === 'partido' && e.resultado ? [e.resultado] : []));
+  return { g: r.filter((x) => x.a > x.c).length, p: r.filter((x) => x.a < x.c).length, pf: r.reduce((n, x) => n + x.a, 0), pc: r.reduce((n, x) => n + x.c, 0) };
+}
+
+/** Competición de un partido: sin dato, liga. */
+export const competicionDe = (e: Evento): Competicion => e.competicion ?? 'liga';
+
+/** Balance solo de una competición («liga»: lo que cuenta para la clasificación). */
+export function balanceDe(t: Pick<Temporada, 'eventos'>, comp: Competicion): { g: number; p: number } {
+  const r = t.eventos.flatMap((e) => (e.tipo === 'partido' && e.resultado && competicionDe(e) === comp ? [e.resultado] : []));
+  return { g: r.filter((x) => x.a > x.c).length, p: r.filter((x) => x.a < x.c).length };
+}
+
+/** Puntos de clasificación: 2 por victoria y 1 por derrota. */
+export const puntosClasificacion = (f: FilaClasificacion) => f.g * 2 + f.p;
+
+/** Ordena la clasificación: más puntos, más victorias y, a igualdad, por nombre. */
+export const ordenarClasificacion = (l: FilaClasificacion[]): FilaClasificacion[] =>
+  [...l].sort((a, b) => puntosClasificacion(b) - puntosClasificacion(a) || b.g - a.g || a.equipo.localeCompare(b.equipo, 'es'));
+
+export const guardarFila = (t: Temporada, f: FilaClasificacion): Temporada => ({
+  ...t, clasificacion: (t.clasificacion ?? []).some((x) => x.id === f.id) ? t.clasificacion!.map((x) => (x.id === f.id ? f : x)) : [...(t.clasificacion ?? []), f],
+});
+export const quitarFila = (t: Temporada, id: string): Temporada => {
+  const { clasificacion: _, ...resto } = t;
+  const quedan = (t.clasificacion ?? []).filter((f) => f.id !== id);
+  return quedan.length ? { ...resto, clasificacion: quedan } : resto;
+};

@@ -1,0 +1,6 @@
+PENDIENTE
+- Probar en el iPhone (asistente, dos equipos, hoja de jugador en PDF, calendario con recordatorio).
+- Lista de jugadores desde una foto (hace falta reconocimiento de texto).
+- Espacios de pista por equipo.
+- Mostrar el historial de temporadas con más detalle (hoy es una línea por temporada).
+- Unir a main y publicar: solo cuando Adam diga que sí (ver union.txt).

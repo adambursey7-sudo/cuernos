@@ -2,24 +2,33 @@
 // hoja del día desde abajo (con «Abrir día» a pantalla completa), entrenos fijos de la semana, partidos sueltos o en lista y .ics.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { hoy, type Equipo, type Jugadora } from '../diario/diario';
-import { leerSesiones } from '../sesiones/sesiones';
+import { palabras } from '../diario/tipo';
+import { leerSesiones, sesionesDe } from '../sesiones/sesiones';
+import { Familias } from './Familias';
+import { ConvocatoriaPartido } from './ConvocatoriaPartido';
 import { DIAS, DIAS_LARGOS, corta, cuadriculaMes, mesDe, nombreMes, sumarMeses } from '../temporada/fechas';
 import { escribirIcs } from '../temporada/ics';
 import {
   ETIQUETAS_BIEN, ETIQUETAS_MAL, notasDelBalance,
-  agendaDia, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporada, guardarTemporadas, itemsParaIcs, leerTemporadas, marcasDia,
+  COMPETICIONES, agendaDia, balanceDe, balanceLiga, cambiarFijoDia, competicionDe, faseDe, guardarEvento, guardarFase, guardarFijo, guardarFila, nuevaFila, ordenarClasificacion, puntosClasificacion, quitarFila, guardarTemporada, guardarTemporadas, itemsParaIcs, leerTemporadas, marcasDia,
   nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarEvento, quitarFase, quitarFijo, temporadaDe, temporadaPorDefecto,
   type Evento, type Fase, type Item, type Temporada as TemporadaDatos, type TipoEvento,
 } from '../temporada/temporada';
 import { ImportarCalendario } from './ImportarCalendario';
 import { InformeRivalEditor } from './InformeRival';
+import { EnDirecto } from './EnDirecto';
+import { CargaSemanal } from './CargaSemanal';
+import { PLANTILLAS_SEMANA, aplicarPlantillaSemana } from '../sesiones/plan';
+import { DisponibilidadDia } from './DisponibilidadDia';
+import { reglasDe } from '../reglas/reglas';
+import { CompartirPlan } from './CompartirPlan';
 
 const TIPOS: { id: TipoEvento; nombre: string }[] = [{ id: 'partido', nombre: 'Partido' }, { id: 'entreno', nombre: 'Entreno' }, { id: 'otro', nombre: 'Otro' }];
 const NOMBRES_FASE = ['Pretemporada', 'Liga', 'Parón', 'Fase final'];
 const MINUTOS = [45, 60, 75, 90, 120];
 const colorFase = (i: number) => `hsl(${(i * 67 + 20) % 360} 55% 58%)`;
 
-type Vista = 'mes' | 'fases' | 'fijos' | 'importar';
+type Vista = 'mes' | 'fases' | 'fijos' | 'importar' | 'liga' | 'familias';
 
 function Atras({ volver, titulo }: { volver: () => void; titulo: string }) {
   return (
@@ -59,6 +68,19 @@ function EditorFijos({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: T
     <section className="pantalla">
       <Atras volver={volver} titulo="Entrenos de cada semana" />
       <p className="meta">Se repiten toda la temporada. Los festivos y los parones los quitan solos; un día suelto se cancela o se cambia desde el calendario.</p>
+      <section aria-label="Plantillas de semana">
+        <h2 className="sub">Plantillas de semana</h2>
+        <div className="plantillas-semana">
+          {PLANTILLAS_SEMANA.map((p) => (
+            <button key={p.id} className="tarjeta-plantilla" onClick={() => cambiar(aplicarPlantillaSemana(t, p))}>
+              <b>{p.nombre}</b>
+              <span className="meta">{p.idea}</span>
+              <span className="meta">{p.entrenos.map((e) => `${DIAS_LARGOS[e.dia].slice(0, 3)} ${e.hora}`).join(' · ')}</span>
+            </button>
+          ))}
+        </div>
+        {t.fijos.length > 0 && <p className="meta">Al elegir una plantilla se cambian los entrenos de abajo (la pista y el vestuario del mismo día se conservan).</p>}
+      </section>
       {t.fijos.length === 0 && <p className="vacio">Todavía no hay ninguno.</p>}
       <ul className="lista">
         {[...t.fijos].sort((a, b) => a.dia - b.dia || a.hora.localeCompare(b.hora)).map((f) => (
@@ -71,10 +93,57 @@ function EditorFijos({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: T
               {(MINUTOS.includes(f.minutos) ? MINUTOS : [...MINUTOS, f.minutos].sort((a, b) => a - b)).map((m) => <option key={m} value={m}>{m} min</option>)}
             </select>
             <button className="chip" aria-label="Quitar este entreno" onClick={() => cambiar(quitarFijo(t, f.id))}>✕</button>
+            {(
+              <div className="tp-fijo-extra">
+                <Entrada etiqueta="Pista"><input value={f.pista ?? ''} maxLength={80} placeholder="Pista B" onChange={(ev) => cambiar(guardarFijo(t, { ...f, pista: ev.target.value || undefined }))} /></Entrada>
+                <Entrada etiqueta="Vestuario"><input value={f.vestuario ?? ''} maxLength={80} placeholder="Vestuario 2" onChange={(ev) => cambiar(guardarFijo(t, { ...f, vestuario: ev.target.value || undefined }))} /></Entrada>
+                <Entrada etiqueta="Objetivo del entreno"><input value={f.objetivo ?? ''} maxLength={80} placeholder="Bloqueo directo y defensa" onChange={(ev) => cambiar(guardarFijo(t, { ...f, objetivo: ev.target.value || undefined }))} /></Entrada>
+              </div>
+            )}
           </li>
         ))}
       </ul>
       <button className="principal ancho" onClick={() => cambiar(guardarFijo(t, nuevoFijo(0)))}>＋ Entreno de la semana</button>
+    </section>
+  );
+}
+
+function Liga({ t, cambiar, volver }: { t: TemporadaDatos; cambiar: (t: TemporadaDatos) => void; volver: () => void }) {
+  const b = balanceLiga(t);
+  const filas = t.clasificacion ?? [];
+  const puesto = new Map(ordenarClasificacion(filas).map((f, i) => [f.id, i + 1]));
+  const num = (v: string) => Math.min(99, Number(v.replace(/\D/g, '')) || 0);
+  return (
+    <section className="pantalla">
+      <Atras volver={volver} titulo="Liga" />
+      <p className="meta">Tu balance sale de los partidos con resultado: <b>{b.g}–{b.p}</b> · puntos {b.pf}–{b.pc}{b.pf + b.pc > 0 ? ` (${b.pf - b.pc >= 0 ? '+' : ''}${b.pf - b.pc})` : ''}.</p>
+      <ul className="lista">
+        {COMPETICIONES.map(([id, nombre]) => {
+          const n = t.eventos.filter((e) => e.tipo === 'partido' && e.resultado && competicionDe(e) === id).length;
+          const r = balanceDe(t, id);
+          return n ? <li key={id} className="meta">{nombre}: <b>{r.g}–{r.p}</b> en {n} {n === 1 ? 'partido' : 'partidos'}</li> : null;
+        })}
+      </ul>
+      <h3 className="sub">Clasificación</h3>
+      <p className="meta">La apuntas tú tras cada jornada. Cuenta 2 puntos por victoria y 1 por derrota.</p>
+      {filas.length === 0 && <p className="vacio">Todavía no hay equipos apuntados.</p>}
+      <ul className="lista">
+        {filas.map((f) => (
+          <li key={f.id} className="tp-fila-clas">
+            <span className="dorsal" aria-hidden>{puesto.get(f.id)}</span>
+            <input aria-label="Equipo" value={f.equipo} maxLength={40} placeholder="Ejemplo Uno" onChange={(ev) => cambiar(guardarFila(t, { ...f, equipo: ev.target.value }))} />
+            <input aria-label="Ganados" inputMode="numeric" value={f.g} onChange={(ev) => cambiar(guardarFila(t, { ...f, g: num(ev.target.value) }))} />
+            <input aria-label="Perdidos" inputMode="numeric" value={f.p} onChange={(ev) => cambiar(guardarFila(t, { ...f, p: num(ev.target.value) }))} />
+            <span className="chip pequeno" aria-label="Puntos">{puntosClasificacion(f)}</span>
+            <button className="chip" aria-label="Quitar este equipo" onClick={() => cambiar(quitarFila(t, f.id))}>✕</button>
+          </li>
+        ))}
+      </ul>
+      {filas.length > 0 && <p className="meta">Equipo · ganados · perdidos · puntos</p>}
+      <div className="dos-botones">
+        <button className="principal" onClick={() => cambiar(guardarFila(t, nuevaFila()))}>＋ Equipo</button>
+        {filas.length > 1 && <button className="secundario" onClick={() => cambiar({ ...t, clasificacion: ordenarClasificacion(filas) })}>Ordenar por puntos</button>}
+      </div>
     </section>
   );
 }
@@ -84,11 +153,12 @@ const alternarEn = (lista: string[] | undefined, x: string) => (lista?.includes(
 function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equipo, jugadoras, anotar }: {
   anotar: (notas: { id: string; texto: string }[]) => void; jugadoras: Jugadora[]; t: TemporadaDatos; fecha: string; completa: boolean; alternar: () => void; cerrar: () => void; cambiar: (t: TemporadaDatos) => void; abrirSesion: (id: string) => void; equipo: Equipo;
 }) {
+  const pal = palabras(equipo);
   const [edita, setEdita] = useState<string | null>(null);
   const [lista, setLista] = useState<string | null>(null);
   const items = agendaDia(t, fecha);
   const fase = faseDe(t, fecha);
-  const sesiones = leerSesiones().filter((s) => s.equipo === equipo.nombre);
+  const sesiones = sesionesDe(leerSesiones(), equipo);
   const item = items.find((i) => i.clave === edita);
 
   const añadir = (tipo: TipoEvento) => {
@@ -150,9 +220,24 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
             <button className={e.casa === false ? 'chip on' : 'chip'} aria-pressed={e.casa === false} onClick={() => poner({ casa: false })}>Fuera</button>
           </div>
         )}
+        {e.tipo === 'partido' && (
+          <div className="dos-botones">
+            <Entrada etiqueta="Competición"><div className="niveles filtro" role="group" aria-label="Competición">{COMPETICIONES.map(([id, nombre]) => <button key={id} className={competicionDe(e) === id ? 'chip on' : 'chip'} aria-pressed={competicionDe(e) === id} onClick={() => poner({ competicion: id === 'liga' ? undefined : id })}>{nombre}</button>)}</div></Entrada>
+            <Entrada etiqueta="Jornada"><input inputMode="numeric" value={e.jornada ?? ''} placeholder="5" onChange={(ev) => { const n = Number(ev.target.value.replace(/\D/g, '')); poner({ jornada: n ? Math.min(99, n) : undefined }); }} /></Entrada>
+            {e.casa === false && <Entrada etiqueta="Salida del viaje"><input type="time" value={e.salida ?? ''} onChange={(ev) => poner({ salida: ev.target.value || undefined })} /></Entrada>}
+          </div>
+        )}
         <Entrada etiqueta="Pabellón o lugar"><input value={e.lugar} maxLength={60} placeholder="(opcional)" onChange={(ev) => poner({ lugar: ev.target.value })} /></Entrada>
         {e.tipo === 'otro' && <label className="marca-linea"><input type="checkbox" checked={!!e.libre} onChange={(ev) => poner({ libre: ev.target.checked || undefined })} /> Sin entreno ese día (festivo)</label>}
         {e.tipo !== 'otro' && selector(e.sesionId, (id) => poner({ sesionId: id }))}
+        {e.tipo === 'partido' && (
+          <Entrada etiqueta="Plan de partido">
+            <textarea rows={3} maxLength={600} value={e.plan ?? ''} placeholder="Defensa, jugadas y a quién buscar" onChange={(ev) => poner({ plan: ev.target.value || undefined })} />
+          </Entrada>
+        )}
+        {e.tipo === 'partido' && <ConvocatoriaPartido e={e} jugadoras={jugadoras} poner={poner} />}
+        {e.tipo === 'partido' && <CompartirPlan e={e} equipo={equipo.nombre} jugadoras={jugadoras} />}
+        {e.tipo === 'partido' && <EnDirecto e={e} jugadoras={jugadoras} poner={poner} faltas={reglasDe(equipo).faltas} />}
         {e.tipo === 'partido' && <InformeRivalEditor e={e} eventos={t.eventos} equipo={equipo.nombre} poner={poner} enlazar={(id) => poner({ sesionId: id })} />}
         {e.tipo === 'partido' && (
           <>
@@ -186,7 +271,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
                   <button className="principal ancho" disabled={pendientes.length === 0} onClick={() => { anotar(pendientes); poner({ pasadas: [...new Set([...(e.pasadas ?? []), ...pendientes.map((n) => n.id)])] }); }}>
                     {pendientes.length ? `Pasar a las fichas (${pendientes.length})` : 'Pasar a las fichas'}
                   </button>
-                  {hechas > 0 && <span className="meta">Ya está en la ficha de {hechas} {hechas === 1 ? 'jugadora' : 'jugadoras'}.</span>}
+                  {hechas > 0 && <span className="meta">Ya está en la ficha de {hechas} {hechas === 1 ? pal.jugadora : pal.jugadoras}.</span>}
                 </>
               );
             })()}
@@ -223,7 +308,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
                     <span className="datos">
                       <b>{i.tipo === 'partido' ? `Partido · ${i.titulo || 'sin rival'}` : i.titulo || (i.tipo === 'entreno' ? 'Entreno' : 'Evento')}</b>
                       <span className="meta">
-                        {[e?.tipo === 'partido' && (e.casa === false ? 'Fuera' : 'Casa'), e?.resultado && `${e.resultado.a}–${e.resultado.c}`, e?.lugar, i.cancelado && 'cancelado', e?.libre && 'sin entreno'].filter(Boolean).join(' · ') || 'Toca para editar'}
+                        {[e?.competicion && COMPETICIONES.find(([id]) => id === e.competicion)?.[1], e?.jornada && `J${e.jornada}`, e?.tipo === 'partido' && (e.casa === false ? 'Fuera' : 'Casa'), e?.casa === false && e.salida && `salida ${e.salida}`, e?.resultado && `${e.resultado.a}–${e.resultado.c}`, e?.lugar, i.fijo?.pista, i.fijo?.vestuario, i.fijo?.objetivo, i.cancelado && 'cancelado', e?.libre && 'sin entreno'].filter(Boolean).join(' · ') || 'Toca para editar'}
                       </span>
                     </span>
                   </button>
@@ -246,7 +331,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
                               })}
                             </div>
                             <div className="dos-botones">
-                              <button className="chip" onClick={() => poner(jugadoras.map((j) => j.id))}>Han venido todas</button>
+                              <button className="chip" onClick={() => poner(jugadoras.map((j) => j.id))}>{pal.todas}</button>
                               <button className="chip" onClick={() => poner(null)}>Borrar lista</button>
                             </div>
                           </>
@@ -254,6 +339,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
                       </div>
                     );
                   })()}
+                  {(i.tipo === 'partido' || i.tipo === 'entreno') && !i.cancelado && jugadoras.length > 0 && <DisponibilidadDia item={i} t={t} jugadoras={jugadoras} equipo={equipo.nombre} cambiar={cambiar} />}
                   {e?.tipo === 'partido' && e.balance && completa && <p className="nota-jugadora">{e.balance}</p>}
                 </li>
               );
@@ -309,6 +395,8 @@ export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion, anotar
       </section>
     );
 
+  if (vista === 'liga') return <Liga t={t} cambiar={cambiar} volver={() => setVista('mes')} />;
+  if (vista === 'familias') return <Familias equipo={equipo} t={t} jugadoras={jugadoras} volver={() => setVista('mes')} />;
   if (vista === 'fijos') return <EditorFijos t={t} cambiar={cambiar} volver={() => setVista('mes')} />;
   if (vista === 'importar') return <ImportarCalendario t={t} volver={() => setVista('mes')} guardar={(n) => { cambiar(n); setVista('mes'); }} />;
   const fase = faseId ? t.fases.find((f) => f.id === faseId) : undefined;
@@ -348,6 +436,7 @@ export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion, anotar
         </div>
       )}
       {faseHoy && <p className="meta"><b>{faseHoy.nombre || 'Fase'}</b>{faseHoy.objetivo ? ` · Objetivo: ${faseHoy.objetivo}` : ''}{faseHoy.trabajar ? ` · Trabajar: ${faseHoy.trabajar}` : ''}</p>}
+      <details className="tp-carga"><summary>Carga por semana</summary><CargaSemanal t={t} /></details>
       <div className="tp-mes">
         <button className="chip" onClick={() => setMes(sumarMeses(mes, -1))} aria-label="Mes anterior">‹</button>
         <h3>{nombreMes(mes)}</h3>
@@ -366,8 +455,10 @@ export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion, anotar
       <div className="dos-botones">
         <button className="secundario" onClick={nuevaFaseEnMes}>＋ Fase</button>
         <button className="secundario" onClick={() => setVista('fijos')}>Entrenos de la semana</button>
+        <button className="secundario" onClick={() => setVista('liga')}>Liga y clasificación</button>
         <button className="secundario" onClick={() => setVista('importar')}>Importar lista o .ics</button>
         <button className="secundario" onClick={exportar}>Exportar .ics</button>
+        <button className="secundario" onClick={() => setVista('familias')}>Familias y papeles</button>
       </div>
       {dia && <div className="tp-hueco" aria-hidden />}
       {dia && (

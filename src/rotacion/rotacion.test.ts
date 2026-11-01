@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { alternar, cuartosIncompletos, limpiarRotacion, minutos, repartir, vacia } from './rotacion';
+import { ajustarPeriodos, alternar, cuartosIncompletos, limpiarRotacion, minutos, repartir, vacia } from './rotacion';
 
 const ids = (n: number) => Array.from({ length: n }, (_, i) => `j${i + 1}`);
 
@@ -31,10 +31,19 @@ describe('rotación del partido', () => {
   it('limpia lo roto: cuartos que faltan, ids desconocidos, repetidos y de más', () => {
     const validos = new Set(ids(8));
     expect(limpiarRotacion('x', validos)).toBeUndefined();
-    expect(limpiarRotacion([[], []], validos)).toBeUndefined();
+    expect(limpiarRotacion([], validos)).toBeUndefined();
+    expect(limpiarRotacion(Array.from({ length: 7 }, () => []), validos)).toBeUndefined();
     const r = limpiarRotacion([['j1', 'j1', 'zz', 3, 'j2', 'j3', 'j4', 'j5', 'j6'], null, [], ['j8']], validos)!;
     expect(r[0]).toEqual(['j1', 'j2', 'j3', 'j4', 'j5']);
     expect(r[1]).toEqual([]);
     expect(r[3]).toEqual(['j8']);
+  });
+
+  it('con 3 periodos de 8 minutos reparte 3 cuartos y cuenta 8 minutos cada uno', () => {
+    const r = repartir(ids(8), 3);
+    expect(r).toHaveLength(3);
+    expect(ids(8).map((id) => minutos(r, id, 8)).reduce((a, b) => a + b, 0)).toBe(120);
+    expect(ajustarPeriodos(r, 4)).toHaveLength(4);
+    expect(ajustarPeriodos(r, 2)).toEqual(r.slice(0, 2));
   });
 });
