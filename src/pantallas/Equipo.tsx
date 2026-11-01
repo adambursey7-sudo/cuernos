@@ -19,6 +19,7 @@ import { MANOS, esFemenino } from '../equipo/modelo';
 import { asistenciaPorMes, nombreMes } from '../equipo/familias';
 import { SelectorEquipo } from '../equipo/SelectorEquipo';
 import { olvidarListas } from '../equipo/porEquipo';
+import { guardarReflexiones, leerReflexiones } from '../diario/reflexion';
 import { alinearSesiones, guardarSesiones, leerSesiones } from '../sesiones/sesiones';
 import { DiarioSesion } from './DiarioSesion';
 import { Habilidades } from './Habilidades';
@@ -375,7 +376,7 @@ export function Equipo({ ir, fecha, abrirSesion, abrirEjercicio, abrirSistema, a
         e={equipo}
         jugadoras={plantilla(d, equipo.id)}
         cambiar={(e) => setD(guardarEquipo(d, e))}
-        borrar={() => { const resto = d.equipos.filter((e) => e.id !== equipo.id); olvidarListas(equipo.id); setD(quitarEquipo(d, equipo.id)); setActivo(resto[0]?.id ?? ''); setVista({ tipo: 'plantilla' }); }}
+        borrar={() => { const resto = d.equipos.filter((e) => e.id !== equipo.id); olvidarListas(equipo.id); guardarTemporadas(leerTemporadas().filter((t) => t.equipoId !== equipo.id)); guardarSesiones(leerSesiones().filter((s) => s.equipoId !== equipo.id && !(s.equipoId === undefined && s.equipo === equipo.nombre))); guardarReflexiones(leerReflexiones().filter((r) => r.equipoId !== equipo.id)); setD(quitarEquipo(d, equipo.id)); setActivo(resto[0]?.id ?? ''); setVista({ tipo: 'plantilla' }); }}
         volver={() => setVista({ tipo: 'plantilla' })}
         ir={ir}
       />

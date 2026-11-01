@@ -157,7 +157,7 @@ export function leerLista(texto: string, inicioTemporada: string): Candidata[] {
 
 /* ---------- Escribir .ics ---------- */
 
-const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r\n?|\n/g, '\\n');
 const sinGuiones = (f: string) => f.replace(/-/g, '');
 const sinPuntos = (h: string) => `${h.replace(':', '')}00`;
 const sumarMin = (f: string, h: string, min: number) => {

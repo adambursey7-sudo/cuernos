@@ -214,7 +214,8 @@ export function juntarDiario(actual: Diario, copia: Diario): Diario {
       ...actual.jugadoras.filter((j) => !ju.has(j.id)),
       ...copia.jugadoras.map((j) => {
         const mia = actual.jugadoras.find((x) => x.id === j.id);
-        return j.lesion || !mia?.lesion ? j : { ...j, lesion: mia.lesion };
+        if (!mia) return j;
+        return { ...j, ...(j.lesion || !mia.lesion ? {} : { lesion: mia.lesion }), ...(j.rol || !mia.rol ? {} : { rol: mia.rol }), ...(j.nacimiento || !mia.nacimiento ? {} : { nacimiento: mia.nacimiento }), ...(j.mano || !mia.mano ? {} : { mano: mia.mano }) };
       }),
     ],
   };

@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { nuevaJugadora, nuevoEquipo } from '../diario/diario';
 import { escribirIcs } from '../temporada/ics';
 import { guardarEvento, guardarFijo, limpiarTemporada, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, balanceDe, itemsParaIcs } from '../temporada/temporada';
+import { armarCopia } from '../copia';
+import { nuevaSesion } from '../sesiones/sesiones';
+import { cerrarTemporada } from './equipos';
 import { asistenciaPorMes, hojaJugador, informeTemporada, mensajeConvocatoria, mensajeSemana } from './familias';
 
 const equipo = { ...nuevoEquipo('Equipo Uno'), temporada: '2026-27', staff: [{ id: 's', nombre: 'Ejemplo Staff', papel: 'delegado' as const, contacto: '600 000 000' }] };
@@ -103,6 +106,32 @@ describe('partido: competición y convocatoria', () => {
     const entreno = limpiarTemporada(guardarEvento(t, { ...nuevoEvento('2026-11-01', 'entreno'), id: 'en', convocados: ['a'], competicion: 'copa' }))!.eventos.find((x) => x.id === 'en')!;
     expect(entreno.convocados).toBeUndefined();
     expect(entreno.competicion).toBeUndefined();
+  });
+});
+
+describe('arreglos de la revisión', () => {
+  it('cerrar una temporada que acaba un 29 de febrero no pierde la temporada', () => {
+    const n = cerrarTemporada(nuevaTemporada('e', '2027-09-01', '2028-02-29'), 'x');
+    expect(n.fin).toBe('2029-02-28');
+    expect(limpiarTemporada(n)).not.toBeNull();
+  });
+
+  it('el .ics no deja que un salto de línea suelto cuele otro evento', () => {
+    const ics = escribirIcs('E', [{ fecha: '2026-11-07', hora: '11:00', tipo: 'otro', titulo: 'a\rEND:VEVENT\rBEGIN:VEVENT', minutos: 60, uid: 'u' }]);
+    expect(ics.split(/\r\n/).filter((l) => l === 'BEGIN:VEVENT')).toHaveLength(1);
+    expect(ics).not.toMatch(/\r(?!\n)/);
+  });
+
+  it('la copia no lleva lo de un equipo que ya no existe', () => {
+    const vivo = nuevoEquipo('Vivo');
+    const muerto = nuevoEquipo('Muerto');
+    const texto = armarCopia([], { principal: '#aa0000', fondo: '#000000', pista: '#aa8800', jugadores: '#ffffff' }, { equipos: [vivo], jugadoras: [] },
+      [nuevaTemporada(vivo.id, '2026-09-01', '2027-06-30'), nuevaTemporada(muerto.id, '2026-09-01', '2027-06-30')], undefined, undefined, false, undefined,
+      [{ id: 'r', fecha: '2026-10-01', equipoId: muerto.id, animo: 3, funciono: '', no: '', proximo: '' }], { sesiones: [nuevaSesion('Muerto', 'S', muerto.id)] });
+    const c = JSON.parse(texto);
+    expect(c.temporadas).toHaveLength(1);
+    expect(c.reflexiones).toHaveLength(0);
+    expect(c.sesiones).toHaveLength(0);
   });
 });
 

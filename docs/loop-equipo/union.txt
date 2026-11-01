@@ -1,0 +1,18 @@
+UNIR loop/equipo-completo (NO unido; esperando el sí de Adam)
+
+Orden: esta rama sale de loop/senior-masculino, que tampoco está unida a main. Hay que unir PRIMERO senior-masculino y luego esta.
+(Unir esta rama a main arrastra también todo lo de senior-masculino.)
+
+Conflictos esperados
+- Con main: los mismos que ya tenía senior-masculino (Equipo.tsx, Temporada.tsx, diario.ts, temporada.ts, estilos.css, copia.ts) por las ramas
+  que main ya trae (interfaz, recursos, compartir...). Los de esta rama añaden sobre las mismas zonas:
+  * src/pantallas/Equipo.tsx: se quitó el estado "activo" (ahora llega por props desde App.tsx) y el bloque "Otro equipo".
+  * src/pantallas/Temporada.tsx: se quitaron las condiciones "solo senior".
+  * src/diario/diario.ts y src/copia.ts: campos nuevos y copia versión 3.
+  * src/estilos.css: solo se añade al final.
+- Con loop/senior-masculino: ninguno (parte de su último commit).
+
+Después de unir
+- Pasar tsc, pruebas y build; abrir la app con los datos de siempre y mirar Equipo, Sesiones y Más.
+- Publicar solo con el sí de Adam.
+- La junction de node_modules del worktree hay que quitarla con: cmd /c rmdir node_modules

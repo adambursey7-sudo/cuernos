@@ -31,7 +31,14 @@ export interface PorEquipo {
 
 /** Las lesiones (dato de salud) solo entran en la copia si se piden (`conSalud`). */
 export function armarCopia(mios: Sistema[], colores: Colores, diario?: Diario, temporadas?: Temporada[], recursos?: Recurso[], fichas?: Ficha[], conSalud = false, etiquetas?: Etiquetas, reflexiones?: Reflexion[], extra?: ExtraCopia): string {
-  return JSON.stringify({ app: MARCA, version: extra ? 3 : 2, fecha: new Date().toISOString(), mios, colores, diario: diario && !conSalud ? sinSalud(diario) : diario, temporadas, recursos, fichas, etiquetas, reflexiones, ...extra }, null, 1);
+  // Solo lo de equipos que existen: lo que quedara suelto de un equipo borrado no viaja en la copia.
+  const ids = diario ? new Set(diario.equipos.map((e) => e.id)) : undefined;
+  const sesiones = extra?.sesiones && ids ? extra.sesiones.filter((s) => !s.equipoId || ids.has(s.equipoId)) : extra?.sesiones;
+  return JSON.stringify({
+    app: MARCA, version: extra ? 3 : 2, fecha: new Date().toISOString(), mios, colores, diario: diario && !conSalud ? sinSalud(diario) : diario,
+    temporadas: temporadas && ids ? soloDeEquipos(temporadas, [...ids]) : temporadas, recursos, fichas, etiquetas,
+    reflexiones: reflexiones && ids ? reflexiones.filter((r) => ids.has(r.equipoId)) : reflexiones, ...extra, ...(sesiones ? { sesiones } : {}),
+  }, null, 1);
 }
 
 const textos = (x: unknown): string[] | undefined => (Array.isArray(x) ? x.filter((s): s is string => typeof s === 'string' && s.length < 200).slice(0, 1000) : undefined);

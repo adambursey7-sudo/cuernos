@@ -1,0 +1,49 @@
+<title>Horns equipo completo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Una columna estrecha, cada bloque con su estado Hecho / Mejorable. */
+:root{--bg:#f6f4ef;--fg:#1d2433;--mut:#5b6475;--card:#fff;--line:#d9d6cc;--ok:#1f7a4d;--mej:#b45a12;--acc:#e4601a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b2438;--fg:#f2efe8;--mut:#a5adbf;--card:#243050;--line:#3a4766;--ok:#58c88c;--mej:#f0a15a;--acc:#f6772e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1b2438;--fg:#f2efe8;--mut:#a5adbf;--card:#243050;--line:#3a4766;--ok:#58c88c;--mej:#f0a15a;--acc:#f6772e;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:640px;margin:0 auto;display:grid;gap:14px}
+h1{font-size:1.9rem;line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0}.mut{color:var(--mut)}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:6px;min-width:0}
+h2{font-size:1.05rem;margin:0;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.t{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;white-space:nowrap}
+.ok{color:var(--ok)}.mej{color:var(--mej)}
+ul{margin:0;padding-left:1.1em;display:grid;gap:3px}
+.dato{border-left:4px solid var(--acc);padding:2px 12px}
+</style>
+<main>
+<h1>Un equipo entero en Horns</h1>
+<p class="mut">Cambios de esta rama, sin unir ni publicar. 322 pruebas, comprobación de tipos y compilación en verde. Probado en el navegador a ancho de iPhone con dos equipos y con datos de antes.</p>
+
+<section><h2>Nuevo equipo <span class="t ok">Hecho</span></h2>
+<p>Cuatro pasos: nombre y categoría; temporada y días de entreno con pista y vestuario; color y escudo; lista de jugadores. Se puede saltar, volver atrás o probar con un equipo de ejemplo.</p></section>
+
+<section><h2>Plantilla y cuerpo técnico <span class="t ok">Hecho</span></h2>
+<ul><li>Pegar la lista, con año de nacimiento si viene.</li><li>Mano buena y año en cada ficha.</li><li>Entrenador, ayudante, delegado y fisio con su contacto.</li><li>Asistencia mes a mes de cada jugador.</li></ul>
+<p class="mej"><b>Mejorable:</b> la lista desde una foto no se hizo.</p></section>
+
+<section><h2>Horarios y calendario <span class="t ok">Hecho</span></h2>
+<ul><li>Pista, vestuario y objetivo del entreno en todos los equipos.</li><li>Partidos de liga, amistoso, copa y playoff, con balance aparte.</li><li>Calendario para el móvil con recordatorio, o solo partidos para las familias.</li></ul></section>
+
+<section><h2>Partido <span class="t ok">Hecho</span></h2>
+<p>Convocatoria, quinteto inicial, plan, puntos y faltas en directo y informe del rival, ahora en cualquier equipo.</p></section>
+
+<section><h2>Familias <span class="t ok">Hecho</span></h2>
+<p>Horarios de la semana y convocatoria para el grupo, solo con dorsales. Hoja de cada jugador para imprimir o guardar en PDF, sin lesiones ni notas tuyas.</p></section>
+
+<section><h2>Varios equipos <span class="t ok">Hecho</span></h2>
+<ul><li>Selector con escudo en Hoy y en Equipo; Tele, sesiones, estrellas y libro de la semana siguen al equipo elegido.</li><li>Duplicar un equipo y copiar horarios, sesiones o reglas de otro.</li><li>Cerrar la temporada: queda el historial y empieza la siguiente con la misma plantilla y horarios.</li><li>Copia de seguridad con sesiones y estrellas, y copia de un solo equipo.</li></ul>
+<p class="dato">Tus datos de antes se abren igual y no se pierde nada. Probado con datos antiguos en el navegador.</p></section>
+
+<section><h2>Extras <span class="t ok">Hecho</span></h2>
+<p>Objetivos de la temporada con casilla y informe de fin de temporada, con nombres o solo con dorsales.</p>
+<p class="mej"><b>Mejorable:</b> los espacios de pista siguen siendo comunes a todos los equipos.</p></section>
+
+<section><h2>Antes de unir <span class="t mej">Falta</span></h2>
+<ul><li>Probarlo en el iPhone.</li><li>Decidir si unir a main y publicar.</li></ul></section>
+</main>

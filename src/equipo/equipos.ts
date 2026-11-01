@@ -4,7 +4,7 @@
 import { leerDiario, nuevaJugadora, nuevoEquipo, type Diario, type Equipo, type Jugadora, type TipoEquipo } from '../diario/diario';
 import { leerTexto } from '../diario/importar';
 import type { Sesion } from '../sesiones/sesiones';
-import { esFecha, lunesDe, sumarDias } from '../temporada/fechas';
+import { crearFecha, esFecha, lunesDe, sumarDias } from '../temporada/fechas';
 import { balanceLiga, nuevaTemporada, nuevoFijo, type Archivada, type Temporada } from '../temporada/temporada';
 import { leerActivoId } from './porEquipo';
 import { escudoPorDefecto, etiquetaTemporada, limpiarEscudo, type Escudo, type Genero } from './modelo';
@@ -175,8 +175,9 @@ export function heredarDe(
     const t = { ...base, fijos };
     ts = tA ? temporadas.map((x) => (x.equipoId === aId ? t : x)) : [...temporadas, t];
   }
+  const yaTiene = new Set(sesionesDeEquipo(sesiones, a).map((s) => `${s.nombre}|${JSON.stringify(s.bloques)}`));
   const nuevasSesiones = que.sesiones
-    ? sesionesDeEquipo(sesiones, de).map((s) => ({ ...s, id: nuevoId('s'), equipoId: aId, equipo: a.nombre, bloques: s.bloques.map((b) => ({ ...b })) }))
+    ? sesionesDeEquipo(sesiones, de).filter((s) => !yaTiene.has(`${s.nombre}|${JSON.stringify(s.bloques)}`)).map((s) => ({ ...s, id: nuevoId('s'), equipoId: aId, equipo: a.nombre, bloques: s.bloques.map((b) => ({ ...b })) }))
     : [];
   return { diario: { ...d, equipos: d.equipos.map((e) => (e.id === aId ? nuevo : e)) }, temporadas: ts, sesiones: [...sesiones, ...nuevasSesiones] };
 }
@@ -194,7 +195,8 @@ export function cerrarTemporada(t: Temporada, etiqueta: string): Temporada {
     etiqueta: etiqueta.trim().slice(0, 12) || etiquetaTemporada(t.inicio) || 'Anterior', inicio: t.inicio, fin: t.fin, eventos: t.eventos,
     ...(t.asistencia ? { asistencia: t.asistencia } : {}), ...(t.clasificacion ? { clasificacion: t.clasificacion } : {}),
   };
-  const salto = (f: string) => `${Number(f.slice(0, 4)) + 1}${f.slice(4)}`;
+  // Un 29 de febrero pasa al 28 del año siguiente (no existe el 29).
+  const salto = (f: string) => crearFecha(Number(f.slice(0, 4)) + 1, Number(f.slice(5, 7)), Number(f.slice(8))) ?? `${Number(f.slice(0, 4)) + 1}${f.slice(4, 8)}28`;
   const inicio = salto(t.inicio);
   const fin = salto(t.fin);
   return {

@@ -16,7 +16,7 @@ export function ConvocatoriaPartido({ e, jugadoras, poner }: { e: Evento; jugado
     if (quinteto.includes(id)) poner({ quinteto: quinteto.filter((x) => x !== id) });
     else if (quinteto.length < 5) poner({ quinteto: [...quinteto, id] });
   };
-  const aptos = jugadoras.filter((j) => !estaFuera(j)).map((j) => j.id);
+  const aptos = jugadoras.filter((j) => !estaFuera(j)).map((j) => j.id).slice(0, 20);
   return (
     <div className="conv-partido">
       <h4 className="sub">Convocatoria{conv ? ` · ${conv.length}` : ''}</h4>
