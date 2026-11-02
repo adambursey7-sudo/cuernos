@@ -1,0 +1,23 @@
+jornada;fecha;hora;rival;casa/fuera;pabellon
+J1;19/09/2026;18:30;Luther King;Fuera;Pabellón Colegio Luther King
+J2;26/09/2026;16:00;A.D. Los Toscones;Casa;Pabellón Alberto Delgado
+J3;03/10/2026;18:30;C.B. Valle Arautapala;Fuera;Pabellón IES Rafael Arozarena 1
+J4;10/10/2026;16:00;Magec Tías Lanzarote;Casa;Pabellón Municipal Esteban Afonso Rodríguez
+J5;17/10/2026;16:00;Suresanta Crusans;Fuera;Pabellón De La Unión 1
+J6;24/10/2026;18:30;La Laguna Toyota Adareva;Casa;Pabellón Municipal Esteban Afonso Rodríguez
+J7;31/10/2026;16:00;Poolmark Piscinas Amuley;Casa;Pabellón Alberto Delgado
+J8;07/11/2026;16:00;Telde Fritelec;Fuera;Pabellón IES Profesor Juan Pulido Castro
+J9;14/11/2026;18:30;EMB Adeje;Casa;Pabellón Municipal Esteban Afonso Rodríguez
+J10;28/11/2026;16:00;Clínica Oviedo y Miranda Ariagona Lanzarote;Fuera;Pabellón IES Blas Cabrera Felipe 1
+J11;12/12/2026;16:00;C.B. Islas Canarias;Casa;Pabellón Municipal Esteban Afonso Rodríguez
+J12;09/01/2027;18:30;Luther King;Casa;Pabellón Municipal Esteban Afonso Rodríguez
+J13;16/01/2027;16:00;A.D. Los Toscones;Fuera;Pabellón José Perdomo Umpiérrez 1
+J14;23/01/2027;18:30;C.B. Valle Arautapala;Casa;Pabellón Municipal Esteban Afonso Rodríguez
+J15;30/01/2027;16:00;Magec Tías Lanzarote;Fuera;Pabellón Municipal De Tías
+J16;06/02/2027;16:00;Suresanta Crusans;Casa;Pabellón Municipal Esteban Afonso Rodríguez
+J17;13/02/2027;18:30;La Laguna Toyota Adareva;Fuera;Complejo Deportivo Islas Canarias
+J18;20/02/2027;16:00;Poolmark Piscinas Amuley;Fuera;Pabellón IES Puerto Del Rosario
+J19;27/02/2027;16:00;Telde Fritelec;Casa;Pabellón Municipal Esteban Afonso Rodríguez
+J20;06/03/2027;18:30;EMB Adeje;Fuera;Pabellón Las Torres 1
+J21;13/03/2027;16:00;Clínica Oviedo y Miranda Ariagona Lanzarote;Casa;Pabellón Municipal Esteban Afonso Rodríguez
+J22;20/03/2027;16:00;C.B. Islas Canarias;Fuera;Pabellón Polideportivo La Paterna

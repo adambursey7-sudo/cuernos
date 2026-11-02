@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import icsCadete from '../../docs/calendarios/cadete-fem-liga-canaria-B-2026-27.ics?raw';
 import { cuadriculaMes, diaSemana, esFecha, lunesDe, sumarDias, sumarMeses } from './fechas';
 import { escribirIcs, leerIcs, leerLista, rivalConMiEquipo } from './ics';
 import {
@@ -265,5 +266,15 @@ describe('juntar una copia con la temporada actual', () => {
   it('un equipo que solo esta en la copia entra tal cual', () => {
     const otra = { ...base(), equipoId: 'e2' };
     expect(juntarTemporadas([base()], [otra]).map((t) => t.equipoId)).toEqual(['e1', 'e2']);
+  });
+});
+
+describe('calendario real de la Liga Canaria (cadete femenino B)', () => {
+  it('el .ics generado entra entero, con casa/fuera, hora y pabellon', () => {
+    const cs = leerIcs(icsCadete, 'SANTA ROSA DE LIMA FESD - JUVENTUD LAGUNA');
+    expect(cs).toHaveLength(22);
+    expect(cs.every((c) => c.tipo === 'partido' && !c.dudosa && c.lugar && c.minutos === 90)).toBe(true);
+    expect(cs.filter((c) => c.casa).length).toBe(11);
+    expect(cs[0]).toMatchObject({ fecha: '2026-09-19', hora: '18:30', casa: false, titulo: 'LUTHER KING' });
   });
 });
