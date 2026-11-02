@@ -112,7 +112,7 @@ export function App() {
     contenido = (
       <>
         <header className="cabecera-app"><Marca className="marca-cabecera" /><SelectorEquipo equipos={equipos} activo={equipoActivo(equipos, activoId)?.id ?? ''} elegir={elegirEquipo} /></header>
-        <Inicio empezarHoy={empezarHoy} verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} verRecursos={() => irABiblioteca('recursos')} />
+        <Inicio empezarHoy={empezarHoy} verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} irAEquipo={() => setPestana('equipo')} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} verRecursos={() => irABiblioteca('recursos')} />
       </>
     );
   else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} retocar={(e, c, r) => setEdicion({ base: e.sistema, ficha: fichaDeEjercicio(e, c, r) })} enlaceInicial={entrante?.enlace} key={vez} />;

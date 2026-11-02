@@ -946,3 +946,7 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible, [tabindex]:
 .herramientas button { min-height: 52px; }
 .tira-pasos { scrollbar-width: none; }
 .tira-pasos::-webkit-scrollbar { display: none; }
+
+/* Mejora total: avisos del directo (huecos en pista, faltas) */
+.vivo-avisos { display: grid; gap: 4px; padding: 10px 12px; border-radius: var(--r-sm); border: 1.5px solid var(--aviso); background: color-mix(in srgb, var(--aviso) 14%, transparent); }
+.vivo-avisos p { margin: 0; color: var(--aviso); font-weight: 800; font-size: 0.95rem; }

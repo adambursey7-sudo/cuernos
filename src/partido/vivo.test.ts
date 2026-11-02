@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { arrancar, boxScore, cambiar, cuartoSiguiente, deshacer, enBonus, faltasEquipo, limpiarVivo, mejores, nombreCuarto, nuevoVivo, parar, registrar, restante, segundosCuarto, terminar, type Partido } from './vivo';
+import { avisosDirecto, arrancar, boxScore, cambiar, cuartoSiguiente, deshacer, enBonus, faltasEquipo, limpiarVivo, mejores, nombreCuarto, nuevoVivo, parar, registrar, restante, segundosCuarto, terminar, type Partido } from './vivo';
 import { limpiarDirecto } from '../temporada/directo';
 import { limpiarTemporada, type Temporada } from '../temporada/temporada';
 
@@ -177,3 +177,17 @@ function arrancarPartido(): Partido {
   const p = inicio();
   return { ...p, vivo: arrancar(p.vivo, T0) };
 }
+
+describe('avisos del directo', () => {
+  const cinco = ['1', '2', '3', '4', '5'].map((n) => ({ id: 'j' + n, numero: n }));
+  it('sin problemas no avisa', () => {
+    expect(avisosDirecto(cinco, () => false, 3, 5)).toEqual([]);
+  });
+  it('avisa del que tiene las faltas y del hueco, por dorsal', () => {
+    const a = avisosDirecto(cinco, (id) => id === 'j4', 2, 5);
+    expect(a).toEqual(['El 4 ya tiene 5 faltas: hay que cambiarlo.', 'Faltan 1 en pista: mete a alguien del banquillo.']);
+  });
+  it('sin banquillo dice que se juega con menos', () => {
+    expect(avisosDirecto(cinco.slice(0, 4), () => false, 0, 5)[0]).toContain('jugáis con 4');
+  });
+});

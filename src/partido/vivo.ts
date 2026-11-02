@@ -262,3 +262,15 @@ export function limpiarVivo(x: unknown): Vivo | undefined {
     enPista, min, faltasEq, tm: num(v.tm, 0, TIEMPOS_MUERTOS, 0), cronologia, ...(v.fin ? { fin: true } : {}),
   };
 }
+
+/** Avisos del directo: huecos en pista y gente que ya no puede jugar. Habla por dorsal. */
+export function avisosDirecto(enPista: { id: string; numero?: string }[], fuera: (id: string) => boolean, banquilloLibre: number, tope: number): string[] {
+  const avisos: string[] = [];
+  for (const j of enPista) if (fuera(j.id)) avisos.push(`El ${j.numero || '?'} ya tiene ${tope} faltas: hay que cambiarlo.`);
+  const validos = enPista.filter((j) => !fuera(j.id)).length;
+  if (validos < EN_PISTA) {
+    const faltan = EN_PISTA - validos;
+    avisos.push(banquilloLibre > 0 ? `Faltan ${faltan} en pista: mete a alguien del banquillo.` : `No quedan jugadores para llenar la pista: jugáis con ${validos}.`);
+  }
+  return avisos;
+}

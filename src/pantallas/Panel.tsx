@@ -71,7 +71,7 @@ function Hero({ item, ahora, disp, verDia, abrirSesion }: { item: Item; ahora: D
   );
 }
 
-export function Panel({ verDia, abrirSesion }: { verDia: (fecha: string) => void; abrirSesion: (id: string) => void }) {
+export function Panel({ verDia, abrirSesion, irAEquipo }: { verDia: (fecha: string) => void; abrirSesion: (id: string) => void; irAEquipo: () => void }) {
   const [tele, setTele] = useState(false);
   // Cada 30 segundos se repinta todo el panel: la cuenta atrás avanza y, al pasar un partido, «lo siguiente» cambia solo.
   const [ahora, setAhora] = useState(() => new Date());
@@ -81,7 +81,7 @@ export function Panel({ verDia, abrirSesion }: { verDia: (fecha: string) => void
   }, []);
   const equipo = leerEquipoActivo();
   if (!equipo) {
-    return <Vacio dibujo="gente" titulo="Aún no tienes equipo" texto="Crea tu equipo en la pestaña Equipo y aquí verás el próximo partido, la racha y la asistencia." />;
+    return <Vacio dibujo="gente" titulo="Aún no tienes equipo" texto="Créalo en un minuto: nombre, categoría y plantilla. Aquí verás el próximo partido, la racha y la asistencia." accion="Crear mi equipo" alPulsar={irAEquipo} />;
   }
   const t = temporadaDe(leerTemporadas(), equipo.id);
   const hoyTexto = hoy();
