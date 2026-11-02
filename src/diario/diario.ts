@@ -228,14 +228,23 @@ export function juntarDiario(actual: Diario, copia: Diario): Diario {
       ...copia.jugadoras.map((j) => {
         const mia = actual.jugadoras.find((x) => x.id === j.id);
         if (!mia) return j;
-        return { ...j, ...(j.lesion || !mia.lesion ? {} : { lesion: mia.lesion }), ...(j.rol || !mia.rol ? {} : { rol: mia.rol }), ...(j.nacimiento || !mia.nacimiento ? {} : { nacimiento: mia.nacimiento }), ...(j.mano || !mia.mano ? {} : { mano: mia.mano }) };
+        const saludMia = mia.notas.filter((n) => esNotaDeSalud(n.texto) && !j.notas.some((x) => x.fecha === n.fecha && x.texto === n.texto));
+        return { ...j, ...(saludMia.length ? { notas: [...j.notas, ...saludMia] } : {}), ...(j.lesion || !mia.lesion ? {} : { lesion: mia.lesion }), ...(j.rol || !mia.rol ? {} : { rol: mia.rol }), ...(j.nacimiento || !mia.nacimiento ? {} : { nacimiento: mia.nacimiento }), ...(j.mano || !mia.mano ? {} : { mano: mia.mano }) };
       }),
     ],
   };
 }
 
-/** El diario sin datos de salud (para la copia de seguridad por defecto). */
-export const sinSalud = (d: Diario): Diario => ({ ...d, jugadoras: d.jugadoras.map(({ lesion: _quitada, ...resto }) => resto) });
+/** ¿La nota libre habla de salud (lesiones, médicos, alergias, medicación…)? Se detecta por palabras, sin acentos. */
+const SALUD = /les[io]|esguince|fractur|rotura|desgarr|tendin|lumbar|contractur|sobrecarg|rehabilit|fisio|medic|doctor|hospital|urgencias|enferm|alergi|asma|diabet|epilep|operaci|cirug|escayol|vendaje|conmoci|golpe en|baja por|molest|dolor|recuper|lesionad|baja|cardi|medicaci|tratamiento|diagnostic|covid|gripe|fiebre/;
+export const esNotaDeSalud = (texto: string): boolean =>
+  SALUD.test(texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''));
+
+/** El diario sin datos de salud (para la copia de seguridad por defecto): sin lesión y sin notas libres que hablen de salud. */
+export const sinSalud = (d: Diario): Diario => ({
+  ...d,
+  jugadoras: d.jugadoras.map(({ lesion: _quitada, ...resto }) => ({ ...resto, notas: resto.notas.filter((n) => !esNotaDeSalud(n.texto)) })),
+});
 
 /** Fuera de juego: lesionado de verdad (el que está en duda cuenta como disponible). */
 export const estaFuera = (j: Jugadora) => !!j.lesion && !j.lesion.duda;

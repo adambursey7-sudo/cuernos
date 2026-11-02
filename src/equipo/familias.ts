@@ -83,8 +83,8 @@ ${staff.length ? `<h2>Contacto</h2><table>${filas(staff.map((s) => [s.nombre || 
 </html>`;
 }
 
-/** Informe de fin de temporada del equipo, en texto: resultados, objetivos y asistencia. Se puede copiar o guardar. */
-export function informeTemporada(equipo: Equipo, t: Temporada, jugadoras: Jugadora[], conNombres = true): string {
+/** Informe de fin de temporada del equipo, en texto: resultados, objetivos y asistencia. Por defecto solo con dorsales (son menores); los nombres hay que pedirlos. */
+export function informeTemporada(equipo: Equipo, t: Temporada, jugadoras: Jugadora[], conNombres = false): string {
   const jugados = t.eventos.filter((e) => e.tipo === 'partido' && e.resultado);
   const pf = jugados.reduce((n, e) => n + e.resultado!.a, 0);
   const pc = jugados.reduce((n, e) => n + e.resultado!.c, 0);
