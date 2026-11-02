@@ -225,8 +225,19 @@ describe('juntar una copia con la temporada actual', () => {
     expect(t.eventos.map((e) => e.id).sort()).toEqual(['a', 'b']);
     expect(t.eventos.find((e) => e.id === 'a')?.titulo).toBe('Rival viejo');
     expect(t.asistencia?.b).toEqual(['j1']);
-    expect(t.asistencia?.a).toEqual(['j1']);
+    expect(t.asistencia?.a).toEqual(['j1', 'j2']);
     expect(t.disponibilidad?.b).toEqual({ j1: 'si' });
+  });
+  it('las respuestas de otra jugadora al mismo partido no se pierden', () => {
+    const copia = { ...base(), disponibilidad: { x: { j1: 'si' as const } } };
+    const actual = { ...base(), disponibilidad: { x: { j2: 'no' as const } } };
+    expect(juntarTemporadas([actual], [copia])[0].disponibilidad?.x).toEqual({ j2: 'no', j1: 'si' });
+  });
+  it('si una temporada ya se cerro y la otra no, gana la copia sin duplicar partidos', () => {
+    const cerrada = { ...base(), eventos: [], anteriores: [{ etiqueta: '25-26', inicio: '2025-09-01', fin: '2026-06-30', eventos: [{ ...nuevoEvento('2025-10-03', 'partido'), id: 'a' }] }] };
+    const sinCerrar = { ...base(), eventos: [{ ...nuevoEvento('2025-10-03', 'partido'), id: 'a' }] };
+    expect(juntarTemporadas([sinCerrar], [cerrada])[0].eventos).toEqual([]);
+    expect(juntarTemporadas([cerrada], [sinCerrar])[0].eventos.map((e) => e.id)).toEqual(['a']);
   });
   it('un equipo que solo esta en la copia entra tal cual', () => {
     const otra = { ...base(), equipoId: 'e2' };
