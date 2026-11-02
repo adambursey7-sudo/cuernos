@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { armarCopia, juntar, juntarPorId, leerCopia } from './copia';
+import { armarCopia, juntar, juntarPorId, leerCopia, recortarAEquipo } from './copia';
 import { nuevoBorrador, mover } from './editor/editar';
 import { nuevaSesion, juntarSesiones } from './sesiones/sesiones';
 import { ESPACIOS_BASE } from './sistemas/espacios';
@@ -94,5 +94,23 @@ describe('juntarPorId', () => {
   it('conserva lo que solo hay en el movil y la copia gana si coincide', () => {
     const r = juntarPorId([{ id: 'a', n: 1 }, { id: 'b', n: 2 }], [{ id: 'a', n: 9 }]);
     expect(r).toEqual([{ id: 'b', n: 2 }, { id: 'a', n: 9 }]);
+  });
+});
+
+describe('nada sensible sale en una copia', () => {
+  const eq = nuevoEquipo('Cadete');
+  const diario = { equipos: [eq], jugadoras: [nuevaJugadora(eq.id, { nombre: 'Ejemplo', numero: '7', lesion: { desde: '2026-10-01', nota: 'CANARIO-ROTURA-LIGAMENTO' } })] };
+  it('la copia normal no lleva lesiones, ni al leerla de vuelta', () => {
+    const texto = armarCopia([], PALETAS[0], diario);
+    expect(texto).not.toContain('CANARIO-ROTURA-LIGAMENTO');
+    expect(leerCopia(texto).diario?.jugadoras[0].lesion).toBeUndefined();
+  });
+  it('la copia de un solo equipo tampoco', () => {
+    const solo = recortarAEquipo(eq.id, { diario, temporadas: [], sesiones: [], reflexiones: [] })!;
+    const texto = armarCopia([], PALETAS[0], solo.diario, solo.temporadas, [], [], false, undefined, solo.reflexiones, { sesiones: solo.sesiones });
+    expect(texto).not.toContain('CANARIO-ROTURA-LIGAMENTO');
+  });
+  it('solo con el permiso expreso entra la lesion', () => {
+    expect(armarCopia([], PALETAS[0], diario, undefined, undefined, undefined, true)).toContain('CANARIO-ROTURA-LIGAMENTO');
   });
 });
