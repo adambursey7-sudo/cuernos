@@ -287,10 +287,39 @@ export const temporadaDe = (l: Temporada[], equipoId: string) => l.find((t) => t
 export const guardarTemporada = (l: Temporada[], t: Temporada): Temporada[] =>
   l.some((x) => x.equipoId === t.equipoId) ? l.map((x) => (x.equipoId === t.equipoId ? t : x)) : [...l, t];
 
-/** Junta lo de una copia con lo actual: si es el mismo equipo, gana la copia. */
+const porId = <T extends { id: string }>(actual: T[], copia: T[]): T[] => {
+  const ids = new Set(copia.map((x) => x.id));
+  return [...actual.filter((x) => !ids.has(x.id)), ...copia];
+};
+
+const etiquetasCerradas = (t: Temporada) => (t.anteriores ?? []).map((x) => x.etiqueta).sort().join('|');
+const unirListas = (a: string[] = [], b: string[] = []) => [...new Set([...a, ...b])];
+
+/**
+ * Junta lo de una copia con lo actual. Si es la misma temporada (mismas fechas y mismas temporadas cerradas), el plan es el de la copia,
+ * pero los partidos, la asistencia y las respuestas que solo hay en este móvil se conservan: una copia vieja no los borra.
+ * Si una de las dos ya se cerró y la otra no, no se mezclan (se duplicarían los partidos del año anterior) y gana la copia.
+ */
 export const juntarTemporadas = (actual: Temporada[], copia: Temporada[]): Temporada[] => {
   const ids = new Set(copia.map((t) => t.equipoId));
-  return [...actual.filter((t) => !ids.has(t.equipoId)), ...copia];
+  return [
+    ...actual.filter((t) => !ids.has(t.equipoId)),
+    ...copia.map((c) => {
+      const a = actual.find((t) => t.equipoId === c.equipoId);
+      if (!a || a.inicio !== c.inicio || a.fin !== c.fin || etiquetasCerradas(a) !== etiquetasCerradas(c)) return c;
+      const claves = <T,>(x?: Record<string, T>, y?: Record<string, T>) => [...new Set([...Object.keys(x ?? {}), ...Object.keys(y ?? {})])];
+      const disponibilidad = Object.fromEntries(claves(a.disponibilidad, c.disponibilidad).map((k) => [k, { ...a.disponibilidad?.[k], ...c.disponibilidad?.[k] }]));
+      const asistencia = Object.fromEntries(claves(a.asistencia, c.asistencia).map((k) => [k, unirListas(a.asistencia?.[k], c.asistencia?.[k])]));
+      return {
+        ...c,
+        eventos: porId(a.eventos, c.eventos),
+        excepciones: { ...a.excepciones, ...c.excepciones },
+        asistencia,
+        ...(Object.keys(disponibilidad).length ? { disponibilidad } : {}),
+        ...(c.clasificacion ?? a.clasificacion ? { clasificacion: c.clasificacion ?? a.clasificacion } : {}),
+      };
+    }),
+  ];
 };
 
 /** Temporada sin las de equipos que ya no existen. */

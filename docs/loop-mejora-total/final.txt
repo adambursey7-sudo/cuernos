@@ -1,0 +1,22 @@
+MEJORA TOTAL DE HORNS - RESUMEN (2/11)
+Rama loop/mejora-total en su propia carpeta. Nada unido a main, nada publicado, sin push.
+
+HECHO
+- Una copia vieja ya no borra partidos, asistencia ni respuestas de la temporada, ni los sitios de la cancha (con pruebas).
+- Botones de 38-40 px a 44 px.
+- Ninguna copia lleva lesiones salvo que se pida (pruebas nuevas, tambien la copia de un equipo).
+- Faltas de equipo segun FIBA: bonus con cuatro, prorroga suma al cuarto cuarto.
+- Directo: avisos por dorsal (jugador con las faltas maximas, huecos en pista).
+- Primer uso: boton "Crear mi equipo".
+- Version nueva: barra "Actualizar" en vez de recarga silenciosa; arranca sin red.
+- Los 20 sistemas nuevos revisados: 8 con errores, parche listo (correcciones-sistemas.patch).
+
+NO HECHO / PENDIENTE
+- Revision de seguridad completa (/security-review): no se pudo lanzar porque la sesion no esta dentro de un repositorio. Hay que lanzarla desde la carpeta de la copia.
+- Parte de salud con PIN, claves de Gemini y mensajes a familias de la rama herramienta diaria: no revisados (solo existen alli).
+- Tiempos muertos por mitades; formatos por categoria; atacantes en las defensas; atajo de ejercicio de hoy.
+- Probar en el iPhone la barra de version y el directo con avisos.
+
+DECISIONES PARA ADAM
+- Unir "herramienta diaria" a main (sin conflictos previstos) y aplicar el parche de sistemas.
+- Unir esta mejora total a main y publicar.

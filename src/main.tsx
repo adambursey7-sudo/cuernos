@@ -7,6 +7,7 @@ import './estilos.css';
 import { aplicarColores, leerColores } from './temas';
 import { aplicarLectura, leerLectura } from './preferencias';
 import { registerSW } from 'virtual:pwa-register';
+import { avisarVersionNueva } from './version';
 import { App } from './App';
 import { ConIntro } from './Intro';
 import { ConAcceso } from './Acceso';
@@ -14,9 +15,10 @@ import { recogerEnlaceDeLaDireccion } from './enlaceEntrante';
 import { leerEnlace } from './compartir/enlace';
 import { Visor } from './compartir/Visor';
 
-// La app instalada se actualiza sola: busca versión nueva al abrirla y al volver a ella, y se recarga al tenerla.
-registerSW({
+// La app instalada busca versión nueva al abrirla y al volver a ella; al tenerla lista avisa (barra «Actualizar») en vez de recargarse sola.
+const actualizarSW = registerSW({
   immediate: true,
+  onNeedRefresh() { avisarVersionNueva(() => void actualizarSW(true)); },
   onRegisteredSW(_url, registro) {
     if (!registro) return;
     const buscar = () => void registro.update().catch(() => {});

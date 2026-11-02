@@ -1,0 +1,17 @@
+﻿ESTADO REAL (2/11, al empezar)
+
+YA EN MAIN
+- Equipo completo (asistente, varios equipos, familias, temporada nueva)
+- Senior masculino (normas, jugada desde video)
+- Pro 2 (montador, directo y menu mas grandes)
+
+SIN UNIR A MAIN
+- Herramienta diaria (6 commits): 20 sistemas nuevos de biblioteca, Bandeja de entrada,
+  salud y lesiones con PIN opcional, viajes y estadistica avanzada, conexiones Jarvis/Gemini,
+  mensajes a familias y exportar CSV/PDF/ics. Vive en su propia carpeta de trabajo.
+  Consecuencia: los 20 sistemas, el parte de salud y las exportaciones solo existen alli.
+
+BASE (main, 2/11 08:20)
+- Pruebas: 418 pasan (49 archivos). Tipos: limpio. Build: ok (616 ms).
+- Primera carga: index 145 kB comprimidos; pdf 129 kB (aparte); Equipo 33 kB.
+- Precache del sin conexion: 32 archivos, 1337 KiB.

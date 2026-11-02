@@ -9,9 +9,9 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt', // la versión nueva se descarga y se avisa: se aplica cuando el entrenador pulsa «Actualizar»
       injectRegister: false, // lo registra src/main.tsx, que busca versión nueva al volver a la app
-      workbox: { skipWaiting: true, clientsClaim: true, globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff,woff2}'] },
+      workbox: { clientsClaim: true, globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff,woff2}'] },
       manifest: {
         name: 'Horns',
         short_name: 'Horns',

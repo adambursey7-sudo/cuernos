@@ -86,8 +86,9 @@ function sesionDeHoy(): string | undefined {
   return agendaDia(t, hoy()).find((i) => !i.cancelado && i.sesionId && sesiones.some((s) => s.id === i.sesionId && s.bloques.length > 0))?.sesionId;
 }
 
-export function Inicio({ verRecursos, abrir, abrirEjercicio, crear, verTodas, verEjercicios, verDia, abrirSesion, verSesiones, empezarHoy }: {
+export function Inicio({ verRecursos, abrir, abrirEjercicio, crear, verTodas, verEjercicios, verDia, abrirSesion, verSesiones, irAEquipo, empezarHoy }: {
   verSesiones: () => void;
+  irAEquipo: () => void;
   verRecursos: () => void;
   empezarHoy: (id: string, audio: ReturnType<typeof crearAudio>) => void;
   verDia: (fecha: string) => void;
@@ -117,7 +118,7 @@ export function Inicio({ verRecursos, abrir, abrirEjercicio, crear, verTodas, ve
         return dias === null ? null : <p className="aviso-copia">{Number.isFinite(dias) ? `Hace ${dias} días que no guardas copia.` : 'Todavía no has guardado copia.'} Hazla en la pestaña Más.</p>;
       })()}
 
-      <Panel verDia={verDia} abrirSesion={abrirSesion} />
+      <Panel verDia={verDia} abrirSesion={abrirSesion} irAEquipo={irAEquipo} />
 
       <div className="atajos">
         <button onClick={() => { const hoyId = sesionDeHoy(); if (hoyId) empezarHoy(hoyId, crearAudio()); else verSesiones(); }}><span className="burbuja-atajo"><IconoCronometro /></span>Cronómetro</button>

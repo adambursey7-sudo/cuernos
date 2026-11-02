@@ -10,7 +10,7 @@ import { tocar } from '../ui/tacto';
 import { MapaTiros, PanelMapa } from './MapaTiros';
 import { esTriple, tirosDeVivo } from './mapa';
 import {
-  CATEGORIAS, TEXTO, TIEMPOS_MUERTOS, arrancar, boxScore, cambiar, cuartoSiguiente, deshacer, enBonus, estaFuera, faltasEquipo, mejores, minutos, nombreCuarto, nuevoVivo, parar,
+  CATEGORIAS, TEXTO, TIEMPOS_MUERTOS, arrancar, boxScore, cambiar, avisosDirecto, cuartoSiguiente, deshacer, enBonus, estaFuera, faltasEquipo, mejores, minutos, nombreCuarto, nuevoVivo, parar,
   reabrir, registrar, reloj, restante, segundosCuarto, terminar, type Jugada, type Partido, type Tipo,
 } from './vivo';
 
@@ -126,6 +126,7 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
   const fin = !!v.fin;
   const enPista = v.enPista.map((id) => nombreDe(roster, id)).filter((j): j is Jugadora => !!j);
   const banquillo = roster.filter((j) => !v.enPista.includes(j.id)).sort((x, y) => (orden.get(x.id) ?? 0) - (orden.get(y.id) ?? 0));
+  const avisos = avisosDirecto(enPista, (id) => estaFuera(p.directo, id, tope), banquillo.filter((j) => !estaFuera(p.directo, j.id, tope)).length, tope);
   const seg = segundosCuarto(v, ahora);
   const ultima = v.cronologia[v.cronologia.length - 1];
   const linea = (id: string) => p.directo[id] ?? { p: 0, f: 0 };
@@ -242,6 +243,8 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
         <div className="eq rival"><span>Rival</span><b aria-label={`Rival ${p.rival}`}>{p.rival}</b></div>
         <span className="mini-pad fila-rival"><em>Puntos del rival</em>{[1, 2, 3].map((n) => <button key={n} disabled={fin} onClick={() => hacer({ tipo: 'rival', v: n })} aria-label={`Rival suma ${n}`}>+{n}</button>)}</span>
       </section>
+
+      {!fin && avisos.length > 0 && <div className="vivo-avisos" role="alert">{avisos.map((t) => <p key={t}>{t}</p>)}</div>}
 
       <section className="vivo-estado" aria-label="Faltas y tiempos muertos">
         <div><span className="rotulo">Faltas {nombreCuarto(v.cuarto)}</span>

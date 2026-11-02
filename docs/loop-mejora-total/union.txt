@@ -1,0 +1,4 @@
+﻿UNION (prevista, NO hecha)
+Herramienta diaria -> main: 41 archivos, +3039 / -52.
+Prueba de union en seco (merge-tree): SIN conflictos de texto.
+Pendiente de decision de Adam. No se ha unido nada.

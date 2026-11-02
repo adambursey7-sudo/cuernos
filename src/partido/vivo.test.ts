@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { arrancar, boxScore, cambiar, cuartoSiguiente, deshacer, enBonus, faltasEquipo, limpiarVivo, mejores, nombreCuarto, nuevoVivo, parar, registrar, restante, segundosCuarto, terminar, type Partido } from './vivo';
+import { avisosDirecto, arrancar, boxScore, cambiar, cuartoSiguiente, deshacer, enBonus, faltasEquipo, limpiarVivo, mejores, nombreCuarto, nuevoVivo, parar, registrar, restante, segundosCuarto, terminar, type Partido } from './vivo';
 import { limpiarDirecto } from '../temporada/directo';
 import { limpiarTemporada, type Temporada } from '../temporada/temporada';
 
@@ -45,16 +45,32 @@ describe('apuntar y deshacer', () => {
     expect(deshacer(p, T0)).toEqual(p);
   });
 
-  it('las faltas de equipo se cuentan por cuarto y a la quinta hay bonus', () => {
+  it('las faltas de equipo se cuentan por cuarto y con cuatro ya hay bonus (la quinta da tiros libres)', () => {
     let p = inicio();
-    for (let i = 0; i < 5; i++) p = registrar(p, { tipo: 'fal', j: 'abcde'[i] }, T0);
+    for (let i = 0; i < 3; i++) p = registrar(p, { tipo: 'fal', j: 'abcde'[i] }, T0);
+    expect(enBonus(p.vivo)).toBe(false);
+    p = registrar(p, { tipo: 'fal', j: 'd' }, T0);
     expect(enBonus(p.vivo)).toBe(true);
+    p = registrar(p, { tipo: 'fal', j: 'e' }, T0);
     p = cuartoSiguiente(p, T0);
     expect(faltasEquipo(p.vivo)).toBe(0);
     expect(enBonus(p.vivo)).toBe(false);
     p = deshacer(p, T0);
     expect(p.vivo.cuarto).toBe(1);
     expect(faltasEquipo(p.vivo)).toBe(5);
+  });
+
+  it('las faltas de una prórroga cuentan como del cuarto cuarto', () => {
+    let p = inicio();
+    for (let c = 1; c < 4; c++) p = cuartoSiguiente(p, T0);
+    p = registrar(p, { tipo: 'fal', j: 'a' }, T0);
+    p = registrar(p, { tipo: 'fal', j: 'b' }, T0);
+    p = cuartoSiguiente(p, T0);
+    expect(p.vivo.cuarto).toBe(5);
+    expect(faltasEquipo(p.vivo)).toBe(2);
+    p = registrar(p, { tipo: 'fal', j: 'c' }, T0);
+    p = registrar(p, { tipo: 'fal', j: 'd' }, T0);
+    expect(enBonus(p.vivo)).toBe(true);
   });
 
   it('tras terminar no se puede apuntar ni deshacer', () => {
@@ -161,3 +177,17 @@ function arrancarPartido(): Partido {
   const p = inicio();
   return { ...p, vivo: arrancar(p.vivo, T0) };
 }
+
+describe('avisos del directo', () => {
+  const cinco = ['1', '2', '3', '4', '5'].map((n) => ({ id: 'j' + n, numero: n }));
+  it('sin problemas no avisa', () => {
+    expect(avisosDirecto(cinco, () => false, 3, 5)).toEqual([]);
+  });
+  it('avisa del que tiene las faltas y del hueco, por dorsal', () => {
+    const a = avisosDirecto(cinco, (id) => id === 'j4', 2, 5);
+    expect(a).toEqual(['El 4 ya tiene 5 faltas: hay que cambiarlo.', 'Faltan 1 en pista: mete a alguien del banquillo.']);
+  });
+  it('sin banquillo dice que se juega con menos', () => {
+    expect(avisosDirecto(cinco.slice(0, 4), () => false, 0, 5)[0]).toContain('jugáis con 4');
+  });
+});

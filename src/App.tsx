@@ -1,4 +1,5 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { actualizarAhora, hayVersionNueva, suscribirVersion } from './version';
 import { Marca } from './Logo';
 import { buscarEjercicio } from './ejercicios/ejercicios';
 import { IconoBiblioteca, IconoEquipo, IconoHoy, IconoMas, IconoSesiones } from './Iconos';
@@ -43,6 +44,18 @@ const PESTANAS: { id: Pestana; nombre: string; icono: () => React.JSX.Element }[
 
 /** En el editor: `null` = no se edita; `{}` = jugada nueva; `{ base }` = editar una propia o duplicar una del libro; con `ficha`, al guardar se crea también esa ficha enlazada (ejercicio de Claude retocado). */
 type Edicion = { base?: SistemaDatos; ficha?: Ficha } | null;
+
+/** Barra «hay versión nueva»: la app no se recarga sola, así no se pierde lo que se está haciendo. */
+function AvisoVersion() {
+  const nueva = useSyncExternalStore(suscribirVersion, hayVersionNueva);
+  if (!nueva) return null;
+  return (
+    <p className="aviso-version" role="status">
+      Hay una versión nueva de Horns.
+      <button onClick={actualizarAhora}>Actualizar</button>
+    </p>
+  );
+}
 
 export function App() {
   // Un enlace que llega de fuera (atajo del iPhone) abre Recursos con ese enlace puesto, también si la app ya estaba abierta.
@@ -118,7 +131,7 @@ export function App() {
     contenido = (
       <>
         <header className="cabecera-app"><Marca className="marca-cabecera" /><SelectorEquipo equipos={equipos} activo={equipoActivo(equipos, activoId)?.id ?? ''} elegir={elegirEquipo} /></header>
-        <Inicio empezarHoy={empezarHoy} verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} verRecursos={() => irABiblioteca('recursos')} />
+        <Inicio empezarHoy={empezarHoy} verDia={verDia} abrirSesion={abrirSesion} verSesiones={() => { setSesionId(null); setPestana('sesiones'); }} irAEquipo={() => setPestana('equipo')} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} verTodas={() => irABiblioteca('jugadas')} verEjercicios={() => irABiblioteca('ejercicios')} verRecursos={() => irABiblioteca('recursos')} />
       </>
     );
   else contenido = <Biblioteca rama={rama} cambiar={setRama} abrir={abrir} abrirEjercicio={setEjercicioId} crear={() => setEdicion({})} retocar={(e, c, r) => setEdicion({ base: e.sistema, ficha: fichaDeEjercicio(e, c, r) })} enlaceInicial={entrante?.enlace} key={vez} />;
@@ -172,6 +185,7 @@ export function App() {
 
   return (
     <div className="app" onTouchStart={tocar} onTouchEnd={soltar}>
+      <AvisoVersion />
       {!enLinea && <p className="sin-red" role="status">Sin conexión: todo sigue funcionando, menos abrir enlaces.</p>}
       <main key={pestana === 'equipo' ? pestana : `${pestana}-${activoId}`} className="entra"><Limite><Suspense fallback={<Esqueleto />}>{contenido}</Suspense></Limite></main>
       {partidoId && <Limite><Suspense fallback={<Esqueleto />}><PartidoVivo key={partidoId} eventoId={partidoId} salir={() => setPartidoId(null)} /></Suspense></Limite>}

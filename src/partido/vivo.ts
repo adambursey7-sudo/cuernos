@@ -173,9 +173,11 @@ export const reabrir = (p: Partido): Partido => {
   return { ...p, vivo: v };
 };
 
-export const faltasEquipo = (v: Vivo, cuarto = v.cuarto) => v.faltasEq[cuarto] ?? 0;
-/** A partir de cinco faltas de equipo en un cuarto, cada falta rival da tiros libres. */
-export const enBonus = (v: Vivo) => faltasEquipo(v) >= 5;
+/** Faltas de equipo del cuarto. En FIBA, las de una prórroga cuentan como del cuarto cuarto (Reglas Oficiales de Baloncesto FIBA, art. 41). */
+export const faltasEquipo = (v: Vivo, cuarto = v.cuarto) =>
+  cuarto < 4 ? v.faltasEq[cuarto] ?? 0 : Object.entries(v.faltasEq).reduce((n, [c, f]) => (Number(c) >= 4 && Number(c) <= cuarto ? n + f : n), 0);
+/** Con cuatro faltas de equipo en un cuarto el equipo ya está en bonus: desde la quinta, cada falta da dos tiros libres (FIBA, art. 41). */
+export const enBonus = (v: Vivo) => faltasEquipo(v) >= 4;
 
 export const estaFuera = (d: Directo, id: string, tope = FALTAS_FUERA) => lineaDe(d, id).f >= tope;
 
@@ -259,4 +261,16 @@ export function limpiarVivo(x: unknown): Vivo | undefined {
     ...(Number.isFinite(v.corre) && (v.corre as number) > 0 ? { corre: v.corre } : {}),
     enPista, min, faltasEq, tm: num(v.tm, 0, TIEMPOS_MUERTOS, 0), cronologia, ...(v.fin ? { fin: true } : {}),
   };
+}
+
+/** Avisos del directo: huecos en pista y gente que ya no puede jugar. Habla por dorsal. */
+export function avisosDirecto(enPista: { id: string; numero?: string }[], fuera: (id: string) => boolean, banquilloLibre: number, tope: number): string[] {
+  const avisos: string[] = [];
+  for (const j of enPista) if (fuera(j.id)) avisos.push(`El ${j.numero || '?'} ya tiene ${tope} faltas: hay que cambiarlo.`);
+  const validos = enPista.filter((j) => !fuera(j.id)).length;
+  if (validos < EN_PISTA) {
+    const faltan = EN_PISTA - validos;
+    avisos.push(banquilloLibre > 0 ? `Faltan ${faltan} en pista: mete a alguien del banquillo.` : `No quedan jugadores para llenar la pista: jugáis con ${validos}.`);
+  }
+  return avisos;
 }

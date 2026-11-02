@@ -1,0 +1,17 @@
+FALLOS ENCONTRADOS (tramo de errores, a 390 px)
+
+GRAVES (arreglados, con prueba que antes fallaba)
+1. Cargar una copia vieja borraba los partidos, la asistencia y las respuestas de "voy / no voy" hechos despues de la copia (se sustituia la temporada entera del equipo). Ahora se conserva lo que solo esta en este movil y la copia gana en lo que coincide.
+2. Cargar una copia sustituia todos los sitios de la cancha. Ahora se juntan.
+
+MEDIOS (arreglados)
+3. Los botones tipo chip (filtros, subpestanas, "Compartir el resumen", "Jugada desde un video", selector de equipo, pasos, marcador, casillas de rotacion, teclado del directo) medían 38-40 px. Ahora 44 px.
+
+COMPROBADO Y BIEN
+- Con datos corruptos en el movil (JSON roto, null, listas donde iba un objeto) la app abre y las 5 pestanas se pintan, sin errores.
+- Sin desbordes laterales ni textos cortados a 390 px en las 5 pestanas.
+- Al importar, si falla un trozo se dice cual entro y cual no.
+
+PENDIENTE / MEJORABLE
+- La app se recarga sola al haber version nueva, sin avisar (ver tramo de sin conexion).
+- Marcador del directo y Sesiones: revisar a mano con el partido en marcha (tramo de uso diario).
