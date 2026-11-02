@@ -1,0 +1,114 @@
+diff --git a/src/sistemas/datosBiblioteca.ts b/src/sistemas/datosBiblioteca.ts
+index af83a7c..7a7cd90 100644
+--- a/src/sistemas/datosBiblioteca.ts
++++ b/src/sistemas/datosBiblioteca.ts
+@@ -23,13 +23,13 @@ export const SISTEMAS_BIBLIOTECA: Sistema[] = [
+     objetivo: 'Crear una ventaja de dos contra uno junto al balón con el espacio del lado débil abierto.',
+     cuando: 'Contra una defensa individual con un interior móvil o que no sale bien al bloqueo.',
+     variantes: ['Mandar al base hacia la línea de fondo (bloqueo hacia dentro).', 'El bloqueador se abre a tirar en vez de rodar.', 'Pase de vuelta a la esquina si ayudan desde el lado débil.'],
+-    inicio: { '1': [115, 85], '2': [20, 70], '3': [135, 28], '4': [40, 35], '5': [88, 95] },
++    inicio: { '1': [115, 85], '2': [20, 70], '3': [143, 20], '4': [12, 40], '5': [88, 95] },
+     balon: '1',
+     pasos: [
+       { texto: '5 sube a poner el bloqueo a 1 en el ala, de cara a la línea de fondo.', movimientos: [{ tipo: 'bloqueo', jugador: '5', a: [106, 82] }] },
+       { texto: '1 ataca el bloqueo hacia el centro y mira la ayuda.', movimientos: [{ tipo: 'bote', jugador: '1', a: [90, 62], por: [102, 86] }] },
+       { texto: '5 rueda hacia el aro y recibe si le ayudan a 1.', movimientos: [{ tipo: 'corte', jugador: '5', a: [92, 28] }, { tipo: 'pase', de: '1', a: '5' }] },
+-      { texto: '3 y 4 se mueven según ayude su defensor: 3 queda en la esquina; 4 sube al ala por si hay devolución.', movimientos: [{ tipo: 'corte', jugador: '4', a: [50, 68] }] },
++      { texto: '3 y 4 se mueven según ayude su defensor: 3 queda en la esquina; 4 sube al ala por si hay devolución.', movimientos: [{ tipo: 'corte', jugador: '4', a: [30, 70] }] },
+     ],
+     lecturas: {
+       cadete: 'Elegir entre entrar, pasar al que rueda o devolver a un tirador abierto.',
+@@ -155,11 +155,11 @@ export const SISTEMAS_BIBLIOTECA: Sistema[] = [
+     objetivo: 'Dar espacio al pívot y al bote, con reglas simples que permitan jugar sin jugada cantada.',
+     cuando: 'Contra defensa individual con un interior que domine el poste.',
+     variantes: ['Subir al pívot al codo para un bloqueo.', 'Cuatro fuera con bloqueo de fondo.', 'Pivote que sale a recibir fuera y los demás cortan.'],
+-    inicio: { '1': [75, 105], '2': [22, 72], '3': [128, 72], '4': [112, 38], '5': [66, 28] },
++    inicio: { '1': [75, 105], '2': [22, 72], '3': [128, 72], '4': [143, 24], '5': [66, 28] },
+     balon: '1',
+     pasos: [
+       { texto: '1 pasa a 2 y corta hacia el aro.', movimientos: [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '1', a: [78, 30] }] },
+-      { texto: '2 busca a 5 en el poste; los demás se abren para dar espacio.', movimientos: [{ tipo: 'pase', de: '2', a: '5' }, { tipo: 'corte', jugador: '4', a: [118, 52] }] },
++      { texto: '2 busca a 5 en el poste; los demás se abren para dar espacio.', movimientos: [{ tipo: 'pase', de: '2', a: '5' }, { tipo: 'corte', jugador: '4', a: [132, 62] }] },
+       { texto: '1 sale al otro lado y recibe de 5 si ayudan.', movimientos: [{ tipo: 'corte', jugador: '1', a: [125, 70], por: [95, 30] }] },
+     ],
+     lecturas: {
+@@ -186,7 +186,7 @@ export const SISTEMAS_BIBLIOTECA: Sistema[] = [
+     objetivo: 'Mover la zona con el pase y atacar los huecos con el pivote de zona y el tiro exterior.',
+     cuando: 'Cuando el rival defiende en zona 2-3 y deja libres las esquinas y el tiro del ala.',
+     variantes: ['Cambiar el pívot del centro por un cortador.', 'Pase a la esquina y reubicación.', 'Doble bloqueo a la zona.'],
+-    inicio: { '1': [75, 105], '2': [28, 78], '3': [122, 78], '4': [75, 52], '5': [38, 22] },
++    inicio: { '1': [75, 105], '2': [28, 78], '3': [122, 78], '4': [75, 52], '5': [6, 22] },
+     balon: '1',
+     pasos: [
+       { texto: '1 pasa a 2 en el ala; 4 se abre en el hueco entre los dos defensores de arriba.', movimientos: [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'corte', jugador: '4', a: [62, 60] }] },
+@@ -251,12 +251,12 @@ export const SISTEMAS_BIBLIOTECA: Sistema[] = [
+     objetivo: 'Conseguir una canasta fácil tras un saque de fondo bajo el aro en menos de 5 segundos.',
+     cuando: 'Tras falta o violación del rival cuando el saque es de fondo bajo el aro propio.',
+     variantes: ['Giro de la caja para sacar un tirador al ala.', 'Bloqueo ciego al pívot.', 'Pase a la esquina y devolución.'],
+-    inicio: { '1': [75, 4], '2': [50, 22], '3': [100, 22], '4': [50, 40], '5': [100, 40] },
++    inicio: { '1': [75, 4], '2': [50, 22], '3': [100, 22], '4': [50, 56], '5': [100, 56] },
+     balon: '1',
+     pasos: [
+       { texto: '2 y 3 bajan al bloque; 4 y 5 en los codos. 1 saca.', movimientos: [] },
+-      { texto: '4 baja a bloquear a 2; 2 sale por el bloqueo hacia el ala.', movimientos: [{ tipo: 'bloqueo', jugador: '4', a: [56, 24] }, { tipo: 'corte', jugador: '2', a: [30, 60], por: [62, 30] }] },
+-      { texto: '1 pasa a 2 para tirar. Si no está libre, 3 corta por detrás del bloqueo de 5.', movimientos: [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'bloqueo', jugador: '5', a: [94, 24] }, { tipo: 'corte', jugador: '3', a: [80, 14], por: [94, 24] }] },
++      { texto: '4 baja a bloquear a 2; 2 sale por el bloqueo hacia el ala.', movimientos: [{ tipo: 'bloqueo', jugador: '4', a: [56, 26] }, { tipo: 'corte', jugador: '2', a: [30, 60], por: [62, 30] }] },
++      { texto: '1 pasa a 2 para tirar. Si no está libre, 3 corta por detrás del bloqueo de 5.', movimientos: [{ tipo: 'pase', de: '1', a: '2' }, { tipo: 'bloqueo', jugador: '5', a: [94, 26] }, { tipo: 'corte', jugador: '3', a: [80, 14], por: [94, 26] }] },
+     ],
+     lecturas: {
+       infantil: 'Hacer el movimiento rápido y pasar al primero que esté libre.',
+@@ -313,7 +313,7 @@ export const SISTEMAS_BIBLIOTECA: Sistema[] = [
+     pasos: [
+       { texto: '1 saca de banda; 4 baja a poner un bloqueo ciego a 2.', movimientos: [{ tipo: 'bloqueo', jugador: '4', a: [56, 74] }] },
+       { texto: '2 corta por el bloqueo y recibe para tirar.', movimientos: [{ tipo: 'corte', jugador: '2', a: [66, 85], por: [58, 76] }, { tipo: 'pase', de: '1', a: '2' }] },
+-      { texto: 'Si 2 no está libre, 5 sube a recibir y 3 abre al otro lado.', movimientos: [{ tipo: 'corte', jugador: '5', a: [75, 28] }, { tipo: 'corte', jugador: '3', a: [120, 52] }] },
++      { texto: 'Si 2 no está libre, 5 sube a recibir y 3 abre al otro lado.', movimientos: [{ tipo: 'corte', jugador: '5', a: [78, 60] }, { tipo: 'corte', jugador: '3', a: [120, 52] }] },
+     ],
+     lecturas: { cadete: 'Primera opción, tiro; segunda, pívot; tercera, devolver al que saca.', junior: 'Leer si el defensor sigue el bloqueo o cambia.' },
+     progresion: { cadete: 'Colocación y primer bloqueo.', junior: 'Segunda opción y devolución.' },
+@@ -332,15 +332,15 @@ export const SISTEMAS_BIBLIOTECA: Sistema[] = [
+     dificultad: 3,
+     revisar: true,
+     fuente: 'Situación de último segundo con saque de banda (concepto de final de partido, recogido en cursos de FEB y FIBA); contrastar con el reglamento sobre el cronómetro.',
+-    idea: 'Con 5 segundos o menos y el saque en campo propio, se busca un pase largo o un bloqueo para sacar al mejor tirador. Hay una segunda opción por si el defensor lo anticipa.',
++    idea: 'Con 5 segundos o menos y el saque de banda a la altura del medio campo, se usa un bloqueo para sacar al mejor tirador a un tiro de tres. Hay una segunda opción por si el defensor lo anticipa.',
+     objetivo: 'Llegar a un buen tiro en pocos segundos sin precipitarse.',
+-    cuando: 'Ganando o perdiendo por poco con 5 segundos o menos y saque de banda.',
++    cuando: 'Ganando o perdiendo por poco con 5 segundos o menos y saque de banda en el medio campo (si el saque es en campo propio hace falta antes un pase largo, que no está en esta pizarra).',
+     variantes: ['Pase largo al pívot.', 'Bloqueo ciego para el tirador.', 'Dos bloqueadores seguidos.'],
+     inicio: { '1': [4, 120], '2': [40, 108], '3': [110, 100], '4': [85, 72], '5': [65, 38] },
+     balon: '1',
+     pasos: [
+-      { texto: 'La señal sale de 1: 4 baja a bloquear a 2.', movimientos: [{ tipo: 'bloqueo', jugador: '4', a: [56, 100] }] },
+-      { texto: '2 corta por el bloqueo hacia el ala y recibe de 1.', movimientos: [{ tipo: 'corte', jugador: '2', a: [70, 105], por: [58, 98] }, { tipo: 'pase', de: '1', a: '2' }] },
++      { texto: 'La señal sale de 1: 4 sube a bloquear a 2.', movimientos: [{ tipo: 'bloqueo', jugador: '4', a: [56, 100] }] },
++      { texto: '2 corta por el bloqueo hacia el ala y recibe de 1.', movimientos: [{ tipo: 'corte', jugador: '2', a: [64, 82], por: [58, 98] }, { tipo: 'pase', de: '1', a: '2' }] },
+       { texto: '2 tira, o pasa a 5, que se ha abierto hacia el balón.', movimientos: [{ tipo: 'corte', jugador: '5', a: [78, 80] }] },
+     ],
+     lecturas: { cadete: 'Elegir entre tirar o pasar sin perder segundos.', junior: 'Leer si la defensa cambia y usar la segunda opción.' },
+@@ -454,7 +454,7 @@ export const SISTEMAS_BIBLIOTECA: Sistema[] = [
+     balon: '1',
+     pasos: [
+       { texto: '5 sale a mitad de camino hacia el base, con los brazos abiertos.', movimientos: [{ tipo: 'corte', jugador: '5', a: [84, 90] }] },
+-      { texto: '1 se pega al base por detrás del bloqueo; 5 frena y vuelve a bajar.', movimientos: [{ tipo: 'corte', jugador: '1', a: [90, 88] }] },
++      { texto: '1 pasa por encima del bloqueo y se pega al base; 5 frena y vuelve a bajar.', movimientos: [{ tipo: 'corte', jugador: '1', a: [90, 88] }] },
+       { texto: '5 vuelve a la zona y recupera al bloqueador; 3 cierra el pase.', movimientos: [{ tipo: 'corte', jugador: '5', a: [86, 48] }, { tipo: 'corte', jugador: '3', a: [112, 58] }] },
+     ],
+     lecturas: { junior: 'Salir fuerte, frenar y volver; la comunicación entre los dos es clave.', senior: 'Combinar con ayudas del lado débil.' },
+@@ -502,14 +502,14 @@ export const SISTEMAS_BIBLIOTECA: Sistema[] = [
+     revisar: true,
+     sinBalon: true,
+     fuente: 'Cobertura «ICE»/«Blue» (empujar el bloqueo lateral hacia la banda; escuelas NBA y FIBA Coaching); versión simplificada, contrastar con el club.',
+-    idea: 'El defensor del base se coloca para que el bloqueo lateral lo empuje hacia la banda, y el interior baja delante para cerrar la entrada al centro.',
++    idea: 'El defensor del base se coloca de lado, entre el base y el centro de la pista, para que el atacante no use el bloqueo hacia dentro y tenga que ir hacia la banda. El interior baja delante para cerrar la entrada al centro.',
+     objetivo: 'Mandar al base hacia la banda y quitarle el centro de la pista.',
+     cuando: 'Contra bloqueos laterales donde el base prefiere ir al centro.',
+     variantes: ['Hedge desde la banda.', 'Cambio en la banda.', 'Doble al bote en la esquina.'],
+     inicio: { '1': [112, 85], '2': [30, 72], '3': [135, 28], '4': [45, 30], '5': [90, 95] },
+     balon: '1',
+     pasos: [
+-      { texto: '1 se coloca de lado, por el centro, para que el bloqueo lo empuje hacia la banda.', movimientos: [{ tipo: 'corte', jugador: '1', a: [108, 88] }] },
++      { texto: '1 se coloca de lado, por el lado del centro, para empujar al base hacia la banda.', movimientos: [{ tipo: 'corte', jugador: '1', a: [108, 88] }] },
+       { texto: '5 baja delante del bloqueo y cierra el centro; 1 mantiene la banda.', movimientos: [{ tipo: 'corte', jugador: '5', a: [96, 80] }] },
+       { texto: '4 y 3 ayudan hacia el balón y 2 cierra el pase al lado débil.', movimientos: [{ tipo: 'corte', jugador: '4', a: [68, 40] }, { tipo: 'corte', jugador: '2', a: [48, 74] }] },
+     ],

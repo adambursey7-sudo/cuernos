@@ -173,9 +173,11 @@ export const reabrir = (p: Partido): Partido => {
   return { ...p, vivo: v };
 };
 
-export const faltasEquipo = (v: Vivo, cuarto = v.cuarto) => v.faltasEq[cuarto] ?? 0;
-/** A partir de cinco faltas de equipo en un cuarto, cada falta rival da tiros libres. */
-export const enBonus = (v: Vivo) => faltasEquipo(v) >= 5;
+/** Faltas de equipo del cuarto. En FIBA, las de una prórroga cuentan como del cuarto cuarto (Reglas Oficiales de Baloncesto FIBA, art. 41). */
+export const faltasEquipo = (v: Vivo, cuarto = v.cuarto) =>
+  cuarto < 4 ? v.faltasEq[cuarto] ?? 0 : Object.entries(v.faltasEq).reduce((n, [c, f]) => (Number(c) >= 4 && Number(c) <= cuarto ? n + f : n), 0);
+/** Con cuatro faltas de equipo en un cuarto el equipo ya está en bonus: desde la quinta, cada falta da dos tiros libres (FIBA, art. 41). */
+export const enBonus = (v: Vivo) => faltasEquipo(v) >= 4;
 
 export const estaFuera = (d: Directo, id: string, tope = FALTAS_FUERA) => lineaDe(d, id).f >= tope;
 

@@ -1,0 +1,31 @@
+CONTENIDO DE BALONCESTO (revision de los 20 sistemas nuevos y de las reglas)
+
+Los 20 sistemas nuevos NO estan en la version principal: viven en "herramienta diaria" (sin unir). Los he revisado alli en solo lectura (sin tocar esa rama). Las correcciones estan en correcciones-sistemas.patch (se aplica con git apply sobre esa rama o sobre main cuando se una).
+Metodo: comprobado con calculo (distancia al aro, linea de tres a 6,75 m, esquinas) cada posicion de salida y de cada paso, y leida la idea de cada jugada contra el concepto real.
+
+SIGUEN MARCADOS "REVISAR" (todos; ninguno se da por validado hasta que Adam lo vea)
+
+DUDOSOS, CON CORRECCION YA PREPARADA
+- Bloqueo directo lateral: el que debia estar en la esquina estaba dentro de la linea de tres y otro "abria el campo" desde dentro. Corregido: esquina real y alero fuera.
+- 4 fuera 1 dentro: uno de los "cuatro fuera" estaba dentro de la linea de tres (y al moverse seguia dentro). Corregido: esquina real y se abre fuera.
+- Ataque contra zona 2-3: el texto dice "pase a la esquina" pero el jugador estaba en el bloque. Corregido: esta en la esquina.
+- Saque de fondo en caja: los de arriba estaban a mitad de la zona, no en los codos. Corregido a la linea de tiro libre.
+- Saque de banda con bloqueo ciego: decia "5 sube a recibir" y se movia hacia el aro. Corregido: sube de verdad.
+- Final: saque de banda para un tiro: decia "campo propio" pero la pizarra es de medio campo, el tiro salia de nueve metros y "baja a bloquear" se alejaba del aro. Corregido el texto y el tiro (de tres). Un saque desde campo propio necesita antes un pase largo: no esta en la pizarra.
+- Defensa del bloqueo, hedge: decia que el defensor del base va "por detras del bloqueo"; en el hedge va por encima. Corregido.
+- Defensa del bloqueo, ICE: decia que el bloqueo empuja al DEFENSOR a la banda; es al ATACANTE al que se empuja. Corregido.
+
+DUDOSOS, SIN CORRECCION POSIBLE (necesitan una mejora de la pizarra)
+- Las 5 defensas del bloqueo y la ayuda (drop, hedge, cambio, ICE, ayuda y recuperacion) y la individual dibujan solo a los defensores, sin los atacantes: no se ve el bloqueo que defienden. Las posiciones y movimientos de los defensores son coherentes con el concepto, pero la pizarra no lo enseña bien.
+- Presiones individual, 2-2-1 y 1-2-1-1: solo se ve la zona de salida del saque en media pista, no la pista entera. Es una simplificacion, bien explicada en la ficha.
+
+COHERENTES (sin cambios)
+Mano a mano, corte UCLA, puerta atras, contraataque a tres carriles, saque de fondo en linea, ayuda y recuperacion, drop, cambio, zona 3-2.
+
+REGLAS (version principal)
+- 4 x 10, 5 faltas personales, prorroga de 5 min, 24 s, 8 s, 5 s de saque: correcto (Reglas Oficiales de Baloncesto FIBA).
+- FALLO ARREGLADO: el aviso de "bonus" salia a la quinta falta del equipo. En FIBA el equipo ya esta en bonus con CUATRO faltas en un cuarto y la quinta da dos tiros libres (art. 41). Ahora avisa a las cuatro.
+- FALLO ARREGLADO: las faltas de equipo de una prorroga empezaban de cero. En FIBA cuentan como del cuarto cuarto (art. 41). Ahora se suman.
+- Tiempos muertos: la app permite 5 en total (2 en la primera parte + 3 en la segunda) y 1 por prorroga; no distingue partes. Anotado como mejora (en FIBA, ademas, maximo 2 en los ultimos 2 minutos).
+- Formato por categoria: la app trae FIBA 4x10, formacion 4x8 y 3x8, y se pueden cambiar. Cada federacion territorial fija el suyo (minibasket y premini no siempre son 4x10): confirmar con las normas de la competicion de Adam antes de dar la lista por buena.
+Fuentes: Reglas Oficiales de Baloncesto FIBA (art. 41, faltas de equipo); resumen en https://en.wikipedia.org/wiki/Bonus_(basketball). El texto oficial vigente debe contrastarse en fiba.basketball.

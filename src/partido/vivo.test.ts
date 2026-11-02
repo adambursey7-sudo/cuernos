@@ -45,16 +45,32 @@ describe('apuntar y deshacer', () => {
     expect(deshacer(p, T0)).toEqual(p);
   });
 
-  it('las faltas de equipo se cuentan por cuarto y a la quinta hay bonus', () => {
+  it('las faltas de equipo se cuentan por cuarto y con cuatro ya hay bonus (la quinta da tiros libres)', () => {
     let p = inicio();
-    for (let i = 0; i < 5; i++) p = registrar(p, { tipo: 'fal', j: 'abcde'[i] }, T0);
+    for (let i = 0; i < 3; i++) p = registrar(p, { tipo: 'fal', j: 'abcde'[i] }, T0);
+    expect(enBonus(p.vivo)).toBe(false);
+    p = registrar(p, { tipo: 'fal', j: 'd' }, T0);
     expect(enBonus(p.vivo)).toBe(true);
+    p = registrar(p, { tipo: 'fal', j: 'e' }, T0);
     p = cuartoSiguiente(p, T0);
     expect(faltasEquipo(p.vivo)).toBe(0);
     expect(enBonus(p.vivo)).toBe(false);
     p = deshacer(p, T0);
     expect(p.vivo.cuarto).toBe(1);
     expect(faltasEquipo(p.vivo)).toBe(5);
+  });
+
+  it('las faltas de una prórroga cuentan como del cuarto cuarto', () => {
+    let p = inicio();
+    for (let c = 1; c < 4; c++) p = cuartoSiguiente(p, T0);
+    p = registrar(p, { tipo: 'fal', j: 'a' }, T0);
+    p = registrar(p, { tipo: 'fal', j: 'b' }, T0);
+    p = cuartoSiguiente(p, T0);
+    expect(p.vivo.cuarto).toBe(5);
+    expect(faltasEquipo(p.vivo)).toBe(2);
+    p = registrar(p, { tipo: 'fal', j: 'c' }, T0);
+    p = registrar(p, { tipo: 'fal', j: 'd' }, T0);
+    expect(enBonus(p.vivo)).toBe(true);
   });
 
   it('tras terminar no se puede apuntar ni deshacer', () => {
