@@ -1,5 +1,6 @@
 // Convocatoria y quinteto inicial de un partido. Las lesionadas aparecen marcadas, pero la decisión es del entrenador.
 import { estaFuera, type Jugadora } from '../diario/diario';
+import { lesionesActivas } from '../salud/salud';
 import type { Evento } from '../temporada/temporada';
 
 export function ConvocatoriaPartido({ e, jugadoras, poner }: { e: Evento; jugadoras: Jugadora[]; poner: (c: Partial<Evento>) => void }) {
@@ -16,6 +17,7 @@ export function ConvocatoriaPartido({ e, jugadoras, poner }: { e: Evento; jugado
     if (quinteto.includes(id)) poner({ quinteto: quinteto.filter((x) => x !== id) });
     else if (quinteto.length < 5) poner({ quinteto: [...quinteto, id] });
   };
+  const carga = lesionesActivas();
   const aptos = jugadoras.filter((j) => !estaFuera(j)).map((j) => j.id).slice(0, 20);
   return (
     <div className="conv-partido">
@@ -23,7 +25,7 @@ export function ConvocatoriaPartido({ e, jugadoras, poner }: { e: Evento; jugado
       <div className="niveles filtro" role="group" aria-label="Convocados">
         {jugadoras.map((j) => (
           <button key={j.id} className={convocado(j.id) ? 'chip on' : 'chip'} aria-pressed={convocado(j.id)} onClick={() => alternarConv(j.id)} title={j.nombre}>
-            #{j.numero || '–'}{estaFuera(j) ? ' ✚' : ''}
+            #{j.numero || '–'}{estaFuera(j) ? ' ✚' : carga.get(j.id)?.sinContacto || carga.get(j.id)?.maxMinutos ? ' ◐' : ''}
           </button>
         ))}
       </div>

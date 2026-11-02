@@ -11,6 +11,7 @@ import { PanelMapa } from '../partido/MapaTiros';
 import { tirosDeEventos, resumenTiros } from '../partido/mapa';
 import { corta } from '../temporada/fechas';
 import { leerTemporadas, temporadaDe } from '../temporada/temporada';
+import { Avanzadas } from './Avanzadas';
 import { CargaSemanal } from './CargaSemanal';
 import { Anillo } from '../ui/Anillo';
 import { Grafica } from '../ui/Grafica';
@@ -140,6 +141,8 @@ export function Cifras({ equipo, jugadoras }: { equipo: Equipo; jugadoras: Jugad
           {recordsEquipo(filas).map((r) => <li key={r.nombre}><span>{r.nombre}</span><b>{r.valor}</b><small>{r.detalle}</small></li>)}
         </ul>
       </section>
+
+      <Avanzadas t={t} jugadoras={jugadoras} filas={filas} />
 
       <section aria-label="Mapa de tiros de la temporada">
         <h2 className="sub">Mapa de tiros de la temporada</h2>

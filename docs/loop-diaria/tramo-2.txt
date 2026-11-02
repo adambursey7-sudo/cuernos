@@ -1,0 +1,20 @@
+LOOP HERRAMIENTA DIARIA - TRAMO 2: Bandeja de entrada
+
+Decision de diseno (Adam pidio seguir sin esperar): opcion B, panel de tarjetas en una sola pantalla (una mano, pocos toques).
+Cada tarjeta se puede quitar o corregir; un unico boton final «Aceptar y repartir». Si prefiere el asistente paso a paso, solo cambia Bandeja.tsx.
+
+Hecho
+- src/bandeja/bandeja.ts (sin tocar el almacenamiento): lee tablas CSV/TSV/barras con cabecera (dorsal, puntos, faltas, reb, ast, rob, per),
+  anonimiza nombres de la plantilla por dorsal, prepara el encargo a Claude y valida su respuesta, y reparte (funcion pura).
+- src/pantallas/Bandeja.tsx, en Mas -> «Bandeja de entrada». Entrada: texto pegado o dictado, CSV/TXT y PDF (se lee en el movil).
+  Dos caminos: «Ordenar en el movil» (sin conexion) y «Ordenar con Claude» (por Jarvis, con el canal de texto que ya existe;
+  antes de enviar se ve el texto con los nombres cambiados por dorsales y se puede corregir).
+- Reparto: estadistica -> partido elegido (puntos, faltas, reb, ast, rob, per por dorsal); notas -> balance del partido;
+  rival -> informe del rival del partido; ejercicio -> ficha en Ejercicios (borrador). Dorsal desconocido o repetido: no se adivina, se avisa.
+- Pruebas: 14 nuevas (tabla, privacidad, respuesta de Claude, reparto y que analizar/repartir no escriben en el almacenamiento).
+
+Pendiente / limites
+- Fotos de actas y videos: NO se leen todavia. Necesitan un endpoint de imagenes en Jarvis (jeeves-pa, otro proyecto) y no se ha tocado.
+- Hojas de Excel (.xlsx): exportar a CSV.
+- Acciones de tiro con posicion (mapa de tiros) no se derivan: van a las notas.
+- Probar en el iPhone con un CSV y un PDF reales (sin nombres de menores en capturas).

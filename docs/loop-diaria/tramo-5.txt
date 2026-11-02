@@ -1,0 +1,6 @@
+LOOP HERRAMIENTA DIARIA - TRAMO 5: conectividad y exportar
+Decision: opcion A, una pantalla «Conexiones y exportar» en Mas, con tarjetas (IA, mensaje para familias, exportar).
+Hecho: claves de Gemini solo en el movil (fuera de la copia, con prueba), puerta unica de IA (Jarvis o Gemini), mensajes para familias
+con dorsales (se ve el texto antes de enviar y se avisa si vuelve un nombre), CSV (partidos, plantilla, estadistica), hoja PDF e .ics.
+La Bandeja usa la misma puerta. Probado en navegador: Bandeja, Conexiones y Biblioteca agrupada sin errores.
+Pendiente: resumen semanal 100% automatico necesita un programador en Jarvis (otro proyecto); hoy se genera al abrir. Probar Gemini con clave real.

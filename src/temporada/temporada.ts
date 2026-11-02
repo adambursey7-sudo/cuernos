@@ -5,6 +5,7 @@ import { diaSemana, diasEntre, esFecha, esHora, sumarDias } from './fechas';
 import { limpiarInforme, type InformeRival } from './rival';
 import { limpiarDirecto, type Directo } from './directo';
 import { limpiarVivo, type Vivo } from '../partido/vivo';
+import { limpiarViaje, type Viaje } from '../viajes/viaje';
 import { limpiarDisponibilidad, sinRespuestas, type Disponibilidad } from '../disponibilidad/disponibilidad';
 
 const CLAVE = 'horns.temporada';
@@ -61,6 +62,8 @@ export interface Evento {
   quinteto?: string[];
   /** Hora de salida del viaje (solo en un partido fuera). */
   salida?: string;
+  /** Logística del viaje (solo en un partido fuera): transporte, comidas, material y gastos. */
+  viaje?: Viaje;
   /** Plan de partido (senior): defensa, jugadas y a quién buscar. */
   plan?: string;
   /** Puntos y faltas por jugador, apuntados en directo (senior). */
@@ -172,6 +175,7 @@ function limpiaEvento(e: unknown): Evento | null {
     ...(txt(x.sesionId) ? { sesionId: x.sesionId } : {}), ...(x.libre ? { libre: true } : {}),
     ...(x.tipo === 'partido' && Number.isInteger(x.jornada) && x.jornada! >= 1 && x.jornada! <= 99 ? { jornada: x.jornada } : {}),
     ...(x.tipo === 'partido' && esHora(x.salida) ? { salida: x.salida } : {}),
+    ...(x.tipo === 'partido' && x.casa === false && limpiarViaje(x.viaje) ? { viaje: limpiarViaje(x.viaje) } : {}),
     ...(x.tipo === 'partido' && esCompeticion(x.competicion) && x.competicion !== 'liga' ? { competicion: x.competicion } : {}),
     ...(x.tipo === 'partido' && txt(x.plan) && x.plan.trim() ? { plan: x.plan.slice(0, 600) } : {}),
     ...(x.tipo === 'partido' && limpiarDirecto(x.directo) ? { directo: limpiarDirecto(x.directo) } : {}),

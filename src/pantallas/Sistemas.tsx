@@ -4,7 +4,7 @@ import { JugadaVideo } from './JugadaVideo';
 import { coincide } from '../favoritos';
 import { todosLosSistemas } from '../sistemas/almacen';
 import { alternarSemana, leerSemana } from '../sistemas/libro';
-import { type Familia, type Nivel, NIVELES } from '../sistemas/tipos';
+import { type Dificultad, type Familia, type Nivel, type Sistema, FAMILIAS, NIVELES } from '../sistemas/tipos';
 
 const nombreNivel = (id: string) => NIVELES.find((n) => n.id === id)?.nombre ?? id;
 const orden = (n: Nivel) => NIVELES.findIndex((x) => x.id === n);
@@ -14,6 +14,21 @@ export interface FiltroJugadas {
   tipo?: 'ataque' | 'defensa';
   familia?: Familia;
   semana?: boolean;
+  dificultad?: Dificultad;
+}
+
+/** Grupo del libro en el que sale una jugada: su familia, o ataque/defensa si no tiene. */
+export const grupoDe = (s: Sistema) => FAMILIAS.find((f) => f.id === (s.familia ?? s.tipo))?.nombre ?? 'Otras';
+
+/** Agrupa conservando el orden del libro (FAMILIAS) y, dentro, el de la lista. */
+export function agrupar(lista: Sistema[]): { nombre: string; jugadas: Sistema[] }[] {
+  const por = new Map<string, Sistema[]>();
+  for (const f of FAMILIAS) por.set(f.nombre, []);
+  for (const s of lista) {
+    const g = grupoDe(s);
+    por.set(g, [...(por.get(g) ?? []), s]);
+  }
+  return [...por.entries()].filter(([, l]) => l.length > 0).map(([nombre, jugadas]) => ({ nombre, jugadas }));
 }
 
 export function Estrella({ puesta, alternar, nombre }: { puesta: boolean; alternar: () => void; nombre: string }) {
@@ -48,6 +63,7 @@ export function Sistemas({ abrir, crear, q, soloFavoritos, filtro, favoritos, al
   const [semana, setSemana] = useState(leerSemana);
   const [video, setVideo] = useState(false);
   const [version, setVersion] = useState(0);
+  const abierto = !!(q || soloFavoritos || Object.values(filtro).some(Boolean));
   const lista = todosLosSistemas().filter(
     (s) =>
       coincide(q, s.nombre, s.idea, s.contra) &&
@@ -55,6 +71,7 @@ export function Sistemas({ abrir, crear, q, soloFavoritos, filtro, favoritos, al
       (!filtro.tipo || s.tipo === filtro.tipo) &&
       (!filtro.familia || s.familia === filtro.familia) &&
       (!filtro.semana || semana.includes(s.id)) &&
+      (!filtro.dificultad || s.dificultad === filtro.dificultad) &&
       (!filtro.nivel || orden(s.nivelMinimo) <= orden(filtro.nivel)),
   );
   if (video) return <JugadaVideo volver={() => setVideo(false)} guardada={() => setVersion(version + 1)} />;
@@ -69,28 +86,33 @@ export function Sistemas({ abrir, crear, q, soloFavoritos, filtro, favoritos, al
       {lista.length === 0 ? (
         <SinResultados favoritos={soloFavoritos && !q} que="jugada" quitarFiltros={quitarFiltros} />
       ) : (
-        <ul className="lista">
-          {lista.map((s) => (
-            <li key={s.id} className="con-estrella">
-              <button className="tarjeta" onClick={() => abrir(s.id)}>
-                <span className="mini">
-                  <Pista sistema={s} t={0} />
-                </span>
-                <span className="datos">
-                  <span className="nombre">{s.nombre}</span>
-                  <span className="meta">
-                    Desde {nombreNivel(s.nivelMinimo).toLowerCase()} · {s.pasos.length} {s.pasos.length === 1 ? 'paso' : 'pasos'}
-                  </span>
-                  {s.propio && <span className="mia">Mía</span>}
-                  {semana.includes(s.id) && <span className="mia">Esta semana</span>}
-                  {s.borrador && <span className="aviso">Borrador por revisar</span>}
-                </span>
-              </button>
-              <Estrella puesta={favoritos.includes(`j:${s.id}`)} alternar={() => alternarFavorito(`j:${s.id}`)} nombre={s.nombre} />
-              <button className={semana.includes(s.id) ? 'boton-filtro on' : 'boton-filtro'} aria-pressed={semana.includes(s.id)} aria-label={`Esta semana: ${s.nombre}`} onClick={() => setSemana((l) => alternarSemana(l, s.id))}>Semana</button>
-            </li>
-          ))}
-        </ul>
+        agrupar(lista).map((g) => (
+          <details key={g.nombre} className="grupo-jugadas" open={abierto || g.jugadas.length <= 4}>
+            <summary><b>{g.nombre}</b> <span className="meta">{g.jugadas.length}</span></summary>
+            <ul className="lista">
+              {g.jugadas.map((s) => (
+                <li key={s.id} className="con-estrella">
+                  <button className="tarjeta" onClick={() => abrir(s.id)}>
+                    <span className="mini">
+                      <Pista sistema={s} t={0} />
+                    </span>
+                    <span className="datos">
+                      <span className="nombre">{s.nombre}</span>
+                      <span className="meta">
+                        Desde {nombreNivel(s.nivelMinimo).toLowerCase()} · {s.pasos.length} {s.pasos.length === 1 ? 'paso' : 'pasos'}
+                      </span>
+                      {s.propio && <span className="mia">Mía</span>}
+                      {semana.includes(s.id) && <span className="mia">Esta semana</span>}
+                      {(s.borrador || s.revisar) && <span className="aviso">Borrador por revisar</span>}
+                    </span>
+                  </button>
+                  <Estrella puesta={favoritos.includes(`j:${s.id}`)} alternar={() => alternarFavorito(`j:${s.id}`)} nombre={s.nombre} />
+                  <button className={semana.includes(s.id) ? 'boton-filtro on' : 'boton-filtro'} aria-pressed={semana.includes(s.id)} aria-label={`Esta semana: ${s.nombre}`} onClick={() => setSemana((l) => alternarSemana(l, s.id))}>Semana</button>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ))
       )}
     </section>
   );

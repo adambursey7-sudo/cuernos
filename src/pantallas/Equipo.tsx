@@ -1,4 +1,5 @@
 import { ReglasEquipo } from './ReglasEquipo';
+import { ParteSalud } from './ParteSalud';
 import { reglasDeTexto, resumenReglas, type Reglas } from '../reglas/reglas';
 // Equipo (tramo 1 del loop Diario): plantilla con dorsal grande y ficha de cada jugadora con tres pestañas (opción A, Adam 30/10).
 // Los datos viven solo en este móvil. La ficha se guarda sola al escribir.
@@ -126,15 +127,7 @@ function Ficha({ d, j, cambiar, borrar, volver }: { d: Diario; j: Jugadora; camb
             ) : (
               <button className={j.lesion ? 'chip on estado-trabajar' : 'chip'} aria-pressed={!!j.lesion} onClick={() => poner({ lesion: j.lesion ? undefined : { desde: hoy(), nota: '' } })}>{j.lesion ? 'Lesionada' : 'Marcar lesión'}</button>
             )}
-            {j.lesion && (
-              <>
-                <label className="campo-diario">
-                  <span>Lesión · desde el {j.lesion.desde.split('-').reverse().join('/')}</span>
-                  <textarea value={j.lesion.nota} rows={2} onChange={(ev) => poner({ lesion: { ...j.lesion!, nota: ev.target.value } })} placeholder="Qué le pasa y cuándo vuelve" />
-                </label>
-                <p className="meta">Dato de salud: solo está en este móvil. La copia de seguridad no lo incluye salvo que lo marques en Más.</p>
-              </>
-            )}
+            <ParteSalud jugadoraId={j.id} />
           </div>
           <Campo etiqueta="Puntos fuertes" valor={j.fuertes} cambiar={(fuertes) => poner({ fuertes })} ayuda="Lo que hace bien" />
           <Campo etiqueta="A mejorar" valor={j.mejorar} cambiar={(mejorar) => poner({ mejorar })} ayuda="Lo que le falta" />

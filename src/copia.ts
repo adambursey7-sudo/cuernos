@@ -32,13 +32,13 @@ export interface PorEquipo {
   semana: Record<string, string[]>;
 }
 
-/** Las lesiones (dato de salud) solo entran en la copia si se piden (`conSalud`). */
-export function armarCopia(mios: Sistema[], colores: Colores, diario?: Diario, temporadas?: Temporada[], recursos?: Recurso[], fichas?: Ficha[], conSalud = false, etiquetas?: Etiquetas, reflexiones?: Reflexion[], extra?: ExtraCopia): string {
+/** Los datos de salud NUNCA entran en una copia (ni siquiera si se pidieran). El 7.º parámetro se conserva ignorado para no mover los demás. */
+export function armarCopia(mios: Sistema[], colores: Colores, diario?: Diario, temporadas?: Temporada[], recursos?: Recurso[], fichas?: Ficha[], _antiguoConSalud?: boolean, etiquetas?: Etiquetas, reflexiones?: Reflexion[], extra?: ExtraCopia): string {
   // Solo lo de equipos que existen: lo que quedara suelto de un equipo borrado no viaja en la copia.
   const ids = diario ? new Set(diario.equipos.map((e) => e.id)) : undefined;
   const sesiones = extra?.sesiones && ids ? extra.sesiones.filter((s) => !s.equipoId || ids.has(s.equipoId)) : extra?.sesiones;
   return JSON.stringify({
-    app: MARCA, version: extra ? 3 : 2, fecha: new Date().toISOString(), mios, colores, diario: diario && !conSalud ? sinSalud(diario) : diario,
+    app: MARCA, version: extra ? 3 : 2, fecha: new Date().toISOString(), mios, colores, diario: diario ? sinSalud(diario) : diario,
     temporadas: temporadas && ids ? soloDeEquipos(temporadas, [...ids]) : temporadas, recursos, fichas, etiquetas,
     reflexiones: reflexiones && ids ? reflexiones.filter((r) => ids.has(r.equipoId)) : reflexiones, ...extra, ...(sesiones ? { sesiones } : {}),
   }, null, 1);
@@ -59,7 +59,8 @@ export function leerCopia(texto: string): { mios: Sistema[]; colores?: Colores; 
   const mios = d.mios.filter(esSistemaValido);
   const hex = /^#[0-9a-f]{6}$/i;
   const colores = d.colores && ['principal', 'fondo', 'pista', 'jugadores'].every((k) => hex.test(String(d.colores![k as keyof Colores]))) ? d.colores : undefined;
-  const diario = d.diario ? limpiar(d.diario) : undefined;
+  // Una copia vieja podía traer lesiones: no se leen.
+  const diario = d.diario ? sinSalud(limpiar(d.diario)) : undefined;
   // Una temporada sin su equipo no sirve: si la copia trae plantilla, solo valen las de esos equipos.
   const temporadas = d.temporadas ? limpiarTemporadas(d.temporadas) : undefined;
   const recursos = d.recursos ? limpiarRecursos(d.recursos) : undefined;

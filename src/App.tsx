@@ -25,6 +25,8 @@ import type { Sistema as SistemaDatos } from './sistemas/tipos';
 
 // Las pantallas más pesadas se cargan al abrirlas: la app arranca antes y se ve un esqueleto mientras llegan.
 const Editor = lazy(() => import('./editor/Editor').then((m) => ({ default: m.Editor })));
+const Bandeja = lazy(() => import('./pantallas/Bandeja').then((m) => ({ default: m.Bandeja })));
+const Conexiones = lazy(() => import('./pantallas/Conexiones').then((m) => ({ default: m.Conexiones })));
 const Ajustes = lazy(() => import('./pantallas/Ajustes').then((m) => ({ default: m.Ajustes })));
 const Equipo = lazy(() => import('./pantallas/Equipo').then((m) => ({ default: m.Equipo })));
 
@@ -47,6 +49,8 @@ export function App() {
   const [entrante, setEntrante] = useState<{ enlace: string } | undefined>(() => { const e = enlacePendiente(); return e ? { enlace: e } : undefined; });
   const enlaceVisto = useRef(entrante?.enlace);
   const [vez, setVez] = useState(0);
+  const [bandeja, setBandeja] = useState(false);
+  const [conexiones, setConexiones] = useState(false);
   const [pestana, setPestana] = useState<Pestana>(entrante ? 'biblioteca' : 'hoy');
   const [rama, setRama] = useState<Rama>(entrante ? 'recursos' : 'jugadas');
   // La jugada abierta queda encima de Hoy o de la Biblioteca; al volver se ve la pestaña desde la que se abrió.
@@ -80,7 +84,9 @@ export function App() {
   let contenido;
   if (pestana === 'sesiones' && !ejercicio) contenido = <Sesiones abrirEjercicio={setEjercicioId} abierta={sesionId} abrir={setSesionId} arranque={arranque} gastado={() => setArranque(null)} />;
   else if (pestana === 'equipo') contenido = <Equipo key={fechaAbrir ?? 'sin-fecha'} ir={irABiblioteca} fecha={fechaAbrir} abrirSesion={abrirSesion} abrirEjercicio={verEjercicio} abrirSistema={verSistema} activoId={activoId} elegir={elegirEquipo} />;
-  else if (pestana === 'mas') contenido = <><header className="cabecera-app"><Marca className="marca-cabecera" /></header><Ajustes /></>;
+  else if (pestana === 'mas' && bandeja) contenido = <Bandeja volver={() => setBandeja(false)} />;
+  else if (pestana === 'mas' && conexiones) contenido = <Conexiones volver={() => setConexiones(false)} />;
+  else if (pestana === 'mas') contenido = <><header className="cabecera-app"><Marca className="marca-cabecera" /></header><section className="pantalla"><button className="accion-sig" onClick={() => setBandeja(true)}>Bandeja de entrada: pegar datos de un partido</button><button className="accion-sig suave" onClick={() => setConexiones(true)}>Conexiones y exportar</button></section><Ajustes /></>;
   else if (edicion)
     contenido = (
       <Editor
@@ -172,7 +178,7 @@ export function App() {
       {!partidoId && <BarraDirecto abrir={setPartidoId} />}
       <nav className="pestanas" aria-label="Secciones">
         {PESTANAS.map((p) => (
-          <button key={p.id} className={p.id === pestana ? 'on' : ''} aria-current={p.id === pestana ? 'page' : undefined} onClick={() => { olvidarEnlacePendiente(); setEntrante(undefined); setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>
+          <button key={p.id} className={p.id === pestana ? 'on' : ''} aria-current={p.id === pestana ? 'page' : undefined} onClick={() => { olvidarEnlacePendiente(); setEntrante(undefined); setBandeja(false); setConexiones(false); setPestana(p.id); setFechaAbrir(undefined); setAbierto(null); setEdicion(null); setEjercicioId(null); setSesionId(null); }}>
             <span className="burbuja"><p.icono /></span>
             <span className="rotulo-pestana">{p.nombre}</span>
           </button>

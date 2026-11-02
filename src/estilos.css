@@ -945,3 +945,10 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible, [tabindex]:
 .herramientas button { min-height: 52px; }
 .tira-pasos { scrollbar-width: none; }
 .tira-pasos::-webkit-scrollbar { display: none; }
+
+/* Libro de jugadas agrupado por familias (loop Herramienta diaria, tramo 1) */
+.grupo-jugadas { margin: 0 0 8px; }
+.grupo-jugadas > summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; padding: 0 4px; cursor: pointer; font-size: 1.05rem; list-style: none; }
+.grupo-jugadas > summary::-webkit-details-marker { display: none; }
+.grupo-jugadas > summary::after { content: '▾'; margin-left: auto; }
+.grupo-jugadas:not([open]) > summary::after { content: '▸'; }
