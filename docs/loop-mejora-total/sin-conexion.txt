@@ -1,0 +1,6 @@
+SIN CONEXION Y RENDIMIENTO (comprobado en la version compilada)
+
+- Arranca sin red: el service worker queda activo y guarda los 32 archivos de la app (1,3 MB), incluida la portada y los trozos de pantalla que se cargan al abrir cada seccion. La barra "Sin conexion" ya existia.
+- Carga inicial: portada lista a los 0,18 s y todo cargado a los 0,37 s en este PC. Codigo de la portada: 146 kB comprimidos (antes 145). El lector de PDF (129 kB) solo se baja al usarlo.
+- FALLO ARREGLADO: la app se actualizaba y recargaba sola sin avisar, y el sistema activaba la version nueva al instante: una pantalla abierta podia pedir un trozo de la version vieja que ya no existia. Ahora la version nueva se baja en segundo plano, sale una barra "Hay una version nueva de Horns - Actualizar" y se aplica cuando el entrenador lo decide (no a mitad de un partido). Mientras no actualice sigue funcionando la version que tiene.
+- Pendiente de probar en el iPhone (la barra solo sale cuando hay una version nueva publicada).
