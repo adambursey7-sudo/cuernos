@@ -110,7 +110,7 @@ describe('nada sensible sale en una copia', () => {
     const texto = armarCopia([], PALETAS[0], solo.diario, solo.temporadas, [], [], false, undefined, solo.reflexiones, { sesiones: solo.sesiones });
     expect(texto).not.toContain('CANARIO-ROTURA-LIGAMENTO');
   });
-  it('solo con el permiso expreso entra la lesion', () => {
-    expect(armarCopia([], PALETAS[0], diario, undefined, undefined, undefined, true)).toContain('CANARIO-ROTURA-LIGAMENTO');
+  it('la salud ya no viaja en ninguna copia, ni pidiendolo', () => {
+    expect(armarCopia([], PALETAS[0], diario, undefined, undefined, undefined, true)).not.toContain('CANARIO-ROTURA-LIGAMENTO');
   });
 });
