@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { armarCopia, juntar, leerCopia } from './copia';
+import { armarCopia, juntar, juntarPorId, leerCopia } from './copia';
 import { nuevoBorrador, mover } from './editor/editar';
 import { nuevaSesion, juntarSesiones } from './sesiones/sesiones';
 import { ESPACIOS_BASE } from './sistemas/espacios';
@@ -87,5 +87,12 @@ describe('copia con sesiones, espacios y favoritos', () => {
     const leida = leerCopia(texto);
     expect(leida.sesiones).toEqual([b]);
     expect(juntarSesiones([a], leida.sesiones!).map((x) => x.nombre)).toEqual(['Cambiada']);
+  });
+});
+
+describe('juntarPorId', () => {
+  it('conserva lo que solo hay en el movil y la copia gana si coincide', () => {
+    const r = juntarPorId([{ id: 'a', n: 1 }, { id: 'b', n: 2 }], [{ id: 'a', n: 9 }]);
+    expect(r).toEqual([{ id: 'b', n: 2 }, { id: 'a', n: 9 }]);
   });
 });

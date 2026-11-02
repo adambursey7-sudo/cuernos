@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { cuadriculaMes, diaSemana, esFecha, lunesDe, sumarDias, sumarMeses } from './fechas';
 import { escribirIcs, leerIcs, leerLista } from './ics';
 import {
-  agendaDia, aplicarCandidatas, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporadas, itemsParaIcs, leerTemporadas,
+  agendaDia, aplicarCandidatas, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporadas, itemsParaIcs, juntarTemporadas, leerTemporadas,
   limpiarTemporada, marcasDia, notasDelBalance, nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarFijo, resumenAsistencia, temporadaPorDefecto,
 } from './temporada';
 
@@ -209,5 +209,27 @@ describe('balance de partido', () => {
     expect(t.eventos[0].bien).toEqual(['Defensa']);
     expect(t.eventos[0].mirar).toBeUndefined();
     expect(t.eventos[0].mal).toEqual(['Pérdidas']);
+  });
+});
+
+describe('juntar una copia con la temporada actual', () => {
+  it('una copia vieja no borra los partidos, la asistencia ni las respuestas hechas despues', () => {
+    const vieja = { ...base(), eventos: [{ ...nuevoEvento('2026-10-03', 'partido'), id: 'a', titulo: 'Rival viejo' }], asistencia: { a: ['j1'] } };
+    const actual = {
+      ...base(),
+      eventos: [{ ...nuevoEvento('2026-10-03', 'partido'), id: 'a', titulo: 'Rival nuevo' }, { ...nuevoEvento('2026-10-10', 'partido'), id: 'b', titulo: 'Otro' }],
+      asistencia: { a: ['j1', 'j2'], b: ['j1'] },
+      disponibilidad: { b: { j1: 'si' as const } },
+    };
+    const [t] = juntarTemporadas([actual], [vieja]);
+    expect(t.eventos.map((e) => e.id).sort()).toEqual(['a', 'b']);
+    expect(t.eventos.find((e) => e.id === 'a')?.titulo).toBe('Rival viejo');
+    expect(t.asistencia?.b).toEqual(['j1']);
+    expect(t.asistencia?.a).toEqual(['j1']);
+    expect(t.disponibilidad?.b).toEqual({ j1: 'si' });
+  });
+  it('un equipo que solo esta en la copia entra tal cual', () => {
+    const otra = { ...base(), equipoId: 'e2' };
+    expect(juntarTemporadas([base()], [otra]).map((t) => t.equipoId)).toEqual(['e1', 'e2']);
   });
 });

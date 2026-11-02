@@ -355,7 +355,7 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 
 /* Editor: tira de pasos, jugador marcado y jugador que sigue al dedo */
 .tira-pasos { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
-.tira-pasos .chip { flex: none; min-width: 44px; min-height: 40px; }
+.tira-pasos .chip { flex: none; min-width: 44px; min-height: 44px; }
 .lienzo .capa.marca { pointer-events: none; }
 .capa .elegido { fill: none; stroke: var(--principal); stroke-width: 1.6; }
 .capa .viva { fill: var(--jugadores); stroke: var(--principal); stroke-width: 1.6; }
@@ -580,7 +580,7 @@ select#fi-sis { width: 100%; padding: 10px 12px; border-radius: var(--r-sm); bor
 .rot-cab { color: var(--tenue); font-size: 0.85rem; }
 .rot-fila .dorsal { width: 36px; height: 36px; font-size: 1.1rem; }
 .rot-fila.baja { opacity: 0.5; }
-.rot-casilla { width: 100%; min-height: 40px; border-radius: var(--r-sm); border: 1.5px solid var(--tenue); background: none; font-size: 1.1rem; color: var(--tenue); }
+.rot-casilla { width: 100%; min-height: 44px; border-radius: var(--r-sm); border: 1.5px solid var(--tenue); background: none; font-size: 1.1rem; color: var(--tenue); }
 .rot-casilla.on { background: var(--principal); border-color: var(--principal); color: var(--sobre-principal); }
 .rot-casilla:disabled { opacity: 0.35; }
 .rot-pie { font-size: 0.85rem; }
@@ -605,7 +605,7 @@ select#fi-sis { width: 100%; padding: 10px 12px; border-radius: var(--r-sm); bor
 
 /* Equipo completo: selector con escudo y asistente de nuevo equipo */
 .selector-equipo { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 6px; scrollbar-width: none; }
-.selector-equipo .chip { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; white-space: nowrap; }
+.selector-equipo .chip { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; white-space: nowrap; }
 .escudo-equipo { flex: none; display: block; }
 .cabecera-equipo { display: flex; align-items: center; gap: 12px; }
 .cabecera-equipo .nombre { font-family: var(--display); font-size: 1.15rem; }
@@ -737,9 +737,9 @@ button:active:not(:disabled) { transform: scale(0.97); }
 .vivo-marcador .cuarto { padding: 2px 10px; border-radius: var(--r-pill); background: #fff8ee22; font: 800 0.8rem/1.4 var(--display); }
 .vivo-marcador .reloj { font: 900 2rem/1 var(--display); font-variant-numeric: tabular-nums; }
 .vivo-marcador .reloj.poco { color: #ff7a6b; }
-.vivo-marcador .centro button { min-height: 40px; padding: 0 var(--e4); font-size: 0.85rem; }
+.vivo-marcador .centro button { min-height: 44px; padding: 0 var(--e4); font-size: 0.85rem; }
 .mini-pad { display: flex; gap: 3px; }
-.mini-pad button { min-width: 34px; min-height: 40px; padding: 0; border: none; border-radius: var(--r-sm); background: #fff8ee22; color: #fff8ee; font: 800 0.95rem/1 var(--display); }
+.mini-pad button { min-width: 44px; min-height: 44px; padding: 0; border: none; border-radius: var(--r-sm); background: #fff8ee22; color: #fff8ee; font: 800 0.95rem/1 var(--display); }
 .vivo-estado { display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: var(--e2); }
 .vivo-estado .rotulo, .vivo-banquillo .rotulo { display: block; font: 800 0.66rem/1 var(--display); text-transform: uppercase; letter-spacing: 0.08em; color: var(--tenue); margin-bottom: 4px; }
 .puntitos { display: inline-flex; align-items: center; gap: 5px; }
@@ -941,7 +941,8 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible, [tabindex]:
 .pestanas button { min-height: 60px; }
 .pestanas .burbuja { width: 60px; height: 32px; }
 .atajos button { min-height: 64px; }
-.chip { min-height: 38px; }
+.chip { min-height: var(--toque); }
+.chip.pequeno { min-height: 32px; }
 .herramientas button { min-height: 52px; }
 .tira-pasos { scrollbar-width: none; }
 .tira-pasos::-webkit-scrollbar { display: none; }

@@ -5,7 +5,7 @@ import { EspaciosCancha } from './EspaciosCancha';
 import { Pista } from '../pizarra/Pista';
 import { guardarDiario, juntarDiario, leerDiario } from '../diario/diario';
 import { anotarCopia } from '../copiaFecha';
-import { armarCopia, juntar, leerCopia, unirTextos } from '../copia';
+import { armarCopia, juntar, juntarPorId, leerCopia, unirTextos } from '../copia';
 import { guardarFavoritos, leerFavoritos } from '../favoritos';
 import { guardarLista, leerLista, listasPropias } from '../equipo/porEquipo';
 import { guardarSesiones, juntarSesiones, leerSesiones } from '../sesiones/sesiones';
@@ -87,7 +87,7 @@ export function Ajustes() {
       ['las etiquetas', () => !copia.etiquetas || guardarEtiquetas({ ...leerEtiquetas(), ...copia.etiquetas })],
       ['el diario', () => !copia.reflexiones || guardarReflexiones(juntarReflexiones(leerReflexiones(), copia.reflexiones))],
       ['las sesiones', () => !copia.sesiones || guardarSesiones(juntarSesiones(leerSesiones(), copia.sesiones))],
-      ['los espacios de la cancha', () => !copia.espacios || guardarEspacios(copia.espacios)],
+      ['los espacios de la cancha', () => !copia.espacios || guardarEspacios(juntarPorId(leerEspacios(), copia.espacios))],
       ['los favoritos', () => !copia.favoritos || guardarFavoritos(unirTextos(leerFavoritos(), copia.favoritos))],
       ['el libro de la semana', () => !copia.semana || guardarSemana(unirTextos(leerSemana(), copia.semana))],
       ['lo de cada equipo', () => {

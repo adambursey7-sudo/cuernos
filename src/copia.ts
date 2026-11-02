@@ -84,6 +84,12 @@ export function juntar(actuales: Sistema[], deLaCopia: Sistema[]): Sistema[] {
   return [...actuales.filter((s) => !ids.has(s.id)), ...deLaCopia];
 }
 
+/** Junta dos listas con `id`: lo que solo hay aquí se queda; si coincide, gana la copia. */
+export const juntarPorId = <T extends { id: string }>(actual: T[], copia: T[]): T[] => {
+  const ids = new Set(copia.map((x) => x.id));
+  return [...actual.filter((x) => !ids.has(x.id)), ...copia];
+};
+
 /** Une dos listas de ids sin repetir, conservando el orden. */
 export const unirTextos = (actual: string[], copia: string[] = []): string[] => [...new Set([...actual, ...copia])];
 

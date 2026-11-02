@@ -283,10 +283,35 @@ export const temporadaDe = (l: Temporada[], equipoId: string) => l.find((t) => t
 export const guardarTemporada = (l: Temporada[], t: Temporada): Temporada[] =>
   l.some((x) => x.equipoId === t.equipoId) ? l.map((x) => (x.equipoId === t.equipoId ? t : x)) : [...l, t];
 
-/** Junta lo de una copia con lo actual: si es el mismo equipo, gana la copia. */
+const porId = <T extends { id: string }>(actual: T[], copia: T[]): T[] => {
+  const ids = new Set(copia.map((x) => x.id));
+  return [...actual.filter((x) => !ids.has(x.id)), ...copia];
+};
+
+/**
+ * Junta lo de una copia con lo actual. Del mismo equipo, el plan (fechas, fases, entrenos) es el de la copia,
+ * pero los partidos, la asistencia y las respuestas que solo hay en este móvil se conservan: una copia vieja no los borra.
+ */
 export const juntarTemporadas = (actual: Temporada[], copia: Temporada[]): Temporada[] => {
   const ids = new Set(copia.map((t) => t.equipoId));
-  return [...actual.filter((t) => !ids.has(t.equipoId)), ...copia];
+  return [
+    ...actual.filter((t) => !ids.has(t.equipoId)),
+    ...copia.map((c) => {
+      const a = actual.find((t) => t.equipoId === c.equipoId);
+      if (!a) return c;
+      const anteriores = [...(a.anteriores ?? []).filter((x) => !(c.anteriores ?? []).some((y) => y.etiqueta === x.etiqueta)), ...(c.anteriores ?? [])];
+      const disponibilidad = { ...a.disponibilidad, ...c.disponibilidad };
+      return {
+        ...c,
+        eventos: porId(a.eventos, c.eventos),
+        excepciones: { ...a.excepciones, ...c.excepciones },
+        asistencia: { ...a.asistencia, ...c.asistencia },
+        ...(Object.keys(disponibilidad).length ? { disponibilidad } : {}),
+        ...(c.clasificacion ?? a.clasificacion ? { clasificacion: c.clasificacion ?? a.clasificacion } : {}),
+        ...(anteriores.length ? { anteriores } : {}),
+      };
+    }),
+  ];
 };
 
 /** Temporada sin las de equipos que ya no existen. */
