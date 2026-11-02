@@ -13,6 +13,8 @@ export function ImportarCalendario({ t, volver, guardar }: { t: Temporada; volve
   const [texto, setTexto] = useState('');
   const [filas, setFilas] = useState<Fila[] | null>(null);
   const [mensaje, setMensaje] = useState('');
+  const [ics, setIcs] = useState('');
+  const [miEquipo, setMiEquipo] = useState('');
 
   const mostrar = (cs: Candidata[], vacio: string) => {
     // Los «otros» (cumpleaños, reuniones) vienen sin marcar: casi nunca son del equipo.
@@ -22,7 +24,9 @@ export function ImportarCalendario({ t, volver, guardar }: { t: Temporada; volve
   const subir = async (archivo: File | undefined) => {
     if (!archivo) return;
     try {
-      mostrar(leerIcs(await archivo.text()), 'No he encontrado eventos en ese archivo. Tiene que ser un .ics.');
+      const contenido = await archivo.text();
+      setIcs(contenido);
+      mostrar(leerIcs(contenido, miEquipo), 'No he encontrado eventos en ese archivo. Tiene que ser un .ics.');
     } catch {
       setMensaje('No he podido leer ese archivo.');
     }
@@ -40,6 +44,10 @@ export function ImportarCalendario({ t, volver, guardar }: { t: Temporada; volve
       <label className="subir-archivo">
         <input type="file" accept=".ics,text/calendar" onChange={(ev) => { void subir(ev.target.files?.[0]); ev.target.value = ''; }} />
         Elegir archivo .ics
+      </label>
+      <label className="campo-diario">
+        <span>Mi equipo, como sale en el calendario de la federación (para saber casa/fuera y el rival)</span>
+        <input value={miEquipo} placeholder="Ej.: SANTA ROSA DE LIMA FESD - JUVENTUD LAGUNA" onChange={(ev) => { setMiEquipo(ev.target.value); if (ics) mostrar(leerIcs(ics, ev.target.value), 'No he encontrado eventos en ese archivo. Tiene que ser un .ics.'); }} />
       </label>
       <label className="campo-diario">
         <span>O pega la lista de jornadas</span>

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { cuadriculaMes, diaSemana, esFecha, lunesDe, sumarDias, sumarMeses } from './fechas';
-import { escribirIcs, leerIcs, leerLista } from './ics';
+import { escribirIcs, leerIcs, leerLista, rivalConMiEquipo } from './ics';
 import {
   agendaDia, aplicarCandidatas, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporadas, itemsParaIcs, juntarTemporadas, leerTemporadas,
   limpiarTemporada, marcasDia, notasDelBalance, nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarFijo, resumenAsistencia, temporadaPorDefecto,
@@ -138,6 +138,29 @@ describe('listas e .ics', () => {
     expect(r[0]).toMatchObject({ tipo: 'entreno', semanal: true, hora: '18:30', minutos: 90 });
     expect(r[1]).toMatchObject({ tipo: 'partido', titulo: 'Ejemplo CB', casa: true, fecha: '2026-10-17', hora: '11:00' });
     expect(r[2]).toMatchObject({ tipo: 'otro', fecha: '2026-10-20', dudosa: true });
+  });
+
+  const FIBT = [
+    'BEGIN:VCALENDAR',
+    'BEGIN:VEVENT', 'UID:a@horns', 'DTSTART;TZID=Atlantic/Canary:20261016T183000', 'DTEND;TZID=Atlantic/Canary:20261016T200000',
+    'SUMMARY:L.K. LAGUNA - SANTA ROSA DE LIMA FESD - JUVENTUD LAGUNA', 'LOCATION:COLEGIO LUTHER KING', 'DESCRIPTION:Pre-Cadete Femenino 2ª División J1', 'END:VEVENT',
+    'BEGIN:VEVENT', 'UID:b@horns', 'DTSTART;TZID=Atlantic/Canary:20261105T184500', 'DTEND;TZID=Atlantic/Canary:20261105T201500',
+    'SUMMARY:SANTA ROSA DE LIMA FESD - JUVENTUD LAGUNA - LA VICTORIA GRÚAS BONY', 'LOCATION:C.E.I.P. ALONSO NAVA Y GRIMÓN', 'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
+
+  it('lee el .ics de la FIBT: hora de Canarias, pabellón en lugar y duración', () => {
+    const r = leerIcs(FIBT);
+    expect(r[0]).toMatchObject({ tipo: 'partido', fecha: '2026-10-16', hora: '18:30', minutos: 90, lugar: 'COLEGIO LUTHER KING', dudosa: true });
+    expect(r[1]).toMatchObject({ fecha: '2026-11-05', hora: '18:45', lugar: 'C.E.I.P. ALONSO NAVA Y GRIMÓN' });
+  });
+
+  it('con el nombre de mi equipo separa «Local - Visitante» aunque el club lleve un guion', () => {
+    const r = leerIcs(FIBT, 'Santa Rosa de Lima FESD - Juventud Laguna');
+    expect(r[0]).toMatchObject({ titulo: 'L.K. LAGUNA', casa: false, dudosa: false });
+    expect(r[1]).toMatchObject({ titulo: 'LA VICTORIA GRÚAS BONY', casa: true, dudosa: false });
+    expect(rivalConMiEquipo('A - B', 'C')).toBeNull();
+    expect(rivalConMiEquipo('A - A', 'A')).toBeNull();
   });
 
   it('une líneas largas del .ics y desescapa el texto', () => {
