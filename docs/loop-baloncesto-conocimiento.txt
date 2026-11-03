@@ -1,0 +1,53 @@
+LOOP: Que Claude sepa de baloncesto de verdad (movimientos con sentido)
+
+CONTEXTO
+Horns es mi app de baloncesto (C:\dev\baloncesto-app, publicada en https://adambursey7-sudo.github.io/cuernos/).
+«Pedir a Claude» dibuja ejercicios en la pizarra a través de Jarvis (C:\Users\adamg\OneDrive\Escritorio\claude\jeeves-pa:
+horns_ask.py + horns_guia_pista.txt). Ya conoce los 9 espacios de la cancha y valida las reglas del balón.
+Lo que falla: los movimientos no tienen lógica de baloncesto. Ejemplo: la 1 pasa a la 2 y corta a la esquina, pero la 3
+se queda quieta y NADIE ocupa el sitio que dejó la que cortó. Falta que Claude entienda ocupar el espacio libre, el
+equilibrio de la pista, qué movimiento sigue a cuál, etc.
+
+OBJETIVO
+1) Reunir mucho conocimiento de baloncesto (ejercicios y movimientos de entrenamiento: americanos, europeos, FIBA, FEB,
+   formación de base y cadete/femenino) y guardarlo organizado en mi ordenador.
+2) Buscar la MEJOR forma de dárselo a la IA de la app para que dibuje ejercicios y jugadas con lógica, siempre igual.
+3) Dejarlo hecho en la app/Jarvis, probado y sin romper nada.
+
+PASOS
+1. Rama nueva desde main en un worktree propio (loop/baloncesto-conocimiento), en Horns y en Jarvis si hace falta.
+   No uses la copia de main ni toques lo publicado.
+2. Recoger conocimiento. Busca en internet (WebSearch/WebFetch) y en lo que haya en mi PC:
+   - Libros y webs de ejercicios (USA Basketball, FIBA, FEB, entrenadores europeos, Hoops/Breakthrough/Basketball for Coaches,
+     clínics de YouTube con texto, etc.), y ejercicios de iniciación, 2x0, 3x3, 4x4, 5x5, calentamientos, bloqueos, cortes.
+   - Principios: espaciado (spacing), ocupar el espacio libre cuando alguien corta o pasa, pase y corte, corte de puerta
+     atrás, pase y sustituye, bloqueo y continuación, poste alto y bajo, lado fuerte y débil, triángulo, rotación.
+   - NO copies textos largos: resume con tus palabras, anota la fuente (enlace) de cada cosa. Nada de libros pirateados.
+   Guárdalo en C:\dev\baloncesto-app\docs\conocimiento\ (un .txt por tema + un índice.txt con las fuentes).
+3. Organizar. Convierte lo reunido en:
+   a) un catálogo de PATRONES con nombre (ej. «pase y corte», «pase y sustituye», «bloqueo directo»), cada uno con: cuándo
+      se usa, quién se mueve, qué espacio de los 9 deja libre, quién lo ocupa, en cuántos pasos;
+   b) unas REGLAS comprobables (ej. «si una jugadora deja un espacio y hay otra sin balón cerca, esa lo ocupa en el paso
+      siguiente»; «nunca dos en el mismo espacio»; «el pase sale hacia donde hay una jugadora libre»);
+   c) 15–25 ejercicios completos de ejemplo en el formato de la app (jugadoras, pasos, movimientos con los 9 espacios).
+4. Diseñar VARIAS formas de dárselo a la IA y que yo elija (con boceto, ventajas e inconvenientes, en la página de bocetos):
+   A) todo dentro del texto fijo de Jarvis (reglas + patrones);
+   B) además ejemplos completos que Claude copia y adapta (según el tipo de ejercicio que pido);
+   C) la app/Jarvis elige el patrón y Claude solo lo rellena con los detalles;
+   D) revisión extra: un validador nuevo que rechaza lo que no tiene lógica (espacio abandonado y sin reocupar, jugadora
+      parada todo el ejercicio sin motivo) y pide a Claude que lo corrija.
+   Recomienda una o una mezcla, explicando por qué, y ESPERA mi elección antes de programarla.
+5. Programar la elegida: texto en horns_guia_pista.txt (o archivos nuevos que Jarvis lea), validador en
+   src/recursos/ejercicioIA.ts, pruebas automáticas para cada regla nueva. Mantén el límite de tamaño del texto de Jarvis.
+6. Probar con llamadas reales a Claude, pocas (el cupo es 10 cada 24 h): 5–6 ejercicios distintos, y comprobar a mano que
+   cada movimiento tiene sentido (quien corta, quién rellena, a quién pasa). Si falla algo, corregir y repetir.
+7. Revisión: /code-review low (medium si toca el validador). tsc, pruebas y build en verde. Sin dejar nada a medias.
+8. Cierre: boceto final de cambios y mejoras (Hecho/Mejorable) y avisarme por Telegram solo con lo importante.
+
+REGLAS DE TRABAJO
+- Háblame claro, sin códigos ni nombres de archivos en lo que me cuentes; frases cortas.
+- Prompts para modelos externos, en inglés; conmigo, en español.
+- No unas a main, no publiques ni reinicies Jarvis sin que yo diga que sí.
+- Todo lo que quiera leer va en .txt en la carpeta del proyecto (docs), no en el Escritorio.
+- No guardes nada personal (nombres de jugadoras, equipos) en el conocimiento ni en los textos de la IA.
+- Al terminar, /guardar y propón /clear.

@@ -1,0 +1,66 @@
+LOOP AUTÓNOMO: Poder añadir un EQUIPO ENTERO en Horns, con todo lo que conlleva
+
+CONTEXTO
+Horns es mi app de baloncesto (C:\dev\baloncesto-app, publicada en https://adambursey7-sudo.github.io/cuernos/). Lee primero
+CLAUDE.md, PLAN.md y docs/ (sobre todo loop-senior-masculino.txt y loop-reorganizar.txt) y mira la memoria «baloncesto-app»
+y «horns-senior-masculino». La rama loop/senior-masculino (worktree C:\dev\baloncesto-t-senior) ya tiene tipo de equipo,
+plantilla, entrenos, liga, rotación y reglas editables, pero NO está unida a main. Parte de ella.
+
+OBJETIVO
+Que en Horns pueda dar de alta un equipo completo (formación o senior, masculino o femenino) en pocos minutos y que quede
+listo para trabajar toda la temporada: plantilla, cuerpo técnico, horarios, calendario, sistemas, ejercicios, sesiones,
+partidos, seguimiento, familias y copia de seguridad. Y varios equipos a la vez en el mismo móvil, sin que se mezclen
+datos. Si ves que se puede hacer más y encaja, se añade.
+
+ESTE LOOP ES AUTÓNOMO — NO ME ESPERES
+- No pares a pedirme visto bueno de bocetos ni de tramos. Dibuja los bocetos con varias opciones, elige TÚ la recomendada,
+  anota por qué en docs/loop-equipo/decisiones.txt y sigue. Yo lo revisaré al final.
+- Solo me preguntas si algo es irreversible o toca datos reales de personas. Todo lo demás, supuesto razonable y lo dices.
+- No avises por Telegram en cada tramo: un aviso corto al terminar todo (o si te bloqueas de verdad).
+- Si algo falla 2 veces por la misma causa, cambia de enfoque; si sigue, apúntalo en «pendiente» y pasa al siguiente tramo.
+- No te detengas hasta completar los tramos, salvo que el contexto se llene: en ese caso /guardar con el estado exacto
+  (tramo, rama, qué falta) para retomar sin repetir.
+
+PASOS
+1. Rama nueva loop/equipo-completo desde loop/senior-masculino, worktree propio (C:\dev\baloncesto-t-equipo). No toques
+   main ni lo publicado. Para tests: junction de node_modules a un worktree que ya los tenga; quítala con «cmd /c rmdir».
+2. Auditoría rápida (un solo informe, docs/loop-equipo/auditoria.txt): recorre la app como un entrenador que monta un equipo
+   nuevo desde cero. Lista errores, datos que se pierden, pasos de más y huecos. Arregla los pequeños ya.
+3. Diseña por bloques (docs/loop-equipo/bocetos.html, varias opciones cada uno, elige la mejor) y PROGRAMA cada bloque como
+   un tramo, con pruebas automáticas:
+   A) ASISTENTE «NUEVO EQUIPO»: nombre, categoría, masculino/femenino, tipo (formación/senior), temporada, color y escudo
+      sencillo; en 4–5 pasos cortos, saltables y con vuelta atrás. Equipo de ejemplo para probar.
+   B) PLANTILLA: alta rápida de jugadores (pegar lista, importar CSV/Excel/foto de lista si es viable), dorsal, posición,
+      rol, año de nacimiento, mano, notas. Cuerpo técnico (entrenador, ayudante, delegado, fisio) con su papel.
+      Asistencia a entrenos y partidos. Lesiones y salud SOLO en el dispositivo.
+   C) HORARIOS Y PISTAS: días, horas, pista y vestuario; entrenos que se cancelan o se mueven; recordatorios.
+   D) CALENDARIO Y COMPETICIÓN: liga por jornadas, local/visitante, viajes, amistosos, copas y playoffs; importar el
+      calendario (ICS/CSV/texto pegado); clasificación y balance.
+   E) JUEGO Y ENTRENO: biblioteca de sistemas, ejercicios y sesiones propios del equipo (favoritos, libro de jugadas,
+      plan de la semana); copiar o heredar de otro equipo («plantilla de equipo») para no empezar de cero.
+   F) PARTIDO: convocatoria, quinteto, rotación y minutos, faltas, estadística rápida en directo, informe del rival,
+      balance y qué se trabaja la semana siguiente.
+   G) FAMILIAS Y COMUNICACIÓN: convocatoria y horarios por mensaje, hoja de cada jugador (PDF/imagen), calendario
+      exportable (ICS) para las familias, Tele del equipo. Sin nombres de menores en nada que se comparta públicamente.
+   H) VARIOS EQUIPOS: selector de equipo en cabecera, datos separados por equipo, duplicar equipo, archivar temporada
+      y empezar la siguiente conservando plantilla; copia de seguridad y restaurar por equipo; migración de lo que ya
+      hay (mis datos actuales NO se pierden: prueba la migración con una copia).
+   I) EXTRAS que encajen y no compliquen: progreso del jugador a lo largo de la temporada, objetivos del equipo,
+      informe de fin de temporada, modo sin conexión comprobado, accesibilidad (texto grande, contraste).
+4. Cada tramo: tsc, tests y build en verde antes del siguiente. Tests nuevos para cada regla. /code-review low por tramo
+   (medium si toca datos o la copia). Commit por tramo con mensaje claro.
+5. Prueba real (/run): recorrer crear equipo → plantilla → horarios → calendario → sesión → partido → temporada nueva,
+   con pocas capturas y en ancho de iPhone. Probar también dos equipos a la vez y la migración.
+6. Al final UNA vez: /security-review (toca copia, datos de personas y compartir) y /code-review medium del conjunto.
+   Arregla lo importante.
+7. Cierre: docs/loop-equipo/final.html (boceto de cambios y mejoras, Hecho/Mejorable) publicado como artefacto, lista
+   «pendiente», union.txt (conflictos esperados con main y con loop/senior-masculino), /guardar y un solo aviso a Telegram.
+
+REGLAS DE TRABAJO
+- Háblame claro, sin códigos ni nombres de archivos en lo que me cuentes; frases cortas.
+- Repo público y menores: ningún nombre real en código, tests, capturas ni bocetos (solo «Ejemplo Uno…»). Mis datos reales
+  viven solo en mi localStorage. Lesiones y salud, nunca en el repo ni en la copia salvo que yo lo active.
+- La IA no inventa jugadas: usa docs/conocimiento. Listas por edad y relación etiqueta→ejercicio son orientativas.
+- Prompts para modelos externos, en inglés; conmigo, en español. Lo que quiera leer, en .txt dentro de docs/.
+- NO unas a main, NO publiques, NO reinicies Jarvis y NO hagas push sin que yo diga que sí.
+- Al terminar: propón /clear.

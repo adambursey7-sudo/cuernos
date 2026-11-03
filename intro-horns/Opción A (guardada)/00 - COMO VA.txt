@@ -1,0 +1,26 @@
+INTRO DE LA APP HORNS · FLOW Y GEMINI (unos 12 s, vertical 9:16, HD 1080x1920)
+
+LA IDEA (la que me pediste)
+Sale solo HORNS con la O vacía. Van apareciendo las pantallas de la app (jugadas, pizarra, editor, ejercicios,
+sesiones, cronómetro, compartir, colores) y entran una a una en la O, que se abre y las traga. Al final los cuernos
+se cierran, entra el balón y queda el logo entero. Los bocetos están en bocetos.html (y en el enlace que te pasé).
+
+LOS PLANOS
+1 - La O despierta                   0-3 s     La O vacía brilla; aparecen las pantallas alrededor.
+2 - Las pantallas entran en la O     3-9 s     Giran, se encogen y entran una a una en la O.
+3 - El logo entero                   9-12 s    Los cuernos se cierran con un destello y queda HORNS completo.
+
+ORDEN
+ 1. GEMINI (chat nuevo por imagen, Crear imagen, adjunta lo que dice cada gemini.txt):
+      plano 1 -> inicio.jpg        plano 2 -> pantallas.jpg        plano 3 -> abierta.jpg
+    Las letras las dibujo yo (la IA las deforma): los prompts le dicen que no las toque. Si cambia una letra, dile
+    «no cambies las letras» en el mismo chat. Guarda cada imagen en su carpeta con ese nombre.
+ 2. ENSÉÑAME las 3 imágenes. Las reviso (letras intactas, que parezcan la misma serie) y las recorto a 9:16 si hace falta.
+ 3. FLOW (Frames to Video, 9:16, 8 s), 2 versiones por plano:
+      plano 1: inicio.jpg  -> pantallas.jpg
+      plano 2: pantallas.jpg -> abierta.jpg
+      plano 3: abierta.jpg -> final.png (ya está en la carpeta 3)
+    Pega el flow.txt de cada carpeta. Guarda los vídeos como «video 1a.mp4», «video 1b.mp4»...
+ 4. Yo monto: recorto cada plano a sus segundos, pongo sonido y música corta, y la meto en la app como intro.
+
+En _herramientas están las capturas de la app y los dibujos del logo (no hace falta tocarlos).

@@ -1,0 +1,27 @@
+PROMPT 1 - INTERFAZ Y NAVEGACIÓN DE HORNS (nivel pro)
+
+Trabajas en Horns, la app de baloncesto para entrenadores (C:\dev\baloncesto-app, PWA con React + Vite, para el iPhone en la banda). Lee antes CLAUDE.md, PLAN.md y docs/loop-diario.md. Estilo Marcador (fondo oscuro, Graduate para números, Atkinson Hyperlegible para texto), logo HORNS, colores cambiables por el entrenador.
+
+OBJETIVO
+Rehacer la estructura de la interfaz para que Horns se sienta una app profesional de entrenador, no un conjunto de pantallas sueltas. Hoy hay Inicio, Sistemas (Jugadas), Sistema, Ajustes y, por separado, ejercicios, sesiones, cronómetro, diario/equipo y temporada. Hay que ordenarlo todo con una navegación clara y rápida de usar con una mano, de pie, con prisa y a veces con poca luz.
+
+QUÉ HAY QUE DISEÑAR
+1. Menú principal: barra inferior fija con 4-5 apartados máximo (propuesta de partida: Hoy, Biblioteca, Sesiones, Equipo, Más). Pulgar alcanza todo; objetivos táctiles grandes; el apartado activo se ve de lejos.
+2. Pantalla «Hoy»: lo que el entrenador necesita ahora: siguiente entreno o partido, sesión de hoy lista para abrir, «seguir donde lo dejaste», acceso directo al cronómetro y a la pizarra.
+3. Ramas de la Biblioteca: Jugadas/Sistemas, Ejercicios, Juegos y Recursos (lo que se guarde desde enlaces, ver prompt 2). Filtros por categoría, nivel, edad, número de jugadoras, material, duración y objetivo. Buscador siempre visible. Favoritos y colecciones.
+4. Equipo: jugadoras, fichas, dorsales, quién es quién, asistencia, diario.
+5. Temporada: fases, calendario mensual y lista semanal, partidos, entrenos, sesiones enlazadas, exportar .ics (tramo 3 del loop Diario).
+6. Modo banda: un modo de pantalla simplificada para usar durante el entreno (pizarra, cronómetro, sesión del día) con letra enorme, sin menús, pantalla encendida.
+7. Acabado pro: transiciones suaves y cortas, estados vacíos con explicación y una acción clara, carga con esqueletos, gestos (deslizar para volver), accesibilidad (contraste, tamaño de letra ajustable, respeto a «reducir movimiento»), funcionamiento sin conexión, icono y pantalla de arranque coherentes.
+
+REGLAS DE TRABAJO (obligatorias)
+- Antes de programar: hacer BOCETOS (HTML en docs/, publicados como artefacto) con VARIAS opciones de estructura de menú y de la pantalla Hoy, con ventajas e inconvenientes de cada una. Parar y esperar a que Adam elija. No programar nada hasta su visto bueno.
+- Usar los skills frontend-design y feature-dev. Trabajar en una copia (worktree) en su propia rama, sin tocar main hasta aprobación.
+- Repo público y menores: ningún nombre real en código, tests, capturas ni bocetos; solo «Ejemplo Uno», «Ejemplo Dos», etc.
+- No romper lo que ya funciona: los 61 tests deben seguir pasando; migrar los datos guardados de los usuarios sin perderlos.
+- Ligero: el iPhone y el portátil de Adam van justos. Sin librerías pesadas; revisar el tamaño del paquete antes y después.
+- Hablar claro con Adam, sin códigos internos: nombrar las pantallas por su nombre real.
+- Al cerrar cada tramo: npm test, npm run build, probar la app de verdad (/run) con pocas capturas, /code-review low, un aviso corto y parar hasta su visto bueno. Publicar con sh scripts/publicar.sh solo cuando Adam lo apruebe.
+
+ENTREGA
+Plan por tramos pequeños (primero el esqueleto de navegación, luego Hoy, luego cada rama), cada uno utilizable por sí solo.

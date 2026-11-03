@@ -1,0 +1,5 @@
+Frames to Video, 9:16, 8 s. Fotograma inicial «inicio.jpg» (de este plano). Fotograma final «pantallas.jpg» (el de la carpeta 2).
+
+The ring of light in the gap breathes and grows brighter. Light dust floats through the air. Then, one by one, glowing phone screens of a basketball app fade into view around the lettering, floating in a loose circle, and end exactly as in the final frame. The letters H and RNS stay perfectly still and sharp. Slow push-in of the camera.
+Sound: a low warm hum that swells, a soft whoosh for each screen. No dialogue, no voice-over, no music.
+Style: Photorealistic cinematic title-sequence look for a premium basketball coaching app: deep navy night background (#1e2a44), polished warm-orange parquet floor reflections, vivid orange (#f26b1d) energy light, cream-white (#fff8ee) lettering, soft volumetric haze, shallow depth of field, anamorphic lens flares, subtle film grain. Vertical 9:16, 1080x1920, sharp HD.

@@ -1,0 +1,23 @@
+<!doctype html><meta charset="utf-8">
+<style>
+@font-face{font-family:Graduate;src:url(graduate-latin-400-normal.woff2)}
+html,body{margin:0;width:1080px;height:1920px;background:#1e2a44;overflow:hidden}
+body{display:grid;place-items:center}
+.fondo{width:1080px;height:1920px;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 50%,#2a3a5e 0%,#1e2a44 55%,#141c30 100%)}
+.marca{display:inline-flex;align-items:center;font:400 230px/1 Graduate;color:#fff8ee;letter-spacing:.02em;gap:.06em}
+.marca svg{height:.7em;width:auto;overflow:visible}
+.vacio{display:inline-block;width:.62em}
+</style>
+<div class="fondo"><div class="marca" id="m"></div></div>
+<script>
+const v=new URLSearchParams(location.search).get('v')||'completo';
+const C='M14 4C10 46 22 86 50 88C78 86 90 46 86 4C80 38 70 64 50 66C30 64 20 38 14 4Z';
+const sep={completo:0,abierta:26,sin:0}[v];
+const ap=.54;
+const abajo=`translate(0 ${50-4*ap+sep}) scale(1 ${ap})`;
+const arriba=`translate(0 ${50+4*ap-sep}) scale(1 ${-ap})`;
+const bal=v==='sin'?'':`<circle cx="50" cy="50" r="${v==='abierta'?13:10}" fill="#fff8ee"/>`;
+const cuernos=v==='sin'?'':`<path d="${C}" fill="#f26b1d" transform="${abajo}"/><path d="${C}" fill="#f26b1d" transform="${arriba}"/>`;
+const o=v==='sin'?'<span class="vacio"></span>':`<svg viewBox="10 4.6 80 90.8">${cuernos}${bal}</svg>`;
+document.getElementById('m').innerHTML=`<span>H</span>${o}<span>RNS</span>`;
+</script>

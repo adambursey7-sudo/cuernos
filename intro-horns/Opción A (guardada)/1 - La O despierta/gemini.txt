@@ -1,0 +1,6 @@
+PLANO 1 · LA O DESPIERTA (0-3 s)
+Chat NUEVO de Gemini (Crear imagen). Adjunta «adjuntar 1 - logo sin O.png». Guarda como «inicio.jpg».
+
+Edit the photo into a real film still. Keep the letters H and RNS EXACTLY as they are (same font, same size, same position, do not redraw or change them). In the empty gap between H and R, add a glowing orange ring of light, like a portal about to open, with a bright small spark in its centre. Under the lettering add a dark polished basketball parquet floor with soft orange reflections of the letters.
+Photorealistic cinematic title-sequence look for a premium basketball coaching app: deep navy night background (#1e2a44), polished warm-orange parquet floor reflections, vivid orange (#f26b1d) energy light, cream-white (#fff8ee) lettering, soft volumetric haze, shallow depth of field, anamorphic lens flares, subtle film grain. Vertical 9:16, 1080x1920, sharp HD.
+No extra text, no other letters, no watermark.

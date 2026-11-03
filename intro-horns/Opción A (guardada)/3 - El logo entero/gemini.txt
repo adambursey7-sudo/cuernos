@@ -1,0 +1,6 @@
+PLANO 3 · IMAGEN «abierta.jpg» (final del plano 2 e inicio del plano 3)
+Chat NUEVO de Gemini (Crear imagen). Adjunta «adjuntar 1 - O abierta.png» y «adjuntar 2 - pantallas encogiendo.png». Guarda como «abierta.jpg».
+
+Edit the first photo into a real film still. Keep EXACTLY the letters H and RNS and the two orange curved horns above and below the gap (they are open, with a bright cream ball in the middle). Do not redraw or change the letters. Make the horns glow with orange molten light, the ball burn bright white, and add a few tiny luminous app-screen fragments and light trails streaming into the ball. The second photo is only a reference for the mood of the spiralling light. Dark polished parquet reflections below.
+Photorealistic cinematic title-sequence look for a premium basketball coaching app: deep navy night background (#1e2a44), polished warm-orange parquet floor reflections, vivid orange (#f26b1d) energy light, cream-white (#fff8ee) lettering, soft volumetric haze, shallow depth of field, anamorphic lens flares, subtle film grain. Vertical 9:16, 1080x1920, sharp HD.
+No extra text, no watermark.

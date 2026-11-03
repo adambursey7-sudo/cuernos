@@ -1,0 +1,5 @@
+Frames to Video, 9:16, 8 s. Fotograma inicial «inicio.jpg». Fotograma final «mitad.jpg» (el de la carpeta 2, «adjuntar 2 - boceto del final» es su guía).
+
+The camera follows the man from behind as he starts to run down the tunnel. More and more objects float into the air around him and start drifting towards the camera: basketballs, a stopwatch, a whiteboard, a tablet, paper sheets, a calendar. The orange ring at the far end slowly grows. Smooth tracking shot, no cuts.
+Sound: footsteps echoing on parquet, a low rising hum, soft whooshes of objects flying past. No dialogue, no voice-over, no music.
+Style: Photorealistic cinematic film still, epic sports-brand title sequence, vertical 9:16, 1080x1920, sharp HD. A long round concrete-and-wood tunnel with a polished warm basketball parquet floor, dark navy walls (#1e2a44) with thin orange light strips, deep perspective, volumetric haze, anamorphic lens flare, shallow depth of field, subtle film grain. At the far end of the tunnel a bright orange glowing ring of light, like a portal.
