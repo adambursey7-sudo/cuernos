@@ -74,7 +74,7 @@ describe('informe de fin de temporada', () => {
     let u = guardarEvento(t, { ...partido, resultado: { a: 70, c: 60 } });
     u = guardarEvento(u, { ...nuevoEvento('2026-11-14', 'partido'), id: 'p2', titulo: 'Ejemplo Rival B', resultado: { a: 50, c: 55 } });
     const e = { ...equipo, objetivos: [{ id: 'o1', texto: 'Defender mejor', hecho: true }, { id: 'o2', texto: 'Rebote' }] };
-    const r = informeTemporada(e, u, [j1, j2]);
+    const r = informeTemporada(e, u, [j1, j2], true);
     expect(r).toContain('Partidos con resultado: 2');
     expect(r).toContain('Liga: 0 ganados y 1 perdidos');
     expect(r).toContain('Copa: 1 ganados y 0 perdidos');
@@ -84,6 +84,7 @@ describe('informe de fin de temporada', () => {
     expect(r).toContain('[x] Defender mejor');
     expect(r).toContain('#4 Ejemplo Uno');
     expect(informeTemporada(e, u, [j1, j2], false)).not.toContain('Ejemplo Uno');
+    expect(informeTemporada(e, u, [j1, j2])).not.toContain('Ejemplo Uno');
   });
 });
 

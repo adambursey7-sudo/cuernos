@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { disponibles, estaFuera, guardarJugadora, juntarDiario, sinSalud, limpiar, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, repetida } from './diario';
+import { esNotaDeSalud, disponibles, estaFuera, guardarJugadora, juntarDiario, sinSalud, limpiar, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, repetida } from './diario';
 import { leerLinea, leerTexto } from './importar';
 import { esSenior, palabras } from './tipo';
 
@@ -70,6 +70,17 @@ describe('importar plantilla', () => {
     expect(disponibles([j, nuevaJugadora(e.id)])).toBe(1);
     expect(limpiar({ equipos: [e], jugadoras: [{ ...j, lesion: { desde: 3 } }] }).jugadoras).toHaveLength(0);
   });
+  it('las notas libres de salud tampoco salen en la copia por defecto y se conservan al restaurar', () => {
+    const e = nuevoEquipo('Ejemplo');
+    const base = { equipos: [e], jugadoras: [] as ReturnType<typeof nuevaJugadora>[] };
+    const j = nuevaJugadora(e.id, { numero: '5', notas: [{ fecha: '2026-10-01', texto: 'Esguince leve, va al fisio' }, { fecha: '2026-10-02', texto: 'Mejora el tiro exterior' }] });
+    const d = guardarJugadora(base, j);
+    expect(sinSalud(d).jugadoras[0].notas.map((n) => n.texto)).toEqual(['Mejora el tiro exterior']);
+    expect(juntarDiario(d, sinSalud(d)).jugadoras[0].notas).toHaveLength(2);
+    expect(esNotaDeSalud('Alergia a los frutos secos')).toBe(true);
+    expect(esNotaDeSalud('Defiende bien')).toBe(false);
+  });
+
 
   it('la rotación del equipo se conserva con sus jugadoras y descarta a las que ya no están', () => {
     const e = nuevoEquipo('Ejemplo');

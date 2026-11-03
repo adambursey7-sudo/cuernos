@@ -85,8 +85,8 @@ export function Familias({ equipo, t, jugadoras, volver }: { equipo: Equipo; t: 
         <h3 className="sub">Informe de fin de temporada</h3>
         <p className="meta">Resultados por competición, objetivos y asistencia.</p>
         <div className="dos-botones">
-          <button className="secundario" onClick={() => void copiar(informeTemporada(equipo, t, jugadoras), 'Informe copiado.')}>Copiar informe</button>
-          <button className="secundario" onClick={() => void copiar(informeTemporada(equipo, t, jugadoras, false), 'Informe copiado, solo con dorsales.')}>Copiar solo con dorsales</button>
+          <button className="secundario" onClick={() => void copiar(informeTemporada(equipo, t, jugadoras), 'Informe copiado, solo con dorsales.')}>Copiar informe (dorsales)</button>
+          <button className="secundario" onClick={() => { if (window.confirm('Este informe lleva los nombres de menores y su asistencia. No lo pegues en un grupo de familias ni lo envíes fuera del club. ¿Copiarlo con nombres?')) void copiar(informeTemporada(equipo, t, jugadoras, true), 'Informe copiado con nombres: cuidado dónde lo pegas.'); }}>Copiar con nombres…</button>
         </div>
       </div>
     </section>
