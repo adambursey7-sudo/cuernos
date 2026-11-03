@@ -1,0 +1,33 @@
+LOOP · HORNS "Ejercicio con imagen hecho por Claude" (poco consumo, sin fallos)
+Objetivo de Adam (30/10): en Horns > Biblioteca > Ejercicios > Pedir a Claude, que Claude devuelva un EJERCICIO DE VERDAD con su pizarra animada (jugadoras, balón y movimientos), que se guarde con los demás ejercicios, que sea llamativo, fácil de entender para entrenadores y rápido de generar. Menos texto, más imagen. Además, el cuestionario se elige con opciones (lo normal ya marcado) en vez de escribir todo.
+
+ESTADO DE PARTIDA (leer antes la memoria horns-recursos-internet.md y baloncesto-app.md; no releer código ya revisado)
+- Horns = C:\dev\baloncesto-app (main, a21535f, publicado en https://adambursey7-sudo.github.io/cuernos/). Trabajar en una copia nueva (git worktree, rama loop/ejercicio-ia, node_modules con junction a C:\dev\baloncesto-t-diario como las demás; el node_modules de baloncesto-app está incompleto).
+- Jarvis = C:\Users\adamg\OneDrive\Escritorio\claude\jeeves-pa (main, 83d0035, ya reiniciado). Hacer los cambios de Jarvis en un worktree limpio (C:\dev\jeeves-pa-t-ejercicio, rama loop/ejercicio-ia); Adam suele tener cambios sin guardar en main.
+- Emparejado y probado en el iPhone (30/10): la ficha de texto sale bien, pero es demasiado texto.
+- Piezas que ya existen: Sistema (src/sistemas/tipos.ts: 5 puestos de salida en decímetros, media pista 150x140, canasta en (75,12); balón; pasos con movimientos corte/bote/bloqueo/pase), Ficha.sistemaId (src/recursos/fichas.ts), editor de jugadas (src/editor), pizarra animada (src/pizarra), recursos/ia.ts y jarvis.ts (cliente), PedirIA.tsx, y en Jarvis horns_ask.py (SYSTEM, MAX_PROMPT 8000, respuesta cortada a 12000 caracteres, cupo propio de 10 encargos al día, Claude sin herramientas).
+
+REGLAS DE CONSUMO Y DE TRABAJO
+- Un paso por vuelta; parar en cada "PARADA". Sin subagentes salvo en el paso 7. Sin capturas salvo en bocetos y en la prueba del paso 8.
+- Hablar con Adam sin códigos ni nombres de rama ni de archivo. Frases cortas.
+- Repo público y menores: ningún nombre real en código, tests, bocetos ni capturas (solo "Ejemplo Uno…"). Sin nombres en pizarras.
+- Claude NO inventa jugadas de ataque ni sistemas: solo ejercicios (técnica, juegos reducidos, calentamientos) y siempre como BORRADOR que Adam ve moverse y puede retocar antes de guardar. Nunca se guarda solo.
+- Adam elige entre varias opciones antes de programar (bocetos con ventajas e inconvenientes).
+- Los llamados reales a Claude gastan el cupo de 10 al día: pruebas con respuestas falsas; llamadas reales solo 3 o 4 en total, en el paso 3 y el paso 8.
+- No force-push, no borrar ramas. Unir, publicar y reiniciar Jarvis solo con permiso de Adam en ese momento. Si algo choca y no es evidente, parar y preguntar.
+- Prompts para otras IA en inglés; la charla con Adam en español.
+
+PASOS
+1. Bocetos (página en docs/loop-ejercicio-ia/bocetos.html, como los otros loops). Mostrar 3 formas de la pantalla del borrador (pizarra animada grande + título + 3 pasos cortos + "Ver / Retocar / Guardar") y 2 formas de la tarjeta del ejercicio en la biblioteca, y 2 formas del cuestionario con opciones elegibles (jugadoras, material, minutos, nivel, objetivo; lo normal marcado). Cada boceto con ventajas e inconvenientes. PARADA: Adam elige.
+2. Formato y validador, SIN pantalla: una función pura que recibe el texto de Claude y devuelve un Sistema propio válido o un motivo legible. Reglas: solo JSON; máximo 5 puestos; coordenadas dentro de la pista (ajustar si se pasan por poco, rechazar si es absurdo); pases solo entre jugadoras que salen; máximo ~8 pasos; textos cortos; sin HTML. Tests con casos buenos y con muchos casos malos (JSON cortado a 12000, jugadora repetida, pase a sí misma, coordenadas negativas, texto con etiquetas, respuesta con explicación alrededor del JSON). Pasar tsc + vitest.
+3. Petición a Claude. En Jarvis: modo "ejercicio" en horns_ask (otro SYSTEM, salida solo JSON con el formato del paso 2 y 2 ejemplos reales mínimos, sin nombres), subir el límite de respuesta si hace falta, tests con falso. En Horns: ia.ts arma el encargo con las opciones elegidas y llama al validador; si no vale, un reintento automático diciendo qué falló, y si vuelve a fallar, mensaje claro y ofrecer la ficha de solo texto. 3 o 4 pruebas reales con Claude para ajustar el SYSTEM. PARADA: enseñar a Adam 2 resultados reales (descritos sin códigos).
+4. Pantalla del borrador (la elegida): pizarra animada, título, pasos cortos, botones Ver / Retocar en el editor / Guardar / Pedir otra vez. Guardar crea el Sistema propio y la ficha enlazada (sistemaId) con texto corto (objetivo y pasos de una línea). Tests de guardado y de que no se guarda nada sin pulsar Guardar.
+5. Biblioteca: el ejercicio guardado sale junto a los demás con su miniatura de pizarra y se abre con la pizarra animada; también dentro de una sesión y en el modo banda. Comprobar que "Mis ejercicios" lo enseña y que el copiar/pegar de copia de seguridad lo incluye.
+6. Cuestionario con opciones elegibles (la elegida): jugadoras, material, minutos, nivel, objetivo, espacio; lo normal marcado de entrada; "otro" abre escribir. Que el texto base editable siga disponible. Tests.
+7. Revisión: /code-review medium (toca red y lo que Claude devuelve). Arreglar solo lo real y repasar tsc, vitest y build. Si toca Jarvis, repasar test_horns, test_mobile y test_mandar.
+8. Con permiso de Adam: unir a main (Horns y Jarvis), reiniciar Jarvis con el vigilante (avisar antes; comprobar con check_boot), publicar con "sh scripts/publicar.sh" DESDE una copia con dependencias completas, confirmar que la URL sirve el archivo nuevo, y probar con Adam en el iPhone (Tailscale; el emparejamiento ya hecho vale; si se pierde, "python mobile_server.py --code" y la dirección https://msi.tail0b94b8.ts.net). Aviso: en iPhone la app instalada tarda en coger la versión nueva (abrirla dos veces o abrir la URL en Safari). PARADA: preguntar qué le pareció.
+9. Arreglos de lo que falle en la prueba, pequeños y con test.
+10. Pendientes pequeños de seguridad, con permiso: aviso en la pantalla de conexión de que la dirección es la del PC propio; comando para revocar la clave de Horns en Jarvis.
+11. Cierre: /guardar y proponer /clear.
+
+CHECK DE CADA VUELTA: leer solo la memoria y el estado de git del repo del paso; no releer lo ya revisado. Avisar "buen momento para /compact" al cerrar cada fase.

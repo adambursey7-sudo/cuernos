@@ -1,0 +1,28 @@
+PROMPT 2 - DISTRIBUCIÓN DE LA INFORMACIÓN, ENLACES Y REELS EN HORNS
+
+Trabajas en Horns, la app de baloncesto para entrenadores (C:\dev\baloncesto-app, PWA con React + Vite, sin servidor propio, para el iPhone). Lee antes CLAUDE.md, PLAN.md y docs/loop-diario.md. Mira cómo están hechos src/ejercicios, src/sesiones, src/compartir y src/copia.ts.
+
+OBJETIVO
+Que el entrenador pueda guardar en Horns todo lo que encuentra por internet (enlaces de webs, vídeos de YouTube, reels de Instagram o TikTok, artículos, PDFs) y convertirlo en material útil: ejercicios, juegos, jugadas o notas, bien clasificados y listos para meter en una sesión.
+
+QUÉ HAY QUE CONSEGUIR
+1. Bandeja de entrada de recursos: un sitio donde cae todo lo que guardas. Añadir con: pegar un enlace, compartir desde el móvil (en iPhone: atajo de Atajos/Shortcuts o pegar desde el portapapeles; en Android: Share Target de la PWA), o escribir una nota. Cada recurso guarda: enlace, título, origen (web, YouTube, Instagram, TikTok...), miniatura si se puede, fecha, etiquetas y estado (Sin revisar / Revisado / Convertido en ejercicio).
+2. Datos automáticos solo si son legales y funcionan sin servidor: título y miniatura de YouTube por su oEmbed; para el resto, el entrenador escribe o pega el título y la descripción. NO raspar Instagram/TikTok ni saltarse sus condiciones. El reel se abre con su enlace original; el vídeo no se descarga ni se copia.
+3. Del recurso al ejercicio: pantalla «Convertir en ejercicio» con una ficha ordenada: nombre, objetivo, categoría (tiro, pase, defensa, transición, juego reducido, calentamiento...), nivel y edad, número de jugadoras, material, espacio, duración, descripción paso a paso, consejos de coaching, variantes y progresión, y el enlace de origen como «Fuente». Un recurso puede dar varios ejercicios.
+4. Ayuda con IA SIN automatismo: al estilo del tramo 4 del loop Diario, la app construye un prompt editable («Aquí tienes el título y la descripción de un vídeo; ayúdame a rellenar esta ficha de ejercicio con este formato...») que Adam copia, pega en su IA y vuelve a pegar el resultado. Importar ese resultado a la ficha con un botón y revisar antes de guardar. La IA no inventa jugadas ni diagramas: solo ayuda a ordenar texto que el entrenador aporta.
+5. Pizarra opcional: desde un ejercicio, poder dibujar su pizarra animada con el editor existente y enlazarla.
+6. Organización: colecciones («Calentamientos», «Juegos de 1 contra 1», «Para minibasket»), etiquetas libres, favoritos, búsqueda en todo (título, etiquetas, notas), y arrastrar ejercicios a una sesión del calendario.
+7. Copia de seguridad y compartir: exportar/importar todo (ya existe copia.ts, ampliarlo), compartir una colección o un ejercicio como texto, y que lo guardado no se pierda al actualizar la app.
+8. Avisos de derechos: mostrar siempre la fuente del recurso y no republicar contenido ajeno; lo compartido hacia fuera lleva solo el texto del entrenador y el enlace.
+
+REGLAS DE TRABAJO (obligatorias)
+- Antes de programar: BOCETOS (HTML en docs/, publicados como artefacto) con VARIAS formas de la bandeja y de la ficha de ejercicio, con ventajas e inconvenientes. Parar y esperar a que Adam elija. Nada de código antes de su visto bueno.
+- Usar feature-dev y frontend-design. Trabajar en worktree y rama propia, sin tocar main hasta aprobación. Documentación de librerías con context7.
+- Todo se guarda en el dispositivo (sin servidor propio ni cuentas). No enviar datos a terceros sin que Adam lo vea y lo apruebe; revisar con /security-review una vez al final porque toca enlaces y entrada de datos del usuario (validar y limpiar URLs, no ejecutar nada de lo pegado, solo http/https).
+- Repo público y menores: ningún nombre real en código, tests, capturas ni bocetos; solo «Ejemplo Uno», etc. Los vídeos propios con menores se quedan en local.
+- Ligero: sin librerías pesadas; datos antiguos compatibles; los 61 tests deben seguir pasando y añadir tests de la ficha, la importación y la validación de enlaces.
+- Hablar claro con Adam, sin códigos internos.
+- Al cerrar cada tramo: npm test, npm run build, probar la app de verdad (/run), /code-review low (medium en este por tocar entrada de datos), aviso corto y parar hasta su visto bueno. Publicar con sh scripts/publicar.sh solo con su aprobación.
+
+ENTREGA
+Plan por tramos pequeños: 1) bandeja y guardar enlaces, 2) ficha de ejercicio y convertir, 3) colecciones y búsqueda, 4) prompt editable con IA, 5) copia de seguridad y compartir. Cada tramo utilizable por sí solo.

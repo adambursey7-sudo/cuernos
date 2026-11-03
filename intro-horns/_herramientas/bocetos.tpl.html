@@ -1,0 +1,83 @@
+<title>Intro de Horns</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Graduate&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Tira de bocetos en vertical (9:16), una fila por opción; fondo marcador oscuro con naranja de parqué. */
+:root{--bg:#f4f0e8;--panel:#e8e2d6;--fg:#1e2a44;--tenue:#5a6478;--acento:#d4560f;--linea:#cfc6b4;--display:'Graduate','Impact',serif;--cuerpo:'Atkinson Hyperlegible',system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141c30;--panel:#1e2a44;--fg:#fff8ee;--tenue:#a9b3c8;--acento:#f26b1d;--linea:#33415f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141c30;--panel:#1e2a44;--fg:#fff8ee;--tenue:#a9b3c8;--acento:#f26b1d;--linea:#33415f;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--cuerpo);font-size:16px;line-height:1.5;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2{font-family:var(--display);font-weight:400;text-transform:uppercase;letter-spacing:.03em;margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,6vw,3.2rem);line-height:1}
+h2{font-size:1.5rem}
+p{margin:0;max-width:65ch}
+.intro{display:flex;flex-direction:column;gap:12px}
+.meta{color:var(--tenue);font-size:.95rem}
+.opcion{display:flex;flex-direction:column;gap:16px}
+.cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.letra{font-family:var(--display);font-size:2.4rem;color:var(--acento);line-height:1}
+.tira{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(170px,1fr);gap:12px;overflow-x:auto;padding-bottom:10px}
+.plano{display:flex;flex-direction:column;gap:8px;min-width:0}
+.cuadro{position:relative;aspect-ratio:9/16;overflow:hidden;border-radius:10px;background:#1e2a44;border:1px solid var(--linea)}
+.cuadro>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.seg{font-family:var(--display);color:var(--acento);font-size:.95rem;letter-spacing:.04em}
+.plano b{display:block;font-weight:700}
+.plano span.t{color:var(--tenue);font-size:.92rem}
+.flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,248,238,.95),rgba(242,107,29,.55) 30%,transparent 62%)}
+.carta{position:absolute;width:30%;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.6);border:1px solid rgba(255,248,238,.25)}
+.zoom{position:absolute;left:50%;top:50%;width:380%;max-width:none;height:auto;transform:translate(-50%,-50%);object-fit:fill}
+.pv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pv div{background:var(--panel);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.pv h3{margin:0;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--tenue)}
+.pv p{font-size:.95rem}
+@media(max-width:560px){.pv{grid-template-columns:1fr}}
+.reco{border-top:1px solid var(--linea);padding-top:20px}
+</style>
+<main>
+<header class="intro">
+<h1>Intro de Horns</h1>
+<p>Tres formas de que las pantallas de la app entren en la O de HORNS. Todas son verticales (9:16, 1080×1920, para el iPhone), duran unos 12 segundos y acaban con el logo entero. Los cuadros son dibujos hechos con las capturas reales de la app; Gemini y Flow los pasan a cine.</p>
+<p class="meta">Las carpetas con los prompts y las imágenes están preparadas para la opción A. Si eliges B o C, preparo las suyas.</p>
+</header>
+
+<section class="opcion">
+<div class="cab"><span class="letra">A</span><h2>Remolino</h2></div>
+<p>La que pediste: las pantallas aparecen alrededor, giran cada vez más pequeñas y entran en la O como en un desagüe. La O se abre, traga la última y los cuernos se cierran con el balón.</p>
+<div class="tira">
+<div class="plano"><div class="cuadro"><img src="@logo-sin-O" alt="HORNS con la O vacía"><div class="flash" style="opacity:.35"></div></div><span class="seg">0–2 s</span><span><b>La O vacía respira</b><span class="t">Solo H y RNS; en el hueco, un anillo de luz naranja.</span></span></div>
+<div class="plano"><div class="cuadro"><img src="@collage-flotando" alt="Pantallas flotando alrededor"></div><span class="seg">2–4 s</span><span><b>Aparecen las pantallas</b><span class="t">Jugadas, pizarra, editor, ejercicios, sesiones, cronómetro, compartir, colores.</span></span></div>
+<div class="plano"><div class="cuadro"><img src="@collage-entrando" alt="Pantallas girando y encogiendo"></div><span class="seg">4–7 s</span><span><b>Giran y se encogen</b><span class="t">Cada vez más rápido hacia el hueco.</span></span></div>
+<div class="plano"><div class="cuadro"><img src="@logo-O-abierta" alt="La O abierta"><div class="flash" style="opacity:.55"></div></div><span class="seg">7–9 s</span><span><b>La O se abre</b><span class="t">Entra la última pantalla; los cuernos arden.</span></span></div>
+<div class="plano"><div class="cuadro"><img src="@logo-completo" alt="Logo entero"><div class="flash"></div></div><span class="seg">9–10 s</span><span><b>Destello</b><span class="t">Los cuernos se cierran con el balón dentro.</span></span></div>
+<div class="plano"><div class="cuadro"><img src="@logo-completo" alt="Logo entero final"></div><span class="seg">10–12 s</span><span><b>HORNS entero</b><span class="t">Queda quieto y nítido; entra la app.</span></span></div>
+</div>
+<div class="pv"><div><h3>Ventajas</h3><p>Se ve todo lo que tiene la app a la vez. Es fácil de leer y de hacer con Flow.</p></div><div><h3>Inconvenientes</h3><p>Las pantallas giran rápido: casi no se leen. Es la más «típica».</p></div></div>
+</section>
+
+<section class="opcion">
+<div class="cab"><span class="letra">B</span><h2>Una a una</h2></div>
+<p>Cada pantalla entra sola en la O, se queda un instante grande y se traga con un pulso de luz. Ocho pantallas, ocho golpes al ritmo de la música. Más largo (unos 14 s).</p>
+<div class="tira">
+<div class="plano"><div class="cuadro"><img src="@logo-sin-O" alt="O vacía"><img class="carta" style="left:35%;top:12%" src="@3-pizarra" alt="Pizarra"></div><span class="seg">1–3 s</span><span><b>Entra la pizarra</b><span class="t">Grande, un instante, y baja hacia la O.</span></span></div>
+<div class="plano"><div class="cuadro"><img src="@logo-O-abierta" alt="O abierta"><div class="flash" style="opacity:.5"></div><img class="carta" style="left:35%;top:70%;width:24%" src="@5-sesion" alt="Sesión"></div><span class="seg">3–11 s</span><span><b>Una cada segundo</b><span class="t">La O pulsa con cada una. Sesiones, cronómetro, compartir...</span></span></div>
+<div class="plano"><div class="cuadro"><img src="@logo-completo" alt="Logo entero"></div><span class="seg">12–14 s</span><span><b>HORNS entero</b><span class="t">Se cierran los cuernos con el balón.</span></span></div>
+</div>
+<div class="pv"><div><h3>Ventajas</h3><p>Cada pantalla se lee. Se nota el ritmo y queda más premium.</p></div><div><h3>Inconvenientes</h3><p>Es más largo y Flow tarda más: hay que hacer varios clips y unirlos.</p></div></div>
+</section>
+
+<section class="opcion">
+<div class="cab"><span class="letra">C</span><h2>Túnel</h2></div>
+<p>La cámara se acerca y atraviesa la O. Dentro, las pantallas pasan a los lados como en un túnel. Al salir, el logo ya está entero.</p>
+<div class="tira">
+<div class="plano"><div class="cuadro"><img src="@logo-sin-O" alt="HORNS con la O vacía"></div><span class="seg">0–2 s</span><span><b>HORNS con la O vacía</b><span class="t">La cámara empieza a acercarse.</span></span></div>
+<div class="plano"><div class="cuadro"><img class="zoom" src="@logo-O-abierta" alt="Zoom a la O"><div class="flash" style="opacity:.5"></div><img class="carta" style="left:6%;top:28%;width:26%;transform:rotate(-12deg)" src="@3-pizarra" alt=""><img class="carta" style="left:68%;top:46%;width:26%;transform:rotate(10deg)" src="@6-cronometro" alt=""></div><span class="seg">2–9 s</span><span><b>Dentro de la O</b><span class="t">Las pantallas pasan a los lados, cada vez más rápido.</span></span></div>
+<div class="plano"><div class="cuadro"><img src="@logo-completo" alt="Logo entero"></div><span class="seg">9–12 s</span><span><b>Sales y está entero</b><span class="t">Los cuernos se cierran detrás.</span></span></div>
+</div>
+<div class="pv"><div><h3>Ventajas</h3><p>Es la más espectacular y cambia de ritmo.</p></div><div><h3>Inconvenientes</h3><p>Flow lo hace peor: las pantallas se deforman al moverse tan rápido. Más intentos.</p></div></div>
+</section>
+
+<section class="reco">
+<p><b>Mi recomendación:</b> la A. Es lo que pediste, es la que mejor sale en Flow y las carpetas ya están hechas. Si quieres más ritmo, se puede añadir el pulso de la B a los últimos segundos de la A.</p>
+</section>
+</main>

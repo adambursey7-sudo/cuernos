@@ -1,0 +1,3 @@
+PLANO 4 · IMAGEN «luz.jpg» (final del plano 3 e inicio del plano 4)
+Se hace en la carpeta 3 (está explicada al final de su gemini.txt). Guárdala también aquí como «luz.jpg».
+El final del plano 4 es «final.png» (ya está en esta carpeta: es el logo exacto, hecho por Claude; la IA deforma las letras).

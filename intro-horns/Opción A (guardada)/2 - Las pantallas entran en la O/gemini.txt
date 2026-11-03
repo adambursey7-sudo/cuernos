@@ -1,0 +1,6 @@
+PLANO 2 · IMAGEN «pantallas.jpg» (final del plano 1 e inicio del plano 2)
+Chat NUEVO de Gemini (Crear imagen). Adjunta «adjuntar 1 - pantallas flotando.png». Guarda como «pantallas.jpg».
+
+Edit the photo into a real film still. Keep the composition: eight phone screens of a basketball coaching app floating in a loose circle around the word, and the letters H and RNS in the middle with a gap between them. Keep the CONTENT of every screen as it is (same colours, same layout, same court drawings). Do not redraw or change the letters H and RNS. Make the screens look like real glass phones with soft reflections and orange light spilling from the gap between the letters. Add dark polished parquet floor reflections below.
+Photorealistic cinematic title-sequence look for a premium basketball coaching app: deep navy night background (#1e2a44), polished warm-orange parquet floor reflections, vivid orange (#f26b1d) energy light, cream-white (#fff8ee) lettering, soft volumetric haze, shallow depth of field, anamorphic lens flares, subtle film grain. Vertical 9:16, 1080x1920, sharp HD.
+No extra text, no watermark.

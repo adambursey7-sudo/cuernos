@@ -1,0 +1,5 @@
+Frames to Video, 9:16, 8 s. Fotograma inicial «abierta.jpg». Fotograma final «final.png» (ya está en esta carpeta: es el logo exacto, hecho por Claude).
+
+The last light streams into the ball. The two orange horns snap shut around it with a bright flash and a shockwave of light, closing the letter O. The logo HORNS ends complete and perfectly sharp, exactly as in the final frame, with a final soft lens flare and a gentle glint on the ball. Camera slowly settles.
+Sound: a deep impact hit, a shimmer, then silence. No dialogue, no voice-over, no music.
+Style: Photorealistic cinematic title-sequence look for a premium basketball coaching app: deep navy night background (#1e2a44), polished warm-orange parquet floor reflections, vivid orange (#f26b1d) energy light, cream-white (#fff8ee) lettering, soft volumetric haze, shallow depth of field, anamorphic lens flares, subtle film grain. Vertical 9:16, 1080x1920, sharp HD.

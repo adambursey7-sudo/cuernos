@@ -1,0 +1,211 @@
+<title>Intro Horns Túnel</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Graduate&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Tira de bocetos en vertical (9:16), una fila por opción; fondo marcador oscuro con naranja de parqué. */
+:root{--bg:#f4f0e8;--panel:#e8e2d6;--fg:#1e2a44;--tenue:#5a6478;--acento:#d4560f;--linea:#cfc6b4;--display:'Graduate','Impact',serif;--cuerpo:'Atkinson Hyperlegible',system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141c30;--panel:#1e2a44;--fg:#fff8ee;--tenue:#a9b3c8;--acento:#f26b1d;--linea:#33415f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141c30;--panel:#1e2a44;--fg:#fff8ee;--tenue:#a9b3c8;--acento:#f26b1d;--linea:#33415f;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--cuerpo);font-size:16px;line-height:1.5;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2{font-family:var(--display);font-weight:400;text-transform:uppercase;letter-spacing:.03em;margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,6vw,3.2rem);line-height:1}
+h2{font-size:1.5rem}
+p{margin:0;max-width:65ch}
+.intro{display:flex;flex-direction:column;gap:12px}
+.meta{color:var(--tenue);font-size:.95rem}
+.opcion{display:flex;flex-direction:column;gap:16px}
+.cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.letra{font-family:var(--display);font-size:2.4rem;color:var(--acento);line-height:1}
+.tira{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(170px,1fr);gap:12px;overflow-x:auto;padding-bottom:10px}
+.plano{display:flex;flex-direction:column;gap:8px;min-width:0}
+.cuadro{position:relative;aspect-ratio:9/16;overflow:hidden;border-radius:10px;background:#1e2a44;border:1px solid var(--linea)}
+.cuadro>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.seg{font-family:var(--display);color:var(--acento);font-size:.95rem;letter-spacing:.04em}
+.plano b{display:block;font-weight:700}
+.plano span.t{color:var(--tenue);font-size:.92rem}
+.flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,248,238,.95),rgba(242,107,29,.55) 30%,transparent 62%)}
+.carta{position:absolute;width:30%;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.6);border:1px solid rgba(255,248,238,.25)}
+.zoom{position:absolute;left:50%;top:50%;width:380%;max-width:none;height:auto;transform:translate(-50%,-50%);object-fit:fill}
+.pv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pv div{background:var(--panel);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.pv h3{margin:0;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--tenue)}
+.pv p{font-size:.95rem}
+@media(max-width:560px){.pv{grid-template-columns:1fr}}
+.reco{border-top:1px solid var(--linea);padding-top:20px}
+.fila{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(150px,1fr);gap:10px;overflow-x:auto;padding-bottom:8px}
+.cuadro svg{position:absolute;inset:0;width:100%;height:100%}
+.cuadro .logo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ver{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--linea);padding-top:16px}
+.ver .cab h3{font-family:var(--display);font-weight:400;font-size:1.15rem;margin:0;text-transform:uppercase;letter-spacing:.03em}
+.ver .cab .letra{font-size:1.6rem}
+</style>
+<script>// Dibujos de la intro (túnel): cada cuadro es un SVG 540x960 (9:16). Sirve para la página de bocetos y para las imágenes de referencia.
+(function () {
+  const ROSA = '#e5508a', VERDE = '#1f9d63', NARANJA = '#f26b1d', CREMA = '#fff8ee', NAVY = '#1e2a44';
+  const CUERNO = 'M14 4C10 46 22 86 50 88C78 86 90 46 86 4C80 38 70 64 50 66C30 64 20 38 14 4Z';
+  const VP = { x: 270, y: 430 };
+
+  const ICONOS = {
+    balon: () => `<circle r="40" fill="${NARANJA}" stroke="#7a2e08" stroke-width="3"/><path d="M-40 0H40M0 -40V40M-28 -28Q0 0 -28 28M28 -28Q0 0 28 28" fill="none" stroke="#7a2e08" stroke-width="3"/>`,
+    silbato: () => `<rect x="-38" y="-14" width="60" height="30" rx="14" fill="#c9ced8" stroke="#555d70" stroke-width="3"/><circle cx="22" cy="0" r="20" fill="#c9ced8" stroke="#555d70" stroke-width="3"/><rect x="-44" y="-8" width="14" height="10" fill="#555d70"/><circle cx="22" cy="0" r="6" fill="#555d70"/>`,
+    libreta: () => `<rect x="-30" y="-42" width="60" height="84" rx="5" fill="${VERDE}" stroke="#0c4a2e" stroke-width="3"/><rect x="-22" y="-30" width="44" height="6" fill="${CREMA}" opacity=".8"/><rect x="-22" y="-16" width="44" height="3" fill="${CREMA}" opacity=".6"/><rect x="-22" y="-6" width="44" height="3" fill="${CREMA}" opacity=".6"/>`,
+    cronometro: () => `<circle r="36" fill="#e9edf4" stroke="#555d70" stroke-width="5"/><rect x="-6" y="-50" width="12" height="12" fill="#555d70"/><path d="M0 0V-24M0 0L16 8" stroke="${NAVY}" stroke-width="5" stroke-linecap="round"/>`,
+    cono: () => `<path d="M-30 40H30L10 -38H-10Z" fill="${NARANJA}" stroke="#7a2e08" stroke-width="3"/><rect x="-38" y="38" width="76" height="8" rx="3" fill="#7a2e08"/><path d="M-17 4H17M-24 22H24" stroke="${CREMA}" stroke-width="6"/>`,
+    pizarra: () => `<rect x="-52" y="-36" width="104" height="72" rx="5" fill="#d9a066" stroke="${NAVY}" stroke-width="5"/><path d="M-30 -12Q0 20 30 -14" fill="none" stroke="${NAVY}" stroke-width="3"/><circle cx="-30" cy="-12" r="6" fill="${NAVY}"/><circle cx="30" cy="-14" r="6" fill="${ROSA}"/>`,
+    boli: () => `<rect x="-6" y="-48" width="12" height="80" rx="5" fill="${ROSA}" stroke="#7c1c46" stroke-width="3"/><path d="M-6 32L0 48L6 32Z" fill="${NAVY}"/>`,
+    tablet: () => `<rect x="-40" y="-52" width="80" height="104" rx="9" fill="#2b3550" stroke="#9aa3b8" stroke-width="4"/><rect x="-32" y="-44" width="64" height="88" rx="3" fill="#d9a066"/><circle cx="-8" cy="-6" r="6" fill="${NAVY}"/><circle cx="14" cy="14" r="6" fill="${ROSA}"/>`,
+    pdf: () => `<path d="M-34 -46H14L34 -26V46H-34Z" fill="${CREMA}" stroke="#7a8296" stroke-width="3"/><path d="M14 -46V-26H34" fill="#d6d0c4" stroke="#7a8296" stroke-width="3"/><rect x="-28" y="8" width="38" height="20" rx="3" fill="#d23a2e"/><text x="-9" y="23" font-size="14" font-weight="700" text-anchor="middle" fill="#fff" font-family="sans-serif">PDF</text>`,
+    calendario: () => `<rect x="-44" y="-40" width="88" height="82" rx="7" fill="${CREMA}" stroke="#7a8296" stroke-width="3"/><rect x="-44" y="-40" width="88" height="22" rx="7" fill="${ROSA}"/><path d="M-26 -50V-34M26 -50V-34" stroke="#555d70" stroke-width="6" stroke-linecap="round"/><path d="M-30 -2H30M-30 16H30M-30 32H30M-10 -12V40M12 -12V40" stroke="#a7aebd" stroke-width="2"/>`,
+    camisetaR: () => `<path d="M-20 -44L-48 -26L-36 -4L-26 -10V44H26V-10L36 -4L48 -26L20 -44Q0 -30 -20 -44Z" fill="${ROSA}" stroke="#7c1c46" stroke-width="3"/><circle cy="0" r="12" fill="none" stroke="${CREMA}" stroke-width="4"/>`,
+    camisetaV: () => `<path d="M-20 -44L-48 -26L-36 -4L-26 -10V44H26V-10L36 -4L48 -26L20 -44Q0 -30 -20 -44Z" fill="${VERDE}" stroke="#0c4a2e" stroke-width="3"/><circle cy="0" r="12" fill="none" stroke="${CREMA}" stroke-width="4"/>`,
+    botella: () => `<rect x="-14" y="-36" width="28" height="78" rx="12" fill="#8fd0f0" stroke="#3b7da0" stroke-width="3"/><rect x="-8" y="-50" width="16" height="16" rx="3" fill="${ROSA}"/><rect x="-14" y="-6" width="28" height="22" fill="${CREMA}" opacity=".7"/>`,
+    canasta: () => `<rect x="-6" y="-10" width="12" height="130" fill="#8b93a6"/><rect x="-60" y="-80" width="120" height="80" rx="4" fill="${CREMA}" stroke="#555d70" stroke-width="4"/><rect x="-24" y="-30" width="48" height="30" fill="none" stroke="${ROSA}" stroke-width="4"/><ellipse cx="0" cy="8" rx="30" ry="7" fill="none" stroke="${NARANJA}" stroke-width="6"/><path d="M-28 10L-18 50M28 10L18 50M0 12V52" stroke="${CREMA}" stroke-width="2" opacity=".8"/>`,
+  };
+  const o = (t, x, y, s = 1, r = 0, op = 1) => `<g transform="translate(${x} ${y}) rotate(${r}) scale(${s})" opacity="${op}">${ICONOS[t]()}</g>`;
+
+  function tunel() {
+    let s = `<rect width="540" height="960" fill="#0d1424"/>`;
+    for (let k = 0; k < 9; k++) {
+      const r = 1.9 * Math.pow(0.6, k), w = 300 * r, h = 520 * r;
+      s += `<rect x="${VP.x - w}" y="${VP.y - h}" width="${2 * w}" height="${2 * h}" rx="${40 * r}" fill="${k % 2 ? '#18223a' : '#202d4a'}" stroke="${NARANJA}" stroke-opacity="${0.12 + 0.07 * k}" stroke-width="${Math.max(1, 5 * r)}"/>`;
+    }
+    for (let i = -4; i <= 4; i++) s += `<path d="M${VP.x + i * 130} 960L${VP.x + i * 6} ${VP.y + 40}" stroke="#d9a066" stroke-opacity=".28" stroke-width="2"/>`;
+    return s + `<ellipse cx="${VP.x}" cy="${VP.y}" rx="90" ry="150" fill="url(#luz)"/>`;
+  }
+  const defs = `<defs><radialGradient id="luz"><stop offset="0" stop-color="#fff8ee" stop-opacity=".9"/><stop offset=".35" stop-color="${NARANJA}" stop-opacity=".55"/><stop offset="1" stop-color="${NARANJA}" stop-opacity="0"/></radialGradient></defs>`;
+
+  function O(cx, cy, s, ab = 0, opacidad = 1) {
+    const ap = 0.54;
+    return `<g transform="translate(${cx} ${cy}) scale(${s}) translate(-50 -50)" opacity="${opacidad}"><path d="${CUERNO}" fill="${NARANJA}" transform="translate(0 ${50 - 4 * ap + ab}) scale(1 ${ap})"/><path d="${CUERNO}" fill="${NARANJA}" transform="translate(0 ${50 + 4 * ap - ab}) scale(1 ${-ap})"/><circle cx="50" cy="50" r="10" fill="${CREMA}"/></g>`;
+  }
+
+  // hombre visto de espaldas, corriendo (sudadera rosa del cole, pantalón oscuro)
+  function hombre(x, y, s, rot = 0, paso = 0) {
+    const a = paso ? 22 : -22;
+    return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})">
+      <path d="M-14 40L${-14 - a} 118" stroke="#1b2236" stroke-width="22" stroke-linecap="round"/><path d="M14 40L${14 + a} 118" stroke="#1b2236" stroke-width="22" stroke-linecap="round"/>
+      <ellipse cx="${-14 - a}" cy="122" rx="14" ry="8" fill="${CREMA}"/><ellipse cx="${14 + a}" cy="122" rx="14" ry="8" fill="${CREMA}"/>
+      <path d="M-30 -30L-52 ${10 + a}" stroke="${ROSA}" stroke-width="18" stroke-linecap="round"/><path d="M30 -30L52 ${10 - a}" stroke="${ROSA}" stroke-width="18" stroke-linecap="round"/>
+      <path d="M-34 -34Q-36 -50 0 -52Q36 -50 34 -34L30 46H-30Z" fill="${ROSA}"/>
+      <circle cx="0" cy="-58" r="20" fill="#e5508a" opacity=".85"/><circle cx="0" cy="-64" r="15" fill="#3b2a22"/>
+      <circle cx="0" cy="8" r="13" fill="none" stroke="${CREMA}" stroke-width="3"/>
+    </g>`;
+  }
+
+  function cara(x, y, s) { // primer plano de perfil, sonriendo hacia la derecha
+    return `<g transform="translate(${x} ${y}) scale(${s})">
+      <path d="M-120 200Q-130 80 -90 20Q-60 -40 0 -40Q70 -40 78 20L84 60L100 72L82 90L90 104Q86 134 40 138Q10 150 20 200Z" fill="#e0a77f"/>
+      <path d="M-100 40Q-110 -30 -40 -50Q30 -62 70 -22Q30 -26 6 -4Q-20 10 -50 8Q-70 30 -100 40Z" fill="#2a1c16"/><path d="M10 130Q50 150 84 108L90 104Q40 140 -20 120Z" fill="#2a1c16" opacity=".45"/>
+      <path d="M-150 260Q-120 150 -40 150L60 200L200 330V420H-150Z" fill="${ROSA}"/>
+      <circle cx="48" cy="38" r="5" fill="#2a1c16"/><path d="M36 22Q50 16 66 24" stroke="#3b2a22" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M50 100Q70 118 90 98" stroke="#7a2e08" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </g>`;
+  }
+
+  // letras H, R, N, S: pos final; modo según la versión
+  const LETRAS = [['H', 105], ['R', 322], ['N', 404], ['S', 482]];
+  function letras(modo, p) {
+    let s = '';
+    const fy = VP.y + 22;
+    LETRAS.forEach(([c, fx], i) => {
+      const font = `font-family="Graduate,Impact,serif" font-size="92" text-anchor="middle" fill="${CREMA}"`;
+      if (modo === 'vuelan') {
+        const dx = [(-190), 200, (-150), 190][i] * (1 - p), dy = [-260, -230, 260, 240][i] * (1 - p), rot = [-40, 30, -25, 35][i] * (1 - p);
+        s += `<g opacity="${0.35 + 0.65 * p}"><path d="M${fx + dx * 1.6} ${fy + dy * 1.6}L${fx + dx} ${fy + dy}" stroke="${NARANJA}" stroke-width="4" opacity=".6"/><text transform="translate(${fx + dx} ${fy + dy}) rotate(${rot})" ${font}>${c}</text></g>`;
+      } else if (modo === 'giran') {
+        const sx = Math.max(0.08, Math.abs(Math.cos((1 - p) * Math.PI * (1 + i * 0.3))));
+        s += `<g transform="translate(${fx} ${fy}) scale(${sx} 1)" opacity="${0.3 + 0.7 * p}"><text ${font}>${c}</text></g>`;
+      } else if (modo === 'objetos') {
+        const it = [['pdf', 'boli'], ['cono', 'silbato'], ['libreta', 'botella'], ['balon', 'cronometro']][i];
+        s += `<text x="${fx}" y="${fy}" ${font} fill="none" stroke="${CREMA}" stroke-width="2" stroke-dasharray="6 5" opacity="${1 - p * 0.9}">${c}</text>`;
+        s += `<g opacity="${Math.min(1, p * 1.4)}" fill="${CREMA}"><text x="${fx}" y="${fy}" ${font} opacity="${p}">${c}</text></g>`;
+        s += o(it[0], fx - 14, fy - 40 - 90 * (1 - p), 0.34, -10, 1 - p * 0.7) + o(it[1], fx + 16, fy - 28 - 70 * (1 - p), 0.3, 12, 1 - p * 0.7);
+      } else if (modo === 'luz') {
+        s += `<text x="${fx}" y="${fy}" ${font} fill="none" stroke="${NARANJA}" stroke-width="5" stroke-dasharray="300" stroke-dashoffset="${300 * (1 - p)}" style="filter:drop-shadow(0 0 8px ${NARANJA})">${c}</text><text x="${fx}" y="${fy}" ${font} opacity="${Math.max(0, p * 2 - 1)}">${c}</text>`;
+      } else if (modo === 'pasan') {
+        const lado = i % 2 ? 1 : -1, sc = 0.55 + 0.45 * p, px = fx + lado * 190 * (1 - p), py = fy + (i < 2 ? -140 : 150) * (1 - p);
+        s += `<g transform="translate(${px} ${py}) scale(${sc}) skewY(${lado * 16 * (1 - p)})" opacity="${0.4 + 0.6 * p}"><text ${font}>${c}</text></g>`;
+      }
+    });
+    return s;
+  }
+
+  function cuadro(f) {
+    let s = defs + tunel();
+    const T = f.tunel !== false;
+    if (f.objs) f.objs.forEach((a) => (s += o(...a)));
+    if (f.o) s += O(...f.o);
+    if (f.hombre) s += hombre(...f.hombre);
+    if (f.cara) s += cara(...f.cara);
+    if (f.letras) s += letras(...f.letras);
+    if (f.flash) s += `<rect width="540" height="960" fill="url(#luz)" opacity="${f.flash}"/>`;
+    if (!T) return s;
+    return s;
+  }
+
+  const CUADROS = {
+    // plano 1: entra en el túnel
+    uno: { o: [270, 430, 0.5], hombre: [270, 700, 0.95, 0, 0], objs: [['balon', 90, 300, 0.8, 0], ['silbato', 450, 380, 0.7, 20], ['libreta', 60, 620, 0.8, -15], ['camisetaV', 470, 600, 0.9, 10], ['cono', 150, 130, 0.6, 20, .8], ['boli', 420, 160, 0.7, 35, .8]] },
+    // final del 1 / inicio del 2: corre, ya hay más cosas
+    dos: { o: [270, 430, 0.9], hombre: [270, 650, 0.8, 0, 1], objs: [['balon', 80, 250, 1.1, 0], ['pizarra', 440, 280, 1.1, 14], ['cronometro', 110, 520, 0.95, -10], ['tablet', 470, 560, 1, 12], ['pdf', 200, 160, 0.8, -25, .85], ['botella', 360, 130, 0.8, 30, .85], ['calendario', 60, 760, 1, 8], ['balon', 500, 800, 1.2, 0]] },
+    // final del 2: esquiva
+    tres: { o: [270, 430, 1.4], hombre: [300, 640, 0.75, -9, 0], objs: [['canasta', 100, 290, 1.5, -6], ['balon', 460, 220, 1.5, 0], ['cono', 440, 600, 1.4, 20], ['camisetaR', 90, 640, 1.2, -18], ['balon', 220, 840, 1.6, 0], ['pizarra', 470, 790, 1.2, -12], ['silbato', 150, 120, 0.9, 12, .85]] },
+    // plano 3: primer plano, sonríe al ver la O
+    cara: { cara: [190, 470, 1.4], o: [470, 330, 0.8], objs: [['balon', 420, 770, 1.4, 0, .9], ['boli', 90, 130, 0.8, 30, .8]], flash: 0.2 },
+    // plano 4 inicio: la O gigante, él corre hacia la luz
+    cuatro: { o: [270, 430, 3.2, 8], hombre: [270, 640, 0.55, 0, 1], objs: [['balon', 70, 180, 1.1, 0, .8], ['cono', 480, 210, 1, 20, .8], ['camisetaV', 60, 760, 1, -10, .8], ['pdf', 490, 760, 1, 10, .8]], flash: 0.3 },
+  };
+
+  window.Escena = {
+    cuadro,
+    svg: (f, id) => `<svg viewBox="0 0 540 960" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${id || 'boceto'}">${cuadro(typeof f === 'string' ? CUADROS[f] : f)}</svg>`,
+    CUADROS,
+    O, hombre, letras, ICONOS, o,
+  };
+})();
+</script>
+
+<main>
+<header class="intro">
+<h1>Intro de Horns · el túnel</h1>
+<p>Un entrenador corre por un túnel hacia la O de HORNS, esquiva todo lo que le llueve del baloncesto, sonríe cuando ve la O cerca y, al acercarse la cámara, se forma la palabra. Sin capturas de la app. Vertical 9:16, HD, unos 14 segundos.</p>
+<p class="meta">Son dibujos de composición: Gemini los redibuja realistas. El entrenador es un personaje inventado, con la sudadera rosa del cole y su escudo. Las cosas: balones, silbato, libreta, cronómetro, conos, pizarras, bolis, tablets, papeles PDF, calendario, camisetas rosa y verde, botella y una canasta entera.</p>
+</header>
+
+<section class="opcion">
+<div class="cab"><span class="letra">1</span><h2>Plano a plano</h2></div>
+<div class="fila" id="planos"></div>
+</section>
+
+<section class="opcion">
+<div class="cab"><span class="letra">2</span><h2>Seis formas de formarse la palabra</h2></div>
+<p>Solo cambia el plano 4. En cada fila ves tres momentos: al empezar, a la mitad y al terminar con HORNS entero. Todas acaban en el mismo logo exacto.</p>
+<div id="versiones" style="display:flex;flex-direction:column;gap:22px"></div>
+</section>
+
+<section class="reco">
+<p><b>Mi recomendación:</b> V2 (giran en su sitio) si quieres limpio y legible, o V6 (detrás del hombre) si quieres que el hombre sea el protagonista hasta el final. V3 (de objetos) es la más divertida pero la que más trabajo da en Flow. Puedo mezclar: por ejemplo V2 para H y RNS, y que la O la forme el hombre al cruzarla.</p>
+</section>
+</main>
+<script>
+const E=window.Escena;
+const planos=[['uno','0–3 s','Entra en el túnel','Corre hacia la O pequeña del fondo; flotan las primeras cosas.'],['dos','3–5 s','Más cosas','Le llegan balones, pizarras, tablets, papeles, calendario...'],['tres','5–8 s','Esquiva','Se agacha y se aparta; pasa la canasta entera.'],['cara','8–10 s','Sonríe al ver la O','Primer plano de perfil: sonríe y acelera.'],['cuatro','10–11 s','La O gigante','Corre hacia la luz con los brazos abiertos.']];
+let h='';
+planos.forEach(([k,t,n,d])=>{h+=`<div class="plano"><div class="cuadro">${E.svg(k,n)}</div><span class="seg">${t}</span><span><b>${n}</b><span class="t">${d}</span></span></div>`});
+h+=`<div class="plano"><div class="cuadro"><img class="logo" src="data:image/jpeg;base64,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pgOFLTaUUCHClptLTAWlpKWgBaWm0tMB1FJS0CFopKKAFooopgFFFFABRRRQAUlFFIApKKSgAoopKBhSGiikAlJSmkpAIaSlNJQMSkNLSUgEooNJQAClFNp1AC0tJS0ALSim0tMB1LTaWgQtLSUtMBaKSloAWlptLTAWlpuaWgQtFJRmgBaKTNGaAFopM0UALSUUlABRRSUDCiikpAFJRRQAlJSmkpAJSUtJQMSiikNIApKDSUDClpKWgBRS0lLQIWlpopaYDqWm0tADqKSloELRSUtMBaKSloAWjNJRTAXNLSUUALRSUUALSZoooAKKSigAzRSUUgCkoooAKSig0gENJQaKBiUlLSUgCkoNJQAUlFJQMKUUgpRQAtLSCloELS0lFAC0tJS0wFpabS0CHUUlLTAWikooAWlpKKAFopKWgAooooAKKKSgBaSiigApKKKACkoopAFIaKSgYUlFFABSUUlIApDQaSgApKKSkMKWkpaAFpaSlpgKKWkpaBC0UlLQAtLmm0tMBaWkooEOozSUtABS0lFMBaKSigBaKSigBaSiigAooozQAUlFGaQBSUUlABSUtJQMKSlpKQBSUUlABSGg0lAwNJRRSASlpKWgBaWkFLTAUUtNpaBDqKSloAWikpaYC0UlLQAtLTaWgBaKSloEFLSUUALmikooAWkoooAKKSigAopKKBhRRSUAFFFJSAKSlpKACkopKBhSGikpAFJRRQAgpaSloAWlpKKAHClptLTAdRSUtAhaKSloAWikpaYC0UlFAC0uaTNFAC0UlFAC0UlFAC0UlFABmijNJQAtJRRQAUUmaKQBRRSUAFJRSUAFJS0lAwNIaKSkAUlFJmkAClFFFAC0tFFMBaWiigApaKKYC0tFFAgooooAWiiimAUtFFABRRRQAUUUUAFJRRQAUUUUgCiiigBKKKKAEooooASkoooGJSUUUgA0lFFACUmaKKQH/9k=" alt="Logo entero"></div><span class="seg">11–14 s</span><span><b>HORNS entero</b><span class="t">La palabra queda quieta y nítida; entra la app.</span></span></div>`;
+document.getElementById('planos').innerHTML=h;
+const V=[['V1','Las letras vuelan','Entran desde las paredes del túnel, girando y dejando una estela de luz naranja.','vuelan','Se leen bien y es muy dinámica.','Parece un efecto de plantilla.'],
+['V2','Las letras giran en su sitio','Están ya colocadas, de canto; giran como monedas y se ponen de frente, con un destello pequeño.','giran','La más limpia y la que mejor sale en Flow.','Menos sorpresa.'],
+['V3','Letras de objetos','Los bolis, conos, libretas y balones se juntan y forman cada letra, y se funden en letra limpia.','objetos','Cuenta el mundo del baloncesto.','La que más cuesta que Flow haga bien.'],
+['V4','Letras de luz','Una línea de luz naranja dibuja cada letra en el aire como con un rotulador rápido.','luz','Elegante y fácil de montar.','Menos de baloncesto, más de tecnología.'],
+['V5','Letras en las paredes','Letras gigantes en las paredes del túnel; al pasar la cámara se juntan y forman la palabra.','pasan','Muy cinematográfica.','Hay que colocar bien cada letra.'],
+['V6','Detrás del hombre','Él salta dentro de la O y detrás de él van apareciendo las letras, como si las dibujara al correr.','vuelan','El hombre es el protagonista hasta el final.','Flow tiene que mantener a la vez al hombre y las letras.']];
+let v='';
+V.forEach(([id,n,d,modo,pro,con],i)=>{
+ const ps=[0.2,0.6,1];
+ const cu=ps.map((p,j)=>`<div class="plano"><div class="cuadro">${E.svg(id==='V6'?{o:[270,430,.85],hombre:[270-60*(1-p),560+120*(1-p),.5*(1-p)+.01,0,j%2],letras:[modo,p]}:{o:[270,430,.85],letras:[modo,p]},n)}</div><span class="seg">${['Empieza','A la mitad','Termina'][j]}</span></div>`).join('');
+ v+=`<div class="ver"><div class="cab"><span class="letra">${id}</span><h3>${n}</h3></div><p>${d}</p><div class="fila" style="grid-auto-columns:minmax(120px,170px)">${cu}</div><div class="pv"><div><h3>Ventajas</h3><p>${pro}</p></div><div><h3>Inconvenientes</h3><p>${con}</p></div></div></div>`;
+});
+document.getElementById('versiones').innerHTML=v;
+</script>

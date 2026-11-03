@@ -1,0 +1,46 @@
+LOOP: Reorganizar Horns y revisarla de arriba abajo (que quede operativa y cerrada)
+
+CONTEXTO
+Horns es mi app de baloncesto (C:\dev\baloncesto-app, publicada en https://adambursey7-sudo.github.io/cuernos/).
+Está mal organizada: «Recursos» (donde guardo los reels e enlaces) está escondido en Biblioteca > Ejercicios > un botón,
+y no lo encuentro. Pestañas de abajo: Hoy, Biblioteca, Sesiones, Equipo, Más.
+  - Biblioteca: Jugadas | Ejercicios -> (Biblioteca, Mis ejercicios, Recursos, Pedir a Claude, Espacios de la cancha).
+  - Equipo: Plantilla, Habilidades, Rotación, Diario, Temporada.  - Más: colores, copia de seguridad, sesión.
+Además, el atajo de mi iPhone (app Atajos, en inglés) copia el enlace de un reel y abre la app con
+https://adambursey7-sudo.github.io/cuernos/?enlace=<enlace codificado>. En el código esto ya se lee (enlaceDeLaDireccion
+en src/App.tsx) pero a mí me abre la app SIN llegar a Recursos. Hay que dejarlo funcionando.
+
+OBJETIVO
+La app tiene que ser intuitiva y estar OPERATIVA: cada cosa donde se espera, nada escondido, nada roto. Aunque luego
+metamos más cosas, esto queda cerrado. Quiero poder guardar un reel de Instagram en pocos toques.
+
+PASOS (para al final de cada tramo y espera mi OK antes del siguiente)
+1. Rama nueva desde main en un worktree propio (loop/reorganizar). No toques la copia de main ni lo publicado.
+2. TRAMO 1 - Mapa y bocetos. Haz el inventario completo de pantallas y funciones (qué hay, dónde, cuántos toques hasta
+   cada una). Diseña 3 formas de organizarlo, con boceto, ventajas e inconvenientes, en docs/loop-reorganizar/bocetos.html:
+   A) Biblioteca con 3 ramas visibles (Jugadas, Ejercicios, Recursos); Mis ejercicios y Pedir a Claude como botones
+      claros dentro de Ejercicios; Espacios de la cancha a Más. Mismas 5 pestañas. (mi favorita por ahora)
+   B) Pestañas por lo que haces: Hoy, Entrenar (sesiones+ejercicios+jugadas), Guardado (recursos, mis ejercicios,
+      Pedir a Claude), Equipo, Más.
+   C) A + botón «+» siempre visible para guardar enlace, nota, jugada o ejercicio desde cualquier pantalla.
+   Añade tu propia opción si ves una mejor. Recomienda una y ESPERA mi elección.
+3. TRAMO 2 - Reorganizar según lo elegido, sin perder datos guardados (recursos, fichas, sesiones, copia de seguridad).
+4. TRAMO 3 - El enlace del iPhone: que abrir la app con ?enlace=... lleve SIEMPRE a Recursos con el enlace puesto, tanto
+   en Safari como en la app de la pantalla de inicio, y que no se pierda si la app ya estaba abierta. Si hace falta,
+   leer también el portapapeles al abrir. Pruébalo con un navegador (modo móvil) y con pruebas automáticas.
+5. TRAMO 4 - Revisión del código, SOLO LEER: compila, pruebas, y recorre todas las pantallas buscando fallos, cosas
+   rotas, botones que no hacen nada, datos que se pierdan, textos confusos. Lista por gravedad en docs/loop-reorganizar/.
+6. TRAMO 5 - Recorrer la app funcionando (/run) pantalla por pantalla en tamaño móvil: Hoy, Biblioteca (todo),
+   Sesiones, Equipo (todo), Más, jugada abierta, editor, pizarra, copia de seguridad. Pocas capturas.
+7. TRAMO 6 - Arreglar lo hallado por gravedad (primero lo que rompe o pierde datos). Lo discutible, me lo preguntas.
+8. Revisión final: /code-review low (medium si toca datos guardados) y, si toca el enlace, /security-review una vez.
+   tsc, pruebas y build en verde.
+9. Cierre: boceto final de cambios y mejoras (Hecho/Mejorable) y aviso por Telegram solo con lo importante.
+
+REGLAS DE TRABAJO
+- Háblame claro, sin códigos ni nombres de archivos; frases cortas. Prompts a modelos externos en inglés.
+- No unas a main, no publiques ni reinicies Jarvis sin que yo diga que sí.
+- Lo que quiera leer va en .txt o HTML en docs del proyecto, no en el Escritorio.
+- Me llamo Adam; mi iPhone está en inglés (nombres de Atajos en inglés).
+- Si algo falla 2 veces por la misma causa, escala solo ese problema a un subagente con model fable (1 vez).
+- Al terminar, /guardar y propón /clear.

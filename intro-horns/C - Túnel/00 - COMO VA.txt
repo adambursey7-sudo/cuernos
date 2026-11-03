@@ -1,0 +1,44 @@
+INTRO DE HORNS · OPCIÓN C, EL TÚNEL (unos 13-14 s, vertical 9:16, HD 1080x1920)
+
+LA IDEA
+Un entrenador corre por un túnel hacia la O de HORNS, que brilla al fondo. Le llueven cosas del baloncesto (balones, silbato,
+libreta, cronómetro, conos, pizarras, bolis, tablets, papeles PDF, calendario, camisetas rosa y verde del cole, botella de
+agua, una canasta entera) y las esquiva. Al ver la O cada vez más cerca, sonríe y acelera. La cámara se acerca y se forma
+la palabra HORNS. Sin capturas de la app.
+
+LOS PLANOS
+1 - Entra en el túnel        0-3 s     Corre hacia la O pequeña del fondo; empiezan a flotar cosas.
+2 - Esquiva las cosas        3-8 s     Se agacha, salta y se aparta de balones, conos y hasta una canasta.
+3 - Sonríe al ver la O       8-10 s    Primer plano de perfil: sonríe y acelera.
+4 - La palabra se forma      10-14 s   La cámara se acerca a la O y se forman las letras; queda HORNS.
+Del plano 4 hay 6 versiones de cómo aparecen las letras (V1 a V6). Mira los bocetos y dime la que quieres,
+o pídeme las que quieras mezclar.
+
+IMÁGENES DE GEMINI (5): inicio.jpg, mitad.jpg, esquiva.jpg (carpetas 1 y 2), sonrisa.jpg y luz.jpg (carpeta 3)
+  - Chat nuevo en cada una, «Crear imagen», adjunta lo que dice cada gemini.txt.
+  - El «boceto.png» de cada carpeta es solo la guía de dónde va todo; Gemini lo redibuja realista.
+  - Si cambia al hombre de una imagen a otra, pega la primera imagen en el chat y dile «same man as this one».
+  - El hombre es un personaje inventado, no una persona real. No uso fotos de niños ni de nadie.
+Luego ENSÉÑAME las 5 imágenes y las reviso antes de Flow.
+
+FLOW (Frames to Video, 9:16, 8 s, 2 versiones por plano):
+  plano 1: inicio.jpg -> mitad.jpg
+  plano 2: mitad.jpg -> esquiva.jpg
+  plano 3: sonrisa.jpg -> luz.jpg
+  plano 4: luz.jpg -> final.png (usa el flow de la versión que elijas)
+Los vídeos se guardan como «video 1a.mp4», «video 1b.mp4»... Yo monto, pongo sonido y la meto en la app.
+
+La opción A (remolino con capturas) está guardada en «Opción A (guardada)».
+
+
+VERSION ELEGIDA (30/10): V3, las letras se forman con los objetos del tunel.
+En la carpeta 4 el archivo "flow.txt" es la V3. Las demas estan en "otras versiones (no elegidas)".
+
+
+30/10: EL CORREDOR ERES TU (Adam). En las carpetas 1, 2 y 3 hay "adjuntar - tu cara.png" (recorte solo de tu cara de la foto del aeropuerto, sin las chicas). Los gemini.txt ya piden tu cara y la sudadera rosa con el escudo real. Si la cara no sale bien en el plano 3 (perfil), pasame una foto tuya de perfil o de 3/4, sin gafas, con buena luz.
+
+30/10 (mas tarde): fotos nuevas de Descargas. Referencia principal = selfie tuyo solo con la sudadera rosa y el escudo real (adjuntar - tu cara.png) + recorte de luz natural (adjuntar - tu cara 2). Pelo castano ondulado, barba con canas, ojos azul-grisaceos.
+
+30/10: LAS 5 IMAGENES DE GEMINI HECHAS Y COLOCADAS (inicio, mitad, esquiva, sonrisa, luz) en las carpetas 1-4. Siguiente: Flow, 2 versiones por plano.
+
+30/10: Video del plano 1 hecho (Man_running_through_tunnel, en Descargas) pero salio 16:9 (1920x1080): repetir en VERTICAL 9:16. Plano 2 reescrito: todos los objetos te adelantan a toda velocidad por encima de la cabeza (la canasta entera tambien) y entran en el anillo, que se agranda con cada uno.

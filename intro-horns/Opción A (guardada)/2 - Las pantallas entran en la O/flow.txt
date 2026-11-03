@@ -1,0 +1,5 @@
+Frames to Video, 9:16, 8 s. Fotograma inicial «pantallas.jpg». Fotograma final «abierta.jpg» (carpeta 3).
+
+The phone screens start to spin slowly around the gap between H and RNS, getting smaller and faster, like water down a drain. One after another each screen shrinks and is sucked into the glowing gap with a flash of orange light and a thin trail. The last screen disappears into the light and the gap opens wide, as in the final frame. The letters H and RNS stay sharp and still.
+Sound: rising whoosh, a soft pop and shimmer each time a screen goes in, a deep swell at the end. No dialogue, no voice-over, no music.
+Style: Photorealistic cinematic title-sequence look for a premium basketball coaching app: deep navy night background (#1e2a44), polished warm-orange parquet floor reflections, vivid orange (#f26b1d) energy light, cream-white (#fff8ee) lettering, soft volumetric haze, shallow depth of field, anamorphic lens flares, subtle film grain. Vertical 9:16, 1080x1920, sharp HD.

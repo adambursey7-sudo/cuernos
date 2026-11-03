@@ -81,7 +81,22 @@ const minutosEntre = (a: string, b: string) => {
   return h2 * 60 + m2 - (h1 * 60 + m1);
 };
 
-export function leerIcs(texto: string): Candidata[] {
+const norma = (s: string) => quitaTildes(s).toUpperCase().replace(/\s+/g, ' ').trim();
+
+/** «Local - Visitante» (federación): con el nombre exacto de mi equipo sabemos si juego en casa y quién es el rival, aunque el club lleve un « - » dentro. */
+export function rivalConMiEquipo(titulo: string, miEquipo: string): { rival: string; casa: boolean } | null {
+  const mi = norma(miEquipo);
+  const t = norma(titulo);
+  if (!mi) return null;
+  const empieza = t.startsWith(`${mi} - `);
+  const acaba = t.endsWith(` - ${mi}`);
+  if (empieza === acaba) return null; // no está, o juega contra sí mismo
+  const largo = titulo.replace(/\s+/g, ' ').trim();
+  return empieza ? { rival: largo.slice(mi.length + 3).trim(), casa: true } : { rival: largo.slice(0, largo.length - mi.length - 3).trim(), casa: false };
+}
+
+/** `miEquipo`: nombre del equipo tal como sale en el calendario de la federación (opcional; sin él, los partidos «A - B» salen con «?»). */
+export function leerIcs(texto: string, miEquipo = ''): Candidata[] {
   const lineas = desdoblar(texto);
   const fuera: Candidata[] = [];
   let ev: Record<string, string> | null = null;
@@ -89,7 +104,7 @@ export function leerIcs(texto: string): Candidata[] {
     if (/^BEGIN:VEVENT/i.test(l)) { ev = {}; continue; }
     if (/^END:VEVENT/i.test(l)) {
       if (ev) {
-        const c = candidataDeEvento(ev);
+        const c = candidataDeEvento(ev, miEquipo);
         if (c) fuera.push(c);
       }
       ev = null;
@@ -104,7 +119,7 @@ export function leerIcs(texto: string): Candidata[] {
   return fuera.sort((a, b) => a.fecha.localeCompare(b.fecha) || a.hora.localeCompare(b.hora));
 }
 
-function candidataDeEvento(ev: Record<string, string>): Candidata | null {
+function candidataDeEvento(ev: Record<string, string>, miEquipo: string): Candidata | null {
   if (!ev.DTSTART || /CANCELLED/i.test(ev.STATUS ?? '')) return null;
   const ini = fechaIcs(ev.DTSTART);
   if (!ini) return null;
@@ -116,6 +131,10 @@ function candidataDeEvento(ev: Record<string, string>): Candidata | null {
   const semanal = /FREQ=WEEKLY/i.test(ev.RRULE ?? '') && tipo === 'entreno';
   const base: Candidata = { tipo, fecha: ini.fecha, hora: ini.dia ? '18:30' : ini.hora, titulo: titulo || 'Sin título', lugar, ...(dur && dur > 0 ? { minutos: dur } : {}) };
   if (semanal) return { ...base, semanal: true };
+  if (tipo === 'partido') {
+    const mio = rivalConMiEquipo(titulo, miEquipo);
+    if (mio) return { ...base, titulo: mio.rival, casa: mio.casa, dudosa: false };
+  }
   if (tipo === 'partido') return { ...base, titulo: rivalDe(titulo) || titulo, casa: casaFuera(`${titulo} ${lugar}`), dudosa: casaFuera(`${titulo} ${lugar}`) === undefined };
   return { ...base, dudosa: tipo === 'otro' };
 }

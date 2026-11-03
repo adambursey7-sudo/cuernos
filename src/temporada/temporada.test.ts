@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import icsCadete from '../../docs/calendarios/cadete-fem-liga-canaria-B-2026-27.ics?raw';
 import { cuadriculaMes, diaSemana, esFecha, lunesDe, sumarDias, sumarMeses } from './fechas';
-import { escribirIcs, leerIcs, leerLista } from './ics';
+import { escribirIcs, leerIcs, leerLista, rivalConMiEquipo } from './ics';
 import {
   agendaDia, aplicarCandidatas, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporadas, itemsParaIcs, juntarTemporadas, leerTemporadas,
   limpiarTemporada, marcasDia, notasDelBalance, nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarFijo, resumenAsistencia, temporadaPorDefecto,
@@ -140,6 +141,29 @@ describe('listas e .ics', () => {
     expect(r[2]).toMatchObject({ tipo: 'otro', fecha: '2026-10-20', dudosa: true });
   });
 
+  const FIBT = [
+    'BEGIN:VCALENDAR',
+    'BEGIN:VEVENT', 'UID:a@horns', 'DTSTART;TZID=Atlantic/Canary:20261016T183000', 'DTEND;TZID=Atlantic/Canary:20261016T200000',
+    'SUMMARY:L.K. LAGUNA - SANTA ROSA DE LIMA FESD - JUVENTUD LAGUNA', 'LOCATION:COLEGIO LUTHER KING', 'DESCRIPTION:Pre-Cadete Femenino 2ª División J1', 'END:VEVENT',
+    'BEGIN:VEVENT', 'UID:b@horns', 'DTSTART;TZID=Atlantic/Canary:20261105T184500', 'DTEND;TZID=Atlantic/Canary:20261105T201500',
+    'SUMMARY:SANTA ROSA DE LIMA FESD - JUVENTUD LAGUNA - LA VICTORIA GRÚAS BONY', 'LOCATION:C.E.I.P. ALONSO NAVA Y GRIMÓN', 'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
+
+  it('lee el .ics de la FIBT: hora de Canarias, pabellón en lugar y duración', () => {
+    const r = leerIcs(FIBT);
+    expect(r[0]).toMatchObject({ tipo: 'partido', fecha: '2026-10-16', hora: '18:30', minutos: 90, lugar: 'COLEGIO LUTHER KING', dudosa: true });
+    expect(r[1]).toMatchObject({ fecha: '2026-11-05', hora: '18:45', lugar: 'C.E.I.P. ALONSO NAVA Y GRIMÓN' });
+  });
+
+  it('con el nombre de mi equipo separa «Local - Visitante» aunque el club lleve un guion', () => {
+    const r = leerIcs(FIBT, 'Santa Rosa de Lima FESD - Juventud Laguna');
+    expect(r[0]).toMatchObject({ titulo: 'L.K. LAGUNA', casa: false, dudosa: false });
+    expect(r[1]).toMatchObject({ titulo: 'LA VICTORIA GRÚAS BONY', casa: true, dudosa: false });
+    expect(rivalConMiEquipo('A - B', 'C')).toBeNull();
+    expect(rivalConMiEquipo('A - A', 'A')).toBeNull();
+  });
+
   it('une líneas largas del .ics y desescapa el texto', () => {
     const r = leerIcs('BEGIN:VEVENT\nSUMMARY:Partido vs Ejemplo\\, CB\n  largo\nDTSTART:20261017T110000\nEND:VEVENT');
     expect(r[0].titulo).toBe('Ejemplo, CB largo');
@@ -242,5 +266,15 @@ describe('juntar una copia con la temporada actual', () => {
   it('un equipo que solo esta en la copia entra tal cual', () => {
     const otra = { ...base(), equipoId: 'e2' };
     expect(juntarTemporadas([base()], [otra]).map((t) => t.equipoId)).toEqual(['e1', 'e2']);
+  });
+});
+
+describe('calendario real de la Liga Canaria (cadete femenino B)', () => {
+  it('el .ics generado entra entero, con casa/fuera, hora y pabellon', () => {
+    const cs = leerIcs(icsCadete, 'SANTA ROSA DE LIMA FESD - JUVENTUD LAGUNA');
+    expect(cs).toHaveLength(22);
+    expect(cs.every((c) => c.tipo === 'partido' && !c.dudosa && c.lugar && c.minutos === 90)).toBe(true);
+    expect(cs.filter((c) => c.casa).length).toBe(11);
+    expect(cs[0]).toMatchObject({ fecha: '2026-09-19', hora: '18:30', casa: false, titulo: 'LUTHER KING' });
   });
 });

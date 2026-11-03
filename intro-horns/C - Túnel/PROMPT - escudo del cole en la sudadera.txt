@@ -1,0 +1,10 @@
+PARA GEMINI. Adjunta: "escudo real - negro sobre blanco.png" (es el escudo exacto del cole, vectorizado del logo oficial).
+Lo normal es no tener que usarlo aparte: ya he cambiado "adjuntar - escudo del cole.png" de las 4 carpetas por el escudo real (blanco sobre rosa). Si en una imagen el escudo sale mal, pega este prompt en el mismo chat con la imagen mala adjunta.
+
+--- PROMPT (si el escudo de la sudadera sale mal) ---
+Edit the attached image. Keep everything exactly the same (the man, his pose, the tunnel, the lighting, all the objects) and change ONLY the emblem on the chest of his pink hoodie.
+
+The emblem must be an exact copy of the second attached image (the school crest). Describe it as it is: a single continuous hand-drawn calligraphic brush line, in plain WHITE, drawn as one simple flat graphic mark with no 3D, no shading and no embroidery relief. At the top there is a small stylized human figure: a head drawn as a small spiral curl, and one long arm stretched up and to the right like a swoosh, with the body leaning forward. The body flows down into a large teardrop-shaped outline that curves down the left side and closes into a ball-like circle at the bottom. Inside that circle there is a four-arrow cross: four arrows pointing outwards (up, down, left, right), each arrow with a split, jagged, brush-stroke tail, arranged like a pinwheel. Only the outline strokes and the arrows are white; everything else inside stays the pink of the hoodie. NO text, NO letters, NO words, NO extra symbols, NO football or basketball.
+
+The emblem is small, about 8 cm wide, centered on the chest, slightly following the folds of the fabric, perfectly flat and sharp, white screen-printed look. Do not redraw it in a different style, do not simplify it, do not turn it into a generic logo.
+Negative: no extra text, no wrong symbol, no cross in a circle with filled quadrants, no cartoon, no gradient, no 3D relief.

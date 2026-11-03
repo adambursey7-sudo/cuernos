@@ -1,0 +1,145 @@
+RESUMEN DE HORNS PARA GEMINI (1/11/2026)
+Pega todo esto en Gemini y pídele al final lo que está en la sección "LO QUE TE PIDO".
+
+================================================================
+1. QUÉ ES HORNS
+================================================================
+Horns es una app web instalable (PWA: React + Vite + TypeScript) para entrenadores de baloncesto, pensada para usarla en el móvil (iPhone) en la banda, y en tablet/TV en pantalla de pista. Funciona sin conexión; los datos viven en el dispositivo (localStorage). Estilo "Marcador": fondo oscuro (también modo claro), botones grandes para la banda, logo con dos cuernos y un balón. Publicada en GitHub Pages. Detrás hay un pequeño servidor propio (Jarvis, en el PC de Adam, accesible por Tailscale) que conecta la app con Claude (IA) para tareas pesadas.
+
+Quién la usa hoy: Adam, que entrena el Cadete femenino de Santa Rosa de Lima FESD, y también un equipo senior masculino. Quiere que sirva igual a un equipo de formación (niños/cadetes/juveniles) que a uno profesional.
+
+================================================================
+2. OBJETIVO DE LOS PRÓXIMOS LOOPS
+================================================================
+Que Horns sea la herramienta de uso DIARIO para llevar un equipo de baloncesto entero, de formación o profesional: partidos, entrenos, gestión del equipo, viajes, lesiones, familias, estadística, vídeo, y todos los sistemas ofensivos y defensivos. Además debe poder:
+- Conectarse con otras apps y con IAs.
+- Recibir información de un partido (vídeo, PDF, hoja de estadística, texto, fotos) y saber dónde va cada cosa (box score, jugadas, ejercicios, informe del rival, lesiones, etc.).
+- Tener una biblioteca COMPLETA de sistemas ofensivos y defensivos (hoy es muy corta).
+
+================================================================
+3. LO QUE YA EXISTE (todo en main y publicado; 418 pruebas, tipos y build en verde)
+================================================================
+HOY / PANEL
+- Pantalla Hoy: cuenta atrás al próximo partido/entreno, accesos rápidos, seguir donde lo dejaste, "Guardar enlace" (recibir enlaces de Instagram/Safari con un atajo del iPhone).
+- Modo claro/oscuro, tamaño de letra, reducir movimiento, aviso sin conexión, modo banda.
+
+EQUIPO
+- Varios equipos con selector; asistente de 4 pasos para crear equipo; género aparte del tipo; escudo, color, categoría; cuerpo técnico; objetivos; duplicar/heredar equipo; cerrar temporada con historial.
+- Plantilla con rol y estado de cada jugador; habilidades por jugador con gráfico radar y listas de habilidades por edad.
+- Reglas de competición editables por equipo (periodos, minutos, faltas; por defecto FIBA 4x10; mueven rotación y faltas). Se pueden leer normas desde un PDF/texto.
+- Familias: mensajes solo con dorsales, hoja por jugador, calendario .ics con recordatorio.
+- Disponibilidad: pegar las respuestas del grupo de WhatsApp y calcular quién está.
+- Pestaña Cifras (estadística de equipo).
+
+TEMPORADA Y CALENDARIO
+- Temporada con partidos y entrenos, asistencia, importar calendario, plantillas de semana, planificador con intensidad y carga semanal, resumen semanal.
+- Convocatoria del partido y quinteto inicial.
+
+PARTIDO
+- Partido en directo: reloj, minutos por jugador, puntos y faltas, deshacer, box score, arrastrar del banquillo a la pista, mapa de tiros (marcar tiros en la pista), barra roja "En directo", botones grandes "Apuntando a #N".
+- Pantalla de pista para tele/tablet (botón "Pantalla").
+- Plan de partido, informe del rival, balance de partido, rotación sugerida.
+- Tarjeta del resultado como imagen y hoja del partido en PDF; mensaje + PDF del plan compartible.
+
+ENTRENOS Y EJERCICIOS
+- Sesiones de entreno (plantillas de 90 min), cronómetro, modo "Entrenando", Diario de sesión (qué salió bien/mal).
+- Ejercicios propios con pizarra animada paso a paso; montador con 5 colocaciones listas, reordenar pasos arrastrando, guardar siempre a la vista; exportar GIF.
+- Biblioteca con 3 ramas: Jugadas, Ejercicios, Recursos; favoritos; colecciones.
+- Espacios de la cancha (9 espacios editables) y fondo de parqué.
+
+PIZARRA Y SISTEMAS
+- Pizarra animada de media pista (movimientos: corte, bote, bloqueo, pase), niveles y ficha por sistema. Editor de jugadas con pasos y categoría.
+- Familias de sistemas ya previstas en el modelo: ataque, parado (saques), final de partido, presión (salida de presión) y defensa. Cada sistema es "ataque" o "defensa".
+- Libro de jugadas por equipo.
+- HOY HAY MUY POCOS SISTEMAS: 3 originales (Cuernos, Cuernos Flex, Flex) + 7 en borrador para senior (Bloqueo directo central, Motion 5 fuera, Saque de banda al campo contrario, Final de partido: último tiro, Salida de presión, Zona 2-3, Zona 1-3-1). Las defensas casi no existen todavía. Esto es un hueco grande.
+
+IA
+- "Pedir a Claude": genera un ejercicio con pizarra animada (formato Sistema validado), con reglas de lógica de baloncesto (revisor que rechaza y reintenta, 2-3 ejemplos según el encargo, validador de espacios sin reocupar). Cupo de 10 encargos/24 h.
+- "Jugada desde un vídeo": el móvil extrae 3-10 fotogramas, el servidor se los manda a Claude y vuelve un borrador de jugada que se guarda "como mía".
+- Leer normas/plantillas desde PDF o texto en "Importar plantilla".
+- Recursos de internet: guardar enlaces (vídeos/artículos) en fichas, organizarlos por etiquetas.
+- Base de conocimiento propia en docs/conocimiento (principios, patrones, reglas, 18 ejemplos con fuentes).
+
+COPIAS
+- Copia de seguridad completa (sesiones, espacios, favoritos, equipos) con menú de compartir; copia de un solo equipo. Acceso con usuario/clave sencillo.
+
+================================================================
+4. LO QUE FALTA O ESTÁ APARCADO
+================================================================
+- Biblioteca completa de sistemas OFENSIVOS y DEFENSIVOS (y su lógica): ver sección 5.
+- Lesiones: hoy solo hay estado de jugador. Falta un módulo de lesiones completo (parte de lesión, fechas, recuperación, vuelta progresiva, carga) SIN subirlo nunca a la nube ni a la copia.
+- Viajes y logística: desplazamientos, horarios de salida, convocados por viaje, transporte, hoteles/comidas, material, gastos. No existe.
+- Google (Calendario, Hojas, Drive, vídeos de Drive): aparcado; necesita que Adam cree el ID de cliente en Google Cloud; solo dorsales, nunca nombres ni lesiones.
+- Subir información de un partido (vídeo/PDF/hoja de estadística/foto del acta) y que la app la reparta sola: box score, tiros, acta, informe del rival, ejercicios derivados. Parcial: solo existe vídeo -> jugada.
+- Foto de la lista del equipo (OCR).
+- Estadística avanzada (+/-, eficiencia, quintetos, tendencias de temporada).
+- Tiros libres no se marcan en la pista.
+- Separar datos por usuario en un mismo móvil; sincronización entre dispositivos (hoy cada móvil guarda lo suyo; Drive automático = futuro).
+- Cantera / seguimiento de jugadores de formación (evolución por edad, minutos garantizados, informes a familias).
+- Conectar con otras apps: ver sección 6.
+- Pendientes menores: PDF de más de 10 páginas se corta; CSV con comillas; pizarra de solo ver sin resaltar el camino; simplificar las 5 pestañas; pantallas propias para pasar lista y ver convocatoria; /security-review pendiente.
+- Sin probar en iPhone real: editor, pizarra, rotación, informe del rival, habilidades por edad, acceso, copia v3.
+
+================================================================
+5. SISTEMAS OFENSIVOS Y DEFENSIVOS QUE QUEREMOS (biblioteca completa)
+================================================================
+Cada sistema debe ir con: nombre, familia, categoría de edad recomendada, ficha (objetivo, cuándo usarlo, lectura de la defensa, errores típicos, variantes), pizarra animada paso a paso (formato Sistema de src/sistemas/tipos.ts, coordenadas de media pista en decímetros, canasta en (75, 12)), niveles de dificultad, ejercicios asociados para entrenarlo y progresión por edad.
+
+OFENSIVOS (a completar)
+- Ataque posicional: motion offense (5 fuera, 4 fuera 1 dentro, 3 fuera 2 dentro), Flex, Cuernos/Horns set, bloqueo directo central y lateral (pick and roll, pick and pop, spain), bloqueo indirecto, DHO (mano a mano), post alto/bajo, triple post, UCLA cut, shuffle, princeton, 1-4 alto/bajo, carrusel, ataque contra zona (2-3, 3-2, 1-3-1, 1-2-2, match-up), ataque contra defensa individual y contra presión.
+- Transición: contraataque 3 carriles, 5 contra 4/3 contra 2, salida tras rebote, transición secundaria.
+- Jugadas especiales: saques de fondo y de banda (SOB/BOB), final de partido (ganar/empatar de 2 y de 3, últimos 3-5 s, tiros libres), jugadas tras tiempo muerto, ATO, contra presión en toda la pista, salto inicial.
+- Fundamentos: tiro, pase, bote, 1c1, 2c2, 3c3, 4c4, 5c5, reglas de lectura por edad.
+
+DEFENSIVOS (a completar, ahora casi inexistentes)
+- Individual (hombre a hombre): ayudas y recuperaciones, defensa del bloqueo directo (over, under, drop, hedge, show, switch, blitz/trap, ice/down), defensa del bloqueo indirecto, defensa del poste, rotaciones, tag, cierre de rebote.
+- Zonas: 2-3, 3-2, 1-3-1, 1-2-2, 2-1-2, match-up, zonas mixtas (box-and-1, triangle-and-2).
+- Presiones: toda la pista (1-2-1-1, 2-2-1, 1-3-1, 3-1-1, individual), tres cuartos, media pista, trampas, presión tras canasta y tras tiempo muerto.
+- Situaciones: defensa de saque, defensa de final de partido, defensa en transición, defensa de 3c2 / 2c1, rebote defensivo, faltas estratégicas.
+
+Requisito: la IA NO inventa jugadas. Cada sistema nuevo parte de fuentes conocidas (manuales FIBA/FEB/USA Basketball, libros, entrenadores reconocidos), queda marcado como "borrador - a revisar por Adam" (revisar: true) y no se da por bueno hasta que Adam lo confirme.
+
+================================================================
+6. CONEXIÓN CON OTRAS APPS E IAs
+================================================================
+Ideas que quiere Adam (proponer opciones, ventajas e inconvenientes, y que él elija):
+- IAs: Claude (ya está, vía servidor Jarvis), Gemini (por API), y capacidad de añadir otras. Tareas: montar ejercicios, analizar vídeos y partidos, informes del rival, resúmenes semanales, mensajes a familias, preparar plan de partido, preguntar "¿dónde va esto?" sobre datos subidos.
+- Entrada de información de partido: vídeo, PDF/acta, hoja Excel/CSV de estadística, foto del acta o de una pizarra, texto pegado, audio (nota de voz del entrenador tras el partido). La app debe clasificarla y repartirla (box score, mapa de tiros, informe del rival, lesiones, ejercicios a trabajar), con confirmación del entrenador antes de guardar.
+- Apps y servicios: Google Calendar/Sheets/Drive (aparcado), calendario iOS (.ics ya existe), WhatsApp/Telegram (mensajes con dorsales), apps de estadística y federación (importar actas/calendarios), YouTube/Instagram (guardar enlaces, ya existe), tele/tablet (pantalla de pista), exportar a PDF/Excel/imagen.
+- Todo lo que salga del dispositivo debe ser opcional, explícito y sin datos personales.
+
+================================================================
+7. REGLAS QUE NO SE PUEDEN ROMPER
+================================================================
+- El repositorio es PÚBLICO y hay menores: ningún nombre real en código, tests, capturas, bocetos ni ejemplos (solo "Ejemplo Uno", dorsales, etc.). Mensajes e imágenes para compartir, solo con dorsales.
+- Las lesiones y datos de salud viven SOLO en el dispositivo: nunca en el repo, nunca en las copias, nunca en la nube ni enviados a IAs sin identificar.
+- La IA no inventa jugadas: solo borradores revisables.
+- Vídeos propios con menores: solo en local (carpeta videos/ no se sube).
+- Móvil primero (iPhone), una mano, botones grandes, sin letra pequeña. Funciona sin conexión.
+- Ligero: el PC de Adam tiene poca RAM libre; nada de dependencias pesadas.
+- Antes de programar, bocetos y varias opciones con ventajas e inconvenientes; Adam elige. Después tests (npm test), tsc y build en verde.
+- No unir a main, publicar, hacer push ni reiniciar Jarvis sin permiso explícito de Adam.
+- Trabajar en rama y carpeta propias (worktree en C:\dev\baloncesto-t-<nombre>).
+- Hablar claro: sin códigos internos tipo "B1" o "paso 4b" cuando se le explique algo a Adam.
+
+================================================================
+8. DÓNDE ESTÁ TODO
+================================================================
+- Código: C:\dev\baloncesto-app (main). CLAUDE.md = lo técnico; PLAN.md = plan; docs/ = historial de cada loop; docs/conocimiento = base de conocimiento de baloncesto; sistemas/*.md = fichas de sistemas.
+- Sistemas: src/sistemas/datos.ts y datosSenior.ts (+ tipos.ts con el formato).
+- IA: src/recursos/ejercicioIA.ts (revisor), Jarvis: horns_ask.py y mobile_server.py (ruta /api/horns/...).
+- Publicada en https://adambursey7-sudo.github.io/cuernos/ (sh scripts/publicar.sh).
+- Prompts de loops anteriores como modelo de estilo: docs/loop-equipo-completo.txt, docs/loop-senior-masculino.txt, docs/loop-baloncesto-conocimiento.txt, docs/loop-ejercicio-ia.txt.
+
+================================================================
+9. LO QUE TE PIDO, GEMINI
+================================================================
+Escribe UN prompt de loop (para que lo ejecute Claude Code de forma autónoma, por tramos) que convierta Horns en la herramienta de uso diario para llevar un equipo de baloncesto de formación o profesional. El prompt debe:
+1. Dividir el trabajo en tramos ordenados y pequeños (cada uno con objetivo, qué se construye, cómo se comprueba que está terminado y qué boceto se hace antes). Prioriza: (a) biblioteca completa de sistemas ofensivos y defensivos, (b) entrada de información de partido que se reparte sola, (c) lesiones, (d) viajes y logística, (e) conexión con IAs y apps, (f) estadística y seguimiento de cantera.
+2. Para cada tramo, pedir primero un boceto con varias opciones (ventajas e inconvenientes) y dejar elegir a Adam, salvo que el prompt diga que es autónomo.
+3. Incluir las reglas de la sección 7 como obligatorias.
+4. Para la biblioteca de sistemas, exigir fuentes, marcado "a revisar", formato Sistema, pizarra animada, ejercicios asociados y progresión por edad; empezar por una lista cerrada de sistemas (una por tanda) y ordenarlos por utilidad para formación y para senior.
+5. Cerrar cada tramo con pruebas, tipos, build, revisión corta y un aviso breve a Adam (sin archivos, rutas ni cifras técnicas), y parar en un punto natural para que Adam pruebe en el iPhone.
+6. No pedir unir, publicar ni push sin permiso.
+7. Estar escrito en español, con el estilo de los prompts de loop anteriores (rama y carpeta propia, documentos de cierre y pendiente en docs/).
+Antes de escribirlo, dime las 5 dudas más importantes que tengas (con tu recomendación para cada una) y espera mi respuesta.

@@ -1,0 +1,31 @@
+// Capturas de la app Horns (tamaño iPhone, x2) para las imágenes de referencia de la intro.
+import { pathToFileURL } from 'node:url';
+const { chromium } = await import(pathToFileURL('C:/dev/e2e-herramientas/node_modules/playwright-core/index.mjs').href);
+const [url, salida] = process.argv.slice(2);
+const nav = await chromium.launch({ channel: 'chrome', headless: true });
+const p = await nav.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2.77 });
+const errores = [];
+p.on('pageerror', (e) => errores.push(e.message));
+const foto = (n) => p.screenshot({ path: `${salida}/${n}.png` });
+const pest = (n) => p.locator('nav.pestanas').getByRole('button', { name: n }).click();
+await p.goto(url); await p.waitForTimeout(800);
+await foto('1-inicio');
+await pest('Jugadas'); await p.waitForTimeout(400); await foto('2-jugadas');
+await p.locator('.tarjeta').first().click(); await p.waitForTimeout(500);
+await p.getByRole('button', { name: 'Siguiente' }).click(); await p.waitForTimeout(1500);
+await foto('3-pizarra');
+await p.getByRole('button', { name: 'Volver' }).click().catch(() => {});
+await pest('Jugadas'); await p.getByRole('button', { name: '+ Nueva jugada' }).click(); await p.waitForTimeout(600);
+await foto('4-editor');
+await pest('Inicio');
+await pest('Sesiones'); await p.waitForTimeout(300);
+await p.locator('#equipo').fill('Cadete femenino'); await p.getByRole('button', { name: 'Crear' }).click(); await p.waitForTimeout(400);
+await p.locator('.principal.ancho', { hasText: 'Añadir ejercicio' }).click(); await p.waitForTimeout(300);
+for (let i = 0; i < 3; i++) { await p.locator('.selector .tarjeta-ejercicio').nth(i).click(); await p.waitForTimeout(250); if (i < 2) await p.locator('.principal.ancho', { hasText: 'Añadir ejercicio' }).click(); await p.waitForTimeout(250); }
+await p.evaluate(() => window.scrollTo(0, 0)); await p.locator('.pantalla').first().evaluate((e) => e.scrollTo(0, 0)).catch(() => {}); await foto('5-sesion');
+await p.getByRole('button', { name: /Empezar el entrenamiento/ }).click(); await p.waitForTimeout(1200);
+await foto('6-cronometro');
+await p.goto(url); await p.waitForTimeout(600); await pest('Ejercicios'); await p.waitForTimeout(500); await foto('7-ejercicios');
+await pest('Ajustes'); await p.waitForTimeout(500); await foto('8-colores');
+await nav.close();
+console.log(errores.length ? 'ERRORES ' + errores.join('|') : 'ok');
