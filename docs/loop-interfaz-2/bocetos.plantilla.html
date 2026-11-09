@@ -1,0 +1,62 @@
+<title>Bocetos Horns Interfaz</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Concepto: hoja de obra oscura estilo Marcador; entradas por vuelta, la más nueva arriba; capturas con chinchetas numeradas. */
+:root{--bg:#f4f1ee;--fg:#1c2236;--mute:#5d6477;--card:#fff;--line:#d9d4cd;--acc:#d9560f;--ok:#1d7a4a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b2236;--fg:#f3efe9;--mute:#a6adbf;--card:#252e47;--line:#39435f;--acc:#ff7a1f;--ok:#4cc58a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1b2236;--fg:#f3efe9;--mute:#a6adbf;--card:#252e47;--line:#39435f;--acc:#ff7a1f;--ok:#4cc58a;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:24px}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:Graduate,"Arial Black",Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.04em;text-wrap:balance;margin:0}
+h1{font-size:clamp(26px,6vw,40px)} h2{font-size:20px} h3{margin:0 0 6px;font-size:17px}
+.mute{color:var(--mute)} 
+.vuelta{border-top:3px solid var(--acc);padding-top:14px;display:flex;flex-direction:column;gap:16px}
+.fecha{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.caps{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px}
+.cap{position:relative;flex:0 0 220px;margin:0}
+.cap img{display:block;width:220px;border-radius:12px;border:1px solid var(--line)}
+.cap figcaption{font-size:13px;color:var(--mute);margin-top:4px}
+.pin{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:var(--acc);color:#111;font-weight:700;font-size:14px;display:grid;place-items:center;box-shadow:0 0 0 3px var(--bg)}
+.dos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.caja{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.caja ul,.caja ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.hecho h3{color:var(--ok)} .mejor h3{color:var(--acc)}
+.n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--acc);color:#111;font-size:13px;font-weight:700;margin-right:6px}
+.pri{font-size:12px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);border-radius:99px;padding:1px 8px;margin-left:6px;white-space:nowrap}
+.list{list-style:none;padding:0!important}
+</style>
+<main>
+<header>
+<h1>Horns · Interfaz 2</h1>
+<p class="mute">Bocetos de cada vuelta del loop. Lo último, arriba.</p>
+</header>
+
+<section class="vuelta">
+<div class="fecha">Vuelta 1 · 9/11 · Auditoría de las 5 pestañas (móvil)</div>
+<h2>Qué se ve y qué no ayuda en la banda</h2>
+<div class="caps">
+<figure class="cap"><img src="@IMG/movil-Hoy.jpg" alt="Hoy"><span class="pin" style="--x:50%;--y:11%">7</span><span class="pin" style="--x:8%;--y:3%">5</span><figcaption>Hoy</figcaption></figure>
+<figure class="cap"><img src="@IMG/movil-Biblioteca.jpg" alt="Biblioteca"><span class="pin" style="--x:50%;--y:27%">2</span><span class="pin" style="--x:12%;--y:87%">3</span><figcaption>Biblioteca</figcaption></figure>
+<figure class="cap"><img src="@IMG/movil-Sesiones.jpg" alt="Sesiones"><span class="pin" style="--x:50%;--y:24%">4</span><span class="pin" style="--x:8%;--y:3%">5</span><figcaption>Sesiones</figcaption></figure>
+<figure class="cap"><img src="@IMG/movil-Equipo.jpg" alt="Equipo"><span class="pin" style="--x:92%;--y:12.5%">6</span><span class="pin" style="--x:8%;--y:3%">5</span><figcaption>Equipo</figcaption></figure>
+<figure class="cap"><img src="@IMG/movil-Mas.jpg" alt="Más"><span class="pin" style="--x:50%;--y:12%">1</span><span class="pin" style="--x:50%;--y:41%">1</span><figcaption>Más</figcaption></figure>
+</div>
+<div class="dos">
+<div class="caja hecho"><h3>Hecho</h3><ul>
+<li>Copia de trabajo creada y app de prueba con datos de ejemplo.</li>
+<li>Capturas de las 5 pestañas en móvil y tableta (las de tableta están en la carpeta de la auditoría).</li>
+<li>Medidor de botones pequeños: casi todo cumple 44 px. Solo fallan las casillas de Más y un botón de Sesiones.</li>
+<li>Lo que ya está bien: Hoy (cuenta atrás y tres botones grandes), la barra de abajo y la lista de plantilla.</li></ul></div>
+<div class="caja mejor"><h3>Mejorable (ordenado por impacto y esfuerzo)</h3><ol class="list">
+<li><span class="n">1</span><b>Más</b> es un cajón de ajustes: los botones de Bandeja y Conexiones van antes del título, las casillas son diminutas y su texto queda debajo, desalineado. <span class="pri">alto</span></li>
+<li><span class="n">2</span><b>Biblioteca</b>: antes de ver la primera jugada hay título repetido, dos botones y un contador (casi media pantalla). <span class="pri">alto</span></li>
+<li><span class="n">3</span><b>Biblioteca</b>: grupos como «Ataque ▸» no parecen tocables y el chip «Semana» queda suelto bajo una tarjeta. <span class="pri">medio</span></li>
+<li><span class="n">4</span><b>Sesiones</b>: botón enorme con texto largo, chips cortados a la derecha y el formulario «Otro equipo» siempre a la vista. <span class="pri">medio</span></li>
+<li><span class="n">5</span><b>Cabeceras distintas</b>: Hoy, Biblioteca y Más llevan el logo; Sesiones y Equipo no. Los títulos tienen tamaños distintos. <span class="pri">alto</span></li>
+<li><span class="n">6</span><b>Equipo</b>: las pestañas de dentro se cortan («Diario») y no se ve que hay más. <span class="pri">medio</span></li>
+<li><span class="n">7</span><b>Hoy</b>: el aviso de copia ocupa sitio fijo y el nombre del equipo ocupa dos líneas grandes. <span class="pri">bajo</span></li>
+</ol></div>
+</div>
+<div class="caja"><b>Pendiente de esta auditoría:</b> letra Enorme, dos temas de colores extremos y las pantallas de dentro (pizarra, ejercicio, en directo, modo banda). Se miran antes de aplicar nada, con lo que marques.</div>
+</section>
+</main>
