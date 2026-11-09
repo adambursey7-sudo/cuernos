@@ -990,3 +990,8 @@ button.principal.ancho { font-size: 1rem; }
 .titulo-lista .cuenta { font-size: 1.3rem; color: var(--principal); font-family: var(--display); }
 .titulo-fila .acciones-titulo .chip, .titulo-fila .acciones-titulo .nueva { margin-bottom: 0; }
 .panel-equipo h1 { font-size: clamp(1.3rem, 6.2vw, 1.9rem); line-height: 1; text-wrap: balance; }
+
+/* Paso 5: los mandos de la jugada quedan pegados sobre la barra de abajo, al alcance del pulgar, y los pasos se leen más grandes */
+.pantalla > .mandos { position: sticky; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); z-index: 5; padding: 8px 0; background: var(--fondo); box-shadow: 0 -10px 12px -6px var(--fondo); }
+.mandos button { min-height: 56px; }
+.explica { font-size: 1.25rem; line-height: 1.35; }
