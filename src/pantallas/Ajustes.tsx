@@ -123,9 +123,9 @@ export function Ajustes({ abrirBandeja, abrirConexiones }: { abrirBandeja: () =>
   return (
     <section className="pantalla">
       <h1 className="titulo">Más</h1>
-      <div className="atajos">
-        <button className="fila-atajo" onClick={abrirBandeja}><b>Bandeja de entrada</b><span className="meta">Pegar datos de un partido</span></button>
-        <button className="fila-atajo" onClick={abrirConexiones}><b>Conexiones y exportar</b><span className="meta">IA, familias y copias</span></button>
+      <div className="lista-mas">
+        <button className="fila-mas" onClick={abrirBandeja}><b>Bandeja de entrada</b><span className="meta">Pegar datos de un partido</span></button>
+        <button className="fila-mas" onClick={abrirConexiones}><b>Conexiones y exportar</b><span className="meta">IA, familias y copias</span></button>
       </div>
       <h2 className="sub">Entrada</h2>
       <label className="campo-diario casilla">
