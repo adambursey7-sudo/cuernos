@@ -995,3 +995,9 @@ button.principal.ancho { font-size: 1rem; }
 .pantalla > .mandos { position: sticky; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); z-index: 5; padding: 8px 0; background: var(--fondo); box-shadow: 0 -10px 12px -6px var(--fondo); }
 .mandos button { min-height: 56px; }
 .explica { font-size: 1.25rem; line-height: 1.35; }
+
+/* Paso 6: lo que se toca en pista (cronómetro y partido en directo) mide 56 px o más */
+.ent-arriba button, .ent-mandos button { min-width: 56px; min-height: 56px; }
+.vivo-pie button { min-height: 56px; font-size: 0.85rem; }
+.vivo-marcador .fila-rival button { min-width: 64px; min-height: 56px; }
+.barra-directo { min-height: 56px; }
