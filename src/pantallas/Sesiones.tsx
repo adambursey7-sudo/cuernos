@@ -1,5 +1,6 @@
 // Sesiones, opción B · Línea de tiempo (elegida por Adam el 29/10): los ejercicios en orden, cada uno con su color por tipo
 // y una altura que sigue a sus minutos. Se guardan por equipo (categoría, sin nombres) solo en este móvil.
+import { Vacio } from '../ui/Vacio';
 import { PLANTILLAS, desdePlantilla, type Plantilla } from '../sesiones/plantillas';
 import { useEffect, useRef, useState } from 'react';
 import { INTENSIDADES, cargaSesion, intensidadDe, intensidadMedia, materialDeSesion, moverBloqueA, nombreIntensidad } from '../sesiones/plan';
@@ -277,7 +278,7 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
       {equipo && (
         <>
           {delEquipo.length === 0 ? (
-            <p className="vacio">Este equipo aún no tiene sesiones.</p>
+            <Vacio dibujo="calendario" titulo="Aún no hay sesiones" texto="Crea la primera y ponle ejercicios." accion="+ Nueva sesión" alPulsar={() => crear(equipo)} />
           ) : (
             <ul className="lista">
               {delEquipo.map((s) => (

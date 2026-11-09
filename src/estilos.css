@@ -989,3 +989,4 @@ button.principal.ancho { font-size: 1rem; }
 .titulo-lista { font-size: 1.3rem; margin: 0; display: flex; align-items: baseline; gap: 8px; }
 .titulo-lista .cuenta { font-size: 1.3rem; color: var(--principal); font-family: var(--display); }
 .titulo-fila .acciones-titulo .chip, .titulo-fila .acciones-titulo .nueva { margin-bottom: 0; }
+.panel-equipo h1 { font-size: clamp(1.3rem, 6.2vw, 1.9rem); line-height: 1; text-wrap: balance; }
