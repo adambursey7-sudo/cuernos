@@ -24,7 +24,7 @@ import { aplicarColores, ASPECTOS, guardarAspecto, leerAspecto, leerColores, NOM
 const CAMPOS = Object.keys(NOMBRES_COLOR) as (keyof Colores)[];
 const igual = (a: Colores, b: Colores) => CAMPOS.every((k) => a[k].toLowerCase() === b[k].toLowerCase());
 
-export function Ajustes() {
+export function Ajustes({ abrirBandeja, abrirConexiones }: { abrirBandeja: () => void; abrirConexiones: () => void }) {
   const [c, setC] = useState(leerColores);
   const [aspecto, setAspecto] = useState(leerAspecto);
   const [aviso, setAviso] = useState('');
@@ -123,9 +123,13 @@ export function Ajustes() {
   return (
     <section className="pantalla">
       <h1 className="titulo">Más</h1>
+      <div className="atajos">
+        <button className="fila-atajo" onClick={abrirBandeja}><b>Bandeja de entrada</b><span className="meta">Pegar datos de un partido</span></button>
+        <button className="fila-atajo" onClick={abrirConexiones}><b>Conexiones y exportar</b><span className="meta">IA, familias y copias</span></button>
+      </div>
       <h2 className="sub">Entrada</h2>
-      <label className="campo-diario">
-        <span><input type="checkbox" checked={intro} onChange={(ev) => { setIntro(ev.target.checked); ponerIntroActiva(ev.target.checked); }} /> Vídeo de entrada al abrir la app (una vez al día)</span>
+      <label className="campo-diario casilla">
+        <input type="checkbox" checked={intro} onChange={(ev) => { setIntro(ev.target.checked); ponerIntroActiva(ev.target.checked); }} /> <span>Vídeo de entrada al abrir la app (una vez al día)</span>
       </label>
       <h2 className="sub">Lectura</h2>
       <div className="letras" role="group" aria-label="Tamaño de letra">
@@ -135,8 +139,8 @@ export function Ajustes() {
           </button>
         ))}
       </div>
-      <label className="campo-diario">
-        <span><input type="checkbox" checked={lectura.quieto} onChange={(ev) => leer({ ...lectura, quieto: ev.target.checked })} /> Reducir movimiento (sin animaciones)</span>
+      <label className="campo-diario casilla">
+        <input type="checkbox" checked={lectura.quieto} onChange={(ev) => leer({ ...lectura, quieto: ev.target.checked })} /> <span>Reducir movimiento (sin animaciones)</span>
       </label>
       <h2 className="sub">Aspecto</h2>
       <div className="letras" role="group" aria-label="Aspecto de la app">

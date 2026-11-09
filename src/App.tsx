@@ -99,7 +99,7 @@ export function App() {
   else if (pestana === 'equipo') contenido = <Equipo key={fechaAbrir ?? 'sin-fecha'} ir={irABiblioteca} fecha={fechaAbrir} abrirSesion={abrirSesion} abrirEjercicio={verEjercicio} abrirSistema={verSistema} activoId={activoId} elegir={elegirEquipo} />;
   else if (pestana === 'mas' && bandeja) contenido = <Bandeja volver={() => setBandeja(false)} />;
   else if (pestana === 'mas' && conexiones) contenido = <Conexiones volver={() => setConexiones(false)} />;
-  else if (pestana === 'mas') contenido = <><header className="cabecera-app"><Marca className="marca-cabecera" /></header><section className="pantalla"><button className="accion-sig" onClick={() => setBandeja(true)}>Bandeja de entrada: pegar datos de un partido</button><button className="accion-sig suave" onClick={() => setConexiones(true)}>Conexiones y exportar</button></section><Ajustes /></>;
+  else if (pestana === 'mas') contenido = <Ajustes abrirBandeja={() => setBandeja(true)} abrirConexiones={() => setConexiones(true)} />;
   else if (edicion)
     contenido = (
       <Editor

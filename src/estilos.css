@@ -958,3 +958,27 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible, [tabindex]:
 .vivo-avisos p { margin: 0; color: var(--aviso); font-weight: 800; font-size: 0.95rem; }
 .aviso-version { position: sticky; top: 0; z-index: 21; margin: 0; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 6px 16px; background: var(--principal); color: var(--sobre-principal); font: 700 0.9rem/1.3 var(--body); }
 .aviso-version button { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 2px solid currentColor; background: none; color: inherit; font-weight: 800; }
+
+/* Interfaz 2 (paso 2): cabeceras y filas iguales en todas las pestañas */
+.titulo { font-size: 2.1rem; margin: 4px 0 2px; }
+.titulo-lista .cuenta { font: 800 1.1rem/1 var(--body); color: var(--tenue); letter-spacing: 0; vertical-align: middle; }
+.acciones-titulo { display: flex; gap: 8px; align-items: center; }
+.acciones-titulo .chip { min-height: 44px; display: inline-flex; align-items: center; margin-bottom: 4px; }
+.atajos { display: grid; gap: 8px; }
+.fila-atajo { display: grid; gap: 2px; text-align: left; min-height: var(--toque); padding: 10px 14px; border: 1px solid var(--borde); border-radius: var(--r-md); background: var(--superficie); position: relative; }
+.fila-atajo b { font-size: 1.05rem; }
+.fila-atajo::after { content: '›'; position: absolute; right: 14px; top: 50%; translate: 0 -50%; font-size: 1.6rem; color: var(--tenue); }
+.casilla { display: flex !important; align-items: center; gap: 12px; min-height: var(--toque); }
+.casilla > input[type='checkbox'] { flex: none; width: 24px; height: 24px; accent-color: var(--principal); }
+.casilla > span { font-size: 1rem !important; font-weight: 400 !important; letter-spacing: 0 !important; text-transform: none !important; color: var(--texto) !important; }
+.grupo-jugadas > summary { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--r-md); padding: 0 14px; margin-bottom: 8px; }
+.grupo-jugadas > summary::after { font-size: 1.2rem; color: var(--principal); }
+.con-estrella > .boton-filtro { position: absolute; right: 8px; bottom: 8px; min-height: 44px; padding: 0 12px; font-size: 0.85rem; background: var(--fondo); }
+.con-estrella > .boton-filtro.on { background: var(--principal); }
+.con-estrella > .tarjeta { padding-right: 104px; }
+.otro-equipo > summary { min-height: var(--toque); display: flex; align-items: center; cursor: pointer; color: var(--principal); font-weight: 800; list-style: none; }
+.otro-equipo > summary::-webkit-details-marker { display: none; }
+.otro-equipo .nuevo-equipo { margin-top: 4px; }
+button.principal.ancho { font-size: 1rem; }
+.con-fundido { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+.aviso-copia { font-size: 0.82rem; padding: 6px var(--e3); }

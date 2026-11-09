@@ -305,8 +305,11 @@ function Importar({ equipoId, w, existentes, crear, volver, usarReglas }: { usar
 }
 
 function Apartados({ ver, vista }: { ver: (v: 'plantilla' | 'habilidades' | 'rotacion' | 'diario' | 'temporada' | 'cifras') => void; vista: 'plantilla' | 'habilidades' | 'rotacion' | 'diario' | 'temporada' | 'cifras' }) {
+  const caja = useRef<HTMLDivElement>(null);
+  // El apartado activo siempre se ve entero: la fila se desplaza hasta él (sin animación brusca).
+  useEffect(() => { caja.current?.querySelector<HTMLElement>('[aria-selected="true"]')?.scrollIntoView({ inline: 'center', block: 'nearest' }); }, [vista]);
   return (
-    <div className="niveles filtro" role="tablist" aria-label="Apartados del equipo">
+    <div ref={caja} className="niveles filtro con-fundido" role="tablist" aria-label="Apartados del equipo">
       {([['plantilla', 'Plantilla'], ['habilidades', 'Habilidades'], ['rotacion', 'Rotación'], ['diario', 'Diario'], ['temporada', 'Temporada'], ['cifras', 'Cifras']] as const).map(([id, nombre]) => (
         <button key={id} role="tab" aria-selected={vista === id} className={vista === id ? 'chip on' : 'chip'} onClick={() => ver(id)}>{nombre}</button>
       ))}

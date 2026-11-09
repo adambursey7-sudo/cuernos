@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { formatos, todosLosEjercicios, type Filtro } from '../ejercicios/ejercicios';
 import { alternarFavorito, leerFavoritos } from '../favoritos';
-import { Marca } from '../Logo';
 import type { Ejercicio as EjercicioIA } from '../recursos/guardarEjercicioIA';
 import type { Cuestionario } from '../recursos/ia';
 import type { Recurso } from '../recursos/recursos';
@@ -54,7 +53,6 @@ export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, retoca
   return (
     <>
       <header className="cabecera-app">
-        <Marca className="marca-cabecera" />
         <div className="ramas" role="tablist" aria-label="Biblioteca">
           {RAMAS.map((r) => (
             <button key={r.id} role="tab" aria-selected={r.id === rama} className={r.id === rama ? 'on' : ''} onClick={() => elegirRama(r.id)}>

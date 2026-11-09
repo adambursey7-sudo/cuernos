@@ -299,7 +299,7 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
               ))}
             </ul>
           )}
-          <button className="principal ancho" onClick={() => crear(equipo)}>+ Nueva sesión de {equipo}</button>
+          <button className="principal ancho" onClick={() => crear(equipo)}>+ Nueva sesión</button>
           <div className="niveles filtro" role="group" aria-label="Plantillas">
             {PLANTILLAS.map((p) => (
               <button key={p.id} className="chip" title={p.idea} onClick={() => crear(equipo, p)}>+ {p.nombre}</button>
@@ -308,6 +308,8 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
         </>
       )}
 
+      <details className="otro-equipo" open={equipos.length === 0}>
+        <summary>+ Otro equipo</summary>
       <form
         className="nuevo-equipo"
         onSubmit={(ev) => {
@@ -315,13 +317,14 @@ export function Sesiones({ abrirEjercicio, abierta, abrir: setAbierta, arranque 
           if (nombreLimpio) { crear(nombreLimpio); setNuevoEquipo(''); }
         }}
       >
-        <label htmlFor="equipo">{equipos.length ? 'Otro equipo' : 'Primero, ¿qué equipo entrenas? (o créalo en Equipo)'}</label>
+        <label htmlFor="equipo">{equipos.length ? 'Nombre del equipo' : 'Primero, ¿qué equipo entrenas? (o créalo en Equipo)'}</label>
         <div className="fila-chips">
           <input id="equipo" value={nuevoEquipo} maxLength={30} placeholder="Cadete femenino" onChange={(ev) => setNuevoEquipo(ev.target.value)} />
           <button className="chip on" disabled={!nombreLimpio}>Crear</button>
         </div>
         <p className="meta">Pon la categoría, no nombres de jugadores. Se guarda solo en este móvil.</p>
       </form>
+      </details>
     </section>
   );
 }

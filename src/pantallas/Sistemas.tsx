@@ -78,11 +78,12 @@ export function Sistemas({ abrir, crear, q, soloFavoritos, filtro, favoritos, al
   return (
     <section className="pantalla" data-v={version}>
       <div className="titulo-fila">
-        <h1 className="titulo">Jugadas</h1>
-        <button className="nueva" onClick={crear}>+ Nueva jugada</button>
+        <h1 className="titulo titulo-lista">Jugadas <span className="cuenta" aria-live="polite">{lista.length}</span></h1>
+        <div className="acciones-titulo">
+          <button className="chip" onClick={() => setVideo(true)}>▶ Desde vídeo</button>
+          <button className="nueva" onClick={crear}>+ Nueva</button>
+        </div>
       </div>
-      <button className="chip" onClick={() => setVideo(true)}>▶ Jugada desde un vídeo</button>
-      <p className="meta" aria-live="polite">{lista.length} {lista.length === 1 ? 'jugada' : 'jugadas'}</p>
       {lista.length === 0 ? (
         <SinResultados favoritos={soloFavoritos && !q} que="jugada" quitarFiltros={quitarFiltros} />
       ) : (
