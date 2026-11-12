@@ -19,6 +19,7 @@ import { ImportarCalendario } from './ImportarCalendario';
 import { InformeRivalEditor } from './InformeRival';
 import { EnDirecto } from './EnDirecto';
 import { alGuardarTemporada } from '../partido/guardar';
+import { useHoja } from '../ui/useHoja';
 import { CargaSemanal } from './CargaSemanal';
 import { PLANTILLAS_SEMANA, aplicarPlantillaSemana } from '../sesiones/plan';
 import { DisponibilidadDia } from './DisponibilidadDia';
@@ -163,6 +164,9 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
   const sesiones = sesionesDe(leerSesiones(), equipo);
   const item = items.find((i) => i.clave === edita);
 
+  // Con teclado: Escape hace lo mismo que la ✕ (si se está editando, cierra primero el editor).
+  const refHoja = useHoja<HTMLDivElement>(true, () => { if (edita) cerrarEditor(); else cerrar(); });
+
   const añadir = (tipo: TipoEvento) => {
     const e = nuevoEvento(fecha, tipo);
     cambiar(guardarEvento(t, e));
@@ -289,7 +293,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
   };
 
   return (
-    <div className={completa || item ? 'tp-hoja completa' : 'tp-hoja'} role="dialog" aria-label={`Día ${corta(fecha)}`}>
+    <div ref={refHoja} className={completa || item ? 'tp-hoja completa' : 'tp-hoja'} role="dialog" aria-label={`Día ${corta(fecha)}`}>
       <div className="tp-hoja-cabeza">
         <h2 className="nombre-sistema">{corta(fecha)}</h2>
         {fase && <span className="et bien">{fase.nombre || 'Fase'}</span>}
