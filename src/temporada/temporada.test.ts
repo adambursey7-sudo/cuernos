@@ -3,7 +3,7 @@ import icsCadete from '../../docs/calendarios/cadete-fem-liga-canaria-B-2026-27.
 import { cuadriculaMes, diaSemana, esFecha, lunesDe, sumarDias, sumarMeses } from './fechas';
 import { escribirIcs, leerIcs, leerLista, rivalConMiEquipo } from './ics';
 import {
-  agendaDia, aplicarCandidatas, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporadas, itemsParaIcs, juntarTemporadas, leerTemporadas,
+  agendaDia, aplicarCandidatas, eventoSinNada, cambiarFijoDia, faseDe, guardarEvento, guardarFase, guardarFijo, guardarTemporadas, itemsParaIcs, juntarTemporadas, leerTemporadas,
   limpiarTemporada, marcasDia, notasDelBalance, nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarFijo, resumenAsistencia, temporadaPorDefecto,
 } from './temporada';
 
@@ -17,6 +17,19 @@ const memoria = () => {
 
 // 2026-10-12 es lunes; 2026-10-17 es sábado.
 const base = () => nuevaTemporada('e1', '2026-09-01', '2027-06-30');
+
+describe('partido recién creado', () => {
+  it('sin tocar se puede tirar; con algo apuntado no, aunque falte el rival', () => {
+    const e = nuevoEvento('2026-11-14', 'partido');
+    expect(eventoSinNada(e)).toBe(true);
+    expect(eventoSinNada({ ...e, titulo: '  ' })).toBe(true);
+    expect(eventoSinNada({ ...e, titulo: 'Ejemplo CB' })).toBe(false);
+    expect(eventoSinNada({ ...e, resultado: { a: 50, c: 40 } })).toBe(false);
+    expect(eventoSinNada({ ...e, convocados: ['j1'] })).toBe(false);
+    expect(eventoSinNada({ ...e, plan: 'Zona' })).toBe(false);
+    expect(eventoSinNada({ ...e, convocados: [] })).toBe(true);
+  });
+});
 
 describe('fechas', () => {
   it('sabe el día de la semana y suma días y meses', () => {

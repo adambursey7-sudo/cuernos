@@ -150,6 +150,11 @@ export const nuevaFase = (desde: string, hasta: string): Fase => ({ id: nuevoId(
 export const nuevoEvento = (fecha: string, tipo: TipoEvento): Evento => ({
   id: nuevoId('v'), fecha, hora: tipo === 'partido' ? '11:00' : '18:30', tipo, titulo: '', casa: tipo === 'partido' ? true : undefined, lugar: '', balance: '',
 });
+/** ¿El evento está como recién creado? (sin nombre ni nada apuntado: resultado, convocatoria, plan, directo…). */
+export function eventoSinNada(e: Evento): boolean {
+  const base = new Set(['id', 'fecha', 'hora', 'tipo', 'casa']);
+  return Object.entries(e).every(([k, v]) => base.has(k) || v === undefined || (typeof v === 'string' && !v.trim()) || (Array.isArray(v) && v.length === 0));
+}
 export const nuevaFila = (): FilaClasificacion => ({ id: nuevoId('c'), equipo: '', g: 0, p: 0 });
 export const nuevoFijo = (dia: number): EntrenoFijo => ({ id: nuevoId('x'), dia, hora: '18:30', minutos: 90 });
 

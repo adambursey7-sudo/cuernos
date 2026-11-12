@@ -11,7 +11,7 @@ import { DIAS, DIAS_LARGOS, corta, cuadriculaMes, mesDe, nombreMes, sumarMeses }
 import { escribirIcs } from '../temporada/ics';
 import {
   ETIQUETAS_BIEN, ETIQUETAS_MAL, notasDelBalance,
-  COMPETICIONES, agendaDia, balanceDe, balanceLiga, cambiarFijoDia, competicionDe, faseDe, guardarEvento, guardarFase, guardarFijo, guardarFila, nuevaFila, ordenarClasificacion, puntosClasificacion, quitarFila, guardarTemporada, guardarTemporadas, itemsParaIcs, leerTemporadas, marcasDia,
+  COMPETICIONES, agendaDia, eventoSinNada, balanceDe, balanceLiga, cambiarFijoDia, competicionDe, faseDe, guardarEvento, guardarFase, guardarFijo, guardarFila, nuevaFila, ordenarClasificacion, puntosClasificacion, quitarFila, guardarTemporada, guardarTemporadas, itemsParaIcs, leerTemporadas, marcasDia,
   nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarEvento, quitarFase, quitarFijo, temporadaDe, temporadaPorDefecto,
   type Evento, type Fase, type Item, type Temporada as TemporadaDatos, type TipoEvento,
 } from '../temporada/temporada';
@@ -172,10 +172,11 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
     cambiar(guardarEvento(t, e));
     setEdita(e.id);
   };
-  // Un partido o un evento sin nombre no sirve: al cerrar el editor se tira.
+  // Un partido o un evento recién creado y sin tocar no sirve: al cerrar el editor se tira. Si ya tiene algo apuntado
+  // (resultado, convocatoria, plan…) se conserva aunque falte el nombre del rival.
   const cerrarEditor = () => {
     const e = item?.evento;
-    if (e && e.tipo !== 'entreno' && !e.titulo.trim()) cambiar(quitarEvento(t, e.id));
+    if (e && e.tipo !== 'entreno' && eventoSinNada(e)) cambiar(quitarEvento(t, e.id));
     setEdita(null);
   };
 
