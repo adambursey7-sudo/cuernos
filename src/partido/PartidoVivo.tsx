@@ -66,7 +66,8 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
       setSinGuardar(!guardarPartido(equipoId, eventoId, datos.e, p));
     };
     pendienteGuardar.current = guardar;
-    const id = setTimeout(guardar, 300);
+    // El temporizador llama a lo pendiente: si ya se guardó antes (al pasar a segundo plano), no se guarda dos veces.
+    const id = setTimeout(() => pendienteGuardar.current?.(), 300);
     return () => clearTimeout(id);
   }, [p, datos, equipoId, eventoId]);
   useEffect(() => () => pendienteGuardar.current?.(), []);

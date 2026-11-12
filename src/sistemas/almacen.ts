@@ -34,7 +34,9 @@ function miosEnMemoria(): NonNullable<typeof memoMios> {
   try {
     crudo = localStorage.getItem(CLAVE);
   } catch {
-    return { crudo: null, mios: [] };
+    // Sin almacenamiento (modo privado): se recuerda una lista vacía, siempre la misma.
+    memoMios ??= { crudo: null, mios: [] };
+    return memoMios;
   }
   if (memoMios && memoMios.crudo === crudo) return memoMios;
   let mios: Sistema[] = [];

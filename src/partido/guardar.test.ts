@@ -55,6 +55,13 @@ describe('guardar el partido en directo', () => {
     expect(evento(e.id).vivo?.cronologia).toHaveLength(1);
   });
 
+  it('si el partido se borró mientras se jugaba, no lo resucita', () => {
+    const e = preparar();
+    guardarTemporadas([nuevaTemporada('eq1', '2026-09-01', '2027-06-30')]);
+    expect(guardarPartido('eq1', e.id, e, partido())).toBe(true);
+    expect(temporadaDe(leerTemporadas(), 'eq1')!.eventos).toHaveLength(0);
+  });
+
   it('dice que no ha guardado cuando el móvil no deja escribir', () => {
     const e = preparar();
     lleno = true;

@@ -390,7 +390,10 @@ export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion, anotar
 
   // El partido en directo se abre encima y guarda por su cuenta: al hacerlo, esta pantalla vuelve a leer.
   // Sin esto, el siguiente cambio aquí (el balance, el rival…) pisaba la estadística del partido con la versión de antes.
-  useEffect(() => alGuardarTemporada(() => { primera.current = true; setLista(leerTemporadas()); }), []);
+  // Si el último guardado de esta pantalla falló, no se relee: lo que hay en memoria es lo único que queda de esos cambios.
+  const falloRef = useRef(false);
+  falloRef.current = fallo;
+  useEffect(() => alGuardarTemporada(() => { if (falloRef.current) return; primera.current = true; setLista(leerTemporadas()); }), []);
 
   const cambiar = (n: TemporadaDatos) => setLista((l) => guardarTemporada(l, n));
   const marcas = useMemo(() => (t ? new Map(cuadriculaMes(mes).flat().filter((f): f is string => !!f).map((f) => [f, marcasDia(t, f)])) : new Map()), [t, mes]);

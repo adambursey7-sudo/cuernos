@@ -18,7 +18,9 @@ export function guardarPartido(equipoId: string, eventoId: string, base: Evento,
   const t = temporadaDe(lista, equipoId);
   if (!t) return true;
   const actual = t.eventos.find((x) => x.id === eventoId);
-  const e: Evento = { ...base, ...(actual ?? {}), directo: p.directo, resultado: { a: totalPuntos(p.directo), c: p.rival }, vivo: p.vivo };
+  // Si el partido se borró mientras tanto (desde su hoja o al cargar una copia), no se vuelve a crear.
+  if (!actual) return true;
+  const e: Evento = { ...base, ...actual, directo: p.directo, resultado: { a: totalPuntos(p.directo), c: p.rival }, vivo: p.vivo };
   const bien = guardarTemporadas(guardarTemporada(lista, guardarEvento(t, e)));
   if (bien) avisarTemporadaGuardada();
   return bien;

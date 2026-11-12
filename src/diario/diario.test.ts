@@ -84,6 +84,9 @@ describe('importar plantilla', () => {
     expect(esNotaDeSalud('Trabaja muy bien en defensa')).toBe(false);
     expect(esNotaDeSalud('Buena cooperación con las pívots')).toBe(false);
     expect(esNotaDeSalud('Está de baja dos semanas')).toBe(true);
+    expect(esNotaDeSalud('Baja por gripe')).toBe(true);
+    expect(esNotaDeSalud('Dos bajas esta semana')).toBe(true);
+    expect(esNotaDeSalud('Bajar el culo en defensa')).toBe(false);
     expect(esNotaDeSalud('Operación de rodilla en verano')).toBe(true);
   });
   it('al guardar en el móvil no se pierde ninguna nota, tampoco las que hablan de salud', () => {

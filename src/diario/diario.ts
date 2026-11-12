@@ -237,9 +237,10 @@ export function juntarDiario(actual: Diario, copia: Diario): Diario {
 }
 
 /** ¿La nota libre habla de salud (lesiones, médicos, alergias, medicación…)? Se detecta por palabras, sin acentos.
- * «baja» y «operaci» solo como palabra entera («trabaja» y «cooperación» no son salud); se escribe con (?<![a-z]) y no con
- * la barra-b de las expresiones regulares, que una vez se coló aquí como carácter invisible y dejó «baja» sin detectar. */
-const SALUD = /les[io]|esguince|fractur|rotura|desgarr|tendin|lumbar|contractur|sobrecarg|rehabilit|fisio|medic|doctor|hospital|urgencias|enferm|alergi|asma|diabet|epilep|(?<![a-z])operaci|cirug|escayol|vendaje|conmoci|golpe en|baja por|molest|dolor|recuper|lesionad|(?<![a-z])baja(?![a-z])|cardi|medicaci|tratamiento|diagnostic|covid|gripe|fiebre/;
+ * «baja» y «operaci» solo como palabra entera («trabaja» y «cooperación» no son salud); se escribe con (?:^|[^a-z]) y no con
+ * la barra-b de las expresiones regulares, que una vez se coló aquí como carácter invisible y dejó «baja» sin detectar.
+ * Tampoco se usa (?<!…): los iPhone con iOS anterior a 16.4 no lo entienden y la app no arrancaría. */
+const SALUD = /les[io]|esguince|fractur|rotura|desgarr|tendin|lumbar|contractur|sobrecarg|rehabilit|fisio|medic|doctor|hospital|urgencias|enferm|alergi|asma|diabet|epilep|(?:^|[^a-z])operaci|cirug|escayol|vendaje|conmoci|golpe en|baja por|molest|dolor|recuper|lesionad|(?:^|[^a-z])bajas?(?![a-z])|cardi|medicaci|tratamiento|diagnostic|covid|gripe|fiebre/;
 export const esNotaDeSalud = (texto: string): boolean =>
   SALUD.test(texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''));
 
