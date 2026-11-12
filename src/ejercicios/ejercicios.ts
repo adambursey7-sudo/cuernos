@@ -1,7 +1,7 @@
 // Biblioteca de ejercicios (opción A, elegida por Adam el 29/10): sale de las líneas «Ejercicios relacionados» de cada ficha.
 // De la ficha: formato, jugadores, sistema y nivel. Lo demás (tipo, tiempo, material y pizarra) va marcado como borrador.
 import { inicios } from '../pizarra/animar';
-import { todosLosSistemas } from '../sistemas/almacen';
+import { todosLosSistemas, versionDeMios } from '../sistemas/almacen';
 import { NIVELES, type Jugador, type Nivel, type Sistema } from '../sistemas/tipos';
 import { BORRADORES, type Borrador } from './borradores';
 
@@ -89,9 +89,19 @@ export function ejerciciosDe(s: Sistema): Ejercicio[] {
 }
 
 /** Los ejercicios del libro y de las jugadas propias, en el orden de las fichas. */
-export const todosLosEjercicios = (): Ejercicio[] => todosLosSistemas().flatMap(ejerciciosDe);
+export const todosLosEjercicios = (): Ejercicio[] => [...ejerciciosEnMemoria()];
 
-export const buscarEjercicio = (id: string) => todosLosEjercicios().find((e) => e.id === id);
+// Se recuerdan mientras no cambien las jugadas propias (ver `versionDeMios`): antes se recalculaban en cada búsqueda.
+let memoEjercicios: { version: unknown; lista: Ejercicio[] } | undefined;
+function ejerciciosEnMemoria(): Ejercicio[] {
+  const version = versionDeMios();
+  if (memoEjercicios?.version === version) return memoEjercicios.lista;
+  const lista = todosLosSistemas().flatMap(ejerciciosDe);
+  memoEjercicios = { version, lista };
+  return lista;
+}
+
+export const buscarEjercicio = (id: string) => ejerciciosEnMemoria().find((e) => e.id === id);
 
 const orden = (n: Nivel) => NIVELES.findIndex((x) => x.id === n);
 

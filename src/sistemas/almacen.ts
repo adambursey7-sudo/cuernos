@@ -25,13 +25,40 @@ export function esSistemaValido(s: unknown): s is Sistema {
   );
 }
 
-export function leerMios(): Sistema[] {
+// Lo leído se recuerda mientras el texto guardado no cambie: el cronómetro y el editor de sesiones buscan jugadas y ejercicios
+// varias veces por segundo, y releer y validar todo cada vez gastaba batería y daba tirones.
+let memoMios: { crudo: string | null; mios: Sistema[]; todos?: Sistema[] } | undefined;
+
+function miosEnMemoria(): NonNullable<typeof memoMios> {
+  let crudo: string | null;
   try {
-    const lista = JSON.parse(localStorage.getItem(CLAVE) ?? '[]');
-    return Array.isArray(lista) ? lista.filter(esSistemaValido).map((s) => ({ ...s, propio: true })) : [];
+    crudo = localStorage.getItem(CLAVE);
   } catch {
-    return [];
+    return { crudo: null, mios: [] };
   }
+  if (memoMios && memoMios.crudo === crudo) return memoMios;
+  let mios: Sistema[] = [];
+  try {
+    const lista = JSON.parse(crudo ?? '[]');
+    if (Array.isArray(lista)) mios = lista.filter(esSistemaValido).map((s) => ({ ...s, propio: true }));
+  } catch {
+    /* texto roto: como si no hubiera jugadas propias */
+  }
+  memoMios = { crudo, mios };
+  return memoMios;
+}
+
+const todosEnMemoria = (): Sistema[] => {
+  const m = miosEnMemoria();
+  m.todos ??= [...SISTEMAS, ...SISTEMAS_SENIOR, ...SISTEMAS_BIBLIOTECA, ...m.mios];
+  return m.todos;
+};
+
+/** Cambia cada vez que cambian las jugadas propias guardadas: sirve de llave para recordar cálculos hechos con ellas. */
+export const versionDeMios = (): unknown => miosEnMemoria();
+
+export function leerMios(): Sistema[] {
+  return [...miosEnMemoria().mios];
 }
 
 function escribir(lista: Sistema[]) {
@@ -54,11 +81,11 @@ export function borrarMio(id: string) {
 }
 
 export function todosLosSistemas(): Sistema[] {
-  return [...SISTEMAS, ...SISTEMAS_SENIOR, ...SISTEMAS_BIBLIOTECA, ...leerMios()];
+  return [...todosEnMemoria()];
 }
 
 export function buscarSistema(id: string): Sistema | undefined {
-  return todosLosSistemas().find((s) => s.id === id);
+  return todosEnMemoria().find((s) => s.id === id);
 }
 
 export const nuevoId = () => 'mio-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
