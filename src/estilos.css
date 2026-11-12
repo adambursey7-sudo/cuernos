@@ -399,6 +399,11 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 .tp-item-boton { width: 100%; display: flex; align-items: center; gap: 10px; border: none; background: none; text-align: left; padding: 6px; }
 .tp-item-boton .datos { display: grid; flex: 1; min-width: 0; line-height: 1.25; }
 .tp-editor { display: grid; gap: 12px; }
+/* Una sola columna que nunca pasa del ancho de la hoja: sin esto, una fila larga de botones (la convocatoria, «A quién mirar»)
+   ensanchaba toda la hoja del partido y la fecha, la jornada y el botón de cerrar quedaban fuera de la pantalla. */
+.tp-hoja, .tp-editor { grid-template-columns: minmax(0, 1fr); }
+.tp-editor .dos-botones { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.tp-editor .campo-diario { min-width: 0; }
 .tp-editor input[type='time'], .tp-editor input[type='date'], .tp-editor select, .campo-diario input[type='date'], .campo-diario input[type='time'], .campo-diario select, .tp-fijo select, .tp-fijo input { min-height: 44px; padding: 8px 10px; border-radius: var(--r-sm); border: 1.5px solid var(--tenue); background: var(--superficie); color: var(--texto); font: inherit; }
 .marca-linea { display: flex; gap: 10px; align-items: center; font-size: 0.95rem; }
 .marca-linea input { width: 22px; height: 22px; accent-color: var(--principal); flex: none; }

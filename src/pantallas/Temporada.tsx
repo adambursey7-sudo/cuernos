@@ -18,6 +18,7 @@ import {
 import { ImportarCalendario } from './ImportarCalendario';
 import { InformeRivalEditor } from './InformeRival';
 import { EnDirecto } from './EnDirecto';
+import { alGuardarTemporada } from '../partido/guardar';
 import { CargaSemanal } from './CargaSemanal';
 import { PLANTILLAS_SEMANA, aplicarPlantillaSemana } from '../sesiones/plan';
 import { DisponibilidadDia } from './DisponibilidadDia';
@@ -381,6 +382,10 @@ export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion, anotar
     if (primera.current) { primera.current = false; return; }
     setFallo(!guardarTemporadas(lista));
   }, [lista]);
+
+  // El partido en directo se abre encima y guarda por su cuenta: al hacerlo, esta pantalla vuelve a leer.
+  // Sin esto, el siguiente cambio aquí (el balance, el rival…) pisaba la estadística del partido con la versión de antes.
+  useEffect(() => alGuardarTemporada(() => { primera.current = true; setLista(leerTemporadas()); }), []);
 
   const cambiar = (n: TemporadaDatos) => setLista((l) => guardarTemporada(l, n));
   const marcas = useMemo(() => (t ? new Map(cuadriculaMes(mes).flat().filter((f): f is string => !!f).map((f) => [f, marcasDia(t, f)])) : new Map()), [t, mes]);

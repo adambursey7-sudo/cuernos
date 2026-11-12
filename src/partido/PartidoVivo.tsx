@@ -4,8 +4,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { leerDiario, plantilla, type Jugadora } from '../diario/diario';
 import { leerEquipoActivo } from '../equipo/equipos';
 import { reglasDe } from '../reglas/reglas';
+import { leerTemporadas, temporadaDe, type Evento } from '../temporada/temporada';
 import { totalPuntos } from '../temporada/directo';
-import { guardarEvento, guardarTemporada, guardarTemporadas, leerTemporadas, temporadaDe, type Evento } from '../temporada/temporada';
+import { guardarPartido } from './guardar';
 import { tocar } from '../ui/tacto';
 import { MapaTiros, PanelMapa } from './MapaTiros';
 import { esTriple, tirosDeVivo } from './mapa';
@@ -27,7 +28,8 @@ function inicial(e: Evento, roster: Jugadora[], duracion: number): Partido {
 }
 
 export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () => void }) {
-  const equipo = leerEquipoActivo();
+  // Se lee una sola vez: leerlo en cada repintado daba un objeto nuevo cada vez y, con el reloj en marcha, eso cancelaba el guardado.
+  const [equipo] = useState(leerEquipoActivo);
   const reglas = reglasDe(equipo);
   const [datos] = useState(() => {
     const t = equipo ? temporadaDe(leerTemporadas(), equipo.id) : undefined;
@@ -55,23 +57,27 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
 
   // El partido se guarda en la temporada a los 0,3 segundos de cada jugada (y al salir): si se cierra la app, no se pierde nada.
   const pendienteGuardar = useRef<(() => void) | null>(null);
+  const [sinGuardar, setSinGuardar] = useState(false);
+  const equipoId = equipo?.id;
   useEffect(() => {
-    if (!p || !datos) return;
+    if (!p || !datos || !equipoId) return;
     const guardar = () => {
-    pendienteGuardar.current = null;
-    const lista = leerTemporadas();
-    const t = temporadaDe(lista, equipo!.id);
-    if (!t) return;
-    const vivo = p.vivo;
-    const hay = vivo.cronologia.length > 0 || vivo.segundos > 0 || vivo.corre;
-    if (!hay) return;
-    guardarTemporadas(guardarTemporada(lista, guardarEvento(t, { ...datos.e, ...(t.eventos.find((x) => x.id === eventoId) ?? {}), directo: p.directo, resultado: { a: totalPuntos(p.directo), c: p.rival }, vivo })));
+      pendienteGuardar.current = null;
+      setSinGuardar(!guardarPartido(equipoId, eventoId, datos.e, p));
     };
     pendienteGuardar.current = guardar;
     const id = setTimeout(guardar, 300);
     return () => clearTimeout(id);
-  }, [p, datos, equipo, eventoId]);
+  }, [p, datos, equipoId, eventoId]);
   useEffect(() => () => pendienteGuardar.current?.(), []);
+  // Si la app pasa a segundo plano o se va a recargar (iOS puede cerrarla sin avisar), lo pendiente se guarda en ese momento.
+  useEffect(() => {
+    const volcar = () => { if (document.visibilityState === 'hidden') pendienteGuardar.current?.(); };
+    const alIrse = () => pendienteGuardar.current?.();
+    document.addEventListener('visibilitychange', volcar);
+    window.addEventListener('pagehide', alIrse);
+    return () => { document.removeEventListener('visibilitychange', volcar); window.removeEventListener('pagehide', alIrse); };
+  }, []);
 
   // Reloj: se repinta cada cuarto de segundo mientras corre y se para solo al acabar el cuarto.
   useEffect(() => {
@@ -87,10 +93,16 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
   useEffect(() => {
     let cerrojo: { release: () => Promise<void> } | undefined;
     let cerrado = false;
-    (navigator as Navigator & { wakeLock?: { request: (t: 'screen') => Promise<{ release: () => Promise<void> }> } }).wakeLock?.request('screen')
-      .then((c) => { if (cerrado) void c.release().catch(() => undefined); else cerrojo = c; })
-      .catch(() => undefined);
-    return () => { cerrado = true; void cerrojo?.release().catch(() => undefined); };
+    const pedir = () => {
+      (navigator as Navigator & { wakeLock?: { request: (t: 'screen') => Promise<{ release: () => Promise<void> }> } }).wakeLock?.request('screen')
+        .then((c) => { if (cerrado) void c.release().catch(() => undefined); else cerrojo = c; })
+        .catch(() => undefined);
+    };
+    pedir();
+    // El móvil suelta el permiso al salir de la app: se vuelve a pedir al regresar.
+    const alVolver = () => { if (document.visibilityState === 'visible') pedir(); };
+    document.addEventListener('visibilitychange', alVolver);
+    return () => { cerrado = true; document.removeEventListener('visibilitychange', alVolver); void cerrojo?.release().catch(() => undefined); };
   }, []);
 
   const hacer = useCallback((j: Omit<Jugada, 'n' | 'c' | 's'>) => { tocar(); setP((x) => (x ? registrar(x, j, Date.now()) : x)); }, []);
@@ -272,6 +284,7 @@ export function PartidoVivo({ eventoId, salir }: { eventoId: string; salir: () =
 
       <button className={marcar ? 'chip on' : 'chip'} aria-pressed={marcar} onClick={() => { const n = !marcar; setMarcar(n); try { localStorage.setItem('horns.marcarTiros', n ? '1' : '0'); } catch { /* sin almacenamiento */ } }}>Marcar tiros en la pista</button>
       {aviso && <p className="aviso" role="status">{aviso}</p>}
+      {sinGuardar && <p className="aviso" role="alert">El móvil no deja guardar el partido (¿sin espacio?). No cierres la app: lo apuntado se perdería.</p>}
       <p className="vivo-quien" aria-live="polite">{sel ? <>Apuntando a <b>{etiqueta(nombreDe(roster, sel))}</b> · {linea(sel).p} pts · {linea(sel).f} faltas</> : 'Toca a una jugadora en pista'}</p>
       <section className="vivo-pad" aria-label={sel ? `Apuntar a ${etiqueta(nombreDe(roster, sel))}` : 'Elige una jugadora'}>
         <div className="fila-pad puntos">
