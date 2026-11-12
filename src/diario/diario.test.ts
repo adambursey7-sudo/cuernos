@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { esNotaDeSalud, disponibles, estaFuera, guardarJugadora, juntarDiario, sinSalud, limpiar, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, repetida } from './diario';
+import { esNotaDeSalud, guardarDiario, leerDiario, disponibles, estaFuera, guardarJugadora, juntarDiario, sinSalud, limpiar, nuevaJugadora, nuevoEquipo, plantilla, quitarEquipo, repetida } from './diario';
 import { leerLinea, leerTexto } from './importar';
 import { esSenior, palabras } from './tipo';
 
@@ -79,6 +79,25 @@ describe('importar plantilla', () => {
     expect(juntarDiario(d, sinSalud(d)).jugadoras[0].notas).toHaveLength(2);
     expect(esNotaDeSalud('Alergia a los frutos secos')).toBe(true);
     expect(esNotaDeSalud('Defiende bien')).toBe(false);
+  });
+  it('«baja» y «operación» cuentan como salud solo como palabra entera', () => {
+    expect(esNotaDeSalud('Trabaja muy bien en defensa')).toBe(false);
+    expect(esNotaDeSalud('Buena cooperación con las pívots')).toBe(false);
+    expect(esNotaDeSalud('Está de baja dos semanas')).toBe(true);
+    expect(esNotaDeSalud('Operación de rodilla en verano')).toBe(true);
+  });
+  it('al guardar en el móvil no se pierde ninguna nota, tampoco las que hablan de salud', () => {
+    const datos = new Map<string, string>();
+    (globalThis as { localStorage?: unknown }).localStorage = { getItem: (k: string) => datos.get(k) ?? null, setItem: (k: string, v: string) => void datos.set(k, v), removeItem: (k: string) => void datos.delete(k), length: 0, key: () => null };
+    const e = nuevoEquipo('Ejemplo');
+    const j = nuevaJugadora(e.id, { numero: '5', lesion: { desde: '2026-10-30', nota: '' }, notas: [{ fecha: '2026-10-01', texto: 'Dolor en el tobillo, va al fisio' }, { fecha: '2026-10-02', texto: 'Recupera muchos balones' }] });
+    expect(guardarDiario({ equipos: [e], jugadoras: [j] })).toBe(true);
+    const leida = leerDiario().jugadoras[0];
+    expect(leida.notas.map((n) => n.texto)).toEqual(['Dolor en el tobillo, va al fisio', 'Recupera muchos balones']);
+    expect(leida.lesion?.desde).toBe('2026-10-30');
+    // La lesión no queda escrita en el diario (vive en el almacén de salud).
+    expect(datos.get('horns.diario')).not.toContain('lesion');
+    delete (globalThis as { localStorage?: unknown }).localStorage;
   });
 
 

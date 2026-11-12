@@ -478,7 +478,8 @@ button.secundario { background: var(--superficie); color: var(--texto); }
 @media (prefers-reduced-motion: reduce) { .esqueleto i { animation: none; } }
 
 /* Recursos de internet */
-.rec-vistas { margin-bottom: 4px; }
+/* Esta fila va fuera de .pantalla: lleva su propio margen lateral (sin él se pegaba al borde y ensanchaba la página). */
+.rec-vistas { margin: 0 0 4px; padding-left: max(16px, env(safe-area-inset-left)); }
 .rec-acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .rec-fila { width: 100%; display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; padding: 8px; border: none; border-radius: var(--r-md); background: var(--superficie); text-align: left; }
 .rec-texto { font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
@@ -985,7 +986,9 @@ button.principal.ancho { min-height: 48px; padding-block: 12px; }
 button.principal.ancho { font-size: 1rem; }
 .con-fundido { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
 .aviso-copia { font-size: 0.82rem; padding: 6px var(--e3); }
-.titulo-fila:has(.titulo-lista) { flex-wrap: nowrap; align-items: center; }
+/* Si el título y sus botones no caben en una fila (móvil), los botones bajan a la derecha en vez de salirse de la pantalla. */
+.titulo-fila:has(.titulo-lista) { flex-wrap: wrap; align-items: center; }
+.titulo-fila:has(.titulo-lista) .acciones-titulo { margin-left: auto; }
 .titulo-lista { font-size: 1.3rem; margin: 0; display: flex; align-items: baseline; gap: 8px; }
 .titulo-lista .cuenta { font-size: 1.3rem; color: var(--principal); font-family: var(--display); }
 .titulo-fila .acciones-titulo .chip, .titulo-fila .acciones-titulo .nueva { margin-bottom: 0; }

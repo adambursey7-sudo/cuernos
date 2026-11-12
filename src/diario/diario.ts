@@ -158,7 +158,7 @@ export function leerDiario(): Diario {
     if (d.jugadoras.some((j) => j.lesion)) {
       const conLesion = d.jugadoras.filter((j) => j.lesion);
       if (sincronizarEstados(conLesion, { completo: false })) {
-        try { localStorage.setItem(CLAVE, JSON.stringify(sinSalud(d))); } catch { /* se intentará en el próximo guardado */ }
+        try { localStorage.setItem(CLAVE, JSON.stringify(sinLesiones(d))); } catch { /* se intentará en el próximo guardado */ }
       }
     }
     return { ...d, jugadoras: conEstados(d.jugadoras.map(({ lesion: _l, ...j }) => j)) };
@@ -172,7 +172,8 @@ export function guardarDiario(d: Diario): boolean {
   try {
     const limpio = limpiar(d);
     if (!sincronizarEstados(limpio.jugadoras)) return false;
-    localStorage.setItem(CLAVE, JSON.stringify(sinSalud(limpio)));
+    // Solo se quita la lesión (vive en el almacén de salud). Las notas se guardan TODAS: el filtro de notas de salud es solo para la copia.
+    localStorage.setItem(CLAVE, JSON.stringify(sinLesiones(limpio)));
     refrescarNumeros();
     return true;
   } catch {
@@ -235,10 +236,15 @@ export function juntarDiario(actual: Diario, copia: Diario): Diario {
   };
 }
 
-/** ¿La nota libre habla de salud (lesiones, médicos, alergias, medicación…)? Se detecta por palabras, sin acentos. */
-const SALUD = /les[io]|esguince|fractur|rotura|desgarr|tendin|lumbar|contractur|sobrecarg|rehabilit|fisio|medic|doctor|hospital|urgencias|enferm|alergi|asma|diabet|epilep|operaci|cirug|escayol|vendaje|conmoci|golpe en|baja por|molest|dolor|recuper|lesionad|baja|cardi|medicaci|tratamiento|diagnostic|covid|gripe|fiebre/;
+/** ¿La nota libre habla de salud (lesiones, médicos, alergias, medicación…)? Se detecta por palabras, sin acentos.
+ * «baja» y «operaci» solo como palabra entera («trabaja» y «cooperación» no son salud); se escribe con (?<![a-z]) y no con
+ * la barra-b de las expresiones regulares, que una vez se coló aquí como carácter invisible y dejó «baja» sin detectar. */
+const SALUD = /les[io]|esguince|fractur|rotura|desgarr|tendin|lumbar|contractur|sobrecarg|rehabilit|fisio|medic|doctor|hospital|urgencias|enferm|alergi|asma|diabet|epilep|(?<![a-z])operaci|cirug|escayol|vendaje|conmoci|golpe en|baja por|molest|dolor|recuper|lesionad|(?<![a-z])baja(?![a-z])|cardi|medicaci|tratamiento|diagnostic|covid|gripe|fiebre/;
 export const esNotaDeSalud = (texto: string): boolean =>
   SALUD.test(texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''));
+
+/** El diario sin lesiones, con todas sus notas: así se guarda en el móvil. */
+const sinLesiones = (d: Diario): Diario => ({ ...d, jugadoras: d.jugadoras.map(({ lesion: _quitada, ...resto }) => resto) });
 
 /** El diario sin datos de salud (para la copia de seguridad por defecto): sin lesión y sin notas libres que hablen de salud. */
 export const sinSalud = (d: Diario): Diario => ({
