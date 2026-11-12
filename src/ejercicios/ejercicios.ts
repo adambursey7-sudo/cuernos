@@ -95,7 +95,8 @@ export const todosLosEjercicios = (): Ejercicio[] => [...ejerciciosEnMemoria()];
 let memoEjercicios: { version: unknown; lista: Ejercicio[] } | undefined;
 function ejerciciosEnMemoria(): Ejercicio[] {
   const version = versionDeMios();
-  if (memoEjercicios?.version === version) return memoEjercicios.lista;
+  const m = memoEjercicios;
+  if (m && m.version === version) return m.lista;
   const lista = todosLosSistemas().flatMap(ejerciciosDe);
   memoEjercicios = { version, lista };
   return lista;
