@@ -1,6 +1,7 @@
 // Biblioteca (opción A de Adam, 30/10): ramas arriba, buscador siempre a la vista, favoritos y los filtros en una hoja.
 // Tres ramas a la vista (Jugadas, Ejercicios, Recursos); Mis ejercicios y Pedir a Claude son botones dentro de Ejercicios.
 import { useState } from 'react';
+import { useHoja } from '../ui/useHoja';
 import { formatos, todosLosEjercicios, type Filtro } from '../ejercicios/ejercicios';
 import { alternarFavorito, leerFavoritos } from '../favoritos';
 import type { Ejercicio as EjercicioIA } from '../recursos/guardarEjercicioIA';
@@ -39,6 +40,7 @@ export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, retoca
   const [q, setQ] = useState('');
   const [soloFavoritos, setSoloFavoritos] = useState(false);
   const [hoja, setHoja] = useState(false);
+  const refHoja = useHoja<HTMLDivElement>(hoja, () => setHoja(false));
   const [favoritos, setFavoritos] = useState(leerFavoritos);
   const [jugadas, setJugadas] = useState<FiltroJugadas>({});
   const [ejercicios, setEjercicios] = useState<Filtro>({});
@@ -88,7 +90,7 @@ export function Biblioteca({ rama, cambiar, abrir, abrirEjercicio, crear, retoca
 
       {hoja && (
         <div className="velo" onClick={() => setHoja(false)}>
-          <div className="hoja" role="dialog" aria-modal="true" aria-label="Filtros" onClick={(e) => e.stopPropagation()}>
+          <div ref={refHoja} className="hoja" role="dialog" aria-modal="true" aria-label="Filtros" onClick={(e) => e.stopPropagation()}>
             <div className="hoja-cabeza">
               <h2 className="sub">Filtros</h2>
               <button className="ver-todas" onClick={() => { setJugadas({}); setEjercicios({}); }}>Quitar todos</button>

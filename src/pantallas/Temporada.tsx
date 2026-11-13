@@ -11,13 +11,15 @@ import { DIAS, DIAS_LARGOS, corta, cuadriculaMes, mesDe, nombreMes, sumarMeses }
 import { escribirIcs } from '../temporada/ics';
 import {
   ETIQUETAS_BIEN, ETIQUETAS_MAL, notasDelBalance,
-  COMPETICIONES, agendaDia, balanceDe, balanceLiga, cambiarFijoDia, competicionDe, faseDe, guardarEvento, guardarFase, guardarFijo, guardarFila, nuevaFila, ordenarClasificacion, puntosClasificacion, quitarFila, guardarTemporada, guardarTemporadas, itemsParaIcs, leerTemporadas, marcasDia,
+  COMPETICIONES, agendaDia, eventoSinNada, balanceDe, balanceLiga, cambiarFijoDia, competicionDe, faseDe, guardarEvento, guardarFase, guardarFijo, guardarFila, nuevaFila, ordenarClasificacion, puntosClasificacion, quitarFila, guardarTemporada, guardarTemporadas, itemsParaIcs, leerTemporadas, marcasDia,
   nuevaFase, nuevaTemporada, nuevoEvento, nuevoFijo, ponerAsistencia, quitarEvento, quitarFase, quitarFijo, temporadaDe, temporadaPorDefecto,
   type Evento, type Fase, type Item, type Temporada as TemporadaDatos, type TipoEvento,
 } from '../temporada/temporada';
 import { ImportarCalendario } from './ImportarCalendario';
 import { InformeRivalEditor } from './InformeRival';
 import { EnDirecto } from './EnDirecto';
+import { alGuardarTemporada } from '../partido/guardar';
+import { useHoja } from '../ui/useHoja';
 import { CargaSemanal } from './CargaSemanal';
 import { PLANTILLAS_SEMANA, aplicarPlantillaSemana } from '../sesiones/plan';
 import { DisponibilidadDia } from './DisponibilidadDia';
@@ -162,15 +164,19 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
   const sesiones = sesionesDe(leerSesiones(), equipo);
   const item = items.find((i) => i.clave === edita);
 
+  // Con teclado: Escape hace lo mismo que la ✕ (si se está editando, cierra primero el editor).
+  const refHoja = useHoja<HTMLDivElement>(true, () => { if (edita) cerrarEditor(); else cerrar(); });
+
   const añadir = (tipo: TipoEvento) => {
     const e = nuevoEvento(fecha, tipo);
     cambiar(guardarEvento(t, e));
     setEdita(e.id);
   };
-  // Un partido o un evento sin nombre no sirve: al cerrar el editor se tira.
+  // Un partido o un evento recién creado y sin tocar no sirve: al cerrar el editor se tira. Si ya tiene algo apuntado
+  // (resultado, convocatoria, plan…) se conserva aunque falte el nombre del rival.
   const cerrarEditor = () => {
     const e = item?.evento;
-    if (e && e.tipo !== 'entreno' && !e.titulo.trim()) cambiar(quitarEvento(t, e.id));
+    if (e && e.tipo !== 'entreno' && eventoSinNada(e)) cambiar(quitarEvento(t, e.id));
     setEdita(null);
   };
 
@@ -288,7 +294,7 @@ function Hoja({ t, fecha, completa, alternar, cerrar, cambiar, abrirSesion, equi
   };
 
   return (
-    <div className={completa || item ? 'tp-hoja completa' : 'tp-hoja'} role="dialog" aria-label={`Día ${corta(fecha)}`}>
+    <div ref={refHoja} className={completa || item ? 'tp-hoja completa' : 'tp-hoja'} role="dialog" aria-label={`Día ${corta(fecha)}`}>
       <div className="tp-hoja-cabeza">
         <h2 className="nombre-sistema">{corta(fecha)}</h2>
         {fase && <span className="et bien">{fase.nombre || 'Fase'}</span>}
@@ -381,6 +387,13 @@ export function Temporada({ equipo, jugadoras, fechaInicial, abrirSesion, anotar
     if (primera.current) { primera.current = false; return; }
     setFallo(!guardarTemporadas(lista));
   }, [lista]);
+
+  // El partido en directo se abre encima y guarda por su cuenta: al hacerlo, esta pantalla vuelve a leer.
+  // Sin esto, el siguiente cambio aquí (el balance, el rival…) pisaba la estadística del partido con la versión de antes.
+  // Si el último guardado de esta pantalla falló, no se relee: lo que hay en memoria es lo único que queda de esos cambios.
+  const falloRef = useRef(false);
+  falloRef.current = fallo;
+  useEffect(() => alGuardarTemporada(() => { if (falloRef.current) return; primera.current = true; setLista(leerTemporadas()); }), []);
 
   const cambiar = (n: TemporadaDatos) => setLista((l) => guardarTemporada(l, n));
   const marcas = useMemo(() => (t ? new Map(cuadriculaMes(mes).flat().filter((f): f is string => !!f).map((f) => [f, marcasDia(t, f)])) : new Map()), [t, mes]);
