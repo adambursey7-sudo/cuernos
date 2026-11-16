@@ -1015,3 +1015,11 @@ button.principal.ancho { font-size: 1rem; }
 .vivo-pie button { min-height: 56px; font-size: 0.85rem; }
 .vivo-marcador .fila-rival button { min-width: 64px; min-height: 56px; }
 .barra-directo { min-height: 56px; }
+
+/* Sistemas con varias lecturas (Princeton): botones de lectura, aviso «Cuándo no usarlo» y frase final */
+.niveles.lecturas { flex-wrap: wrap; overflow: visible; margin-top: 6px; }
+.lectura-frase { margin: 4px 0 0; color: var(--tenue); font-size: 0.95rem; }
+.no-usar { margin-top: 14px; padding: 10px 14px 12px; border-radius: var(--r-md, 12px); border-left: 5px solid var(--aviso); background: color-mix(in srgb, var(--aviso) 14%, var(--fondo)); }
+.no-usar h2 { font: 800 1.3rem/1 var(--display); text-transform: uppercase; color: var(--aviso); margin: 0 0 6px; }
+.no-usar ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+.cierre-sistema { margin: 14px 0 0; padding-top: 10px; border-top: 2px solid var(--principal); font-weight: 700; }

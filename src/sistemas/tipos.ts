@@ -25,6 +25,16 @@ export interface Paso {
   revisar?: boolean;
 }
 
+/** Una lectura de un sistema con su propia pista: se elige con un botón y la pizarra cambia a sus pasos. */
+export interface LecturaPista {
+  nombre: string;
+  /** Una frase que resume qué se lee y qué se hace. */
+  texto: string;
+  pasos: Paso[];
+  /** Esta lectura la describe una sola fuente: Adam debe confirmarla. */
+  revisar?: boolean;
+}
+
 export interface Sistema {
   id: string;
   nombre: string;
@@ -59,6 +69,12 @@ export interface Sistema {
   progresion?: Partial<Record<Nivel, string>>;
   /** Pendiente de que Adam lo valide; va siempre con su fuente. */
   revisar?: boolean;
+  /** Lecturas con botón propio (la ficha de Princeton): cada una trae su pista. Los `pasos` del sistema son los de la primera. */
+  lecturasPista?: LecturaPista[];
+  /** «Cuándo no usarlo»: motivos para no elegir este sistema. */
+  noUsar?: string[];
+  /** Frase final: qué equipo puede usarlo. */
+  cierre?: string;
   /** De dónde sale la idea (escuela, entrenador o reglamento). Sin fuente no hay sistema. */
   fuente?: string;
 }

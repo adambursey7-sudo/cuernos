@@ -2,9 +2,15 @@
 // La IA no inventa jugadas: cada uno parte de un concepto conocido (fuente anotada) y queda «revisar: true»
 // hasta que Adam lo valide. Coordenadas de media pista en decímetros, canasta en (75, 12).
 // En las defensas los cinco puestos son defensores y el balón no se dibuja (sinBalon).
-import type { Sistema } from './tipos';
+import type { Paso, Sistema } from './tipos';
 
 const ESCUELA_FEB = 'Conceptos de uso general en los manuales de la Escuela Nacional de Entrenadores (FEB) y en el material de FIBA Coaching; falta contrastar con la edición que use Adam.';
+
+const PRINCETON_PIVOT: Paso[] = [
+      { texto: '1 pasa al 5, que espera en el codo de la zona.', movimientos: [{ tipo: 'pase', de: '1', a: '5' }] },
+      { texto: '1 corta a canasta junto al 5; 2, 3 y 4 se abren para dar espacio.', movimientos: [{ tipo: 'corte', jugador: '1', a: [66, 24], por: [92, 70] }] },
+      { texto: '5 mira: si 1 llega con ventaja, le pasa; si no, busca a otro que corte o tire.', movimientos: [{ tipo: 'pase', de: '5', a: '1' }] },
+];
 
 export const SISTEMAS_BIBLIOTECA: Sistema[] = [
   // ---------- ATAQUE: bloqueo directo y sin balón ----------
@@ -631,5 +637,77 @@ export const SISTEMAS_BIBLIOTECA: Sistema[] = [
     progresion: { senior: 'Colocación y primera trampa; después, rotaciones completas.' },
     errores: ['El que presiona deja pasar el balón por el centro.', 'La trampa llega con las manos abajo.', 'Nadie vigila el pase largo.'],
     ejercicios: ['5x0 mover la presión con un balón.', '5x5 presión 1-2-1-1 con puntos por robo.', '5x5 situación: -8 y 4 minutos.'],
+  },
+  // ---------- ATAQUE: lectura y pase (Princeton) ----------
+  {
+    id: 'princeton',
+    nombre: 'Ataque Princeton',
+    tipo: 'ataque',
+    familia: 'ataque',
+    grupo: 'Lectura y pase',
+    contra: 'individual',
+    nivelMinimo: 'cadete',
+    dificultad: 3,
+    revisar: true,
+    fuente: 'Princeton offense (Pete Carril): Wikipedia, Coach\'s Clipboard «Princeton Offense» y The Hoops Geek «Princeton Basketball Offense». El pívot alto que reparte y el corte por la espalda salen en al menos dos; el mano a mano y la acción de barbilla solo en The Hoops Geek. La colocación inicial cambia según la fuente.',
+    idea: 'Ataque lento y de mucha cabeza para equipos con menos físico. El pívot juega arriba, en el codo, y reparte el juego; los demás pasan, cortan y leen a su defensor.',
+    objetivo: 'Conseguir una canasta fácil por lectura (un corte por la espalda o un pase del pívot), sin depender de ganar los duelos físicos.',
+    cuando: 'Cuando el equipo tiene menos físico que el rival, un pívot que ve y pasa bien y jugadores que botan, pasan y tiran.',
+    variantes: ['Colocación 2-3 alto con dos pívots arriba (otra de las que describen las fuentes).', 'Cortar por la espalda al ala contraria si le niegan el pase al compañero.', 'Mano a mano en el ala en vez de pasar al pívot.'],
+    inicio: { '1': [75, 104], '2': [22, 76], '3': [128, 76], '4': [132, 34], '5': [75, 54] },
+    balon: '1',
+    noUsar: [
+      'Si no tienes un pívot que vea el pase y pase bien: todo gira a su alrededor.',
+      'Si el equipo tiene prisa o no aguanta jugar con paciencia: es un ataque lento.',
+      'Si la defensa cambia de marca en cada bloqueo: puede frenarlo. (Criterio propio, ninguna fuente lo confirma: Adam debe validarlo.)',
+    ],
+    cierre: 'Lo puede usar un equipo con menos físico y buena cabeza, que pase, bote y tire bien.',
+    lecturasPista: [
+      {
+        nombre: 'Pívot arriba',
+        texto: '1 pasa al 5 en el codo. El 5 mira a los que cortan.',
+        pasos: PRINCETON_PIVOT,
+      },
+      {
+        nombre: 'Por la espalda',
+        texto: 'Si te presionan mucho el pase, cortas a canasta por detrás de tu defensor.',
+        pasos: [
+          { texto: '1 bota hacia el centro y el defensor de 3 le niega el pase.', movimientos: [{ tipo: 'bote', jugador: '1', a: [82, 96] }] },
+          { texto: '3 corta a canasta por la espalda de su defensor.', movimientos: [{ tipo: 'corte', jugador: '3', a: [88, 22], por: [112, 52] }] },
+          { texto: '1 le pasa. Si la ayuda tapa el corte, el 5 desde el codo busca al compañero libre.', movimientos: [{ tipo: 'pase', de: '1', a: '3' }] },
+        ],
+      },
+      {
+        nombre: 'Mano a mano',
+        texto: '1 entrega el balón a 3 en la mano y 3 sale con él.',
+        revisar: true,
+        pasos: [
+          { texto: '1 bota hacia el ala donde está 3.', movimientos: [{ tipo: 'bote', jugador: '1', a: [112, 90] }] },
+          { texto: '3 viene a buscarlo y 1 le entrega el balón en la mano.', revisar: true, movimientos: [{ tipo: 'corte', jugador: '3', a: [104, 88] }, { tipo: 'pase', de: '1', a: '3' }] },
+          { texto: '3 sale botando hacia dentro; el 5 y los demás se abren para leer su ataque.', revisar: true, movimientos: [{ tipo: 'bote', jugador: '3', a: [96, 62] }] },
+        ],
+      },
+    ],
+    pasos: PRINCETON_PIVOT,
+    lecturas: {
+      cadete: 'Primero solo el pase al pívot y el corte de quien pasa; después el corte por la espalda.',
+      junior: 'Leer cada defensor: si niega el pase, corte por la espalda; si no, pasar al pívot y cortar.',
+      senior: 'Encadenar las tres lecturas y usar las alas y la esquina para dar espacio al pívot.',
+    },
+    progresion: {
+      cadete: 'Pase al pívot arriba y corte de quien pasa, sin defensa. Luego añadir el corte por la espalda.',
+      junior: 'Con defensa, elegir la lectura según cómo defienda cada jugador.',
+    },
+    errores: [
+      'El pívot recibe y se queda parado: tiene que mirar a quien corta.',
+      'Los jugadores de fuera se acercan al balón y no dejan espacio.',
+      'Se corta sin leer al defensor: la lectura la decide el defensor, no el entrenador.',
+    ],
+    ejercicios: [
+      '3x0 pase al pívot y corte de quien pasa.',
+      '2x2 corte por la espalda cuando niegan el pase.',
+      '5x0 con las tres lecturas, sin prisa.',
+      '5x5 con punto extra si la canasta sale de un corte por la espalda.',
+    ],
   },
 ];

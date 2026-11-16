@@ -54,3 +54,22 @@ describe('biblioteca ampliada de sistemas', () => {
     expect(agrupar([]).length).toBe(0);
   });
 });
+
+describe('sistemas con varias lecturas (Princeton)', () => {
+  const dentroP = ([x, y]: Punto) => x >= 0 && x <= 150 && y >= 0 && y <= 140;
+  it('cada lectura trae pasos dentro de la pista y el sistema empieza por la primera', () => {
+    const conLecturas = todosLosSistemas().filter((s) => s.lecturasPista);
+    expect(conLecturas.length).toBeGreaterThan(0);
+    for (const s of conLecturas) {
+      expect(s.lecturasPista!.length, s.id).toBeGreaterThanOrEqual(2);
+      expect(s.pasos, s.id).toBe(s.lecturasPista![0].pasos);
+      expect(s.noUsar?.length, s.id).toBeGreaterThan(0);
+      expect(s.cierre, s.id).toBeTruthy();
+      for (const l of s.lecturasPista!) for (const p of l.pasos) for (const m of p.movimientos) {
+        for (const q of puntos(m)) expect(dentroP(q), `${s.id} ${l.nombre}`).toBe(true);
+        if (m.tipo === 'pase') expect(JUGADORES.includes(m.de) && JUGADORES.includes(m.a), `${s.id} ${l.nombre}`).toBe(true);
+        else expect(JUGADORES.includes(m.jugador), `${s.id} ${l.nombre}`).toBe(true);
+      }
+    }
+  });
+});

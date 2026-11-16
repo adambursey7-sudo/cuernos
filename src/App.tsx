@@ -125,7 +125,7 @@ export function App() {
     );
   else if (sistema)
     contenido = (
-      <Sistema key={sistema.id} s={sistema} pasoInicial={abierto!.paso} volver={() => setAbierto(null)} editar={(base) => setEdicion({ base })} />
+      <Sistema key={sistema.id} s={sistema} pasoInicial={abierto!.paso} volver={() => setAbierto(null)} editar={(base) => setEdicion({ base: { ...base, lecturasPista: undefined } })} />
     );
   else if (pestana === 'hoy')
     contenido = (

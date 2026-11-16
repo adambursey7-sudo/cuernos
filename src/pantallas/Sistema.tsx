@@ -1,5 +1,5 @@
 // Un sistema en la pizarra: número de paso enorme, pista, explicación y botones grandes para usarlo en la banda.
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { HojaCompartir } from '../compartir/HojaCompartir';
 import { numerosActivos } from '../diario/puestos';
 import { Pista } from '../pizarra/Pista';
@@ -35,7 +35,32 @@ function guardarDefensa(si: boolean) {
   }
 }
 
-export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDatos; pasoInicial?: number; volver: () => void; editar: (base: SistemaDatos) => void }) {
+/** Sistemas con varias lecturas (Princeton): un botón por lectura y la pista cambia a sus pasos. */
+export function Sistema(props: { s: SistemaDatos; pasoInicial?: number; volver: () => void; editar: (base: SistemaDatos) => void }) {
+  const lecturas = props.s.lecturasPista;
+  const [lectura, setLectura] = useState(0);
+  if (!lecturas || lecturas.length === 0) return <SistemaPantalla {...props} />;
+  const actual = lecturas[Math.min(lectura, lecturas.length - 1)];
+  const botones = (
+    <>
+      <div className="niveles lecturas" role="tablist" aria-label="Lectura del sistema">
+        {lecturas.map((l, i) => (
+          <button key={l.nombre} role="tab" aria-selected={l === actual} className={l === actual ? 'chip on' : 'chip'} onClick={() => setLectura(i)}>
+            {l.nombre}
+          </button>
+        ))}
+      </div>
+      <p className="lectura-frase">
+        {actual.texto}
+        {actual.revisar && <span className="aviso"> Por revisar</span>}
+      </p>
+    </>
+  );
+  // La llave reinicia el paso al cambiar de lectura; los pasos de la lectura sustituyen a los del sistema.
+  return <SistemaPantalla key={actual.nombre} {...props} s={{ ...props.s, pasos: actual.pasos }} botones={botones} />;
+}
+
+function SistemaPantalla({ s, pasoInicial = 0, volver, editar, botones }: { s: SistemaDatos; pasoInicial?: number; volver: () => void; editar: (base: SistemaDatos) => void; botones?: ReactNode }) {
   const [borrando, setBorrando] = useState(false);
   const total = s.pasos.length;
   const niveles = NIVELES.slice(NIVELES.findIndex((n) => n.id === s.nivelMinimo));
@@ -94,6 +119,7 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
         ))}
       </div>
 
+      {botones}
       <div className="marcador-fila">
         <div className="marcador" aria-live="polite">
           <span className="numero">{paso + 1}</span>
@@ -160,6 +186,14 @@ export function Sistema({ s, pasoInicial = 0, volver, editar }: { s: SistemaDato
         <button onClick={() => jugada.todo()}>▶ Jugada</button>
         <button className="principal" onClick={() => jugada.siguiente()} disabled={t >= total}>Siguiente</button>
       </div>
+
+      {s.noUsar && s.noUsar.length > 0 && (
+        <div className="no-usar">
+          <h2>Cuándo no usarlo</h2>
+          <ul>{s.noUsar.map((e) => <li key={e}>{e}</li>)}</ul>
+        </div>
+      )}
+      {s.cierre && <p className="cierre-sistema">{s.cierre}</p>}
 
       <div className="ficha">
         <h2>Idea</h2>

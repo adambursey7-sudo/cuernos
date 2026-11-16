@@ -8,6 +8,7 @@ Una ficha por sistema, con el mismo formato que `cuernos.md`. Cada ficha la revi
 - [ ] 1-4 alto
 - [ ] Movimiento libre (*motion*) 5 abiertos
 - [ ] 4 abiertos y 1 dentro
+- [x] Princeton (3 lecturas)
 - [ ] Triángulo (versión sencilla)
 - [ ] UCLA
 - [ ] Ataque a zona 2-3

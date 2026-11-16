@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ficha Princeton: tres formas</title>
+<style>
+:root{--fondo:#1e2a44;--texto:#f4efe6;--princ:#f26b1d;--pista:#d9a066;--tenue:#aab3c6;--sup:#2a3856;--aviso:#ffb020;--mal:#ffb3ab}
+*{box-sizing:border-box}
+body{margin:0;background:#141c2e;color:var(--texto);font:16px/1.45 "Atkinson Hyperlegible",system-ui,sans-serif;padding:16px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--tenue);margin:0 0 20px;max-width:60ch}
+.fila{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.op{flex:1 1 340px;max-width:420px}
+.op h2{font-size:18px;margin:0 0 8px;color:var(--princ)}
+.movil{background:var(--fondo);border:2px solid #3a4968;border-radius:22px;padding:14px;margin-bottom:10px}
+.movil h3{font:700 15px/1.2 system-ui;letter-spacing:.04em;text-transform:uppercase;color:var(--princ);margin:16px 0 6px}
+.movil h3:first-child{margin-top:0}
+.movil p,.movil li{margin:0 0 6px;font-size:15px}
+.movil ul{padding-left:20px;margin:0}
+svg{width:100%;height:auto;display:block;border-radius:12px;background:var(--pista)}
+.chips{display:flex;gap:6px;margin:8px 0}
+.chip{flex:1;text-align:center;padding:10px 4px;border-radius:999px;background:var(--sup);font-size:13px;min-height:44px;display:flex;align-items:center;justify-content:center}
+.chip.on{background:var(--princ);color:#1e2a44;font-weight:700}
+.aviso{background:#3a2d12;border-left:5px solid var(--aviso);padding:10px 12px;border-radius:10px}
+.aviso h3{color:var(--aviso)!important;margin-top:0!important}
+.pie{border-top:2px solid var(--princ);margin-top:14px;padding-top:10px;font-weight:700}
+.vs{font-size:14px;color:var(--tenue)}
+.vs b{color:var(--texto)}
+.mas{color:#9fe3b0}.menos{color:var(--mal)}
+.nota{max-width:70ch;color:var(--tenue);font-size:14px;margin-top:18px}
+</style>
+</head>
+<body>
+<h1>Ficha de sistema: ataque Princeton</h1>
+<p class="sub">Tres formas de hacerla. Todas llevan las cuatro partes (pista, lecturas, cuándo no usarlo, frase final). Elige una y la programo. Las flechas son de ejemplo; la pista real usaría la pizarra de siempre.</p>
+
+<div class="fila" id="fila"></div>
+
+<p class="nota">Posiciones de las pistas: 1 arriba con balón, 2 y 3 en las alas, 4 en la esquina, 5 en el poste alto (el codo de la zona). Las fuentes no coinciden al 100 % en la colocación inicial; esta es la del «cuatro fuera y uno dentro».</p>
+
+<script>
+// Pista de media cancha: x 0-150, y 0-140 (como la app). Canasta en (75,12).
+const J={1:[75,104],2:[22,76],3:[128,76],4:[132,34],5:[75,54]};
+function pista(flechas,pos=J,etq=true){
+  let s='<svg viewBox="0 0 150 120" role="img" aria-label="Pista con jugadores y flechas">';
+  s+='<defs><marker id="p" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#1e2a44"/></marker><marker id="q" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#f26b1d"/></marker></defs>';
+  s+='<g fill="none" stroke="#1e2a44" stroke-width="1" opacity=".55"><rect x="50" y="0" width="50" height="58"/><path d="M50 58 A25 25 0 0 0 100 58"/><path d="M5 0 V30 A72 72 0 0 0 145 30 V0"/><circle cx="75" cy="12" r="3.5"/></g>';
+  for(const f of flechas){
+    const [t,pts]=f; const col=t==='pase'?'#f26b1d':'#1e2a44'; const dash=t==='bote'?'3 2':(t==='pase'?'0':'0');
+    const m=t==='pase'?'url(#q)':'url(#p)';
+    const d='M'+pts.map(p=>p.join(' ')).join(' L');
+    s+=`<path d="${d}" stroke="${col}" stroke-width="${t==='pase'?1.4:1.6}" stroke-dasharray="${t==='pase'?'4 2.5':dash}" fill="none" marker-end="${m}"/>`;
+  }
+  for(const k in pos){const [x,y]=pos[k];s+=`<circle cx="${x}" cy="${y}" r="6.5" fill="#1e2a44" stroke="#f4efe6" stroke-width="1"/><text x="${x}" y="${y+2.6}" text-anchor="middle" font-size="8" font-weight="700" fill="#f4efe6" font-family="system-ui">${k}</text>`}
+  return s+'</svg>';
+}
+const L1=[['pase',[[70,98],[75,62]]],['corte',[[128,70],[104,40],[88,20]]]];
+const L2=[['bote',[[75,98],[40,84]]],['corte',[[22,70],[40,50],[66,20]]]];
+const L3=[['bote',[[80,100],[112,84]]],['corte',[[122,72],[96,88]]]];
+const todas=[...L1,...L2.map(x=>x)];
+const cuando=`<div class="aviso"><h3>Cuándo no usarlo</h3><ul><li>Si no tienes un pívot que vea el pase y pase bien: todo gira alrededor de él.</li><li>Si el equipo tiene prisa o no aguanta jugar con paciencia: es un ataque lento.</li><li>Si la defensa cambia de marca en cada bloqueo: <i>(esto es mi criterio, ninguna fuente lo confirma; lo marco para que lo valides)</i>.</li></ul></div>`;
+const pie=`<div class="pie">Lo puede usar un equipo con menos físico y buena cabeza, que pase, bote y tire bien.</div>`;
+const lect=`<h3>Lecturas</h3><ul><li><b>Pívot arriba.</b> 1 pasa al 5 en el codo. El 5 mira a los que cortan.</li><li><b>Corte por la espalda.</b> Si te presionan mucho el pase, cortas a canasta por detrás de tu defensor.</li><li><b>Mano a mano.</b> 1 entrega el balón a 3 en mano y 3 sale con él. <i>(solo una fuente lo describe)</i></li></ul>`;
+
+const ops=[
+ {t:'A · Secciones nuevas en la ficha de siempre',
+  html:`<div class="movil"><h3>Pista</h3>${pista(todas)}<p class="vs">Se mueve paso a paso como el resto de jugadas.</p>${lect}${cuando}${pie}</div>`,
+  vs:`<span class="mas">+ Casi no cambia nada: usa la pantalla y la pizarra que ya existen.</span><br><span class="mas">+ Es lo más rápido de hacer y lo que menos puede romper.</span><br><span class="menos">− Una sola pista para tres lecturas: se ven mezcladas.</span><br><span class="menos">− Queda larga; hay que bajar para ver «Cuándo no usarlo».</span>`},
+ {t:'B · Una lectura por botón (recomendada)',
+  html:`<div class="movil"><h3>Pista</h3><div class="chips"><div class="chip on">Pívot arriba</div><div class="chip">Por la espalda</div><div class="chip">Mano a mano</div></div>${pista(L1)}<p class="vs">Tocas un botón y la pista cambia a esa lectura, con su frase debajo.</p><p><b>Pívot arriba.</b> 1 pasa al 5 en el codo. 3 corta por la espalda y el 5 le busca.</p>${cuando}${pie}</div>`,
+  vs:`<span class="mas">+ Cada lectura se ve limpia, sin flechas amontonadas.</span><br><span class="mas">+ Se lee de un vistazo con el móvil en la banda.</span><br><span class="mas">+ «Cuándo no usarlo» queda a la vista.</span><br><span class="menos">− Hay que añadir a las jugadas un campo nuevo (lecturas con su pista).</span><br><span class="menos">− Algo más de trabajo, pero sirve luego para cualquier otro sistema.</span>`},
+ {t:'C · Tarjeta fija en Recursos',
+  html:`<div class="movil"><h3>Ataque Princeton</h3>${pista(todas)}<p class="vs">Imagen fija con todas las flechas, como una hoja de pizarra.</p>${lect}${cuando}${pie}</div>`,
+  vs:`<span class="mas">+ Muy poco código y se puede imprimir o compartir.</span><br><span class="menos">− No es una jugada de la biblioteca: no se anima ni se añade a una sesión.</span><br><span class="menos">− Se queda aparte de Jugadas, y Adam tendría que buscarla en Recursos.</span>`}
+];
+document.getElementById('fila').innerHTML=ops.map(o=>`<div class="op"><h2>${o.t}</h2>${o.html}<p class="vs">${o.vs}</p></div>`).join('');
+</script>
+</body>
+</html>
